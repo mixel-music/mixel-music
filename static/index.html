@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamaya</title>
+  </head>
+  <body>
+    <input type="text" id="fileNameInput" placeholder="file name">
+    <button id="playButton">start</button>
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="">
+    </audio>
+  </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const playButton = document.getElementById('playButton');
+      const fileNameInput = document.getElementById('fileNameInput');
+      const audioPlayer = document.getElementById('audioPlayer');
+      const audioSource = document.getElementById('audioSource');
+
+      playButton.addEventListener('click', function() {
+        const fileName = fileNameInput.value;
+        if (fileName) {
+          audioSource.src = `/api/${fileName}`;
+          audioPlayer.load();
+          audioPlayer.play();
+        } else {
+          alert('파일 네임을 입력하세유');
+        }
+      });
+    });
+  </script>
+</html>
