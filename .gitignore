@@ -1,7 +1,6 @@
 __pycache__
-test
+test/*
 
-# Logs
 logs
 *.log
 npm-debug.log*
@@ -20,7 +19,6 @@ coverage
 /cypress/videos/
 /cypress/screenshots/
 
-# Editor directories and files
 .vscode
 .idea
 *.suo

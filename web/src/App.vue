@@ -6,6 +6,7 @@
 
 <script>
 import list from './components/list.vue'
+
 export default {
   name: 'App',
   components: {

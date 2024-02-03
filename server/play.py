@@ -16,7 +16,7 @@ async def server_stream(path: str, range: str = Header(None)):
   if not file_path.is_file(): raise HTTPException(status_code=404)
   
   file_size = file_path.stat().st_size
-  file_chunk = int(file_size * 0.05) # 5% of file size
+  file_chunk = int(file_size * 0.5) # 50% of file size
 
   if range:
     audio_range = range.replace("bytes=", "").split("-")

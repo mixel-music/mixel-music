@@ -1,19 +1,12 @@
 <template>
-  <div>
-    <a v-for="track in tracks" :key="track" @click="selectTrack(track)" style="display: block;">
+  <div class="player_body">
+    <a v-for="track in tracks" :key="track" @click="selectTrack(track)" style="display: block">
       {{ track }}
     </a>
     <br>
-    <div v-if="currentTrack">
-      <button @click="toggle">{{ buttonStatus }}</button>
-      <br>
-      <br>
-      Now Playing: {{ currentTrack }}
-      <br>
-      <br>
-      <div>Current Time: {{ currentTimeFormatted }}</div>
-      <div>Duration: {{ durationFormatted }}</div>
-    </div>
+    <button @click="toggle">{{ buttonStatus }} {{ currentTimeFormatted }} / {{ durationFormatted }}</button>
+    <br>
+    <!--<p>{{ currentTrack }}</p>-->
   </div>
 </template>
 
@@ -24,11 +17,11 @@ export default {
   data() {
     return {
       tracks: [],
-      currentTrack: null,
+      //currentTrack: "Empty",
       audio: new Audio(),
       currentTime: 0,
       duration: 0,
-      buttonStatus: "Pause"
+      buttonStatus: "Play"
     };
   },
   created() {
@@ -64,12 +57,17 @@ export default {
         this.duration = this.audio.duration;
       });
       this.audio.play();
+      document.title = track + " - Tamaya";
       this.buttonStatus = "Pause";
     },
     toggle() {
       if (this.audio.paused) {
-        this.audio.play();
-        this.buttonStatus = "Pause";
+        if (this.audio.src) {
+          this.audio.play();
+          this.buttonStatus = "Pause";
+        } else {
+          console.error("not selected");
+        }
       } else {
         this.audio.pause();
         this.buttonStatus = "Play";
@@ -77,6 +75,14 @@ export default {
     },
     updateTime() {
       this.currentTime = this.audio.currentTime;
+      if (this.duration == this.currentTime && this.currentTime != 0) {
+          this.buttonStatus = "Play";
+          document.title = "Tamaya";
+          this.currentTrack = '';
+          this.currentTime = 0;
+          this.duration = 0;
+          this.fetchMusicList();
+      }
     },
     formatTime(time) {
       const minutes = Math.floor(time / 60);
