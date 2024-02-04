@@ -7,8 +7,8 @@
 
     </div>
     <div class="app_container">
-      <albums />
-      <!--<tracks @select-track="handleSelectTrack"/>-->
+      <!--<albums />-->
+      <tracks @select-track="handleSelectTrack"/>
     </div>
     <div class="app_player">
       <player ref="player"/>

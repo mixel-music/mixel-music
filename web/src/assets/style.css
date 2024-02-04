@@ -80,4 +80,12 @@ body {
     padding: var(--var-global-padding-s);
     height: 165px;
     border-radius: var(--var-global-radius);
+    white-space: nowrap;
+    align-items: end;
+    display: grid;
+}
+
+.track_title, .album_title {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
