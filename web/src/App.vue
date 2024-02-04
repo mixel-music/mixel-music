@@ -7,7 +7,8 @@
 
     </div>
     <div class="app_container">
-      <tracks @select-track="handleSelectTrack"/>
+      <albums />
+      <!--<tracks @select-track="handleSelectTrack"/>-->
     </div>
     <div class="app_player">
       <player ref="player"/>
@@ -18,12 +19,14 @@
 <script>
 import tracks from './components/tracks.vue'
 import player from './components/player.vue'
+import albums from './components/albums.vue'
 
 export default {
   name: 'App',
   components: {
     tracks,
-    player
+    player,
+    albums,
   },
 
   methods: {
