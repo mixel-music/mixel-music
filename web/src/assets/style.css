@@ -3,6 +3,7 @@
     --var-global-padding-s: 16px;
     --var-body-primary: #181818;
     --var-body-secondary: #242424;
+    --var-global-radius: 8px;
 }
 
 html {
@@ -26,7 +27,8 @@ body {
 }
 
 .app_container {
-    padding: var(--var-global-padding);
+    padding: 7%;
+    width: 100%;
 }
 
 .app_player {
@@ -63,4 +65,19 @@ body {
     width: 230px;
     background-color: var(--var-body-secondary);
     padding: var(--var-global-padding);
+}
+
+.tracks_cards_container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+    grid-gap: 32px;
+    justify-content: center;
+}
+
+.tracks_card {
+    background-color: var(--var-body-secondary);
+    padding: var(--var-global-padding-s);
+    height: 160px;
+    border-radius: var(--var-global-radius);
 }

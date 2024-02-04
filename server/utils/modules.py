@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Response, HTTPException, Header
-from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 from mutagen.flac import FLAC, Picture
 from mutagen import File
 import os
 
 global valid_ext
-valid_ext = (".mp3", ".MP3", ".m4a", ".M4A", ".flac", ".FLAC", ".alac", ".ALAC", ".wav", ".WAV", ".opus", ".OPUS", ".aac", "AAC")
+valid_ext = (".mp3", ".MP3", ".m4a", ".M4A", ".flac", ".FLAC", ".alac", ".ALAC", ".wav", ".WAV", ".opus", ".OPUS", ".aac", ".AAC")
 
 async def get_root_path():
     """
@@ -26,7 +25,7 @@ async def check_ext_valid(file_path: str) -> bool:
     check the extension of a given file path to identify the file type
     """
     ext = (await get_split_path(file_path))[1]
-    
+
     if ext not in valid_ext or ".." in file_path: return False
     if not os.path.isfile(file_path): return False
 
