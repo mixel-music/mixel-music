@@ -1,29 +1,16 @@
-from fastapi import APIRouter, Response, HTTPException, Header
 from server.utils.modules import *
-from mutagen import MutagenError, mp3, m4a, mp4, flac, wave, oggopus, aac
-import mutagen
 
 router = APIRouter()
 
 @router.get("/stream/{path:path}")
 async def api_stream(path: str, range: str = Header(None)):
-  ext_enable = [".mp3", ".m4a", ".flac", ".alac", ".wav", ".opus", ".aac"]
-  ext_import = os.path.splitext(path)
-  ext_import = ext_import[1]
-  file_path = os.path.join(get_root_path(), "test", f"{path}")
+  file_path = os.path.join(await get_root_path(), f"{path}")
 
-  print(file_path)
+  if await check_ext_valid(file_path) == False:
+    raise HTTPException(status_code=404)
 
-  """
-  Check valid ext to prevent directory traversal
-  """
-  if ext_import not in ext_enable or ".." in path: raise HTTPException(status_code=404)
-  if not os.path.isfile(file_path): raise HTTPException(status_code=404)
-  
-  music_file = mutagen.File(file_path)
+  music_file = File(file_path)
   music_mime = music_file.mime[0]
-  music_tags_dict = music_file.tags
-  #print(music_tags_dict['TIT2'])
 
   file_size = os.path.getsize(file_path)
   file_chunk = int(file_size * 0.5) # 50% of file size

@@ -1,10 +1,13 @@
 <template>
   <div class="app_container_tracks">
-    <a class="tracks_title" v-for="(track, index) in tracks" :key="index" @click="this.$emit('select-track', track[0], track[1]);">
-      {{ track[0] }}
-    </a>
+    <div v-for="(song, index) in metadata" :key="index">
+      <a class="track_title" @click="this.$emit('select-track', song[0], song[4]);">
+        {{ song[1] }} - {{ song[0] }} ({{ song[2] }})
+      </a>
+    </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -12,7 +15,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      tracks: []
+      metadata: null
     };
   },
 
@@ -24,7 +27,7 @@ export default {
     fetchMusicList() {
       axios.get('http://localhost:8000/api/tracks')
         .then(response => {
-          this.tracks = response.data;
+          this.metadata = response.data;
         })
         .catch(error => {
           console.error("Failed to fetch:", error);
