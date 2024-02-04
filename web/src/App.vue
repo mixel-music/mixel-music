@@ -1,12 +1,17 @@
 <template>
-  <div class="app_sidebar">
+  <div class="app_main">
+    <div class="app_navbar">
 
-  </div>
-  <div class="app_container">
-    <tracks @select-track="handleSelectTrack"/>
-  </div>
-  <div class="app_player">
-    <player ref="player"/>
+    </div>
+    <div class="app_sidebar">
+
+    </div>
+    <div class="app_container">
+      <tracks @select-track="handleSelectTrack"/>
+    </div>
+    <div class="app_player">
+      <player ref="player"/>
+    </div>
   </div>
 </template>
 

@@ -1,7 +1,9 @@
 <template>
   <div class="app_player_container">
+    <div class="player_title">
+      <span class="music_title">{{ currentTrack }}</span>
+    </div>
     <button @click="toggle()">{{ buttonStatus }} {{ currentTimeFormat }} / {{ durationFormat }}</button>
-    <p>{{ currentTrack }}</p>
   </div>
 </template>
 
