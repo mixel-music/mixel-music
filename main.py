@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server import play, list
+from server import stream, tracks
 
 app = FastAPI()
 
@@ -12,5 +12,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(play.router, prefix="/api")
-app.include_router(list.router, prefix="/api")
+app.include_router(stream.router, prefix="/api")
+app.include_router(tracks.router, prefix="/api")
