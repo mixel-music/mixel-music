@@ -37,8 +37,8 @@ export default {
   },
 
   methods: {
-    selectTrack(track) {
-      this.currentTrack = track;
+    selectTrack(name, track) {
+      this.currentTrack = name;
       this.audio.src = `http://localhost:8000/api/stream/${track}`;
       this.audio.addEventListener('loadedmetadata', () => {
         this.duration = this.audio.duration;

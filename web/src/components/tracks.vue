@@ -1,7 +1,7 @@
 <template>
   <div class="app_container_tracks">
-    <a class="tracks_title" v-for="track in tracks" :key="track" @click="this.$emit('select-track', track);">
-      {{ track }}
+    <a class="tracks_title" v-for="(track, index) in tracks" :key="index" @click="this.$emit('select-track', track[0], track[1]);">
+      {{ track[0] }}
     </a>
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
     fetchMusicList() {
       axios.get('http://localhost:8000/api/tracks')
         .then(response => {
-          this.tracks = response.data.music_files;
+          this.tracks = response.data;
         })
         .catch(error => {
           console.error("Failed to fetch:", error);

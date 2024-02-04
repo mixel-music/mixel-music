@@ -27,8 +27,8 @@ export default {
   },
 
   methods: {
-    handleSelectTrack(track) {
-      this.$refs.player.selectTrack(track);
+    handleSelectTrack(track, name) {
+      this.$refs.player.selectTrack(track, name);
     }
   }
 }
