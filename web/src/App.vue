@@ -30,8 +30,8 @@ export default {
   },
 
   methods: {
-    handleSelectTrack(track, name) {
-      this.$refs.player.selectTrack(track, name);
+    handleSelectTrack(title, artist, relpath) {
+      this.$refs.player.selectTrack(title, artist, relpath);
     }
   }
 }

@@ -1,17 +1,23 @@
 <template>
   <div class="app_player_container">
     <div class="player_title">
-      <span class="music_title">{{ currentTrack }}</span>
+      <p class="music_title">{{ currentTrack }}</p>
+      <p class="music_artist">{{ currentArtist }}</p>
+      <p class="music_duration">{{ currentTimeFormat }} / {{ durationFormat }}</p>
     </div>
-    <button @click="toggle()">{{ buttonStatus }} {{ currentTimeFormat }} / {{ durationFormat }}</button>
+    <button @click="toggle()">{{ buttonStatus }}</button>
   </div>
 </template>
 
 <script>
+let currentTrack = null;
+let currentArtist = null;
+
 export default {
   data() {
     return {
       currentTrack: null,
+      currentArtist: null,
       audio: new Audio(),
       currentTime: 0,
       duration: 0,
@@ -37,15 +43,19 @@ export default {
   },
 
   methods: {
-    selectTrack(name, track) {
-      this.currentTrack = name;
-      this.audio.src = `http://localhost:8000/api/stream/${track}`;
+    selectTrack(title, artist, relpath) {
+      currentTrack = title;
+      currentArtist = artist;
+      this.audio.src = `http://localhost:8000/api/stream/${relpath}`;
       this.audio.addEventListener('loadedmetadata', () => {
         this.duration = this.audio.duration;
       });
 
       if (this.audio.paused) {
         this.audio.play();
+        this.currentTrack = currentTrack;
+        this.currentArtist = currentArtist;
+        document.title = currentTrack + ' - Tamaya'
         this.buttonStatus = "Pause";
       }
     },
@@ -54,12 +64,16 @@ export default {
       if (this.audio.paused) {
         if (this.audio.src) {
           this.audio.play();
+          this.currentTrack = currentTrack;
+          this.currentArtist = currentArtist;
+          document.title = currentTrack + ' - Tamaya'
           this.buttonStatus = "Pause";
         } else {
           console.error("No track selected");
         }
       } else {
         this.audio.pause();
+        document.title = 'Tamaya'
         this.buttonStatus = "Play";
       }
     },

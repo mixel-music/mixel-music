@@ -1,8 +1,8 @@
 :root {
     --var-global-padding: 32px;
     --var-global-padding-s: 16px;
-    --var-body-primary: #181818;
-    --var-body-secondary: #242424;
+    --var-body-primary: #111111;
+    --var-body-secondary: #191919;
     --var-global-radius: 8px;
 }
 
@@ -10,6 +10,7 @@ html {
     background-color: var(--var-body-primary);
     font-size: 16px;
     line-height: 130%;
+    font-family: Pretendard;
 }
 
 body {
@@ -53,6 +54,7 @@ body {
 
 .music_title {
     font-weight: bold;
+    letter-spacing: -0.2px;
 }
 
 .app_main {
@@ -88,4 +90,12 @@ body {
 .track_title, .album_title {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+p {
+    margin: 0;
+}
+
+.music_duration, .music_artist {
+    font-size: small;
 }
