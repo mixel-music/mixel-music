@@ -1,8 +1,9 @@
 :root {
     --var-global-padding: 32px;
     --var-global-padding-s: 16px;
-    --var-body-primary: #111111;
+    --var-body-primary: #101010;
     --var-body-secondary: #191919;
+    --var-card-primary: #1f1f1f;
     --var-global-radius: 8px;
 }
 
@@ -19,16 +20,13 @@ body {
 }
 
 .app_navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
+    width: -webkit-fill-available;
     height: 40px;
-    padding: var(--var-global-padding-s);
+    padding: var(--var-global-padding);
     z-index: -1;
 }
 
 .app_container {
-    padding: 7%;
     width: 100%;
 }
 
@@ -64,13 +62,15 @@ body {
 }
 
 .app_sidebar {
-    width: 230px;
+    width: 270px;
     background-color: var(--var-body-secondary);
     padding: var(--var-global-padding);
 }
 
 .tracks_cards_container {
-    width: 100%;
+    padding: 7%;
+    padding-top: 0;
+    margin-bottom: 7%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
     grid-gap: 32px;
@@ -78,7 +78,7 @@ body {
 }
 
 .tracks_card {
-    background-color: var(--var-body-secondary);
+    background-color: var(--var-card-primary);
     padding: var(--var-global-padding-s);
     height: 165px;
     border-radius: var(--var-global-radius);
@@ -98,4 +98,26 @@ p {
 
 .music_duration, .music_artist {
     font-size: small;
+}
+
+.app_sidebar_container {
+    position: fixed;
+    height: auto;
+}
+  
+*::-webkit-scrollbar{
+    width: 0px;
+    background-color: transparent;
+}
+
+/* 스크롤바 막대 설정*/
+*::-webkit-scrollbar-thumb{
+    background-color: transparent;
+    /* 스크롤바 둥글게 설정    */
+    border-radius: 10px; 
+    border: 5px solid var(--var-body-secondary);
+}
+
+*::-webkit-scrollbar-track{
+    background-color:transparent;
 }

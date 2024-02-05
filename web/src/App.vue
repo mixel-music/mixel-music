@@ -1,14 +1,16 @@
 <template>
   <div class="app_main">
-    <div class="app_navbar">
-
-    </div>
     <div class="app_sidebar">
-
+      <div class="app_sidebar_container">
+        <RouterLink to="/album">Album</RouterLink>
+      </div>
     </div>
     <div class="app_container">
-      <!--<albums />-->
-      <tracks @select-track="handleSelectTrack"/>
+      <div class="app_navbar">
+      </div>
+      <RouterView v-slot="{ Component }">
+        <component :is="Component" @select-track="handleSelectTrack" />
+      </RouterView>
     </div>
     <div class="app_player">
       <player ref="player"/>
@@ -17,16 +19,12 @@
 </template>
 
 <script>
-import tracks from './components/tracks.vue'
 import player from './components/player.vue'
-import albums from './components/albums.vue'
 
 export default {
   name: 'App',
   components: {
-    tracks,
-    player,
-    albums,
+    player
   },
 
   methods: {

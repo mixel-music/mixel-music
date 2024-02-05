@@ -1,11 +1,11 @@
-from utils.modules import *
+from utils import *
 
 router = APIRouter()
 
 @router.get("/stream/{path:path}")
 async def api_stream(path: str, range: str = Header(None)):
   path_file = get_abs_path('test', f'{path}')
-
+  
   if check_ext_valid(str(path_file)) == False:
     raise HTTPException(status_code=404)
 

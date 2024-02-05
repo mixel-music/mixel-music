@@ -2,7 +2,7 @@ from utils import *
 
 router = APIRouter()
 
-@router.get("/list")
+@router.get("/image")
 async def api_list(type: str = 'album'):
     path_list = get_abs_path('test')
 

@@ -1,13 +1,12 @@
 <template>
   <div class="tracks_cards_container">
     <div class="tracks_card" v-for="(song, index) in metadata" :key="index">
-      <a class="track_title" @click="this.$emit('select-track', song[0], song[1], song[4]);">
-        {{ song[1] }} - {{ song[0] }}
+      <a class="track_title" @click="$emit('select-track', song[0], song[2], song[4]);">
+        {{ song[2] }} - {{ song[0] }}
       </a>
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';

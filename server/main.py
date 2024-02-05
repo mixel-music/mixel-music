@@ -1,5 +1,4 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from utils import *
 import stream, list
 
 app = FastAPI()
