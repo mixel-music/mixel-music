@@ -3,7 +3,8 @@
     --var-global-padding-s: 16px;
     --var-body-primary: #101010;
     --var-body-secondary: #191919;
-    --var-card-primary: #1f1f1f;
+    --var-sub-primary: #1f1f1f;
+    --var-sub-secondary: #272727;
     --var-global-radius: 8px;
 }
 
@@ -48,6 +49,7 @@ body {
     height: 50px;
     padding: var(--var-global-padding);
     align-items: center;
+    user-select: none;
 }
 
 .music_title {
@@ -78,7 +80,7 @@ body {
 }
 
 .tracks_card {
-    background-color: var(--var-card-primary);
+    background-color: var(--var-sub-primary);
     padding: var(--var-global-padding-s);
     height: 165px;
     border-radius: var(--var-global-radius);
@@ -96,6 +98,24 @@ p {
     margin: 0;
 }
 
+.slider_rail {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 30%;
+    background-color: var(--var-sub-secondary);
+    height: 4px;
+    border-radius: var(--var-global-radius);
+}
+
+.slider_step {
+    width: 0;
+    background-color: white;
+    height: 4px;
+    border-radius: var(--var-global-radius);
+}
+
+
 .music_duration, .music_artist {
     font-size: small;
 }
@@ -106,16 +126,14 @@ p {
 }
   
 *::-webkit-scrollbar{
-    width: 0px;
+    width: 4px;
     background-color: transparent;
 }
 
-/* 스크롤바 막대 설정*/
 *::-webkit-scrollbar-thumb{
     background-color: transparent;
-    /* 스크롤바 둥글게 설정    */
     border-radius: 10px; 
-    border: 5px solid var(--var-body-secondary);
+    border: 4px solid var(--var-sub-secondary);
 }
 
 *::-webkit-scrollbar-track{

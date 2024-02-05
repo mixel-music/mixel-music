@@ -13,7 +13,7 @@
       </RouterView>
     </div>
     <div class="app_player">
-      <player ref="player"/>
+      <player ref="player" />
     </div>
   </div>
 </template>

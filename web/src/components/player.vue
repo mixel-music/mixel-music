@@ -5,14 +5,14 @@
       <p class="music_artist">{{ currentArtist }}</p>
       <p class="music_duration">{{ currentTimeFormat }} / {{ durationFormat }}</p>
     </div>
-    <button @click="toggle()">{{ buttonStatus }}</button>
+    <div class="slider_rail" @click="seek($event)" @mousedown="drag_start">
+      <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
+    </div>
+    <button @click="toggle">{{ buttonStatus }}</button>
   </div>
 </template>
 
 <script>
-let currentTrack = null;
-let currentArtist = null;
-
 export default {
   data() {
     return {
@@ -21,18 +21,24 @@ export default {
       audio: new Audio(),
       currentTime: 0,
       duration: 0,
-      buttonStatus: "Play"
+      buttonStatus: "Play",
+      progress: 0,
+      is_dragging: false
     };
   },
-
   created() {
     this.audio.addEventListener('timeupdate', this.updateTime);
+    this.audio.addEventListener('loadedmetadata', () => {
+      this.duration = this.audio.duration;
+    });
   },
   beforeUnmount() {
     this.audio.removeEventListener('timeupdate', this.updateTime);
+    this.audio.removeEventListener('loadedmetadata', () => {
+      this.duration = this.audio.duration;
+    });
     this.audio.pause();
   },
-
   computed: {
     currentTimeFormat() {
       return this.formatTime(this.currentTime);
@@ -41,58 +47,75 @@ export default {
       return this.formatTime(this.duration);
     },
   },
-
   methods: {
     selectTrack(title, artist, relpath) {
-      currentTrack = title;
-      currentArtist = artist;
+      this.currentTrack = title;
+      this.currentArtist = artist;
       this.audio.src = `http://localhost:8000/api/stream/${relpath}`;
-      this.audio.addEventListener('loadedmetadata', () => {
-        this.duration = this.audio.duration;
-      });
-
       if (this.audio.paused) {
         this.audio.play();
-        this.currentTrack = currentTrack;
-        this.currentArtist = currentArtist;
-        document.title = currentTrack + ' - Tamaya'
         this.buttonStatus = "Pause";
       }
     },
-
     toggle() {
       if (this.audio.paused) {
         if (this.audio.src) {
           this.audio.play();
-          this.currentTrack = currentTrack;
-          this.currentArtist = currentArtist;
-          document.title = currentTrack + ' - Tamaya'
           this.buttonStatus = "Pause";
         } else {
           console.error("No track selected");
         }
       } else {
         this.audio.pause();
-        document.title = 'Tamaya'
         this.buttonStatus = "Play";
       }
     },
-
     updateTime() {
-      this.currentTime = this.audio.currentTime;
-      if (this.duration == this.currentTime && this.currentTime != 0) {
-        this.buttonStatus = "Play";
-        this.currentTrack = null;
-        this.currentTime = 0;
-        this.duration = 0;
+      if (!this.is_dragging) this.currentTime = this.audio.currentTime;
+      this.progress = (this.currentTime / this.duration) * 100;
+      if (!this.is_dragging && this.currentTime >= this.duration) {
+        this.resetPlayer();
       }
     },
-
+    resetPlayer() {
+      this.buttonStatus = "Play";
+      this.currentTrack = null;
+      this.currentArtist = null;
+      this.currentTime = 0;
+      this.progress = 0;
+      this.audio.currentTime = 0; // Reset audio currentTime
+      this.audio.pause();
+    },
+    seek(event) {
+      const slider_width = this.$el.querySelector('.slider_rail').clientWidth;
+      const click_location = event.offsetX;
+      const new_current_time = (click_location / slider_width) * this.duration;
+      this.audio.currentTime = new_current_time;
+    },
+    drag_start() {
+      this.is_dragging = true;
+      document.addEventListener('mousemove', this.drag);
+      document.addEventListener('mouseup', this.drag_stop);
+    },
+    drag_stop() {
+      this.is_dragging = false;
+      document.removeEventListener('mousemove', this.drag);
+      document.removeEventListener('mouseup', this.drag_stop);
+    },
+    drag(event) {
+      if (this.is_dragging) {
+        const slider = this.$el.querySelector('.slider_rail');
+        const slider_width = slider.clientWidth;
+        const drag_location = event.clientX - slider.getBoundingClientRect().left;
+        const new_current_time = (drag_location / slider_width) * this.duration;
+        this.audio.currentTime = new_current_time;
+      }
+    },
     formatTime(time) {
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60);
       return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    },
+    }
   }
 }
 </script>
