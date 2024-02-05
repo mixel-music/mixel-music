@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server import stream, tracks, albums
+import stream, list
 
 app = FastAPI()
 
@@ -13,5 +13,4 @@ app.add_middleware(
 )
 
 app.include_router(stream.router, prefix="/api")
-app.include_router(tracks.router, prefix="/api")
-app.include_router(albums.router, prefix="/api")
+app.include_router(list.router, prefix="/api")

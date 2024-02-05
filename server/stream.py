@@ -1,18 +1,18 @@
-from server.utils.modules import *
+from utils.modules import *
 
 router = APIRouter()
 
 @router.get("/stream/{path:path}")
 async def api_stream(path: str, range: str = Header(None)):
-  file_path = os.path.join(await get_root_path(), f"{path}")
+  path_file = get_abs_path('test', f'{path}')
 
-  if await check_ext_valid(file_path) == False:
+  if check_ext_valid(str(path_file)) == False:
     raise HTTPException(status_code=404)
 
-  music_file = File(file_path)
+  music_file = File(path_file)
   music_mime = music_file.mime[0]
 
-  file_size = os.path.getsize(file_path)
+  file_size = path_file.stat().st_size
   file_chunk = int(file_size * 0.5) # 50% of file size
 
   if range:
@@ -28,9 +28,9 @@ async def api_stream(path: str, range: str = Header(None)):
   """
   audio_end = min(audio_end, file_size - 1)
 
-  with open(file_path, "rb") as file_path:
-    file_path.seek(audio_start)
-    data = file_path.read(audio_end - audio_start + 1)
+  with open(path_file, "rb") as path_file:
+    path_file.seek(audio_start)
+    data = path_file.read(audio_end - audio_start + 1)
 
     headers = {
       'Content-Range': f'bytes {audio_start}-{audio_end}/{file_size}',

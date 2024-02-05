@@ -2,42 +2,41 @@ from fastapi import APIRouter, Response, HTTPException, Header
 from mutagen.id3 import ID3, APIC
 from mutagen.flac import FLAC, Picture
 from mutagen import File
-import os
+from pathlib import *
 
 global valid_ext
-valid_ext = (".mp3", ".MP3", ".m4a", ".M4A", ".flac", ".FLAC", ".alac", ".ALAC", ".wav", ".WAV", ".opus", ".OPUS", ".aac", ".AAC")
+valid_ext = (".mp3", ".m4a", ".flac", ".alac", ".wav", ".opus", ".aac")
 
-async def get_root_path():
+def get_abs_path(dir_1st: str = None, dir_2nd: str = None) -> Path:
     """
-    Return root directory path of the project to access another folder
+    Return the project's root directory as an absolute path.
     """
-    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if dir_1st is None:
+        return Path(__file__).parents[2]
+    elif dir_1st is not None and dir_2nd is None:
+        return Path(__file__).parents[2] / dir_1st
+    else:
+        return Path(__file__).parents[2] / dir_1st / dir_2nd
 
-async def get_split_path(full_path: str) -> tuple:
+def check_ext_valid(path: str) -> bool:
     """
-    Split filename and extension from full path.
+    Check if the path is a media file.
     """
-    str_name, str_ext = os.path.splitext(full_path)
-    return str_name, str_ext
+    file = Path(path)
+    ext = file.suffix
 
-async def check_ext_valid(file_path: str) -> bool:
-    """
-    check the extension of a given file path to identify the file type
-    """
-    ext = (await get_split_path(file_path))[1]
+    if ".." in path or ext.lower() not in valid_ext: return False
+    if not file.is_file(): return False
 
-    if ext not in valid_ext or ".." in file_path: return False
-    if not os.path.isfile(file_path): return False
-
-async def music_metadata(music_path: str) -> tuple:
+async def get_music_info(path: str) -> tuple:
     """
-    Check the file extension and export metadata using mutagen
+    Identify the type of media file and extract its metadata.
     """
-    ext = (await get_split_path(music_path))[1]
+    ext = Path(path).suffix
     mp_image = []
 
     if ext == '.mp3':
-        mp = ID3(music_path)
+        mp = ID3(path)
 
         mp_title = mp.get('TIT2', 'Unknown Title')[0]
         mp_artist = mp.get('TPE1', 'Unknown Artist')[0]
@@ -50,7 +49,7 @@ async def music_metadata(music_path: str) -> tuple:
                 break
 
     elif ext == '.flac':
-        mp = FLAC(music_path)
+        mp = FLAC(path)
 
         mp_title = mp.get('title', ['Unknown Title'])[0]
         mp_artist = mp.get('artist', ['Unknown Artist'])[0]

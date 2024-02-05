@@ -25,7 +25,7 @@ export default {
 
   methods: {
     fetchMusicList() {
-      axios.get('http://localhost:8000/api/tracks')
+      axios.get('http://localhost:8000/api/list?type=songs')
         .then(response => {
           this.metadata = response.data;
         })
