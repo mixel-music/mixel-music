@@ -1,4 +1,5 @@
 from utils import *
+from PIL import Image
 
 router = APIRouter()
 
