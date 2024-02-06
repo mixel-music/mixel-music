@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import songs from '../views/songs.vue'
+import music from '../views/music.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'songs',
-      component: songs
+      name: 'music',
+      component: music
     },
     {
       path: '/album',

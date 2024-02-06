@@ -4,36 +4,32 @@ router = APIRouter()
 
 @router.get("/list")
 async def api_list(type: str = 'album'):
-    path_list = get_abs_path('test')
-
-    #TODO: check performance issue
+    list_path = get_abs_path('test')
 
     if type == 'album':
         list_album = []
         for ext in valid_ext:
-            for album in path_list.rglob(f'*{ext}'):
+            for album in list_path.rglob(f'*{ext}'):
                 try:
-                    data = extract_metadata(album)
-                    name, year = data.m_album(), data.m_release()
+                    for tag in audio_tags(album):
+                        album_title, album_year = tag['album'], tag['year']
                 except:
                     break
 
-                if not name in list_album and name is not False:
-                    list_album.append(name)
+                if not album_title in list_album and album_year is not False:
+                    list_album.append(album_title)
 
         return list_album
 
-    elif type == 'songs':
-        list_songs = []
+    elif type == 'music':
+        list_music = []
+        tag = {}
         for ext in valid_ext:
-            for songs in path_list.rglob(f'*{ext}'):
-                try:
-                    data = extract_metadata(songs)
-                    title, album, artist, year = data.m_title(), data.m_album(), data.m_artists(), data.m_release()
-                except:
-                    break
+            for music in list_path.rglob(f'*{ext}'):
+                tags = audio_tags(music)
+                music_title, music_album, music_artist, music_year = tags.get('title'), tags.get('album'), tags.get('artist'), tags.get('year')
 
-                path_rel = songs.relative_to(path_list)
-                list_songs.append([title, album, artist, year, path_rel])
+                music_path = music.relative_to(list_path)
+                list_music.append([music_title, music_album, music_artist, music_year, music_path])
 
-        return list_songs
+        return list_music

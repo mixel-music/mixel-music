@@ -5,7 +5,7 @@
     --var-body-secondary: #191919;
     --var-sub-primary: #1f1f1f;
     --var-sub-secondary: #272727;
-    --var-global-radius: 8px;
+    --var-global-radius: 9px;
 }
 
 html {
@@ -99,11 +99,16 @@ p {
     margin: 0;
 }
 
-.slider_rail {
+.slider_container {
     position: fixed;
     left: 50%;
     transform: translate(-50%, 0);
     width: 30%;
+    padding: 20px;
+}
+
+.slider_rail {
+    width: 100%;
     background-color: var(--var-sub-secondary);
     height: 4px;
     border-radius: var(--var-global-radius);

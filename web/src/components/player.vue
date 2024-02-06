@@ -5,8 +5,10 @@
       <p class="music_artist">{{ currentArtist }}</p>
       <p class="music_duration">{{ currentTimeFormat }} / {{ durationFormat }}</p>
     </div>
-    <div class="slider_rail" @click="seek($event)" @mousedown="drag_start">
-      <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
+    <div class="slider_container" @click="seek($event)" @mousedown="drag_start">
+      <div class="slider_rail">
+        <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
+      </div>
     </div>
     <button @click="toggle">{{ buttonStatus }}</button>
   </div>

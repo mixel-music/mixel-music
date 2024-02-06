@@ -5,10 +5,9 @@
   <p align="center">Self-hosted music streaming platform
   <br>
   <br>
-  <!--<img src="https://img.shields.io/github/contributors/bunubbv/tamaya?display_timestamp=committer&style=flat-square">-->
   <img src="https://img.shields.io/github/license/bunubbv/tamaya?style=flat-square">
   <img src="https://img.shields.io/github/last-commit/bunubbv/tamaya?style=flat-square">
 </p>
 
-## Introduction
-I'm new to JavaScript and Vue.js, and I'm learning as I build this project. So, there may be many bugs and issues.
+## About
+Tamaya is a fast, lightweight self-hosted music streaming platform that supports various file formats and streamlined folder structures, with beautiful UI.

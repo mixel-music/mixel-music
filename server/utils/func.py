@@ -1,13 +1,7 @@
 from pathlib import Path
-import aiosqlite
 
 global valid_ext
 valid_ext = (".mp3", ".m4a", ".flac", ".alac", ".wav", ".opus", ".aac")
-
-async def db_conn():
-    path_data = get_abs_path('data')
-    
-    db = await aiosqlite.connect(Path(path_data / 'database.db'))
 
 def get_abs_path(*args) -> Path:
     """
