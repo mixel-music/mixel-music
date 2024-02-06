@@ -24,7 +24,7 @@ import player from './components/player.vue'
 export default {
   name: 'App',
   components: {
-    player
+    player,
   },
 
   methods: {

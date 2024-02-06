@@ -19,7 +19,7 @@ def audio_tags(path):
         mp3_track_number = int(mp3['TRCK'].text[0]) if 'TRCK' in mp3 else -1
         # mp3_disc_number
 
-        mp3_year = mp3['TYE'].text if 'TYE' in mp3 else -1
+        mp3_year = mp3['TYE'].text if 'TYE' in mp3 else 'Unknown Year'
         #mp3_date = mp3['TDA'].text if 'TDA' in mp3 else -1
         mp3_is_compil = mp3['TCP'].text[0] if 'TCP' in mp3 else -1
 
@@ -48,7 +48,7 @@ def audio_tags(path):
         flac_track_number = int(flac['TRACKNUMBER'][0]) if 'TRACKNUMBER' in flac else -1
         # flac_disc_number
 
-        flac_year = flac['DATE'] if 'DATE' in flac else -1
+        flac_year = flac['DATE'] if 'DATE' in flac else 'Unknown Year'
         flac_is_compil = -2
 
         flac_genre = flac['GENRE'] if 'GENRE' in flac else -1
@@ -76,7 +76,7 @@ def audio_tags(path):
         mp4_track_number = mp4['trkn'][0] if 'trkn' in mp4 else -1
         mp4_disc_number = mp4['disk'][0] if 'disk' in mp4 else -1
 
-        mp4_year = mp4['\xa9day'] if '\xa9day' in mp4 else -1
+        mp4_year = mp4['\xa9day'] if '\xa9day' in mp4 else 'Unknown Year'
         mp4_is_compil = 1 if 'cpil' in mp4 and mp4['cpil'] is True else 0
 
         mp4_genre = mp4['\xa9gen'] if '\xa9gen' in mp4 else -1
@@ -104,7 +104,7 @@ def audio_tags(path):
         wave_track_number = wave['TRCK'][0] if 'TRCK' in wave else -1
         wave_disc_number = wave['TPOS'][0] if 'TPOS' in wave else -1
 
-        wave_year = wave['TDRC'] if 'TDRC' in wave else -1
+        wave_year = wave['TDRC'] if 'TDRC' in wave else 'Unknown Year'
         wave_is_compil = -2
 
         wave_genre = wave['TCON'] if 'TCON' in wave else -1

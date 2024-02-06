@@ -5,17 +5,26 @@
       <p class="music_artist">{{ currentArtist }}</p>
       <p class="music_duration">{{ currentTimeFormat }} / {{ durationFormat }}</p>
     </div>
-    <div class="slider_container" @click="seek($event)" @mousedown="drag_start">
-      <div class="slider_rail">
-        <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
+    <div class="player_center_control">
+      <button class="player_button" @click="toggle"><component :is="buttonComponent" /></button>
+      <div class="slider_container" @click="seek($event)" @mousedown="drag_start">
+        <div class="slider_rail">
+          <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
+        </div>
       </div>
     </div>
-    <button @click="toggle">{{ buttonStatus }}</button>
   </div>
 </template>
 
 <script>
+import { PauseSolid } from '@iconoir/vue';
+import { PlaySolid } from '@iconoir/vue';
+
 export default {
+  components: {
+    PauseSolid,
+    PlaySolid
+  },
   data() {
     return {
       currentTrack: null,
@@ -23,9 +32,9 @@ export default {
       audio: new Audio(),
       currentTime: 0,
       duration: 0,
-      buttonStatus: "Play",
       progress: 0,
-      is_dragging: false
+      is_dragging: false,
+      buttonComponent: PlaySolid
     };
   },
   created() {
@@ -56,20 +65,20 @@ export default {
       this.audio.src = `http://localhost:8000/api/stream/${relpath}`;
       if (this.audio.paused) {
         this.audio.play();
-        this.buttonStatus = "Pause";
+        this.buttonComponent = PauseSolid;
       }
     },
     toggle() {
       if (this.audio.paused) {
         if (this.audio.src) {
           this.audio.play();
-          this.buttonStatus = "Pause";
+          this.buttonComponent = PauseSolid;
         } else {
           console.error("No track selected");
         }
       } else {
         this.audio.pause();
-        this.buttonStatus = "Play";
+        this.buttonComponent = PlaySolid;
       }
     },
     updateTime() {
@@ -80,7 +89,7 @@ export default {
       }
     },
     resetPlayer() {
-      this.buttonStatus = "Play";
+      this.buttonComponent = PlaySolid;
       this.currentTrack = null;
       this.currentArtist = null;
       this.currentTime = 0;

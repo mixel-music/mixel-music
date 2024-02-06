@@ -1,6 +1,6 @@
 :root {
-    --var-global-padding: 32px;
-    --var-global-padding-s: 16px;
+    --var-global-padding: 24px;
+    --var-global-padding-s: 12px;
     --var-body-primary: #101010;
     --var-body-secondary: #191919;
     --var-sub-primary: #1f1f1f;
@@ -12,7 +12,7 @@ html {
     background-color: var(--var-body-primary);
     font-size: 16px;
     line-height: 130%;
-    font-family: Pretendard;
+    font-family: "Pretendard";
     user-select: none;
 }
 
@@ -21,11 +21,32 @@ body {
     padding: 0;
 }
 
+p {
+    margin: 0;
+}
+
+.app_main {
+    min-height: 100dvh;
+    display: flex;
+    width: 100%;
+}
+
 .app_navbar {
     width: -webkit-fill-available;
     height: 40px;
     padding: var(--var-global-padding);
     z-index: -1;
+}
+
+.app_sidebar {
+    width: 270px;
+    background-color: var(--var-body-secondary);
+    padding: var(--var-global-padding);
+}
+
+.app_sidebar_container {
+    position: fixed;
+    height: auto;
 }
 
 .app_container {
@@ -37,10 +58,6 @@ body {
     bottom: 0;
     background-color: var(--var-body-secondary);
     width: 100%;
-}
-
-.tracks_title {
-    display: block;
 }
 
 .app_player_container {
@@ -58,26 +75,40 @@ body {
     letter-spacing: -0.2px;
 }
 
-.app_main {
-    min-height: 100dvh;
+.music_duration, .music_artist {
+    font-size: small;
+}
+
+.player_center_control {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 30%;
     display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.player_button {
+    padding: 6px;
+    border-radius: var(--var-global-radius);
+    box-shadow: none;
+    font-size: 20px;
+    border: none;
+    background-color: transparent;
+}
+
+.slider_container {
     width: 100%;
+    padding: 10px;
+    cursor: pointer;
 }
 
-.app_sidebar {
-    width: 270px;
-    background-color: var(--var-body-secondary);
-    padding: var(--var-global-padding);
-}
-
-.tracks_cards_container {
-    padding: 7%;
-    padding-top: 0;
-    margin-bottom: 7%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
-    grid-gap: 32px;
-    justify-content: center;
+.slider_rail {
+    width: 100%;
+    background-color: var(--var-sub-secondary);
+    height: 4px;
+    border-radius: var(--var-global-radius);
 }
 
 .tracks_card {
@@ -90,28 +121,23 @@ body {
     display: grid;
 }
 
+.tracks_cards_container {
+    padding: 7%;
+    padding-top: 0;
+    margin-bottom: 7%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+    grid-gap: 32px;
+    justify-content: center;
+}
+
+.tracks_title {
+    display: block;
+}
+
 .track_title, .album_title {
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-p {
-    margin: 0;
-}
-
-.slider_container {
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, 0);
-    width: 30%;
-    padding: 20px;
-}
-
-.slider_rail {
-    width: 100%;
-    background-color: var(--var-sub-secondary);
-    height: 4px;
-    border-radius: var(--var-global-radius);
 }
 
 .slider_step {
@@ -119,16 +145,6 @@ p {
     background-color: white;
     height: 4px;
     border-radius: var(--var-global-radius);
-}
-
-
-.music_duration, .music_artist {
-    font-size: small;
-}
-
-.app_sidebar_container {
-    position: fixed;
-    height: auto;
 }
   
 *::-webkit-scrollbar{
