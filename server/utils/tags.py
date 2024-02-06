@@ -7,12 +7,13 @@ from mutagen.wave import WAVE
 from pathlib import Path
 
 def audio_tags(path):
+    name = Path(path).stem
     ext = Path(path).suffix.lower()
 
     if ext == '.mp3':
         mp3 = MP3(path)
 
-        mp3_title = mp3['TIT2'].text[0] if 'TIT2' in mp3 else 'Unknown Title'
+        mp3_title = mp3['TIT2'].text[0] if 'TIT2' in mp3 else name
         mp3_album = mp3['TALB'].text[0] if 'TALB' in mp3 else 'Unknown Album'
         mp3_artist = mp3['TPE1'].text[0] if 'TPE1' in mp3 else 'Unknown Artist'
         mp3_album_artist = mp3['TPE2'].text[0] if 'TPE2' in mp3 else mp3_artist
@@ -41,7 +42,7 @@ def audio_tags(path):
     if ext == '.flac':
         flac = FLAC(path)
 
-        flac_title = flac['TITLE'][0] if 'TITLE' in flac else 'Unknown Title'
+        flac_title = flac['TITLE'][0] if 'TITLE' in flac else name
         flac_album = flac['ALBUM'][0] if 'ALBUM' in flac else 'Unknown Album'
         flac_artist = flac['ARTIST'] if 'ARTIST' in flac else 'Unknown Artist'
         flac_album_artist = flac['ALBUMARTIST'] if 'ALBUMARTIST' in flac else flac_artist
@@ -66,10 +67,10 @@ def audio_tags(path):
 
         return {'title': flac_title, 'album': flac_album, 'artist': flac_artist, 'album_artist': flac_album_artist, 'track_number': flac_track_number, 'year': flac_year, 'is_compil': flac_is_compil, 'genre': flac_genre, 'composer': flac_composer, 'comment': flac_comment, 'copyright': flac_copyright, 'isrc': flac_isrc, 'lyrics': flac_lyrics, 'length': flac_length, 'bitrate': flac_bitrate, 'channels': flac_channels, 'sample_rate': flac_sample_rate, 'mime': flac_mime }
 
-    if ext == '.m4a' or ext == 'mp4' or ext == 'aac':
+    if ext == '.m4a' or ext == 'mp4':
         mp4 = MP4(path)
 
-        mp4_title = mp4['\xa9nam'][0] if '\xa9nam' in mp4 else 'Unknown Title'
+        mp4_title = mp4['\xa9nam'][0] if '\xa9nam' in mp4 else name
         mp4_album = mp4['\xa9alb'][0] if '\xa9alb' in mp4 else 'Unknown Album'
         mp4_artist = mp4['\xa9ART'] if '\xa9ART' in mp4 else 'Unknown Artist'
         mp4_album_artist = mp4['aART'] if 'aART' in mp4 else mp4_artist
@@ -97,7 +98,7 @@ def audio_tags(path):
     if ext == '.wav':
         wave = WAVE(path)
 
-        wave_title = wave['TIT2'][0] if 'TIT2' in wave else 'Unknown Title'
+        wave_title = wave['TIT2'][0] if 'TIT2' in wave else name
         wave_album = wave['TALB'][0] if 'TALB' in wave else 'Unknown Album'
         wave_artist = wave['TPE1'] if 'TPE1' in wave else 'Unknown Artist'
         wave_album_artist = wave['TPE2'] if 'TPE2' in wave else wave_artist
