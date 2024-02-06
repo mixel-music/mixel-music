@@ -2,11 +2,17 @@
   <div class="app_main">
     <div class="app_sidebar">
       <div class="app_sidebar_container">
-        <RouterLink to="/album">Album</RouterLink>
+        <div class="sidebar_menu">
+          <RouterLink to="/" class="sidebar_link">Music</RouterLink>
+        </div>
+        <div class="sidebar_menu">
+          <RouterLink to="/album" class="sidebar_link">Album</RouterLink>
+        </div>
       </div>
     </div>
     <div class="app_container">
       <div class="app_navbar">
+
       </div>
       <RouterView v-slot="{ Component }">
         <component :is="Component" @select-track="handleSelectTrack" />
@@ -28,8 +34,8 @@ export default {
   },
 
   methods: {
-    handleSelectTrack(title, artist, relpath) {
-      this.$refs.player.selectTrack(title, artist, relpath);
+    handleSelectTrack(music_title, music_artist, music_path) {
+      this.$refs.player.selectTrack(music_title, music_artist, music_path);
     }
   }
 }

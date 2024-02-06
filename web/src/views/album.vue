@@ -1,7 +1,7 @@
 <template>
-  <div class="tracks_cards_container">
-    <div class="tracks_card" v-for="(album, index) in metadata" :key="index">
-      <a class="album_title">
+  <div class="list_container">
+    <div class="list_card" v-for="(album, index) in metadata" :key="index">
+      <a class="list_title">
         {{ album }}
       </a>
     </div>

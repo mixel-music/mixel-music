@@ -1,17 +1,20 @@
 <template>
   <div class="app_player_container">
-    <div class="player_title">
-      <p class="music_title">{{ currentTrack }}</p>
-      <p class="music_artist">{{ currentArtist }}</p>
-      <p class="music_duration">{{ currentTimeFormat }} / {{ durationFormat }}</p>
+    <div class="player_left">
+      <p class="player_title">{{ currentTrack }}</p>
+      <p class="player_artist">{{ currentArtist }}</p>
+      <p class="player_length">{{ currentTimeFormat }} / {{ durationFormat }}</p>
     </div>
-    <div class="player_center_control">
-      <button class="player_button" @click="toggle"><component :is="buttonComponent" /></button>
+    <div class="player_center">
+      <button class="player_pause" @click="toggle"><component :is="buttonComponent" /></button>
       <div class="slider_container" @click="seek($event)" @mousedown="drag_start">
         <div class="slider_rail">
           <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
         </div>
       </div>
+    </div>
+    <div class="player_right">
+
     </div>
   </div>
 </template>

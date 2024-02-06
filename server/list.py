@@ -29,11 +29,11 @@ async def api_list(type: str = 'album'):
             for music in list_path.rglob(f'*{ext}'):
                 try:
                     tags = audio_tags(music)
-                    music_title, music_album, music_artist, music_year = tags.get('title'), tags.get('album'), ''.join(tags.get('artist')), (tags.get('year'))[0]
+                    music_title, music_album, music_artist = tags.get('title'), tags.get('album'), ''.join(tags.get('artist'))
                 except:
                     break
 
                 music_path = music.relative_to(list_path)
-                list_music.append([music_title, music_album, music_artist, music_year, music_path])
+                list_music.append([music_title, music_album, music_artist, music_path])
 
         return list_music
