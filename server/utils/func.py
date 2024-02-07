@@ -1,31 +1,29 @@
 from pathlib import Path
 
-global valid_ext
-valid_ext = (".mp3", ".m4a", ".flac", ".alac", ".wav", ".opus", ".aac")
+global valid_extension_list
+valid_extension_list = (
+    ".mp3",
+    ".m4a",
+    ".mp4",
+    ".flac",
+    ".wav"
+)
 
-def get_abs_path(*args) -> Path:
-    """
-    Returns an absolute path, defaults to the project's root.
-    """
-    abs_path = Path(__file__).parents[2]
-    
-    if args is None:
-        return abs_path
-    
-    for arg in args:
-        abs_path = abs_path / arg
+def get_absolute_path(*args) -> Path:
+    absolute_path = Path(__file__).parents[2]
 
-    return abs_path
+    if args is None: return absolute_path
+    for arg in args: absolute_path = absolute_path / arg
 
+    return absolute_path
 
-def check_ext_valid(path: str) -> bool:
-    """
-    Check if the path is a media file.
-    """
-    file = Path(path)
-    ext = file.suffix
+def is_valid_extension(path: Path) -> bool:
+    file_path = path
+    file_extension = file_path.suffix.lower()
 
-    if ".." in path or ext.lower() not in valid_ext: return False
-    if not file.is_file(): return False
+    if file_extension not in valid_extension_list:
+        return False
+    if not file_path.is_file(): 
+        return False
 
     return True

@@ -3,37 +3,38 @@ from utils import *
 router = APIRouter()
 
 @router.get("/list")
-async def api_list(type: str = 'album'):
-    list_path = get_abs_path('test')
+async def api_list(type: str):
+    list_path = get_absolute_path('test')
 
     if type == 'album':
-        list_album = []
-        tag = {}
-        for ext in valid_ext:
-            for album in list_path.rglob(f'*{ext}'):
+        album_list = []
+        for extension in valid_extension_list:
+            for album in list_path.rglob(f'*{extension}'):
                 try:
-                    tags = audio_tags(album)
-                    album_title, album_year = tags.get('album'), tags.get('year')
+                    album_tags = ExtractMediaTag.extract_tags(album)
+                    album_title, album_year = album_tags.get('album'), album_tags.get('year')
                 except:
+                    logging.error('Failed to load album list')
                     break
-
-                if not album_title in list_album and album_year is not False:
-                    list_album.append(album_title)
-
-        return list_album
-
+                if not album_title in album_list and album_year is not False:
+                    album_list.append(album_title)
+        
+        logging.debug('Load album list')
+        return album_list
     elif type == 'music':
-        list_music = []
-        tag = {}
-        for ext in valid_ext:
-            for music in list_path.rglob(f'*{ext}'):
+        music_list = []
+        for extension in valid_extension_list:
+            for music in list_path.rglob(f'*{extension}'):
                 try:
-                    tags = audio_tags(music)
-                    music_title, music_album, music_artist = tags.get('title'), tags.get('album'), ''.join(tags.get('artist'))
+                    music_tags = ExtractMediaTag.extract_tags(music)
+                    music_title, music_album, music_artist = music_tags.get('title'), music_tags.get('album'), ''.join(music_tags.get('artist'))
                 except:
+                    logging.error('Failed to load music list')
                     break
-
                 music_path = music.relative_to(list_path)
-                list_music.append([music_title, music_album, music_artist, music_path])
+                music_list.append([music_title, music_album, music_artist, music_path])
 
-        return list_music
+        logging.debug('Load music list')
+        return music_list
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
