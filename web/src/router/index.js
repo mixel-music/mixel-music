@@ -7,12 +7,13 @@ const router = createRouter({
     {
       path: '/',
       name: 'music',
-      component: music
+      component: music,
     },
+
     {
       path: '/album',
       name: 'album',
-      component: () => import('../views/album.vue')
+      component: () => import('../views/album.vue'),
     }
   ]
 })

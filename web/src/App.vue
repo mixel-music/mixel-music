@@ -12,10 +12,10 @@
     </div>
     <div class="app_container">
       <div class="app_navbar">
-
+        <navbar />
       </div>
       <RouterView v-slot="{ Component }">
-        <component :is="Component" @select-track="handleSelectTrack" />
+        <component :is="Component" @SelectTrack="HandleSelectTrack" />
       </RouterView>
     </div>
     <div class="app_player">
@@ -25,18 +25,19 @@
 </template>
 
 <script>
+import navbar from './components/navbar.vue'
 import player from './components/player.vue'
 
 export default {
   name: 'App',
   components: {
+    navbar,
     player,
   },
-
   methods: {
-    handleSelectTrack(music_title, music_artist, music_path) {
-      this.$refs.player.selectTrack(music_title, music_artist, music_path);
-    }
+    HandleSelectTrack(music_title, music_album, music_artist, music_path) {
+      this.$refs.player.SelectTrack(music_title, music_album, music_artist, music_path);
+    },
   }
 }
 </script>

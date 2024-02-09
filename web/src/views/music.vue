@@ -1,7 +1,7 @@
 <template>
   <div class="list_container">
     <div class="list_card" v-for="(song, index) in metadata" :key="index">
-      <a class="list_title" @click="$emit('select-track', song[0], song[2], song[3]);">
+      <a class="list_title" @click="this.$emit('SelectTrack', song[0], song[1], song[2], song[3]);">
         {{ song[0] }}
       </a>
       <a class="list_artist">
@@ -22,11 +22,11 @@ export default {
   },
 
   created() {
-    this.fetchMusicList();
+    this.FetchMusicList();
   },
 
   methods: {
-    fetchMusicList() {
+    FetchMusicList() {
       axios.get('http://localhost:8000/api/list?type=music')
         .then(response => {
           this.metadata = response.data;

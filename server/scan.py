@@ -19,8 +19,8 @@ class Watchdog:
         self.observer = Observer()
 
     def run(self):
-        logging.info("Watchdog Starting")
-        logging.debug("Target Path: %s", str(self.target_path))
+        logging.info("Watchdog: Starting")
+        logging.debug('Watchdog: Target Path "%s"', str(self.target_path))
 
         event_handler = Handler()
         self.observer.schedule(event_handler, self.target_path, recursive = True)
@@ -31,7 +31,7 @@ class Watchdog:
                 time.sleep(5)
         except:
             self.observer.stop()
-            logging.info("Watchdog Stopped")
+            logging.info("Watchdog: Stopped")
 
         self.observer.join()
  

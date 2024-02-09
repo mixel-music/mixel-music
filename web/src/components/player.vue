@@ -1,15 +1,26 @@
 <template>
   <div class="app_player_container">
     <div class="player_left">
-      <p class="player_title">{{ currentTrack }}</p>
-      <p class="player_artist">{{ currentArtist }}</p>
-      <p class="player_length">{{ currentTimeFormat }} / {{ durationFormat }}</p>
+      <p class="player_title">{{ MusicTitle }}</p>
+      <p class="player_artist">{{ MusicArtist }} - {{ MusicAlbum }}</p>
+      <p class="player_length">{{ MusicCurrentFormat }} / {{ MusicDurationFormat }}</p>
     </div>
     <div class="player_center">
-      <button class="player_pause" @click="toggle"><component :is="buttonComponent" /></button>
+      <div class="player_center_control">
+        <button class="player_control player_control_others">
+          <IconamoonPlayerStartFill />
+        </button>
+        <button class="player_control" @click="toggle">
+          <IconamoonPlayerPauseFill v-if="IsPlay" />
+          <IconamoonPlayerPlayFill v-else="IsPlay" />
+        </button>
+        <button class="player_control player_control_others">
+          <IconamoonPlayerEndFill />
+        </button>
+      </div>
       <div class="slider_container" @click="seek($event)" @mousedown="drag_start">
         <div class="slider_rail">
-          <div class="slider_step" :style="{ 'width': progress + '%' }"></div>
+          <div class="slider_step" :style="{ 'width': MusicSlider + '%' }"></div>
         </div>
       </div>
     </div>
@@ -20,116 +31,146 @@
 </template>
 
 <script>
-import { PauseSolid } from '@iconoir/vue';
-import { PlaySolid } from '@iconoir/vue';
+import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
+import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
+import IconamoonPlayerStartFill from '~icons/iconamoon/player-start-fill';
+import IconamoonPlayerEndFill from '~icons/iconamoon/player-end-fill';
 
 export default {
   components: {
-    PauseSolid,
-    PlaySolid
+    IconamoonPlayerPauseFill,
+    IconamoonPlayerPlayFill,
+    IconamoonPlayerStartFill,
+    IconamoonPlayerEndFill
   },
   data() {
     return {
-      currentTrack: null,
-      currentArtist: null,
-      audio: new Audio(),
-      currentTime: 0,
-      duration: 0,
-      progress: 0,
-      is_dragging: false,
-      buttonComponent: PlaySolid
+      MusicTitle: null,
+      MusicAlbum: null,
+      MusicArtist: null,
+      MusicCurrent: 0,
+      MusicDuration: 0,
+      MusicSlider: 0,
+      MusicAudio: new Audio(),
+      IsDrag: false,
+      IsPlay: false,
     };
   },
   created() {
-    this.audio.addEventListener('timeupdate', this.updateTime);
-    this.audio.addEventListener('loadedmetadata', () => {
-      this.duration = this.audio.duration;
+    this.MusicAudio.addEventListener('timeupdate', this.updateTime);
+    this.MusicAudio.addEventListener('loadedmetadata', () => {
+      this.MusicDuration = this.MusicAudio.duration;
     });
   },
   beforeUnmount() {
-    this.audio.removeEventListener('timeupdate', this.updateTime);
-    this.audio.removeEventListener('loadedmetadata', () => {
-      this.duration = this.audio.duration;
+    this.MusicAudio.removeEventListener('timeupdate', this.updateTime);
+    this.MusicAudio.removeEventListener('loadedmetadata', () => {
+      this.MusicDuration = this.MusicAudio.duration;
     });
-    this.audio.pause();
+    this.MusicAudio.pause();
   },
   computed: {
-    currentTimeFormat() {
-      return this.formatTime(this.currentTime);
+    MusicCurrentFormat() {
+      return this.formatTime(this.MusicCurrent);
     },
-    durationFormat() {
-      return this.formatTime(this.duration);
+    MusicDurationFormat() {
+      return this.formatTime(this.MusicDuration);
     },
   },
   methods: {
-    selectTrack(title, artist, relpath) {
-      this.currentTrack = title;
-      this.currentArtist = artist;
-      this.audio.src = `http://localhost:8000/api/stream/${relpath}`;
-      if (this.audio.paused) {
-        this.audio.play();
-        this.buttonComponent = PauseSolid;
+    SetMediaControls: function () {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: this.MusicTitle,
+          artist: this.MusicArtist,
+          album: this.MusicAlbum,
+          artwork: [
+          ]
+        });
+        navigator.mediaSession.setActionHandler("play", () => { this.toggle(); });
+        navigator.mediaSession.setActionHandler("pause", () => { this.toggle(); });
+        navigator.mediaSession.setActionHandler("stop", () => { this.toggle(); });
+
+        navigator.mediaSession.setActionHandler("seekbackward", () => { this.toggle(); });
+        navigator.mediaSession.setActionHandler("seekforward", () => { this.toggle(); });
+        navigator.mediaSession.setActionHandler("seekto", () => { this.toggle(); });
+        navigator.mediaSession.setActionHandler("previoustrack", () => { this.toggle(); });
+        navigator.mediaSession.setActionHandler("nexttrack", () => { this.toggle(); });
+      }
+    },
+    SelectTrack(title, album, artist, relpath) {
+      this.MusicTitle = title;
+      this.MusicArtist = artist;
+      this.MusicAlbum = album;
+      this.MusicAudio.src = `http://localhost:8000/api/stream/${relpath}`;
+      if (this.MusicAudio.paused) {
+        this.MusicAudio.play();
+        this.IsPlay = true;
+        this.SetMediaControls();
       }
     },
     toggle() {
-      if (this.audio.paused) {
-        if (this.audio.src) {
-          this.audio.play();
-          this.buttonComponent = PauseSolid;
+      if (!this.IsDrag && this.MusicAudio.paused && this.MusicCurrent >= this.MusicDuration && this.MusicCurrent != 0) {
+        this.MusicCurrent = 0;
+        this.MusicAudio.play();
+        this.IsPlay = true;
+        this.SetMediaControls();
+      }
+      else if (this.MusicAudio.paused) {
+        if (this.MusicAudio.src) {
+          this.MusicAudio.play();
+          this.IsPlay = true;
+          this.SetMediaControls();
         } else {
-          console.error("No track selected");
+          console.error("Music is not selected");
         }
       } else {
-        this.audio.pause();
-        this.buttonComponent = PlaySolid;
+        this.MusicAudio.pause();
+        this.IsPlay = false;
+        this.SetMediaControls();
       }
     },
     updateTime() {
-      if (!this.is_dragging) this.currentTime = this.audio.currentTime;
-      this.progress = (this.currentTime / this.duration) * 100;
-      if (!this.is_dragging && this.currentTime >= this.duration) {
+      if (!this.IsDrag) this.MusicCurrent = this.MusicAudio.currentTime;
+      this.MusicSlider = (this.MusicCurrent / this.MusicDuration) * 100;
+      if (!this.IsDrag && this.MusicCurrent >= this.MusicDuration) {
         this.resetPlayer();
       }
     },
     resetPlayer() {
-      this.buttonComponent = PlaySolid;
-      this.currentTrack = null;
-      this.currentArtist = null;
-      this.currentTime = 0;
-      this.progress = 0;
-      this.audio.currentTime = 0; // Reset audio currentTime
-      this.audio.pause();
+      this.IsPlay = false;
+      this.MusicAudio.pause();
     },
     seek(event) {
       const slider_width = this.$el.querySelector('.slider_rail').clientWidth;
       const click_location = event.offsetX;
-      const new_current_time = (click_location / slider_width) * this.duration;
-      this.audio.currentTime = new_current_time;
+      const new_current_time = (click_location / slider_width) * this.MusicDuration;
+      this.MusicAudio.currentTime = new_current_time;
     },
     drag_start() {
-      this.is_dragging = true;
+      this.IsDrag = true;
       document.addEventListener('mousemove', this.drag);
       document.addEventListener('mouseup', this.drag_stop);
     },
     drag_stop() {
-      this.is_dragging = false;
+      this.IsDrag = false;
       document.removeEventListener('mousemove', this.drag);
       document.removeEventListener('mouseup', this.drag_stop);
     },
     drag(event) {
-      if (this.is_dragging) {
+      if (this.IsDrag) {
         const slider = this.$el.querySelector('.slider_rail');
         const slider_width = slider.clientWidth;
         const drag_location = event.clientX - slider.getBoundingClientRect().left;
-        const new_current_time = (drag_location / slider_width) * this.duration;
-        this.audio.currentTime = new_current_time;
+        const new_current_time = (drag_location / slider_width) * this.MusicDuration;
+        this.MusicAudio.currentTime = new_current_time;
       }
     },
     formatTime(time) {
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60);
       return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
+    },
   }
 }
 </script>

@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-
+import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -7,6 +7,10 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [
     vue(),
+
+    Icons({
+      autoInstall: true,
+    }),
   ],
   resolve: {
     alias: {

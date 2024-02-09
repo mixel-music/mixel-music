@@ -6,8 +6,8 @@ from mutagen.wave import WAVE
 from pathlib import Path
 
 class ExtractMediaTag:
-    def __init__(self, path):
-        self.file_path = path
+    def __init__(self, path: Path):
+        self.file_path = Path(path)
         self.file_name = Path(path).stem
         self.file_extension = Path(path).suffix.lower()
 
@@ -31,16 +31,17 @@ class ExtractMediaTag:
         track_number = int(mp3['TRCK'].text[0]) if 'TRCK' in mp3 else -1
         # disc_number
 
-        year = mp3['TYE'].text if 'TYE' in mp3 else 'Unknown Year'
-        is_compil = mp3['TCP'].text[0] if 'TCP' in mp3 else -1
+        year = mp3['TYER'].text if 'TYER' in mp3 else 'Unknown Year'
+        is_compil = mp3['TCMP'].text[0] if 'TCMP' in mp3 else -1
 
-        genre = mp3['TCO'].text[0] if 'TCO' in mp3 else -1
-        composer = mp3['TCM'].text[0] if 'TCM' in mp3 else -1
-        comment = mp3['COM'].text[0] if 'COM' in mp3 else -1
-        copyright = mp3['TCR'].text[0] if 'TCR' in mp3 else -1
-        isrc = mp3['TRC'].text[0] if 'TRC' in mp3 else -1
-        lyrics = mp3['ULT'].text[0] if 'ULT' in mp3 else -1
+        genre = mp3['TCON'].text[0] if 'TCON' in mp3 else -1
+        composer = mp3['TCOM'].text[0] if 'TCOM' in mp3 else -1
+        comment = mp3['COMM'].text[0] if 'COMM' in mp3 else -1
+        copyright = mp3['TCOP'].text[0] if 'TCOP' in mp3 else -1
+        isrc = mp3['TSRC'].text[0] if 'TSRC' in mp3 else -1
+        lyrics = mp3['USLT'].text[0] if 'USLT' in mp3 else -1
 
+        size = mp3['TSIZ'].text[0] if 'TSIZ' in mp3 else -1
         length = mp3.info.length
         bitrate = mp3.info.bitrate
         channels = mp3.info.channels

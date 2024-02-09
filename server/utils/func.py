@@ -10,6 +10,9 @@ valid_extension_list = (
 )
 
 def get_absolute_path(*args) -> Path:
+    """
+    Return the project root path for access another directory
+    """
     absolute_path = Path(__file__).parents[2]
 
     if args is None: return absolute_path

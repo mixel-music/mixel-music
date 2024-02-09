@@ -1,5 +1,6 @@
 :root {
     --var-global-padding: 24px;
+    --var-global-padding-m: 12px 24px;
     --var-global-padding-s: 12px;
     --var-body-primary: #101010;
     --var-body-secondary: #191919;
@@ -38,8 +39,8 @@ a {
 
 .app_navbar {
     width: -webkit-fill-available;
-    height: 40px;
-    padding: var(--var-global-padding);
+    height: 80px;
+    padding: var(--var-global-padding-m);
     z-index: -1;
 }
 
@@ -82,8 +83,8 @@ a {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 50px;
-    padding: var(--var-global-padding);
+    height: 80px;
+    padding: var(--var-global-padding-m);
     align-items: center;
     user-select: none;
 }
@@ -97,6 +98,10 @@ a {
     font-size: small;
 }
 
+.player_left {
+    max-width: 33%;
+}
+
 .player_center {
     position: fixed;
     left: 50%;
@@ -107,14 +112,22 @@ a {
     flex-direction: column;
 }
 
-.player_pause {
-    padding: 6px;
+.player_center_control {
+    display: flex;
+}
+
+.player_control {
+    padding: 4px 16px;
     border-radius: var(--var-global-radius);
     box-shadow: none;
-    font-size: 20px;
+    font-size: 24px;
     border: none;
     background-color: transparent;
     cursor: pointer;
+}
+
+.player_control_others {
+    font-size: 16px;
 }
 
 .slider_container {
