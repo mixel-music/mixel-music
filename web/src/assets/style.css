@@ -251,6 +251,10 @@ button:focus {
   width: 100px;
 }
 
+.button-disabled {
+  color: var(--color-dark-3);
+}
+
 /*
 .ElementFade-enter-active, .ElementFade-leave-active {
   transition: opacity 0.2s ease;

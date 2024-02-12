@@ -37,8 +37,9 @@
           <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50" />
         </button>
       </div>
-      <button class="player-button">
-        <IconamoonPlaylistRepeatList />
+      <button class="player-button" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">
+        <IconamoonPlaylistRepeatList v-if="Repeat == 0 || Repeat == 1"/>
+        <IconamoonPlaylistRepeatSong v-else />
       </button>
       <button class="player-button">
         <IconamoonHeart />
@@ -99,10 +100,15 @@ export default {
       Title: null,
       Album: null,
       Artist: null,
+
       Length: 0, // RAW Value
       LengthNow: 0, // RAW Value
+
       VolumeNow: 1, // RAW Value (0 to 1)
       VolumeNowEnable: false,
+
+      Repeat: 0,
+
       IsDragNow: false,
       IsLengthDragNow: false,
       IsPlayNow: false,
@@ -240,6 +246,21 @@ export default {
       else {
         this.Music.muted = false;
         this.VolumeNow = this.Music.volume;
+      }
+    },
+
+    RepeatTracks() {
+      if (this.Repeat == 0) {
+        this.Repeat = 1;
+        this.Music.loop = true;
+      }
+      else if (this.Repeat == 1) {
+        this.Repeat = 2;
+        this.Music.loop = true;
+      }
+      else {
+        this.Repeat = 0;
+        this.Music.loop = false;
       }
     },
 
