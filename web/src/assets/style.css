@@ -41,7 +41,6 @@ html {
   line-height: 130%;
   user-select: none;
   letter-spacing: -0.2px;
-  transition: 0.2s ease;
 }
 
 body {
@@ -105,6 +104,11 @@ button:focus {
   text-decoration: none;
   display: flex;
   align-items: center;
+  transition: 0.2s ease;
+}
+
+.sidebar-link:hover {
+  color: var(--color-text-dark-1);
 }
 
 .sidebar-text {
@@ -113,15 +117,8 @@ button:focus {
   text-decoration: none;
   display: flex;
   align-items: center;
-}
-
-.sidebar-link-playlist {
   justify-content: space-between;
-}
-
-.sidebar-link:hover {
-  color: var(--color-text-dark-1);
-  transition: color 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .sidebar-icon {
@@ -147,7 +144,7 @@ button:focus {
 }
 
 .navbar-button {
-  padding: 12px;
+  padding: 10px;
   border-radius: 50%;
   background-color: var(--color-dark-3);
   border: 0;

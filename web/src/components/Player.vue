@@ -32,7 +32,7 @@
           </div>
         </Transition>
         <button class="player-button" @click="MuteTrack">
-          <IconamoonVolumeOff v-if="VolumeRangeValue == 0 || Music.muted" />
+          <IconamoonVolumeOff v-if="this.Music.muted" />
           <IconamoonVolumeUp v-else-if="VolumeRangeValue >= 50" />
           <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50" />
         </button>
@@ -242,13 +242,18 @@ export default {
     },
 
     MuteTrack() {
-      if (this.Music.muted != true) {
-        this.Music.muted = true;
-        this.VolumeNow = 0;
+      if (this.Music.muted) {
+        this.Music.muted = false;
+        if (this.Music.volume == 0) {
+          this.VolumeNow = this.Music.volume = 0.1;
+        }
+        else {
+          this.VolumeNow = this.Music.volume;
+        }
       }
       else {
-        this.Music.muted = false;
-        this.VolumeNow = this.Music.volume;
+        this.Music.muted = true;
+        this.VolumeNow = 0;
       }
     },
 
@@ -294,6 +299,12 @@ export default {
       this.HandleRangeMove(event, '.player-range-volume', value => {
         this.Music.volume = Math.min(Math.max(value, 0), 1);
         this.VolumeNow = this.Music.volume;
+        if (this.VolumeNow != 0) {
+          this.Music.muted = false;
+        }
+        else {
+          this.Music.muted = true;
+        }
       });
     },
     
@@ -317,6 +328,12 @@ export default {
       this.HandleRangeMove(event, '.player-range-volume', value => {
         this.Music.volume = Math.min(Math.max(value, 0), 1);
         this.VolumeNow = this.Music.volume;
+        if (this.VolumeNow != 0) {
+          this.Music.muted = false;
+        }
+        else {
+          this.Music.muted = true;
+        }
       });
     },
 
