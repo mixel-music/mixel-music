@@ -1,40 +1,40 @@
 <template>
   <div class="card-grid">
-    <div class="card" v-for="(song, index) in metadata" :key="index">
-      <a class="text-title" @click="this.$emit('SelectTrack', song[0], song[1], song[2], song[3]);">
-        {{ song[0] }}
+    <div class="card" v-for="(track, index) in list" :key="index">
+      <a class="text-title" @click="this.$emit('SelectTrack', track[0], track[1], track[2], track[3]);">
+        {{ track[0] }}
       </a>
       <a class="text-description">
-        {{ song[2] }}
+        {{ track[2] }}
       </a>
     </div>
   </div>
 </template>
 
 <script>
-  import axios from 'axios';
+import axios from 'axios';
 
-  export default {
-    data() {
-      return {
-        metadata: null
-      };
+export default {
+  data() {
+    return {
+      list: null,
+    };
+  },
+
+  created() {
+    this.FetchMusicList();
+  },
+
+  methods: {
+    FetchMusicList() {
+      axios.get('http://localhost:8000/api/list?type=music')
+        .then(response => {
+          this.list = response.data;
+        })
+        .catch(error => {
+          console.error("Failed to fetch:", error);
+        });
     },
-
-    created() {
-      this.FetchMusicList();
-    },
-
-    methods: {
-      FetchMusicList() {
-        axios.get('http://localhost:8000/api/list?type=music')
-          .then(response => {
-            this.metadata = response.data;
-          })
-          .catch(error => {
-            console.error("Failed to fetch:", error);
-          });
-      },
-    }
   }
+}
 </script>

@@ -9,11 +9,13 @@ const router = createRouter({
       name: 'Main',
       component: Tracks,  
     },
+
     {
       path: '/tracks',
       name: 'Tracks',
       component: Tracks,
     },
+    
     {
       path: '/albums',
       name: 'Albums',

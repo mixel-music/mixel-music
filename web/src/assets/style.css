@@ -1,19 +1,44 @@
 :root {
-  --var-global-padding: 24px;
-  --var-global-padding-m: 12px 24px;
-  --var-global-padding-s: 12px;
-  --var-body-primary: #101010;
-  --var-body-secondary: #191919;
-  --var-sub-primary: #1f1f1f;
-  --var-sub-secondary: #272727;
-  --var-global-radius: 9px;
+  --color-dark-1: #1a1a1a;
+  --color-dark-2: #242424;
+  --color-dark-3: #2f2f2f;
+  --color-divider-dark-1: #545454a6;
+  --color-divider-dark-2: #5454547a;
+  --color-text-dark-1: #ffffffde;
+  --color-text-dark-2: #ebebeb99;
+  --color-text-dark-3: #ebebeb61;
+
+  --color-shadow-1: 0 1px 2px rgba(0, 0, 0, .04), 0 1px 2px rgba(0, 0, 0, .06);
+  --color-shadow-2: 0 3px 12px rgba(0, 0, 0, .07), 0 1px 4px rgba(0, 0, 0, .07);
+  --color-shadow-3: 0 12px 32px rgba(0, 0, 0, .1), 0 2px 6px rgba(0, 0, 0, .08);
+  --color-shadow-4: 0 14px 44px rgba(0, 0, 0, .12), 0 3px 9px rgba(0, 0, 0, .12);
+  --color-shadow-5: 0 18px 56px rgba(0, 0, 0, .16), 0 4px 12px rgba(0, 0, 0, .16);
+
+  --layout-padding: 21px;
+  --element-padding: 16px;
+  --element-radius: 9px;
 }
 
 html {
-  background-color: var(--var-body-primary);
+  font-family:
+  Pretendard,
+  -apple-system,
+  BlinkMacSystemFont,
+  Noto Sans KR,
+  Segoe UI,
+  Apple SD Gothic Neo,
+  Helvetica Neue,
+  Arial,
+  sans-serif;
+
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  word-wrap: break-word;
+
+  background-color: var(--color-dark-1);
   font-size: 16px;
   line-height: 130%;
-  font-family: "Pretendard";
   user-select: none;
   letter-spacing: -0.2px;
 }
@@ -22,6 +47,7 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  color: var(--color-text-dark-1);
 }
 
 p {
@@ -30,6 +56,10 @@ p {
 
 a {
   cursor: pointer;
+}
+
+button:focus {
+  outline: 1px solid var(--color-divider-dark-1);
 }
 
 #app {
@@ -41,48 +71,56 @@ a {
 /* sidebar */
 
 .sidebar {
-  width: 270px;
-  background-color: var(--var-body-secondary);
+  width: 260px;
+  padding-top: 112px;
+  background-color: var(--color-dark-1);
   position: fixed;
   height: 100%;
-  padding-top: 104px;
+  border-right: 1px solid var(--color-divider-dark-2)
 }
 
 .sidebar-item {
-  padding: var(--var-global-padding);
-  padding-top: 0;
+  padding: var(--element-padding) var(--layout-padding);
+}
+
+.sidebar-item-top {
+  margin-top: calc(var(--element-padding) * -1);
+}
+
+.sidebar-divider {
+  margin: var(--layout-padding);
+  border: 1px solid var(--color-divider-dark-2);
+}
+
+.sidebar-link {
+  font-weight: 600;
+  color: var(--color-text-dark-2);
+  text-decoration: none;
   display: flex;
   align-items: center;
 }
 
-.sidebar-link {
-  font-weight: bold;
-  color: unset;
-  text-decoration: none;
-  padding: 0 var(--var-global-padding-s);
-  width: 100%;
+.sidebar-link:hover {
+  color: var(--color-text-dark-1);
+  transition: color 0.2s ease;
 }
 
 .sidebar-icon {
-  width: 32px;
-  height: 32px;
-}
-
-.sidebar-icon g, .sidebar-icon path {
-  stroke: #A3A3A3;
+  width: 24px;
+  height: 24px;
 }
 
 /* content */
 
 .content {
-  margin-left: 270px;
+  margin-left: 260px;
   width: 100%;
 }
 
 .navbar {
   width: -webkit-fill-available;
-  height: 80px;
-  padding: var(--var-global-padding-m);
+  height: 70px;
+  padding: var(--layout-padding);
   z-index: -1;
 }
 
@@ -95,7 +133,7 @@ a {
 }
 
 .text-description {
-    color: #A3A3A3;
+    color: var(--color-text-dark-2);
     font-size: smaller;
     display: block;
     overflow: hidden;
@@ -113,10 +151,10 @@ a {
 }
 
 .card {
-  background-color: var(--var-sub-primary);
-  padding: var(--var-global-padding-s);
+  background-color: var(--color-dark-2);
+  padding: var(--element-padding);
   height: 180px;
-  border-radius: var(--var-global-radius);
+  border-radius: var(--element-radius);
   white-space: nowrap;
   display: flex;
   flex-direction: column;
@@ -129,13 +167,14 @@ a {
   position: fixed;
   display: flex;
   width: -webkit-fill-available;
-  height: 80px;
-  background-color: var(--var-body-secondary);
+  height: 70px;
+  background-color: var(--color-dark-1);
   bottom: 0;
-  padding: var(--var-global-padding-m);
+  padding: var(--layout-padding);
   justify-content: space-between;
   align-items: center;
   user-select: none;
+  border-top: 1px solid var(--color-divider-dark-2);
 }
 
 .player-left {
@@ -155,7 +194,7 @@ a {
 .player-button {
   padding: 4px 10px;
   font-size: 20px;
-  border-radius: var(--var-global-radius);
+  border-radius: var(--element-radius);
   box-shadow: none;
   border: none;
   background-color: transparent;
@@ -172,22 +211,25 @@ a {
 .player-range {
   width: 100%;
   padding: 10px;
+}
+
+.player-range * {
   cursor: pointer;
 }
 
 .player-range-length {
   width: 100%;
   height: 4px;
-  background-color: var(--var-sub-secondary);
-  border-radius: var(--var-global-radius);
+  background-color: var(--color-dark-3);
+  border-radius: var(--element-radius);
 }
 
 .player-range-now {
   width: 0;
   height: 4px;
-  background-color: white;
-  border-radius: var(--var-global-radius);
-  transition: width 0.4s ease;
+  background-color: var(--color-text-dark-1);
+  border-radius: var(--element-radius);
+  /*transition: width 0.3s ease;*/
 }
 
 .player-right {
@@ -204,11 +246,12 @@ a {
 .player-range-volume {
   width: 100%;
   height: 4px;
-  background-color: var(--var-sub-secondary);
-  border-radius: var(--var-global-radius);
+  background-color: var(--color-dark-3);
+  border-radius: var(--element-radius);
   width: 100px;
 }
 
+/*
 .ElementFade-enter-active, .ElementFade-leave-active {
   transition: opacity 0.2s ease;
 }
@@ -216,8 +259,7 @@ a {
 .ElementFade-enter-from, .ElementFade-leave-to {
   opacity: 0;
 }
-
-
+*/
 
 /* others */
 
@@ -229,7 +271,7 @@ a {
 *::-webkit-scrollbar-thumb{
   background-color: transparent;
   border-radius: 10px;
-  border: 4px solid var(--var-sub-secondary);
+  border: 4px solid var(--color-divider-dark-2);
 }
 
 *::-webkit-scrollbar-track{

@@ -1,37 +1,46 @@
 <template>
-  <div class="sidebar-item">
-    <IconamoonPlaylist class="sidebar-icon" />
-    <router-link to="/playlists" class="sidebar-link">
-      Playlists
+  <div class="sidebar-item sidebar-item-top">
+    <router-link to="/" class="sidebar-link">
+      <!-- <IconamoonHome class="sidebar-icon" /> -->
+      <span class="sidebar-text">Home</span>
     </router-link>
   </div>
+  <div class="sidebar-divider"></div>
   <div class="sidebar-item">
-    <IconamoonMusicAlbum class="sidebar-icon" />
-    <router-link to="/albums" class="sidebar-link">
-      Albums
-    </router-link>
-  </div>
-  <div class="sidebar-item">
-    <IconamoonMusic2 class="sidebar-icon" />
     <router-link to="/tracks" class="sidebar-link">
-      Tracks
+      <!-- <IconamoonMusic2 class="sidebar-icon" /> -->
+      <span class="sidebar-text">Songs</span>
     </router-link>
   </div>
   <div class="sidebar-item">
-    <IconamoonMusicArtist class="sidebar-icon" />
     <router-link to="/artists" class="sidebar-link">
-      Artists
+      <!-- <IconamoonMusicArtist class="sidebar-icon" /> -->
+      <span class="sidebar-text">Artists</span>
     </router-link>
   </div>
   <div class="sidebar-item">
-    <IconamoonHeadphone class="sidebar-icon" />
+    <router-link to="/albums" class="sidebar-link">
+      <!-- <IconamoonMusicAlbum class="sidebar-icon" /> -->
+      <span class="sidebar-text">Albums</span>
+    </router-link>
+  </div>
+  <div class="sidebar-item">
     <router-link to="/mixes" class="sidebar-link">
-      Mixes
+      <!-- <IconamoonHeadphone class="sidebar-icon" /> -->
+      <span class="sidebar-text">Radio</span>
+    </router-link>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-item">
+    <router-link to="/playlists" class="sidebar-link">
+      <!-- <IconamoonPlaylist class="sidebar-icon" /> -->
+      <span class="sidebar-text">Playlists</span>
     </router-link>
   </div>
 </template>
 
 <script>
+import IconamoonHome from '~icons/iconamoon/home';
 import IconamoonPlaylist from '~icons/iconamoon/playlist';
 import IconamoonMusicAlbum from '~icons/iconamoon/music-album';
 import IconamoonMusic2 from '~icons/iconamoon/music-2';
@@ -40,6 +49,7 @@ import IconamoonHeadphone from '~icons/iconamoon/headphone';
 
 export default {
   components: {
+    IconamoonHome,
     IconamoonMusicAlbum,
     IconamoonMusic2,
     IconamoonMusicArtist,

@@ -6,32 +6,32 @@
       <p class="text-description">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
     </div>
     <div class="player-center">
-      <button class="player-button">
+      <button class="player-button" @click="PreviousTrack">
         <IconamoonPlayerStartFill />
       </button>
-      <button class="player-button player-button-primary" @click="PauseResume">
+      <button class="player-button player-button-primary" @click="ToggleTrack">
         <IconamoonPlayerPauseFill v-if="IsPlayNow" />
         <IconamoonPlayerPlayFill v-else="IsPlayNow" />
       </button>
-      <button class="player-button">
+      <button class="player-button" @click="NextTrack">
         <IconamoonPlayerEndFill />
       </button>
-      <div class="player-range" @click="LengthSeek($event)" @mousedown="LengthDragStart">
+      <div class="player-range" @click="LengthSeek($event)" @mousedown="LengthDragStart($event)" @mouseup="DragStop">
         <div class="player-range-length">
           <div class="player-range-now" :style="{ 'width': LengthRangeValue + '%' }"></div>
         </div>
       </div>
     </div>
     <div class="player-right">
-      <div class="player-volume" @mouseover="this.VolumeNowEnable = true" @mouseleave="this.VolumeNowEnable = false">
-        <Transition name="ElementFade">
-          <div class="player-range" v-if="VolumeNowEnable" @click="VolumeSeek($event)" @mousedown="VolumeDragStart">
+      <div class="player-volume" v-bind="{ title: VolumeRangeValue + '%' }" @mouseover="this.VolumeNowEnable = true" @mouseleave="this.VolumeNowEnable = false">
+        <!--<Transition name="ElementFade">-->
+          <div class="player-range" v-if="(VolumeNowEnable || !IsLengthDragNow && IsDragNow)" @click="VolumeSeek($event)" @mousedown="VolumeDragStart($event)" @mouseup="DragStop">
             <div class="player-range-volume">
               <div class="player-range-now" :style="{ 'width': VolumeRangeValue + '%' }"></div>
             </div>
           </div>
-        </Transition>
-        <button class="player-button" @click="Mute">
+        <!--</Transition>-->
+        <button class="player-button" @click="MuteTrack">
           <IconamoonVolumeOff v-if="VolumeRangeValue == 0 || Music.muted" />
           <IconamoonVolumeUp v-else-if="VolumeRangeValue >= 50" />
           <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50" />
@@ -104,6 +104,7 @@ export default {
       VolumeNow: 1, // RAW Value (0 to 1)
       VolumeNowEnable: false,
       IsDragNow: false,
+      IsLengthDragNow: false,
       IsPlayNow: false,
     }
   },
@@ -192,7 +193,7 @@ export default {
       }
     },
 
-    PauseResume() {
+    ToggleTrack() {
       if (!this.IsDragNow && this.Music.paused && this.LengthNow >= this.Length && this.LengthNow != 0) {
         this.LengthNow = 0;
         this.Music.play();
@@ -216,9 +217,30 @@ export default {
       }
     },
 
+    PreviousTrack() {
+      this.Music.currentTime = 0;
+    },
+
     HandleMusicEnd() {
-      this.IsPlayNow = false;
-      this.Music.pause();
+      if (!this.IsDragNow) {
+        this.IsPlayNow = false;
+        this.Music.pause();
+      }
+    },
+
+    NextTrack() {
+      console.log("Test");
+    },
+
+    MuteTrack() {
+      if (this.Music.muted != true) {
+        this.Music.muted = true;
+        this.VolumeNow = 0;
+      }
+      else {
+        this.Music.muted = false;
+        this.VolumeNow = this.Music.volume;
+      }
     },
 
     UpdateTime() {
@@ -251,29 +273,36 @@ export default {
       });
     },
     
-    DragStart() {
-        this.IsDragNow= true;
-        document.addEventListener('mousemove', this.LengthDrag);
+    LengthDragStart(event) {
+      if(this.IsPlayNow) {
+        this.IsDragNow = true;
+        this.IsLengthDragNow = true;
+        document.addEventListener('mousemove', this.LengthDragStart);
         document.addEventListener('mouseup', this.DragStop);
-      },
+        this.HandleRangeMove(event, '.player-range-length', value => {
+          this.LengthNow = Math.min(Math.max(value * this.Length, 0), this.Music.duration - 0.1);
+          this.Music.currentTime = this.LengthNow;
+        });
+      }
+    },
+
+    VolumeDragStart(event) {
+      this.IsDragNow = true;
+      document.addEventListener('mousemove', this.VolumeDragStart);
+      document.addEventListener('mouseup', this.DragStop);
+      this.HandleRangeMove(event, '.player-range-volume', value => {
+        this.Music.volume = Math.min(Math.max(value, 0), 1);
+        this.VolumeNow = this.Music.volume;
+      });
+    },
 
     DragStop() {
       this.IsDragNow = false;
-      document.removeEventListener('mousemove', this.LengthDrag);
+      this.IsLengthDragNow = false;
+      document.removeEventListener('mousemove', this.LengthDragStart);
+      document.removeEventListener('mousemove', this.VolumeDragStart);
       document.removeEventListener('mouseup', this.DragStop);
     },
-
-    Mute() {
-      if (this.Music.muted != true) {
-        this.Music.muted = true;
-        this.VolumeNow = 0;
-      }
-      else {
-        this.Music.muted = false;
-        this.VolumeNow = this.Music.volume;
-      }
-    },
-
   }
 }
 </script>
