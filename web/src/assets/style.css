@@ -195,6 +195,7 @@ button:focus {
 
 .card-grid {
   padding: 7%;
+  margin-bottom: 112.8px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
   grid-gap: 32px;

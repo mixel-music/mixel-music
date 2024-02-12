@@ -9,4 +9,10 @@
 </p>
 
 ## About
+<p align="center">
+  <img src=".github/screenshots/tamaya.png" width="900">
+</p>
+
 Tamaya is a fast, lightweight self-hosted music streaming platform that supports various audio formats, streamlined folder structures with beautiful UI.
+
+I have little experience doing backend development with Python, And this is my first time using JavaScript and Vue.js. Since this project is part of my learning process, there may be many areas that need improvement. Feedback is welcome!
