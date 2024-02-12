@@ -1,16 +1,5 @@
 <template>
-    <div id="NavBarContainer">
-        <div class="NavBarLeft">
-            <div class="NavBarExploreIcon">
-                
-            </div>
-        </div>
-        <div Class="NavBarRight">
+  <nav class="navbar">
 
-        </div>
-    </div>
+  </nav>
 </template>
-    
-<script>
-
-</script>

@@ -1,30 +1,28 @@
 <template>
-  <div class="app_player_container">
-    <div class="player_left">
-      <p class="player_title">{{ MusicTitle }}</p>
-      <p class="player_artist">{{ MusicArtist }} - {{ MusicAlbum }}</p>
-      <p class="player_length">{{ MusicCurrentFormat }} / {{ MusicDurationFormat }}</p>
+  <div class="player">
+    <div class="player-left">
+      <p class="text-title">{{ MusicTitle }}</p>
+      <p class="text-description">{{ MusicArtist }} - {{ MusicAlbum }}</p>
+      <p class="text-description">{{ MusicCurrentFormat }} / {{ MusicDurationFormat }}</p>
     </div>
-    <div class="player_center">
-      <div class="player_center_control">
-        <button class="player_control player_control_others">
-          <IconamoonPlayerStartFill />
-        </button>
-        <button class="player_control" @click="toggle">
-          <IconamoonPlayerPauseFill v-if="IsPlay" />
-          <IconamoonPlayerPlayFill v-else="IsPlay" />
-        </button>
-        <button class="player_control player_control_others">
-          <IconamoonPlayerEndFill />
-        </button>
-      </div>
-      <div class="slider_container" @click="seek($event)" @mousedown="drag_start">
-        <div class="slider_rail">
-          <div class="slider_step" :style="{ 'width': MusicSlider + '%' }"></div>
+    <div class="player-center">
+      <button class="player-button">
+        <IconamoonPlayerStartFill />
+      </button>
+      <button class="player-button player-button-primary" @click="toggle">
+        <IconamoonPlayerPauseFill v-if="IsPlay" />
+        <IconamoonPlayerPlayFill v-else="IsPlay" />
+      </button>
+      <button class="player-button">
+        <IconamoonPlayerEndFill />
+      </button>
+      <div class="player-range" @click="seek($event)" @mousedown="drag_start">
+        <div class="player-range-length">
+          <div class="player-range-now" :style="{ 'width': MusicSlider + '%' }"></div>
         </div>
       </div>
     </div>
-    <div class="player_right">
+    <div class="player-right">
 
     </div>
   </div>
@@ -35,6 +33,19 @@ import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
 import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
 import IconamoonPlayerStartFill from '~icons/iconamoon/player-start-fill';
 import IconamoonPlayerEndFill from '~icons/iconamoon/player-end-fill';
+
+import IconamoonHeart from '~icons/iconamoon/heart';
+import IconamoonHeartFill from '~icons/iconamoon/heart-fill';
+import IconamoonMenuKebabHorizontal from '~icons/iconamoon/menu-kebab-horizontal';
+import IconamoonPlaylistRepeatList from '~icons/iconamoon/playlist-repeat-list';
+import IconamoonPlaylistRepeatSong from '~icons/iconamoon/playlist-repeat-song';
+import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
+import IconamoonRestart from '~icons/iconamoon/restart';
+import IconamoonPlaylist from '~icons/iconamoon/playlist';
+import IconamoonVolumeDown from '~icons/iconamoon/volume-down';
+import IconamoonVolumeOff from '~icons/iconamoon/volume-off';
+import IconamoonVolumeUp from '~icons/iconamoon/volume-up';
+import IconamoonSearch from '~icons/iconamoon/search';
 
 export default {
   components: {
