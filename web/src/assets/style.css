@@ -209,13 +209,20 @@ button:focus {
 
 .card {
   background-color: var(--color-dark-2);
-  padding: var(--element-padding);
-  height: 180px;
   border-radius: var(--element-radius);
+  height: 200px;
   white-space: nowrap;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+}
+
+.card-image {
+  padding: var(--element-padding);
+}
+
+.card-content {
+  padding: var(--element-padding);
 }
 
 /* player */
@@ -263,8 +270,8 @@ button:focus {
 }
 
 .player-button-primary {
-  font-size: 30px;
-  padding: 4px 16px;
+  font-size: 28px;
+  margin: 0 10px;
 }
 
 .player-range {

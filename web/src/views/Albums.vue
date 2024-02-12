@@ -1,9 +1,14 @@
 <template>
   <div class="card-grid">
     <div class="card" v-for="(album, index) in list" :key="index">
-      <a class="text-title">
-        {{ album }}
-      </a>
+      <div class="card-image">
+
+      </div>
+      <div class="card-content">
+        <a class="text-title">
+          {{ album }}
+        </a>
+      </div>
     </div>
   </div>
 </template>

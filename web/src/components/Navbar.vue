@@ -12,7 +12,7 @@
       
     </div>
     <div class="navbar-right">
-      <input type="text" name="Search" placeholder="Search">
+      <input type="text" id="navbar-input" name="Search" placeholder="Search">
     </div>
   </nav>
 </template>

@@ -1,19 +1,19 @@
 <template>
   <div class="player">
     <div class="player-left">
-      <p class="text-title">{{ Title }}</p>
-      <p class="text-description" v-if="Title">{{ Artist }} - {{ Album }}</p>
-      <p class="text-description" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
+      <p class="text-title" v-bind="{ title: Artist + ' - ' + Title }">{{ Title }}</p>
+      <p class="text-description" v-bind="{ title: Artist + ' - ' + Title }" v-if="Title">{{ Artist }} - {{ Album }}</p>
+      <p class="text-description" v-bind="{ title: LengthNowFormatted + ' / ' + LengthFormatted }" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
     </div>
     <div class="player-center">
-      <button class="player-button" @click="PreviousTrack">
+      <button class="player-button" title="Previous track" @click="PreviousTrack">
         <IconamoonPlayerStartFill />
       </button>
-      <button class="player-button player-button-primary" @click="ToggleTrack">
+      <button class="player-button player-button-primary" v-bind="{ title: IsPlayNow ? 'Pause' : 'Play' }" @click="ToggleTrack">
         <IconamoonPlayerPauseFill v-if="IsPlayNow" />
         <IconamoonPlayerPlayFill v-else="IsPlayNow" />
       </button>
-      <button class="player-button" @click="NextTrack">
+      <button class="player-button" title="Next track" @click="NextTrack">
         <IconamoonPlayerEndFill />
       </button>
       <div class="player-range" @click="LengthSeek($event)" @mousedown="LengthDragStart($event)" @mouseup="DragStop">
@@ -37,7 +37,7 @@
           <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50" />
         </button>
       </div>
-      <button class="player-button" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">
+      <button class="player-button" v-bind="{ title: Repeat == 0 || Repeat == 1 ? 'Repeat' : 'Repeat One' }" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">
         <IconamoonPlaylistRepeatList v-if="Repeat == 0 || Repeat == 1"/>
         <IconamoonPlaylistRepeatSong v-else />
       </button>
@@ -104,10 +104,10 @@ export default {
       Album: null,
       Artist: null,
 
-      Length: 0, // RAW Value
-      LengthNow: 0, // RAW Value
+      Length: 0, // RAW Value (sec, float)
+      LengthNow: 0, // RAW Value (sec, float)
 
-      VolumeNow: 1, // RAW Value (0 to 1)
+      VolumeNow: 1, // RAW Value (0~1)
       VolumeNowEnable: false,
 
       Repeat: 0,
@@ -164,12 +164,19 @@ export default {
   },
 
   methods: {
-    FormatTime(time) {
-      const min = Math.floor(time / 60);
-      const sec = Math.floor(time % 60);
-      return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-    },
+    SelectTrack(title, album, artist, path) {
+      this.Title = title;
+      this.Album = album;
+      this.Artist = artist;
+      this.Music.src = `http://localhost:8000/api/stream/${path}`;
 
+      if (this.Music.paused) {
+        this.Music.play();
+        this.IsPlayNow = true;
+        this.SetMediaControls();
+      }
+    },
+    
     SetMediaControls: function () {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -188,17 +195,22 @@ export default {
       }
     },
 
-    SelectTrack(title, album, artist, path) {
-      this.Title = title;
-      this.Album = album;
-      this.Artist = artist;
-      this.Music.src = `http://localhost:8000/api/stream/${path}`;
-
-      if (this.Music.paused) {
-        this.Music.play();
-        this.IsPlayNow = true;
-        this.SetMediaControls();
+    UpdateTime() {
+      if (!this.IsDragNow) this.LengthNow = this.Music.currentTime;
+      this.MusicSlider = (this.MusicCurrent / this.MusicDuration) * 100;
+      if (!this.IsDrag && this.MusicCurrent >= this.MusicDuration) {
+        this.resetPlayer();
       }
+    },
+
+    FormatTime(time) {
+      const min = Math.floor(time / 60);
+      const sec = Math.floor(time % 60);
+      return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    },
+
+    PreviousTrack() {
+      this.Music.currentTime = 0;
     },
 
     ToggleTrack() {
@@ -225,8 +237,8 @@ export default {
       }
     },
 
-    PreviousTrack() {
-      this.Music.currentTime = 0;
+    NextTrack() {
+      console.log("Test");
     },
 
     HandleMusicEnd() {
@@ -234,49 +246,6 @@ export default {
         this.IsPlayNow = false;
         this.Music.pause();
         this.SetMediaControls();
-      }
-    },
-
-    NextTrack() {
-      console.log("Test");
-    },
-
-    MuteTrack() {
-      if (this.Music.muted) {
-        this.Music.muted = false;
-        if (this.Music.volume == 0) {
-          this.VolumeNow = this.Music.volume = 0.1;
-        }
-        else {
-          this.VolumeNow = this.Music.volume;
-        }
-      }
-      else {
-        this.Music.muted = true;
-        this.VolumeNow = 0;
-      }
-    },
-
-    RepeatTracks() {
-      if (this.Repeat == 0) {
-        this.Repeat = 1;
-        this.Music.loop = true;
-      }
-      else if (this.Repeat == 1) {
-        this.Repeat = 2;
-        this.Music.loop = true;
-      }
-      else {
-        this.Repeat = 0;
-        this.Music.loop = false;
-      }
-    },
-
-    UpdateTime() {
-      if (!this.IsDragNow) this.LengthNow = this.Music.currentTime;
-      this.MusicSlider = (this.MusicCurrent / this.MusicDuration) * 100;
-      if (!this.IsDrag && this.MusicCurrent >= this.MusicDuration) {
-        this.resetPlayer();
       }
     },
 
@@ -343,6 +312,37 @@ export default {
       document.removeEventListener('mousemove', this.LengthDragStart);
       document.removeEventListener('mousemove', this.VolumeDragStart);
       document.removeEventListener('mouseup', this.DragStop);
+    },
+
+    MuteTrack() {
+      if (this.Music.muted) {
+        this.Music.muted = false;
+        if (this.Music.volume == 0) {
+          this.VolumeNow = this.Music.volume = 0.1;
+        }
+        else {
+          this.VolumeNow = this.Music.volume;
+        }
+      }
+      else {
+        this.Music.muted = true;
+        this.VolumeNow = 0;
+      }
+    },
+
+    RepeatTracks() {
+      if (this.Repeat == 0) {
+        this.Repeat = 1;
+        this.Music.loop = true;
+      }
+      else if (this.Repeat == 1) {
+        this.Repeat = 2;
+        this.Music.loop = true;
+      }
+      else {
+        this.Repeat = 0;
+        this.Music.loop = false;
+      }
     },
   }
 }

@@ -6,6 +6,8 @@ from pathlib import Path
 from .func import *
 from .tags import *
 
+import sqlalchemy
+
 import aiofiles
 import logging
 import dotenv
