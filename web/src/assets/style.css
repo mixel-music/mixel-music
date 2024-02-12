@@ -16,7 +16,7 @@
 
   --layout-padding: 21px;
   --element-padding: 16px;
-  --element-radius: 9px;
+  --element-radius: 8px;
 }
 
 html {
@@ -41,6 +41,7 @@ html {
   line-height: 130%;
   user-select: none;
   letter-spacing: -0.2px;
+  transition: 0.2s ease;
 }
 
 body {
@@ -93,11 +94,23 @@ button:focus {
 }
 
 .sidebar-link {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text-dark-2);
   text-decoration: none;
   display: flex;
   align-items: center;
+}
+
+.sidebar-text {
+  font-weight: 600;
+  color: var(--color-text-dark-1);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-link-playlist {
+  justify-content: space-between;
 }
 
 .sidebar-link:hover {
@@ -118,10 +131,50 @@ button:focus {
 }
 
 .navbar {
+  position:fixed;
   width: -webkit-fill-available;
-  height: 70px;
   padding: var(--layout-padding);
-  z-index: -1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar-button {
+  padding: 12px;
+  border-radius: 50%;
+  background-color: var(--color-dark-3);
+  border: 0;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 1px solid var(--color-divider-dark-1);
+  color: var(--color-text-dark-2);
+}
+
+.navbar-next {
+  margin-left: var(--element-padding);
+}
+
+.navbar-left {
+  display: flex;
+  height: min-content;
+}
+
+.navbar-right input {
+  margin: 0;
+  padding: 0;
+  padding: 12px;
+  border: none;
+  border-radius: var(--element-radius);
+  color: var(--color-text-dark-2);
+  background-color: var(--color-dark-3);
+  width: 300px;
+  border: 1px solid var(--color-divider-dark-1);
+  height: -webkit-fill-available;
+}
+
+.navbar-icon {
+  font-size: 18px;
 }
 
 .text-title {
@@ -142,8 +195,6 @@ button:focus {
 
 .card-grid {
   padding: 7%;
-  padding-top: 0;
-  margin-bottom: 7%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
   grid-gap: 32px;
@@ -175,6 +226,7 @@ button:focus {
   align-items: center;
   user-select: none;
   border-top: 1px solid var(--color-divider-dark-2);
+  border-radius: var(--element-radius);
 }
 
 .player-left {
@@ -201,6 +253,7 @@ button:focus {
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition: 0.2s ease;
 }
 
 .player-button-primary {
@@ -229,7 +282,6 @@ button:focus {
   height: 4px;
   background-color: var(--color-text-dark-1);
   border-radius: var(--element-radius);
-  /*transition: width 0.3s ease;*/
 }
 
 .player-right {
@@ -255,7 +307,6 @@ button:focus {
   color: var(--color-dark-3);
 }
 
-/*
 .ElementFade-enter-active, .ElementFade-leave-active {
   transition: opacity 0.2s ease;
 }
@@ -263,7 +314,6 @@ button:focus {
 .ElementFade-enter-from, .ElementFade-leave-to {
   opacity: 0;
 }
-*/
 
 /* others */
 

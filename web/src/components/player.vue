@@ -2,8 +2,8 @@
   <div class="player">
     <div class="player-left">
       <p class="text-title">{{ Title }}</p>
-      <p class="text-description">{{ Artist }} - {{ Album }}</p>
-      <p class="text-description">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
+      <p class="text-description" v-if="Title">{{ Artist }} - {{ Album }}</p>
+      <p class="text-description" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
     </div>
     <div class="player-center">
       <button class="player-button" @click="PreviousTrack">
@@ -24,13 +24,13 @@
     </div>
     <div class="player-right">
       <div class="player-volume" v-bind="{ title: VolumeRangeValue + '%' }" @mouseover="this.VolumeNowEnable = true" @mouseleave="this.VolumeNowEnable = false">
-        <!--<Transition name="ElementFade">-->
+        <Transition name="ElementFade">
           <div class="player-range" v-if="(VolumeNowEnable || !IsLengthDragNow && IsDragNow)" @click="VolumeSeek($event)" @mousedown="VolumeDragStart($event)" @mouseup="DragStop">
             <div class="player-range-volume">
               <div class="player-range-now" :style="{ 'width': VolumeRangeValue + '%' }"></div>
             </div>
           </div>
-        <!--</Transition>-->
+        </Transition>
         <button class="player-button" @click="MuteTrack">
           <IconamoonVolumeOff v-if="VolumeRangeValue == 0 || Music.muted" />
           <IconamoonVolumeUp v-else-if="VolumeRangeValue >= 50" />
@@ -40,6 +40,9 @@
       <button class="player-button" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">
         <IconamoonPlaylistRepeatList v-if="Repeat == 0 || Repeat == 1"/>
         <IconamoonPlaylistRepeatSong v-else />
+      </button>
+      <button class="player-button" :class="{ 'button-disabled': !Shuffle }" @click="Shuffle = true">
+        <IconamoonPlaylistShuffle />
       </button>
       <button class="player-button">
         <IconamoonHeart />
@@ -108,6 +111,7 @@ export default {
       VolumeNowEnable: false,
 
       Repeat: 0,
+      Shuffle: false,
 
       IsDragNow: false,
       IsLengthDragNow: false,
@@ -175,14 +179,12 @@ export default {
           artwork: [],
         });
 
-        navigator.mediaSession.setActionHandler("play", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("pause", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("stop", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("seekbackward", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("seekforward", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("seekto", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("previoustrack", () => { this.Resume(); });
-        navigator.mediaSession.setActionHandler("nexttrack", () => { this.Resume(); });
+        navigator.mediaSession.setActionHandler("play", () => { this.ToggleTrack(); });
+        navigator.mediaSession.setActionHandler("pause", () => { this.ToggleTrack(); });
+        navigator.mediaSession.setActionHandler("seekbackward", () => { this.Music.currentTime -= 10; });
+        navigator.mediaSession.setActionHandler("seekforward", () => { this.Music.currentTime += 10; });
+        navigator.mediaSession.setActionHandler("previoustrack", () => { this.PreviousTrack();});
+        navigator.mediaSession.setActionHandler("nexttrack", () => { this.NextTrack(); });
       }
     },
 
@@ -231,6 +233,7 @@ export default {
       if (!this.IsDragNow) {
         this.IsPlayNow = false;
         this.Music.pause();
+        this.SetMediaControls();
       }
     },
 

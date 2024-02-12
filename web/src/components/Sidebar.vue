@@ -1,40 +1,54 @@
 <template>
   <div class="sidebar-item sidebar-item-top">
-    <router-link to="/" class="sidebar-link">
+    <router-link to="/" class="sidebar-text">
       <!-- <IconamoonHome class="sidebar-icon" /> -->
-      <span class="sidebar-text">Home</span>
+      Home
+    </router-link>
+  </div>
+  <div class="sidebar-item">
+    <router-link to="/" class="sidebar-text">
+      Search
+    </router-link>
+  </div>
+  <div class="sidebar-item">
+    <router-link to="/" class="sidebar-text">
+      Library
     </router-link>
   </div>
   <div class="sidebar-divider"></div>
+    <div class="sidebar-item">
+    <router-link to="/albums" class="sidebar-link">
+      <IconamoonMusicAlbum class="sidebar-icon" />
+      &nbsp;
+      Albums
+    </router-link>
+  </div>
   <div class="sidebar-item">
     <router-link to="/tracks" class="sidebar-link">
-      <!-- <IconamoonMusic2 class="sidebar-icon" /> -->
-      <span class="sidebar-text">Songs</span>
+      <IconamoonMusic2 class="sidebar-icon" />
+      &nbsp;
+      Songs
     </router-link>
   </div>
   <div class="sidebar-item">
     <router-link to="/artists" class="sidebar-link">
-      <!-- <IconamoonMusicArtist class="sidebar-icon" /> -->
-      <span class="sidebar-text">Artists</span>
-    </router-link>
-  </div>
-  <div class="sidebar-item">
-    <router-link to="/albums" class="sidebar-link">
-      <!-- <IconamoonMusicAlbum class="sidebar-icon" /> -->
-      <span class="sidebar-text">Albums</span>
+      <IconamoonMusicArtist class="sidebar-icon" />
+      &nbsp;
+      Artists
     </router-link>
   </div>
   <div class="sidebar-item">
     <router-link to="/mixes" class="sidebar-link">
-      <!-- <IconamoonHeadphone class="sidebar-icon" /> -->
-      <span class="sidebar-text">Radio</span>
+      <IconamoonHeadphone class="sidebar-icon" />
+      &nbsp;
+      Radios
     </router-link>
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-item">
-    <router-link to="/playlists" class="sidebar-link">
-      <!-- <IconamoonPlaylist class="sidebar-icon" /> -->
-      <span class="sidebar-text">Playlists</span>
+    <router-link to="/playlists" class="sidebar-text sidebar-link-playlist">
+      Playlists
+      <IconamoonSignPlus />
     </router-link>
   </div>
 </template>
@@ -46,6 +60,7 @@ import IconamoonMusicAlbum from '~icons/iconamoon/music-album';
 import IconamoonMusic2 from '~icons/iconamoon/music-2';
 import IconamoonMusicArtist from '~icons/iconamoon/music-artist';
 import IconamoonHeadphone from '~icons/iconamoon/headphone';
+import IconamoonSignPlus from '~icons/iconamoon/sign-plus';
 
 export default {
   components: {
@@ -55,6 +70,7 @@ export default {
     IconamoonMusicArtist,
     IconamoonPlaylist,
     IconamoonHeadphone,
+    IconamoonSignPlus,
   },
 }
 </script>
