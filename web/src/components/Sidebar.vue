@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-item sidebar-item-logo">
-    <img src="/Tamaya.svg" class="sidebar-logo">
+    <img src="/tamaya.svg" class="sidebar-logo">
   </div>
   <div class="sidebar-item">
     <router-link to="/" class="sidebar-text">
