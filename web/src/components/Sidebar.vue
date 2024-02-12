@@ -6,12 +6,12 @@
     </router-link>
   </div>
   <div class="sidebar-item">
-    <router-link to="/" class="sidebar-text">
+    <router-link to="/search" class="sidebar-text">
       Search
     </router-link>
   </div>
   <div class="sidebar-item">
-    <router-link to="/" class="sidebar-text">
+    <router-link to="/library" class="sidebar-text">
       Library
     </router-link>
   </div>
@@ -24,7 +24,7 @@
     </router-link>
   </div>
   <div class="sidebar-item">
-    <router-link to="/tracks" class="sidebar-link">
+    <router-link to="/songs" class="sidebar-link">
       <IconamoonMusic2 class="sidebar-icon" />
       &nbsp;
       Songs
@@ -38,7 +38,7 @@
     </router-link>
   </div>
   <div class="sidebar-item">
-    <router-link to="/mixes" class="sidebar-link">
+    <router-link to="/radios" class="sidebar-link">
       <IconamoonHeadphone class="sidebar-icon" />
       &nbsp;
       Radios
