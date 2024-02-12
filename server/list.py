@@ -7,6 +7,18 @@ async def api_list(type: str):
     list_path = get_absolute_path('test')
 
     if type == 'album':
+        return await database.fetch_all(conn.music.select())
+    elif type == 'music':
+        return await database.fetch_all(conn.music.select())
+    elif type == 'artist':
+        return await database.fetch_all(music.select())
+    elif type == 'radio':
+        return await database.fetch_all(music.select())
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+'''
+    if type == 'album':
         album_list = []
         for extension in valid_extension_list:
             for album in list_path.rglob(f'*{extension}'):
@@ -38,3 +50,4 @@ async def api_list(type: str):
         return music_list
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+'''

@@ -27,7 +27,7 @@
   <div class="sidebar-divider"></div>
   <div class="sidebar-item">
     <Transition name="SidebarFade">
-      <router-link to="/albums" class="sidebar-link">
+      <router-link to="/album" class="sidebar-link">
         <IconamoonMusicAlbum class="sidebar-icon" />
         &nbsp;
         Albums
@@ -36,7 +36,7 @@
   </div>
   <div class="sidebar-item">
     <Transition name="SidebarFade">
-      <router-link to="/songs" class="sidebar-link">
+      <router-link to="/music" class="sidebar-link">
         <IconamoonMusic2 class="sidebar-icon" />
         &nbsp;
         Songs
@@ -45,7 +45,7 @@
   </div>
   <div class="sidebar-item">
     <Transition name="SidebarFade">
-      <router-link to="/artists" class="sidebar-link">
+      <router-link to="/artist" class="sidebar-link">
         <IconamoonMusicArtist class="sidebar-icon" />
         &nbsp;
         Artists
@@ -53,7 +53,7 @@
     </Transition>
   </div>
   <div class="sidebar-item">
-    <router-link to="/radios" class="sidebar-link">
+    <router-link to="/radio" class="sidebar-link">
       <IconamoonHeadphone class="sidebar-icon" />
       &nbsp;
       Radios
@@ -61,7 +61,7 @@
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-item">
-    <router-link to="/playlists" class="sidebar-text">
+    <router-link to="/playlist" class="sidebar-text">
       Playlists
       <IconamoonSignPlus />
     </router-link>

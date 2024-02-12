@@ -11,13 +11,13 @@ const router = createRouter({
     },
 
     {
-      path: '/songs',
+      path: '/music',
       name: 'Songs',
       component: Songs,
     },
 
     {
-      path: '/albums',
+      path: '/album',
       name: 'Albums',
       component: () => import('../views/Albums.vue'),
     },
