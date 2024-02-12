@@ -128,7 +128,7 @@ a {
 .player {
   position: fixed;
   display: flex;
-  width: 100%;
+  width: -webkit-fill-available;
   height: 80px;
   background-color: var(--var-body-secondary);
   bottom: 0;
@@ -153,17 +153,20 @@ a {
 }
 
 .player-button {
-  padding: 4px 16px;
+  padding: 4px 10px;
+  font-size: 20px;
   border-radius: var(--var-global-radius);
   box-shadow: none;
-  font-size: 16px;
   border: none;
   background-color: transparent;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .player-button-primary {
-  font-size: 24px;
+  font-size: 30px;
+  padding: 4px 16px;
 }
 
 .player-range {
@@ -184,11 +187,37 @@ a {
   height: 4px;
   background-color: white;
   border-radius: var(--var-global-radius);
+  transition: width 0.4s ease;
 }
 
 .player-right {
-  width: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
+
+.player-volume {
+  display: flex;
+  align-items: center;
+}
+
+.player-range-volume {
+  width: 100%;
+  height: 4px;
+  background-color: var(--var-sub-secondary);
+  border-radius: var(--var-global-radius);
+  width: 100px;
+}
+
+.ElementFade-enter-active, .ElementFade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.ElementFade-enter-from, .ElementFade-leave-to {
+  opacity: 0;
+}
+
+
 
 /* others */
 
