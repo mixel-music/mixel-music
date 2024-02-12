@@ -73,19 +73,25 @@ button:focus {
 
 .sidebar {
   width: 260px;
-  padding-top: 112px;
   background-color: var(--color-dark-1);
   position: fixed;
   height: 100%;
   border-right: 1px solid var(--color-divider-dark-2)
 }
 
+.sidebar-logo {
+  width: 42px;
+}
+
 .sidebar-item {
   padding: var(--element-padding) var(--layout-padding);
 }
 
-.sidebar-item-top {
-  margin-top: calc(var(--element-padding) * -1);
+.sidebar-item-logo {
+  height: 58px;
+  padding: var(--layout-padding);
+  display: flex;
+  align-items: center;
 }
 
 .sidebar-divider {
@@ -131,11 +137,13 @@ button:focus {
 }
 
 .navbar {
-  position:fixed;
+  position: fixed;
+  height: 58px;
   width: -webkit-fill-available;
   padding: var(--layout-padding);
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .navbar-button {
@@ -219,7 +227,7 @@ button:focus {
   position: fixed;
   display: flex;
   width: -webkit-fill-available;
-  height: 70px;
+  height: 58px;
   background-color: var(--color-dark-1);
   bottom: 0;
   padding: var(--layout-padding);

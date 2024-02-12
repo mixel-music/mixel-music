@@ -1,5 +1,8 @@
 <template>
-  <div class="sidebar-item sidebar-item-top">
+  <div class="sidebar-item sidebar-item-logo">
+    <img src="/Tamaya.svg" class="sidebar-logo">
+  </div>
+  <div class="sidebar-item">
     <router-link to="/" class="sidebar-text">
       <!-- <IconamoonHome class="sidebar-icon" /> -->
       Home
