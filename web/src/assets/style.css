@@ -96,7 +96,7 @@ input[type='text']:focus {
 
 .sidebar-group {
   overflow-y: hidden;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .sidebar-link {
@@ -125,9 +125,9 @@ input[type='text']:focus {
   height: 58px;
 }
 
-.sidebar-menu-group {
+/* .sidebar-menu-group {
   margin-left: var(--sidebar-padding);
-}
+} */
 
 .sidebar-icon {
   width: 21px;
@@ -135,13 +135,15 @@ input[type='text']:focus {
 }
 
 .sidebar-icon-logo {
-  width: 58px;
-  height: 58px;
+  width: 52px;
+  height: 52px;
 }
 
 .sidebar-info {
-  padding: var(--sidebar-padding) var(--layout-padding);
   font-weight: 600;
+  padding: var(--layout-padding);
+  padding-bottom: var(--sidebar-padding);
+  margin-top: var(--element-padding);
 }
 
 .sidebar-info, .sidebar-info svg {
@@ -159,12 +161,11 @@ input[type='text']:focus {
 
 .navbar {
   position: fixed;
-  height: 58px;
+  height: 78px;
   width: -webkit-fill-available;
   padding: var(--layout-padding);
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .navbar-button {
@@ -204,17 +205,17 @@ input[type='text']:focus {
 }
 
 .text-description {
-    color: var(--dark-text-2);
-    font-size: smaller;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  color: var(--dark-text-2);
+  font-size: smaller;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-grid {
-  padding: 7%;
+  padding: 10%;
   padding-top: 0;
-  margin-top: 100px;
+  margin-top: 120px;
   margin-bottom: 112.8px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));

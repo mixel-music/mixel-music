@@ -32,9 +32,9 @@
           </div>
         </Transition>
         <button class="player-button" title="Volume" @click="MuteTrack">
-          <IconamoonVolumeOff v-if="this.Music.muted" />
-          <IconamoonVolumeUp v-else-if="VolumeRangeValue >= 50" />
-          <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50" />
+          <IconamoonVolumeUp v-if="VolumeRangeValue >= 50" />
+          <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50 && VolumeRangeValue != 0" />
+          <IconamoonVolumeOff v-else />
         </button>
       </div>
       <button class="player-button" v-bind="{ title: Repeat == 0 || Repeat == 1 ? 'Repeat' : 'Repeat one' }" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">

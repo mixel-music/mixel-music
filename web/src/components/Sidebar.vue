@@ -1,9 +1,9 @@
 <template>
-  <div class="sidebar-menu sidebar-menu-logo">
+  <!-- <div class="sidebar-menu sidebar-menu-logo">
     <RouterLink to ="/" class="sidebar-link-logo">
       <img src="/tamaya.svg" class="sidebar-icon sidebar-icon-logo">
     </RouterLink>
-  </div>
+  </div> -->
   <div class="sidebar-menu">
     <RouterLink to ="/" class="sidebar-link">
       <IconamoonHome class="sidebar-icon" />
