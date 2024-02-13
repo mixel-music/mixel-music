@@ -7,6 +7,7 @@ from .func import *
 from .tags import *
 from .conn import *
 
+import hashlib
 import sqlalchemy
 
 import aiofiles

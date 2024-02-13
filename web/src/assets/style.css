@@ -87,7 +87,7 @@ input[type='text']:focus {
 /* sidebar */
 
 .sidebar {
-  width: 260px;
+  width: 300px;
   background-color: var(--dark-color-2);
   border-right: 1px solid var(--dark-border);
   position: fixed;

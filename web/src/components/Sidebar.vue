@@ -4,26 +4,44 @@
       <img src="/tamaya.svg" class="sidebar-icon sidebar-icon-logo">
     </RouterLink>
   </div> -->
-  <div class="sidebar-menu">
-    <RouterLink to ="/" class="sidebar-link">
-      <IconamoonHome class="sidebar-icon" />
-      &nbsp;
-      Home
-    </RouterLink>
-  </div>
-  <div class="sidebar-menu">
-    <RouterLink to ="/account" class="sidebar-link">
-      <IconamoonProfile class="sidebar-icon" />
-      &nbsp;
-      Account
-    </RouterLink>
-  </div>
-  <div class="sidebar-menu">
-    <RouterLink to ="/settings" class="sidebar-link">
-      <IconamoonSettings class="sidebar-icon" />
-      &nbsp;
-      Settings
-    </RouterLink>
+  <div class="sidebar-group">
+    <div class="sidebar-info" @click="ToggleMenu('Browse')">
+      Tamaya
+      <IconamoonArrowUp2Bold v-if="ToggleBrowse" />
+      <IconamoonArrowDown2Bold v-else />
+    </div>
+    <Transition name="SidebarFade">
+      <div class="MenuTransition" :class="{ MenuTransitionHidden: !ToggleBrowse }">
+        <div class="sidebar-menu">
+          <RouterLink to ="/" class="sidebar-link">
+            <IconamoonHome class="sidebar-icon" />
+            &nbsp;
+            Home
+          </RouterLink>
+        </div>
+        <div class="sidebar-menu">
+          <RouterLink to ="/account" class="sidebar-link">
+            <IconamoonProfile class="sidebar-icon" />
+            &nbsp;
+            Account
+          </RouterLink>
+        </div>
+        <div class="sidebar-menu">
+          <RouterLink to ="/settings" class="sidebar-link">
+            <IconamoonSettings class="sidebar-icon" />
+            &nbsp;
+            Settings
+          </RouterLink>
+        </div>
+        <!-- <div class="sidebar-menu sidebar-menu-group">
+          <RouterLink to="/" class="sidebar-link sidebar-link-group">
+            <IconamoonHeadphone class="sidebar-icon" />
+            &nbsp;
+            Mixes
+          </RouterLink>
+        </div> -->
+      </div>
+    </Transition>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-info" @click="ToggleMenu('Browse')">

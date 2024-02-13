@@ -1,15 +1,15 @@
 <template>
   <div class="card-grid">
-    <div class="card" v-for="(track, index) in list" :key="index" @click="this.$emit('SelectTrack', track[0], track[1], track[2], track[3]);">
+    <div class="card" v-for="(track, index) in list" :key="index" @click="this.$emit('SelectTrack', track['title'], track['album'], track['artist'], track['id']);">
       <div class="card-image">
         
       </div>
       <div class="card-content">
         <a class="text-title">
-          {{ track[0] }}
+          {{ track['title'] }}
         </a>
         <a class="text-description">
-          {{ track[2] }}
+          {{ track['artist'] }}
         </a>
       </div>
     </div>
