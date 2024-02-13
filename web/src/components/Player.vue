@@ -1,19 +1,19 @@
 <template>
   <div class="player">
     <div class="player-left">
-      <p class="text-title" v-bind="{ title: Artist + ' - ' + Title }">{{ Title }}</p>
-      <p class="text-description" v-bind="{ title: Artist + ' - ' + Title }" v-if="Title">{{ Artist }} - {{ Album }}</p>
+      <p class="text-title" v-bind="{ title: Title }">{{ Title }}</p>
+      <p class="text-description" v-bind="{ title: Artist + ' - ' + Album }" v-if="Title">{{ Artist }} - {{ Album }}</p>
       <p class="text-description" v-bind="{ title: LengthNowFormatted + ' / ' + LengthFormatted }" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
     </div>
     <div class="player-center">
-      <button class="player-button" title="Previous track" @click="PreviousTrack">
+      <button class="player-button" title="Previous" @click="PreviousTrack">
         <IconamoonPlayerStartFill />
       </button>
       <button class="player-button player-button-primary" v-bind="{ title: IsPlayNow ? 'Pause' : 'Play' }" @click="ToggleTrack">
         <IconamoonPlayerPauseFill v-if="IsPlayNow" />
         <IconamoonPlayerPlayFill v-else="IsPlayNow" />
       </button>
-      <button class="player-button" title="Next track" @click="NextTrack">
+      <button class="player-button" title="Next" @click="NextTrack">
         <IconamoonPlayerEndFill />
       </button>
       <div class="player-range" @click="LengthSeek($event)" @mousedown="LengthDragStart($event)" @mouseup="DragStop">
@@ -23,35 +23,29 @@
       </div>
     </div>
     <div class="player-right">
-      <div class="player-volume" v-bind="{ title: VolumeRangeValue + '%' }" @mouseover="this.VolumeNowEnable = true" @mouseleave="this.VolumeNowEnable = false">
+      <div class="player-volume" @mouseover="this.VolumeNowEnable = true" @mouseleave="this.VolumeNowEnable = false">
         <Transition name="ElementFade">
-          <div class="player-range" v-if="(VolumeNowEnable || !IsLengthDragNow && IsDragNow)" @click="VolumeSeek($event)" @mousedown="VolumeDragStart($event)" @mouseup="DragStop">
+          <div class="player-range" v-bind="{ title: VolumeRangeValue + '%' }" v-if="(VolumeNowEnable || !IsLengthDragNow && IsDragNow)" @click="VolumeSeek($event)" @mousedown="VolumeDragStart($event)" @mouseup="DragStop">
             <div class="player-range-volume">
               <div class="player-range-now" :style="{ 'width': VolumeRangeValue + '%' }"></div>
             </div>
           </div>
         </Transition>
-        <button class="player-button" @click="MuteTrack">
+        <button class="player-button" title="Volume" @click="MuteTrack">
           <IconamoonVolumeOff v-if="this.Music.muted" />
           <IconamoonVolumeUp v-else-if="VolumeRangeValue >= 50" />
           <IconamoonVolumeDown v-else-if="VolumeRangeValue < 50" />
         </button>
       </div>
-      <button class="player-button" v-bind="{ title: Repeat == 0 || Repeat == 1 ? 'Repeat' : 'Repeat One' }" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">
+      <button class="player-button" v-bind="{ title: Repeat == 0 || Repeat == 1 ? 'Repeat' : 'Repeat one' }" :class="{ 'button-disabled': Repeat == 0 }" @click="RepeatTracks()">
         <IconamoonPlaylistRepeatList v-if="Repeat == 0 || Repeat == 1"/>
         <IconamoonPlaylistRepeatSong v-else />
       </button>
-      <button class="player-button" :class="{ 'button-disabled': !Shuffle }" @click="Shuffle = true">
+      <button class="player-button" title="Shuffle" :class="{ 'button-disabled': !Shuffle }" @click="Shuffle = true">
         <IconamoonPlaylistShuffle />
       </button>
-      <button class="player-button">
-        <IconamoonHeart />
-      </button>
-      <button class="player-button">
+      <button class="player-button" title="Play queue">
         <IconamoonPlaylist />
-      </button>
-      <button class="player-button">
-        <IconamoonMenuKebabHorizontal />
       </button>
     </div>
   </div>
