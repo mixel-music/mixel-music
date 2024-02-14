@@ -30,7 +30,7 @@ class PathTool:
     @staticmethod
     def file_names(*args: str) -> list:
         """
-        Return the file name, file name without suffix and suffix.
+        Return the file name, file name without suffix, and suffix.
         """
         root_dir = (Path(__file__).resolve()).parents[2]
         home_dir = root_dir

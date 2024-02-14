@@ -4,7 +4,6 @@ import subprocess
 
 from api import *
 from core import *
-from utils import *
 
 logging.basicConfig(
     filename=PathTool.abs_path('conf', '.log'),
@@ -26,14 +25,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    # await connect_database()
-    # subprocess.Popen(["python", "scan.py"])
-    pass
+    await connect_database()
+    # subprocess.Popen(["python", "watch.py"])
 
 @app.on_event("shutdown")
 async def shutdown():
-    # await disconnect_database()
-    pass
+    await disconnect_database()
 
 # app.include_router(api.albums.router, prefix="/api")
 # app.include_router(list.router, prefix="/api")
