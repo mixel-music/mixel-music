@@ -3,22 +3,25 @@ from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 from mutagen.flac import FLAC
 from mutagen.wave import WAVE
-from pathlib import Path
+from .path import *
 
-class ExtractMediaTag:
-    def __init__(self, path: Path):
-        self.file_path = Path(path)
-        self.file_name = Path(path).stem
-        self.file_extension = Path(path).suffix.lower()
+class TagsTool:
+    """
+    Extract and return music tags if possible.
+    """
+    def __init__(self, path: str):
+        self.file_path = path
+        self.file_name = PathTool.file_names(path)[1]
+        self.file_suffix = PathTool.file_names(path)[2].lower()
 
-    def _check_extension(self):
-        if self.file_extension == '.mp3':
+    def _check_suffix(self):
+        if self.file_suffix == '.mp3':
             return self._extract_tags_mp3()
-        elif self.file_extension == '.mp4':
+        elif self.file_suffix == '.mp4':
             return self._extract_tags_mp4()
-        elif self.file_extension == '.wav':
+        elif self.file_suffix == '.wav':
             return self._extract_tags_wave()
-        elif self.file_extension == '.flac':
+        elif self.file_suffix == '.flac':
             return self._extract_tags_flac()
 
     def _extract_tags_mp3(self):
@@ -151,6 +154,6 @@ class ExtractMediaTag:
         return music_tags_data
     
     @classmethod
-    def extract_tags(cls, file_path):
-        extract_call = cls(file_path)
-        return extract_call._check_extension()
+    def extract_tags(cls, path: str) -> dict:
+        extract_call = cls(path)
+        return extract_call._check_suffix()
