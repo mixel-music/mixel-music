@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import subprocess
-
 from api import stream
 from core import *
+import asyncio
 
 logging.basicConfig(
     filename=PathTools.abs_path('conf', '.log'),
@@ -26,13 +25,10 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     await connect_database()
-    #subprocess.Popen(["core", "scan.py"])
-    pass
+    asyncio.create_task(scan())
 
 @app.on_event("shutdown")
 async def shutdown():
     await disconnect_database()
-    pass
     
 app.include_router(stream.router, prefix="/api")
-# app.include_router(list.router, prefix="/api")
