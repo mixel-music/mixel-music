@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import subprocess
 
-from api import *
+from api import stream
 from core import *
 
 logging.basicConfig(
-    filename=PathTool.abs_path('conf', '.log'),
+    filename=PathTools.abs_path('conf', '.log'),
     encoding='utf-8',
     level=logging.DEBUG,
     format='[%(levelname)s] %(message)s',
@@ -26,11 +26,13 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     await connect_database()
-    # subprocess.Popen(["python", "watch.py"])
+    #subprocess.Popen(["core", "scan.py"])
+    pass
 
 @app.on_event("shutdown")
 async def shutdown():
     await disconnect_database()
-
-# app.include_router(api.albums.router, prefix="/api")
+    pass
+    
+app.include_router(stream.router, prefix="/api")
 # app.include_router(list.router, prefix="/api")
