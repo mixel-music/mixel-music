@@ -25,7 +25,10 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     await connect_database()
-    asyncio.create_task(scan())
+    try:
+        asyncio.create_task(scan())
+    except KeyboardInterrupt:
+        pass
 
 @app.on_event("shutdown")
 async def shutdown():

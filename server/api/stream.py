@@ -6,6 +6,13 @@ router = APIRouter()
 @router.get("/stream/{id}")
 async def api_stream(id: str, range: str = Header(None)):
     music_path = await get_path_from_id(id)
+    
+    if not music_path:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    if music_path is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
     music_info = await Tracks.info_track(id)
 
     music_mime = music_info.get('mime')

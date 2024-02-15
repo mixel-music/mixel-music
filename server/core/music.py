@@ -10,7 +10,7 @@ class Tracks:
         self.tags = None
         self.id = None
 
-    async def lookup_track(self):
+    async def find_track(self):
         self.id = PathTools.get_id(self.path)
         find_id_select = music.select().where(music.c.id == self.id)
         find_id_result = await database.fetch_one(find_id_select)
@@ -19,7 +19,7 @@ class Tracks:
             logging.debug("Found new track! path: %s, id: %s", self.path, self.id)
             await self.insert_track()
         else:
-            logging.debug("Found music id from database! MD5: %s", self.id)
+            logging.debug("Music id: %s", self.id)
 
     @staticmethod
     async def info_track(id: str) -> dict:
@@ -42,7 +42,8 @@ class Tracks:
         pass
 
     async def delete_track(self):
-        pass
+        query = music.delete().where(music.c.id == self.id)
+        await database.execute(query)
 
 class Albums:
     def __init__(self, path: str):

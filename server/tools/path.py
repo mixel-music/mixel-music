@@ -36,13 +36,13 @@ class PathTools:
         home_dir = cls._root_dir
 
         if not args:
-            raise ValueError('Empty parameters')
+            return None
 
         for arg in args:
             home_dir = home_dir / arg
 
         if not home_dir.is_file():
-            raise ValueError("Incorrect path")
+            return None
         
         file_name = home_dir.name
         file_stem = home_dir.stem

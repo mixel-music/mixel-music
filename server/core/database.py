@@ -101,6 +101,6 @@ async def get_path_from_id(value: str) -> Path:
         path = PathTools.abs_path(result['path'])
         return path
     else:
-        raise ValueError(f"Music ID {value} not found.")
+        return None
     
     return path
