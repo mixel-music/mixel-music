@@ -1,6 +1,9 @@
 __pycache__
-library
-test
+
+.discard
+conf/*
+library/*
+server/test
 *.db
 *.env
 *.log

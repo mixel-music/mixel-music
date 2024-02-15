@@ -1,10 +1,12 @@
-from utils import *
-
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import subprocess
-import stream, list
+
+from api import stream
+from core import *
 
 logging.basicConfig(
-    filename=get_absolute_path('.log'),
+    filename=PathTools.abs_path('conf', '.log'),
     encoding='utf-8',
     level=logging.DEBUG,
     format='[%(levelname)s] %(message)s',
@@ -24,15 +26,13 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     await connect_database()
-    subprocess.Popen(["python", "scan.py"])
+    #subprocess.Popen(["core", "scan.py"])
+    pass
 
 @app.on_event("shutdown")
 async def shutdown():
     await disconnect_database()
-
-@app.get('/favicon.ico', include_in_schema=False)
-async def favicon():
-    return FileResponse(get_absolute_path('data') / 'favicon.ico')
-
+    pass
+    
 app.include_router(stream.router, prefix="/api")
-app.include_router(list.router, prefix="/api")
+# app.include_router(list.router, prefix="/api")
