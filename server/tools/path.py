@@ -1,8 +1,6 @@
 from pathlib import Path
+import aiofiles
 import hashlib
-
-global allow_suffix
-allow_suffix = ['.mp3', '.flac', '.wav', '.m4a', '.mp4', '.alac', '.opus']
 
 class PathTools:
     _root_dir = (Path.cwd().resolve()).parent
@@ -57,9 +55,9 @@ class PathTools:
 
         return [file_name, file_stem, file_suffix]
     
-    @staticmethod
+    """@staticmethod
     def is_music(value: Path) -> bool:
         if value.suffix in allow_suffix:
             return True
         else:
-            return False
+            return False"""

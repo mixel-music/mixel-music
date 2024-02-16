@@ -1,7 +1,7 @@
 __pycache__
 
 .discard
-conf/*
+data/*
 library/*
 server/test
 *.db

@@ -1,17 +1,17 @@
 from watchfiles import Change, awatch
-from tools import *
-from .music import *
-
-target_path = PathTools.abs('library')
+from model.database import *
+from model.image import *
+from model.music import *
+from tools.path import *
 
 class ScanTools:
-    @staticmethod
-    async def manual_scan():
+    _target_path = PathTools.abs('library')
+
+    @classmethod
+    async def manual_scan(cls):
         logging.debug("Manual scan activated. Scanning...")
         target_file = []
-
-        for suffix in allow_suffix:
-            target_file += list(target_path.glob(f'**/*{suffix}'))
+        target_file += list(cls._target_path.glob('**/*'))
 
         if not target_file:
             query = music.delete()
@@ -25,26 +25,23 @@ class ScanTools:
 
         return None
 
-    @staticmethod
-    async def change_scan():
+    @classmethod
+    async def change_scan(cls):
         logging.debug("Starting...")
 
-        async for changes in awatch(target_path, recursive=True):
+        async for changes in awatch(cls._target_path, recursive=True):
             for change_type, path in changes:
                 file_path = Path(path)
-
-                if change_type == Change.deleted and not file_path.suffix:
+                if file_path.is_dir and change_type == Change.deleted:
                     await ScanTools.delete_dir(file_path)
                     continue
-
-                if PathTools.is_music(file_path):
-                    if change_type == Change.modified:
-                        await ScanTools.modify_file(file_path)
-                        continue
-                    elif change_type == Change.added:
-                        await ScanTools.create_file(file_path)
-                    elif change_type == Change.deleted:
-                        await ScanTools.delete_file(file_path)
+                elif change_type == Change.modified:
+                    await ScanTools.modify_file(file_path)
+                    continue
+                elif change_type == Change.added:
+                    await ScanTools.create_file(file_path)
+                elif change_type == Change.deleted:
+                    await ScanTools.delete_file(file_path)
 
     @staticmethod
     async def create_file(file_path: Path):

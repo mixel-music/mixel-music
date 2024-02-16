@@ -1,12 +1,9 @@
-from mutagen import File
+from mutagen import File, MutagenError
 from datetime import datetime
-from .path import *
+from tools.path import *
 import mutagen
-import logging
 
-"""
-TODO: code refactoring
-"""
+# 코드 모듈화 및 갈아 엎을 필요 있음
 
 def safe_int(value: int) -> int:
     try:
@@ -16,7 +13,12 @@ def safe_int(value: int) -> int:
 
 def TagsTools(music_path: Path, list_tags: list) -> dict:
     rel_path = PathTools.std(music_path)
-    get_tags = mutagen.File(music_path)
+
+    try:
+        get_tags = mutagen.File(music_path)
+    except:
+        return None
+    
     tags_dict = {}
 
     if not get_tags:
