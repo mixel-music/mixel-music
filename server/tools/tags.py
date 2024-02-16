@@ -1,5 +1,6 @@
-from mutagen import File, MutagenError
+from mutagen import File
 from datetime import datetime
+from model.model_images import *
 from tools.path import *
 import mutagen
 
@@ -11,7 +12,7 @@ def safe_int(value: int) -> int:
     except ValueError:
         return 0
 
-def TagsTools(music_path: Path, list_tags: list) -> dict:
+async def TagsTools(music_path: Path, list_tags: list) -> dict:
     rel_path = PathTools.std(music_path)
 
     try:
@@ -57,8 +58,16 @@ def TagsTools(music_path: Path, list_tags: list) -> dict:
     else:
         tags_dict['compilation'] = True
 
+    image = ImageManagement(rel_path)
+    image_data = await image.image_bin()
+    if not image_data is None:
+        image_data = hashlib.md5(image_data).hexdigest().upper()
+    else:
+        image_data = ''
+
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
+    tags_dict['image_id'] = image_data
 
     if tags_dict['title'] == '': tags_dict['title'] = PathTools.get_filename(rel_path)[1]
     if tags_dict['artist'] == '': tags_dict['artist'] = 'Unknown Artist'

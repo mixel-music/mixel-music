@@ -1,7 +1,7 @@
 from watchfiles import Change, awatch
 from model.database import *
-from model.image import *
-from model.music import *
+from model.model_images import *
+from model.model_tracks import *
 from tools.path import *
 
 class ScanTools:
@@ -61,5 +61,18 @@ class ScanTools:
     @staticmethod
     async def delete_dir(dir_path: Path):
         diff_path = PathTools.std(dir_path)
+        query_image = music.select().with_only_columns([music.c.image_id]).where(music.c.path.like(f'{diff_path}%'))
+        result = await database.fetch_one(query_image)
+
+        if not result:
+            return None
+        
+        prefix = result['image_id']
+        image_path = PathTools.abs('data', 'images')
+
+        for file in image_path.glob(f"{prefix}*"):
+            if file.is_file():
+                file.unlink(missing_ok=True)
+
         query = music.delete().where(music.c.path.like(f'{diff_path}%'))
         await database.execute(query)

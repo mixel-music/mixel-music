@@ -17,11 +17,11 @@ class ImageManagement:
             self.id = PathTools.get_md5_hash(path)
             self.str_path = path
             self.task_path = PathTools.abs(path)
-            self.save_path = PathTools.abs('data') / 'images' / self.id
+            self.save_path = PathTools.abs('data') / 'images'
             self.suffix = PathTools.get_filename(path)[2].lower()
             self.image_data = None
 
-    async def image_type(self):
+    async def image_bin(self):
         if self.suffix == '.mp3':
             self.image_data = await self.image_mp3()
         elif self.suffix == '.mp4' or self.suffix == '.m4a' or self.suffix == '.aac':
@@ -36,21 +36,30 @@ class ImageManagement:
             self.image_data = await self.image_aiff()
 
         if self.image_data is not None:
-            await self.image_process()
+            return self.image_data
         else:
             return None
 
-    async def image_process(self):
+    async def image_add(self):
         suffix = imghdr.what(io.BytesIO(self.image_data))
+        hash = hashlib.md5(self.image_data).hexdigest().upper()
         original_image = Image.open(io.BytesIO(self.image_data))
-        original_image.save(self.save_path.as_posix() + f"_orig.{suffix}", format=suffix)
+        original_image_name = self.save_path / f"{hash}_orig.{suffix}"
+
+        if Path(original_image_name).exists():
+            return None
+        
+        original_image.save(original_image_name.as_posix(), format=suffix)
 
         for size in image_resizes:
             image = original_image.copy()
             image.thumbnail(size, Image.Resampling.LANCZOS)
+            thumb_image_name = self.save_path / f"{hash}_{size[0]}_{size[1]}.{suffix}"
 
-            thumb_name = self.save_path.as_posix() + f"_{size[0]}_{size[1]}.{suffix}"
-            image.save(thumb_name, format=suffix)
+            if Path(thumb_image_name).exists():
+                return None
+
+            image.save(thumb_image_name.as_posix(), format=suffix)
 
     async def image_mp3(self):
         audio = ID3(self.task_path)

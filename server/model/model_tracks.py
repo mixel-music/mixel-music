@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
+from model.model_images import *
+from model.model_tracks import *
 from model.database import *
-from model.image import *
 from tools.path import *
 from tools.tags import *
 
@@ -54,7 +55,7 @@ class Tracks:
             return dict(self.music) if self.music is not None else {}
 
     async def insert(self):
-        self.tags = TagsTools(self.abs_path, list_tags)
+        self.tags = await TagsTools(self.abs_path, list_tags)
         
         if not self.tags:
             logging.debug("Error: can't read audio metadata")
@@ -62,8 +63,10 @@ class Tracks:
         elif not self.tags is None:
             await database.execute(query=music.insert().values(self.tags))
             logging.debug('Insert music data complete!')
+
             image = ImageManagement(self.str_path)
-            await image.image_type()
+            await image.image_bin()
+            await image.image_add()
 
         return None
 
@@ -77,7 +80,7 @@ class Tracks:
         elif not result is None:
             create_date = result['createdate']
 
-            self.tags = TagsTools(self.abs_path, list_tags)
+            self.tags = await TagsTools(self.abs_path, list_tags)
             self.tags['createdate'] = create_date
 
             query = music.update().where(music.c.path == self.str_path).values(self.tags)
@@ -86,6 +89,20 @@ class Tracks:
         return None
 
     async def delete(self):
+        query = music.select().with_only_columns([music.c.image_id]).where(music.c.id == self.id)
+        result = await database.fetch_one(query)
+
+        if not result:
+            return None
+        
+        prefix = result['image_id']
+        image_path = PathTools.abs('data', 'images')
+
+        for file in image_path.glob(f"{prefix}*"):
+            if file.is_file():
+                print(f"Removing file: {file}")
+                file.unlink(missing_ok=True)
+
         try:
             query = music.delete().where(music.c.id == self.id)
             await database.execute(query=query)
