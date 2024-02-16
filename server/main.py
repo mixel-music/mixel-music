@@ -25,7 +25,12 @@ app.add_middleware(
 async def startup():
     await connect_database()
     try:
-        asyncio.create_task(ScanTools.scan())
+        asyncio.create_task(ScanTools.manual_scan())
+    except KeyboardInterrupt:
+        pass
+
+    try:
+        asyncio.create_task(ScanTools.change_scan())
     except KeyboardInterrupt:
         pass
 

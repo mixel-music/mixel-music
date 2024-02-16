@@ -92,11 +92,11 @@ async def disconnect_database():
     await database.disconnect()
 
 async def get_abs_path_from_id(value: str) -> Path:
-    query = music.select().where(music.c.id == value)
+    query = music.select().with_only_columns([music.c.path]).where(music.c.id == value)
     result = await database.fetch_one(query)
 
     if result is not None:
-        path = PathTools.abs(result['path'])
+        path = PathTools.abs(result.path)
         return path
     else:
         return None

@@ -1,6 +1,9 @@
 from pathlib import Path
 import hashlib
 
+global allow_suffix
+allow_suffix = ['.mp3', '.flac', '.wav', '.m4a', '.mp4', '.alac', '.opus']
+
 class PathTools:
     _root_dir = (Path.cwd().resolve()).parent
 
@@ -35,49 +38,27 @@ class PathTools:
         return hash
     
     @classmethod
-    def get_filename(cls, *args: Path | str) -> list:
-
+    def get_filename(cls, *args: str) -> list:
         home_dir = cls._root_dir
 
-        if args.__class__ is Path:
-            file_name = home_dir.name
-            file_stem = home_dir.stem
-            file_suffix = home_dir.suffix
+        for arg in args:
+            home_dir = home_dir / arg
 
-            if home_dir.suffix == '' and home_dir.stem.startswith('.'):
-                file_stem = ''
-                file_suffix = home_dir.stem
-
-            return [file_name, file_stem, file_suffix]
-        elif args.__class__ is str:
-            for arg in args:
-                home_dir = home_dir / arg
-
-            if not home_dir.is_file():
-                return None
-            
-            file_name = home_dir.name
-            file_stem = home_dir.stem
-            file_suffix = home_dir.suffix
-            
-            if home_dir.suffix == '' and home_dir.stem.startswith('.'):
-                file_stem = ''
-                file_suffix = home_dir.stem
-
-            return [file_name, file_stem, file_suffix]
-        else:
+        if not home_dir.is_file():
             return None
+            
+        file_name = home_dir.name
+        file_stem = home_dir.stem
+        file_suffix = home_dir.suffix
+            
+        if home_dir.suffix == '' and home_dir.stem.startswith('.'):
+            file_stem = ''
+            file_suffix = home_dir.stem
+
+        return [file_name, file_stem, file_suffix]
     
     @staticmethod
-    def is_music(value: Path | str) -> bool:
-        allow_suffix = ['.mp3', '.flac', '.wav', '.m4a', '.mp4', '.alac', '.opus']
-
-        if value.__class__ is str:
-            try:
-                Path(value)
-            except:
-                return False
-
+    def is_music(value: Path) -> bool:
         if value.suffix in allow_suffix:
             return True
         else:

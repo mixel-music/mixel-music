@@ -58,7 +58,7 @@ def TagsTools(music_path: Path, list_tags: list) -> dict:
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
 
-    if tags_dict['title'] == '': tags_dict['title'] = PathTools.get_filenames(rel_path)[1]
+    if tags_dict['title'] == '': tags_dict['title'] = PathTools.get_filename(rel_path)[1]
     if tags_dict['artist'] == '': tags_dict['artist'] = 'Unknown Artist'
     if tags_dict['album'] == '': tags_dict['album'] = 'Unknown Album'
     if tags_dict['year'] == '': tags_dict['year'] = 0
