@@ -1,9 +1,7 @@
 from tools import *
 
-db_abs_path = PathTools.abs_path('conf', 'tamaya.db')
-db_abs_path_str = db_abs_path.as_posix()
-
-DATABASE_URL = "sqlite:///" + db_abs_path_str
+db_url = PathTools.abs('data', 'tamaya.db').as_posix()
+DATABASE_URL = "sqlite:///" + db_url
 metadata = sqlalchemy.MetaData()
 
 music = sqlalchemy.Table(
@@ -76,7 +74,7 @@ music = sqlalchemy.Table(
     sqlalchemy.Column("year", sqlalchemy.Integer, nullable=False),
 )
 
-if not db_abs_path.exists():
+if not Path(db_url).exists():
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
     )
@@ -93,14 +91,12 @@ async def connect_database():
 async def disconnect_database():
     await database.disconnect()
 
-async def get_path_from_id(value: str) -> Path:
+async def get_abs_path_from_id(value: str) -> Path:
     query = music.select().where(music.c.id == value)
     result = await database.fetch_one(query)
 
     if result is not None:
-        path = PathTools.abs_path(result['path'])
+        path = PathTools.abs(result['path'])
         return path
     else:
         return None
-    
-    return path

@@ -1,11 +1,11 @@
 from tools import *
-from core import *
+from model import *
 
 router = APIRouter()
 
 @router.get("/stream/{id}")
 async def api_stream(id: str, range: str = Header(None)):
-    music_path = await get_path_from_id(id)
+    music_path = await get_abs_path_from_id(id)
     
     if not music_path:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -13,7 +13,7 @@ async def api_stream(id: str, range: str = Header(None)):
     if music_path is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-    music_info = await Tracks.info_track(id)
+    music_info = await Tracks(id)
 
     music_mime = music_info.get('mime')
     music_size = music_info.get('size')
@@ -28,7 +28,7 @@ async def api_stream(id: str, range: str = Header(None)):
         music_end = music_start + music_chunk
 
     music_end = min(music_end, music_size - 1) # ensure it does not exceed the file size
-    logging.info('Load partical assets: %s', PathTools.file_names(music_path)[1])
+    logging.info('Load partical assets: %s', PathTools.get_filenames(music_path)[1])
 
     async with aiofiles.open(music_path, mode="rb") as music_file:
         await music_file.seek(music_start)

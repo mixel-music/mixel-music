@@ -4,6 +4,10 @@ from .path import *
 import mutagen
 import logging
 
+"""
+TODO: code refactoring
+"""
+
 def safe_int(value: int) -> int:
     try:
         return int(value)
@@ -11,7 +15,7 @@ def safe_int(value: int) -> int:
         return 0
 
 def TagsTools(music_path: Path, list_tags: list) -> dict:
-    rel_path = PathTools.get_path(music_path)
+    rel_path = PathTools.std(music_path)
     get_tags = mutagen.File(music_path)
     tags_dict = {}
 
@@ -44,7 +48,7 @@ def TagsTools(music_path: Path, list_tags: list) -> dict:
         elif key == "path":
             tags_dict[key] = rel_path
         elif key == "id":
-            tags_dict[key] = PathTools.get_id(rel_path)
+            tags_dict[key] = PathTools.get_md5_hash(rel_path)
 
     if tags_dict['compilation'] == '':
         tags_dict['compilation'] = False
@@ -54,15 +58,15 @@ def TagsTools(music_path: Path, list_tags: list) -> dict:
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
 
-    if tags_dict['title'] == '': tags_dict['title'] = PathTools.file_names(rel_path)[1]
+    if tags_dict['title'] == '': tags_dict['title'] = PathTools.get_filenames(rel_path)[1]
     if tags_dict['artist'] == '': tags_dict['artist'] = 'Unknown Artist'
     if tags_dict['album'] == '': tags_dict['album'] = 'Unknown Album'
     if tags_dict['year'] == '': tags_dict['year'] = 0
     if tags_dict['bpm'] == '': tags_dict['bpm'] = 0
 
     tags_dict['createdate'] = datetime.now()
-    tags_dict['albumid'] = PathTools.get_id(tags_dict['album'])
-    tags_dict['artistid'] = PathTools.get_id(tags_dict['artist'])
+    tags_dict['albumid'] = PathTools.get_md5_hash(tags_dict['album'])
+    tags_dict['artistid'] = PathTools.get_md5_hash(tags_dict['artist'])
 
     lyrics_value = tags_dict['lyrics'] or tags_dict['unsyncedlyrics']
     tags_dict['lyrics'] = lyrics_value[0] if isinstance(lyrics_value, list) else lyrics_value or {}
@@ -77,77 +81,3 @@ def TagsTools(music_path: Path, list_tags: list) -> dict:
     tags_dict.pop('totaltracks')
 
     return tags_dict
-
-#     if tags_dict['year'] == None and  
-            
-#     return tags_dict
-
-# """
-#     file_tags = [
-#         "album",
-#         "albumid",
-#         "albumsort",
-#         "albumartist",
-#         "albumartistsort",
-#         "artist",
-#         "artistid",
-#         "artistsort",
-#         "barcode",
-#         "bitrate",
-#         "bpm",
-#         "catalognumber",
-#         "channels",
-#         "comment",
-#         "compilation",
-#         "composer",
-#         "composersort",
-#         "conductor",
-#         "contentgroup",
-#         "copyright",
-#         "createdate",
-#         "date",
-#         "description",
-#         "discnumber",
-#         "disctotal",
-#         "duration",
-#         "genre",
-#         "grouping",
-#         "id",
-#         "involved_people",
-#         "isrc",
-#         "label",
-#         "language",
-#         "lyricist",
-#         "lyrics", 
-#         "mime",
-#         "mix_artist",
-#         "musicbrainz_albumartistid",
-#         "musicbrainz_albumid",
-#         "musicbrainz_albumtype",
-#         "musicbrainz_artistid",
-#         "musicbrainz_discid", 
-#         "musicbrainz_originalalbumid",
-#         "musicbrainz_originalartistid",
-#         "musicbrainz_releasegroupid",
-#         "musicbrainz_releasetrackid",
-#         "musicbrainz_trackid",
-#         "orignalalbum",
-#         "orignalartist",
-#         "orignallyricist",
-#         "orignalyear",
-#         "path",
-#         "publisher",
-#         "releasetype",
-#         "releasetime",
-#         "samplerate",
-#         "script",
-#         "setsubtitle",
-#         "size",
-#         "subtitle",
-#         "title",
-#         "titlesort",
-#         "tracknumber",
-#         "tracktotal",
-#         "year"
-#     ]
-# """

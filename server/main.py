@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api import stream
-from core import *
-import asyncio
+from routes import stream
+from model import *
 
 logging.basicConfig(
-    filename=PathTools.abs_path('conf', '.log'),
+    filename=PathTools.abs('data', '.log'),
     encoding='utf-8',
     level=logging.DEBUG,
     format='[%(levelname)s] %(message)s',
@@ -26,7 +25,7 @@ app.add_middleware(
 async def startup():
     await connect_database()
     try:
-        asyncio.create_task(scan())
+        asyncio.create_task(ScanTools.scan())
     except KeyboardInterrupt:
         pass
 

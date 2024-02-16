@@ -6,7 +6,7 @@ import sqlalchemy
 
 from pathlib import Path
 import aiofiles
-import hashlib
+import asyncio
 
 import logging
 import dotenv

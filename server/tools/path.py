@@ -5,7 +5,7 @@ class PathTools:
     _root_dir = (Path.cwd().resolve()).parent
 
     @classmethod
-    def get_path(cls, *args: str) -> str:
+    def std(cls, *args: str) -> str:
         """
         By default, Returns the POSIX relative path as a string from the application root to the selected directory; 'args' can include any subdirectory or filename within.
         """
@@ -17,48 +17,68 @@ class PathTools:
         return (home_dir.relative_to(cls._root_dir)).as_posix()
 
     @classmethod
-    def abs_path(cls, *args: str) -> Path:
+    def abs(cls, *args: str) -> Path:
         """
         By default, Returns the absolute path to the selected directory; 'args' can include any subdirectory or filename within.
         """
         home_dir = cls._root_dir
-        
+
         if args is None: return home_dir
         for arg in args: home_dir = home_dir / arg
 
         return home_dir
     
     @classmethod
-    def file_names(cls, *args: str) -> list:
-        """
-        Return the file name, file name without suffix, and suffix.
-        """
-        home_dir = cls._root_dir
-
-        if not args:
-            return None
-
-        for arg in args:
-            home_dir = home_dir / arg
-
-        if not home_dir.is_file():
-            return None
-        
-        file_name = home_dir.name
-        file_stem = home_dir.stem
-        file_suffix = home_dir.suffix
-        
-        if home_dir.suffix == '' and home_dir.stem.startswith('.'):
-            file_stem = ''
-            file_suffix = home_dir.stem
-
-        return [file_name, file_stem, file_suffix]
-    
-    @classmethod
-    def get_id(cls, value: str) -> str:
-        """
-        Create and return MD5 string.
-        """
+    def get_md5_hash(cls, value: str) -> str:
         hash = hashlib.md5(value.encode()).hexdigest().upper()
 
         return hash
+    
+    @classmethod
+    def get_filename(cls, *args: Path | str) -> list:
+
+        home_dir = cls._root_dir
+
+        if args.__class__ is Path:
+            file_name = home_dir.name
+            file_stem = home_dir.stem
+            file_suffix = home_dir.suffix
+
+            if home_dir.suffix == '' and home_dir.stem.startswith('.'):
+                file_stem = ''
+                file_suffix = home_dir.stem
+
+            return [file_name, file_stem, file_suffix]
+        elif args.__class__ is str:
+            for arg in args:
+                home_dir = home_dir / arg
+
+            if not home_dir.is_file():
+                return None
+            
+            file_name = home_dir.name
+            file_stem = home_dir.stem
+            file_suffix = home_dir.suffix
+            
+            if home_dir.suffix == '' and home_dir.stem.startswith('.'):
+                file_stem = ''
+                file_suffix = home_dir.stem
+
+            return [file_name, file_stem, file_suffix]
+        else:
+            return None
+    
+    @staticmethod
+    def is_music(value: Path | str) -> bool:
+        allow_suffix = ['.mp3', '.flac', '.wav', '.m4a', '.mp4', '.alac', '.opus']
+
+        if value.__class__ is str:
+            try:
+                Path(value)
+            except:
+                return False
+
+        if value.suffix in allow_suffix:
+            return True
+        else:
+            return False
