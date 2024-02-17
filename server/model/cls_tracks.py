@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
-from model.model_images import *
-from model.model_tracks import *
+from model.cls_images import *
+from model.cls_tracks import *
 from model.database import *
 from tools.path import *
 from tools.tags import *
@@ -11,13 +11,13 @@ list_tags = [column.name for column in music.columns]
 class Tracks:
     def __init__(self, path: str):
         self.str_path = path
-        self.abs_path = PathTools.abs(path)
-        self.id = PathTools.get_md5_hash(path)
+        self.abs_path = get_path(path, is_rel=False, is_str=False)
+        self.id = get_hash(path)
 
     @staticmethod
     async def get_list(num: int = 36) -> list:
         tracks_list = []
-        db_select = music.select().with_only_columns([music.c.title, music.c.artist, music.c.album, music.c.year])
+        db_select = music.select().with_only_columns([music.c.title, music.c.artist, music.c.album, music.c.year, music.c.id, music.c.albumid, music.c.artistid])
         db_result = await database.fetch_all(db_select)
 
         if not db_result:
@@ -96,7 +96,7 @@ class Tracks:
             return None
         
         prefix = result['image_id']
-        image_path = PathTools.abs('data', 'images')
+        image_path = get_path('data', 'images', is_rel=False, is_str=False)
 
         for file in image_path.glob(f"{prefix}*"):
             if file.is_file():

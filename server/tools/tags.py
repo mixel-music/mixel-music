@@ -1,6 +1,6 @@
 from mutagen import File
 from datetime import datetime
-from model.model_images import *
+from model.cls_images import *
 from tools.path import *
 import mutagen
 
@@ -13,7 +13,7 @@ def safe_int(value: int) -> int:
         return 0
 
 async def TagsTools(music_path: Path, list_tags: list) -> dict:
-    rel_path = PathTools.std(music_path)
+    rel_path = get_path(music_path)
 
     try:
         get_tags = mutagen.File(music_path)
@@ -51,7 +51,7 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
         elif key == "path":
             tags_dict[key] = rel_path
         elif key == "id":
-            tags_dict[key] = PathTools.get_md5_hash(rel_path)
+            tags_dict[key] = get_hash(rel_path)
 
     if tags_dict['compilation'] == '':
         tags_dict['compilation'] = False
@@ -69,15 +69,15 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
     tags_dict['image_id'] = image_data
 
-    if tags_dict['title'] == '': tags_dict['title'] = PathTools.get_filename(rel_path)[1]
+    if tags_dict['title'] == '': tags_dict['title'] = get_name(rel_path)[1]
     if tags_dict['artist'] == '': tags_dict['artist'] = 'Unknown Artist'
     if tags_dict['album'] == '': tags_dict['album'] = 'Unknown Album'
     if tags_dict['year'] == '': tags_dict['year'] = 0
     if tags_dict['bpm'] == '': tags_dict['bpm'] = 0
 
     tags_dict['createdate'] = datetime.now()
-    tags_dict['albumid'] = PathTools.get_md5_hash(tags_dict['album'])
-    tags_dict['artistid'] = PathTools.get_md5_hash(tags_dict['artist'])
+    tags_dict['albumid'] = get_hash(tags_dict['album'])
+    tags_dict['artistid'] = get_hash(tags_dict['artist'])
 
     lyrics_value = tags_dict['lyrics'] or tags_dict['unsyncedlyrics']
     tags_dict['lyrics'] = lyrics_value[0] if isinstance(lyrics_value, list) else lyrics_value or {}

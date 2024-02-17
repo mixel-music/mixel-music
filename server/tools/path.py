@@ -2,62 +2,49 @@ from pathlib import Path
 import aiofiles
 import hashlib
 
-class PathTools:
-    _root_dir = (Path.cwd().resolve()).parent
+root = (Path.cwd().resolve()).parent
 
-    @classmethod
-    def std(cls, *args: str) -> str:
-        """
-        By default, Returns the POSIX relative path as a string from the application root to the selected directory; 'args' can include any subdirectory or filename within.
-        """
-        home_dir = cls._root_dir
+def get_path(*args: str | Path, is_rel: bool = True, is_str: bool = True) -> str | Path:
+    """
+    애플리케이션의 루트 디렉터리, 디렉터리 및 파일 경로를 추상화하는 함수.
 
-        if args is None: return (home_dir.relative_to(cls._root_dir)).as_posix()
-        for arg in args: home_dir = home_dir / arg
+    Args:
+        *args (str, Path, optional): 디렉토리 혹은 파일명. Defaults to the app root dir.
+        is_rel (bool, optional): 루트 디렉토리에 대한 상대 경로를 반환. Defaults to True.
+        is_str (bool, optional): str 타입 반환, False 시 Path 타입 반환. Defaults to True.
+    """
+    home = root
 
-        return (home_dir.relative_to(cls._root_dir)).as_posix()
+    for arg in args:
+        home = home / arg
 
-    @classmethod
-    def abs(cls, *args: str) -> Path:
-        """
-        By default, Returns the absolute path to the selected directory; 'args' can include any subdirectory or filename within.
-        """
-        home_dir = cls._root_dir
+    if is_rel:
+        home = home.relative_to(root)
+    if is_str:
+        home = home.as_posix()
 
-        if args is None: return home_dir
-        for arg in args: home_dir = home_dir / arg
-
-        return home_dir
+    return home
     
-    @classmethod
-    def get_md5_hash(cls, value: str) -> str:
-        hash = hashlib.md5(value.encode()).hexdigest().upper()
-
-        return hash
+def get_hash(input_str: str) -> str:
+    return hashlib.md5(input_str.encode()).hexdigest().upper()
     
-    @classmethod
-    def get_filename(cls, *args: str) -> list:
-        home_dir = cls._root_dir
+def get_name(*args: str | Path) -> list:
+    if not args:
+        raise ValueError('get_name() needs a str or Path')
+    home = root
 
-        for arg in args:
-            home_dir = home_dir / arg
+    for arg in args:
+        home = home / arg
 
-        if not home_dir.is_file():
-            return None
-            
-        file_name = home_dir.name
-        file_stem = home_dir.stem
-        file_suffix = home_dir.suffix
-            
-        if home_dir.suffix == '' and home_dir.stem.startswith('.'):
-            file_stem = ''
-            file_suffix = home_dir.stem
+    if not home.is_file():
+        return None
+        
+    name = home.name
+    stem = home.stem
+    suffix = home.suffix
 
-        return [file_name, file_stem, file_suffix]
-    
-    """@staticmethod
-    def is_music(value: Path) -> bool:
-        if value.suffix in allow_suffix:
-            return True
-        else:
-            return False"""
+    if suffix == '' and stem.startswith('.'):
+        stem = ''
+        suffix = stem
+
+    return [name, stem, suffix]

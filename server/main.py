@@ -1,19 +1,30 @@
-from routes import stream, tracks, albums, artists, playlists
+from routes import albums, artists, images, playlists, stream, tracks
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from model.database import *
+from model.logger import *
 from model.scan import *
 from tools.path import *
+import uvicorn
 
-logging.basicConfig(
-    filename=PathTools.abs('data', '.log'),
-    encoding='utf-8',
-    level=logging.DEBUG,
-    format='[%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await connect_database()
+    try:
+        asyncio.create_task(ScanTools.manual_scan())
+        asyncio.create_task(ScanTools.folder_scan())
+    except KeyboardInterrupt:
+        pass
+    yield
+    await disconnect_database()
+
+app = FastAPI(
+    debug=True,
+    title="Tamaya",
+    version="0.1.0a",
+    lifespan=lifespan
 )
-
-app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,19 +33,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-async def startup():
-    await connect_database()
-    try:
-        asyncio.create_task(ScanTools.manual_scan())
-        asyncio.create_task(ScanTools.change_scan())
-    except KeyboardInterrupt:
-        pass
-
-@app.on_event("shutdown")
-async def shutdown():
-    await disconnect_database()
     
 app.include_router(stream.router, prefix="/api")
 app.include_router(tracks.router, prefix="/api")
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="127.0.0.1",
+        port=8000,
+        log_level="debug",
+        log_config=None,
+        reload=True
+    )

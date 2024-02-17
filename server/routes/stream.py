@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Header, status, Response
-from model.model_tracks import *
+from model.cls_tracks import *
 from tools.path import *
 
 router = APIRouter()
@@ -25,7 +25,7 @@ async def api_stream(id: str, range: str = Header(None)):
         music_end = music_start + music_chunk
 
     music_end = min(music_end, music_size - 1) # ensure it does not exceed the file size
-    logging.info('Load partical assets: %s', PathTools.get_filename(music_path)[1])
+    logs.debug("Streaming partial data in '%s'...", get_name(music_path)[0])
 
     async with aiofiles.open(music_path, mode="rb") as music_file:
         await music_file.seek(music_start)

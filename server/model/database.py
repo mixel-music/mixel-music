@@ -1,14 +1,13 @@
 from databases import Database
+from tools.path import *
+from .logger import *
 import sqlalchemy
 import asyncio
-import logging
 
-from tools.path import *
+db_url = get_path('data', 'tamaya.db', is_rel=False, is_str=False)
+DATABASE_URL = "sqlite:///" + db_url.as_posix()
 
-db_url = PathTools.abs('data', 'tamaya.db').as_posix()
-DATABASE_URL = "sqlite:///" + db_url
 metadata = sqlalchemy.MetaData()
-
 music = sqlalchemy.Table(
     "music",
     metadata,
@@ -80,19 +79,20 @@ music = sqlalchemy.Table(
     sqlalchemy.Column("year", sqlalchemy.Integer, nullable=False),
 )
 
-if not Path(db_url).exists():
+if not db_url.exists():
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
     )
     metadata.create_all(engine)
     database = Database(DATABASE_URL)
-    logging.debug("Database not found. creating...")
+    logs.debug("Creating new database...")
 else:
     database = Database(DATABASE_URL)
-    logging.debug("Connected")
+    logs.debug("Initializing database...")
 
 async def connect_database():
     await database.connect()
+    logs.debug("Connected to database successfully.")
 
 async def disconnect_database():
     await database.disconnect()
@@ -102,7 +102,8 @@ async def get_abs_path_from_id(value: str) -> Path:
     result = await database.fetch_one(query)
 
     if result is not None:
-        path = PathTools.abs(result.path)
+        path = get_path(result.path, is_rel=False, is_str=False)
         return path
     else:
+        logs.error("Failed to load: ID not found in database.")
         return None

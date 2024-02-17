@@ -13,13 +13,17 @@ image_resizes = [(64, 64), (128, 128), (300, 300), (500, 500)]
 
 class ImageManagement:
     def __init__(self, path: str):
-        if not PathTools.abs(path).is_dir():
-            self.id = PathTools.get_md5_hash(path)
-            self.str_path = path
-            self.task_path = PathTools.abs(path)
-            self.save_path = PathTools.abs('data') / 'images'
-            self.suffix = PathTools.get_filename(path)[2].lower()
-            self.image_data = None
+        self.path = get_path(path, is_rel=False, is_str=False)
+
+        if self.path.is_dir():
+            raise ValueError
+    
+        self.id = get_hash(path)
+        self.str_path = path
+        self.task_path = self.path
+        self.save_path = get_path('data', 'images', is_rel=False, is_str=False)
+        self.suffix = get_name(path)[2].lower()
+        self.image_data = None
 
     async def image_bin(self):
         if self.suffix == '.mp3':
@@ -43,6 +47,7 @@ class ImageManagement:
     async def image_add(self):
         suffix = imghdr.what(io.BytesIO(self.image_data))
         hash = hashlib.md5(self.image_data).hexdigest().upper()
+
         original_image = Image.open(io.BytesIO(self.image_data))
         original_image_name = self.save_path / f"{hash}_orig.{suffix}"
 
