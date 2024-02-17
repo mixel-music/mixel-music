@@ -11,11 +11,8 @@ import uvicorn
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_database()
-    try:
-        asyncio.create_task(ScanTools.manual_scan())
-        asyncio.create_task(ScanTools.folder_scan())
-    except KeyboardInterrupt:
-        pass
+    asyncio.create_task(S2canTools.manual_scan()) # test
+    asyncio.create_task(S2canTools.change_scan()) # test
     yield
     await disconnect_database()
 

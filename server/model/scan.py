@@ -15,12 +15,12 @@ target_path = get_path('library', is_rel=False, is_str=False)
 class ScanTools:
     @staticmethod
     async def manual_scan():
-        logging.info("Starting manual scan...")
+        logs.info("Starting manual scan...")
         pass
 
     @staticmethod
     async def folder_scan():
-        logging.info("Library observer initiated.")
+        logs.info("Library observer initiated.")
         pass
 
     @staticmethod
@@ -43,7 +43,7 @@ class S2canTools:
 
     @classmethod
     async def manual_scan(cls):
-        logging.debug("Manual scan activated. Scanning...")
+        logs.debug("Manual scan activated. Scanning...")
         target_file = []
         target_file += list(cls._target_path.glob('**/*'))
 
@@ -61,7 +61,7 @@ class S2canTools:
 
     @classmethod
     async def change_scan(cls):
-        logging.debug("Starting...")
+        logs.debug("Starting...")
 
         async for changes in awatch(cls._target_path, recursive=True):
             for change_type, path in changes:

@@ -15,7 +15,9 @@
 
 Tamaya is a fast, lightweight self-hosted music streaming platform that supports various audio formats with simple interface.
 
-I have little experience doing backend development with Python, And this is my first time using JavaScript and Vue.js. Since this project is part of my learning process, there may be many areas that need improvement. so Feedback is welcome!
+Since this project is part of my learning process, there may be many areas that need improvement. I have little experience doing backend development with Python, also this is my first time using JavaScript and Vue.js.
+
+Feedback is always welcome!
 
 ## Demo
 
