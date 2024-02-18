@@ -1,4 +1,5 @@
 from pathlib import Path
+import mimetypes
 import aiofiles
 import hashlib
 
@@ -25,8 +26,8 @@ def get_path(*args: str | Path, is_rel: bool = True, is_str: bool = True) -> str
 
     return home
     
-def get_hash(input_str: str) -> str:
-    return hashlib.md5(input_str.encode()).hexdigest().upper()
+def get_hash(input_value: str) -> str:
+    return hashlib.md5(input_value.encode()).hexdigest().upper()
     
 def get_name(*args: str | Path) -> list:
     if not args:
@@ -48,3 +49,8 @@ def get_name(*args: str | Path) -> list:
         suffix = stem
 
     return [name, stem, suffix]
+
+def get_mime(input_value: str | Path) -> bool:
+    input_value = get_path(input_value, is_rel=False)
+    mime_type, _ = mimetypes.guess_type(input_value)
+    return mime_type is not None and mime_type.startswith('audio/')

@@ -1,25 +1,19 @@
+from mutagen.aiff import AIFF
+from mutagen.id3 import ID3, APIC
+from mutagen.mp4 import MP4, MP4Cover
+from mutagen.flac import FLAC, Picture
+from mutagen.asf import ASF
 from datetime import datetime
-from core.images import *
-from core.tracks import *
 from tools.path import *
-import mimetypes
 import mutagen
 
 # 코드 모듈화 및 갈아 엎을 필요 있음
-
-def get_mime(file_path):
-    mime_type, _ = mimetypes.guess_type(file_path)
-    return mime_type is not None and mime_type.startswith('audio/')
 
 def safe_int(value: int) -> int:
     try:
         return int(value)
     except ValueError:
         return 0
-    
-def file_mime(file_path):
-    mime_type, _ = mimetypes.guess_type(file_path)
-    return mime_type is not None and mime_type.startswith('audio/')
 
 async def TagsTools(music_path: Path, list_tags: list) -> dict:
     rel_path = get_path(music_path)
@@ -67,16 +61,9 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
     else:
         tags_dict['compilation'] = True
 
-    image = ImageManagement(rel_path)
-    image_data = await image.image_bin()
-    if not image_data is None:
-        image_data = hashlib.md5(image_data).hexdigest().upper()
-    else:
-        image_data = ''
-
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
-    tags_dict['imageid'] = image_data
+    tags_dict['imageid'] = ' '
 
     if tags_dict['title'] == '': tags_dict['title'] = get_name(rel_path)[1]
     if tags_dict['artist'] == '': tags_dict['artist'] = 'Unknown Artist'

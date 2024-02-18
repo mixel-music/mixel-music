@@ -11,7 +11,7 @@ async def api_stream(id: str, range: str = Header(None)):
     if music_path is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-    music_info = await Tracks.get_info(id)
+    music_info = await TracksObject.get_info(id)
     music_mime = music_info['mime']
     music_size = music_info['size']
     music_chunk = int(music_size * 0.25) # 25% of file size
