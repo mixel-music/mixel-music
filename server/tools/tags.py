@@ -76,7 +76,7 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
 
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
-    tags_dict['image_id'] = image_data
+    tags_dict['imageid'] = image_data
 
     if tags_dict['title'] == '': tags_dict['title'] = get_name(rel_path)[1]
     if tags_dict['artist'] == '': tags_dict['artist'] = 'Unknown Artist'

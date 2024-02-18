@@ -41,7 +41,7 @@ tracks = sqlalchemy.Table(
     # sqlalchemy.Column("grouping", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("id", sqlalchemy.String(''), nullable=False, primary_key=True),
     # sqlalchemy.Column("involved_people", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("image_id", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("imageid", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("isrc", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("label", sqlalchemy.String(''), nullable=False),
     # sqlalchemy.Column("language", sqlalchemy.String(''), nullable=False),
