@@ -1,5 +1,4 @@
 from tools.path import *
-from pathlib import Path
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
@@ -7,15 +6,19 @@ import logging
 
 install()
 
-print_console = Console(record=True)
-write_console = Console(
-    file=open(get_path('data', '.log', is_rel=False), "a"),
-    record=True
+print_console = Console(
+    record=True,
+    soft_wrap=True
 )
 
 print_handler = RichHandler(
     console=print_console,
     rich_tracebacks=True
+)
+
+write_console = Console(
+    file=open(get_path('data', 'tamaya.log', is_rel=False), "a"),
+    record=True,
 )
 
 write_handler = RichHandler(

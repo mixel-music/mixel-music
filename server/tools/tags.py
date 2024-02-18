@@ -1,16 +1,25 @@
-from mutagen import File
 from datetime import datetime
-from model.cls_images import *
+from core.images import *
+from core.tracks import *
 from tools.path import *
+import mimetypes
 import mutagen
 
 # 코드 모듈화 및 갈아 엎을 필요 있음
+
+def get_mime(file_path):
+    mime_type, _ = mimetypes.guess_type(file_path)
+    return mime_type is not None and mime_type.startswith('audio/')
 
 def safe_int(value: int) -> int:
     try:
         return int(value)
     except ValueError:
         return 0
+    
+def file_mime(file_path):
+    mime_type, _ = mimetypes.guess_type(file_path)
+    return mime_type is not None and mime_type.startswith('audio/')
 
 async def TagsTools(music_path: Path, list_tags: list) -> dict:
     rel_path = get_path(music_path)

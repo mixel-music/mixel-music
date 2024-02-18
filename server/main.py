@@ -1,25 +1,25 @@
-from routes import albums, artists, images, playlists, stream, tracks
+from routes import albums_api, images_api, stream_api, tracks_api
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from model.database import *
-from model.logger import *
-from model.scan import *
 from tools.path import *
+from core.logs import *
+from core.scan import *
+from model import *
 import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_database()
-    asyncio.create_task(S2canTools.manual_scan()) # test
-    asyncio.create_task(S2canTools.change_scan()) # test
+    asyncio.create_task(ScanTools.scan_manual())
+    asyncio.create_task(ScanTools.scan_detect())
     yield
     await disconnect_database()
 
 app = FastAPI(
     debug=True,
     title="Tamaya",
-    version="0.1.0a",
+    version="0.1.05a",
     lifespan=lifespan
 )
 
@@ -31,8 +31,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
     
-app.include_router(stream.router, prefix="/api")
-app.include_router(tracks.router, prefix="/api")
+app.include_router(stream_api.router, prefix="/api")
+app.include_router(tracks_api.router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run(

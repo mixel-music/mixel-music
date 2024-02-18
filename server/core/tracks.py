@@ -1,24 +1,25 @@
 from fastapi import HTTPException, status
-from model.cls_images import *
-from model.cls_tracks import *
-from model.database import *
+from core.images import *
+from core.tracks import *
+from core.logs import *
+from model.model import *
 from tools.path import *
 from tools.tags import *
 
 global list_tags
-list_tags = [column.name for column in music.columns]
+list_tags = [column.name for column in tracks.columns]
 
 class Tracks:
-    def __init__(self, path: str):
-        self.path = path
-        """is_rel = True, is_str = True"""
+    def __init__(self, path: str | Path):
         self.real_path = get_path(path, is_rel=False, is_str=False)
         """is_rel = False, is_str = False"""
+        self.path = get_path(self.real_path)
+        """is_rel = True, is_str = True"""
         self.id = get_hash(path)
 
     async def lookup(self):
-        self.music = music.select().where(music.c.id == self.id)
-        self.music = await database.fetch_one(self.music)
+        self.music = tracks.select().where(tracks.c.id == self.id)
+        self.music = await db.fetch_one(self.music)
         
         if not self.real_path.exists():
             if self.music:
@@ -37,7 +38,7 @@ class Tracks:
 
             return None
         elif not self.tags is None:
-            await database.execute(query=music.insert().values(self.tags))
+            await db.execute(query=tracks.insert().values(self.tags))
             logs.debug('Finished inserting music tags.')
 
             image = ImageManagement(self.path)
@@ -47,8 +48,8 @@ class Tracks:
         return None
 
     async def update(self):
-        query = music.select().with_only_columns([music.c.createdate]).where(music.c.id == self.id)
-        result = await database.fetch_one(query)
+        query = tracks.select().with_only_columns([tracks.c.createdate]).where(tracks.c.id == self.id)
+        result = await db.fetch_one(query)
 
         if result is None:
             logs.error("Failed to read tags. Is it a valid audio file?")
@@ -60,14 +61,14 @@ class Tracks:
             self.tags = await TagsTools(self.real_path, list_tags)
             self.tags['createdate'] = create_date
 
-            query = music.update().where(music.c.path == self.path).values(self.tags)
-            await database.execute(query)
+            query = tracks.update().where(tracks.c.path == self.path).values(self.tags)
+            await db.execute(query)
 
         return None
 
     async def delete(self):
-        query = music.select().with_only_columns([music.c.image_id]).where(music.c.id == self.id)
-        result = await database.fetch_one(query)
+        query = tracks.select().with_only_columns([tracks.c.image_id]).where(tracks.c.id == self.id)
+        result = await db.fetch_one(query)
 
         if not result:
             return None
@@ -80,16 +81,16 @@ class Tracks:
                 file.unlink(missing_ok=True)
 
         try:
-            query = music.delete().where(music.c.id == self.id)
-            await database.execute(query=query)
+            query = tracks.delete().where(tracks.c.id == self.id)
+            await db.execute(query=query)
         except Exception as e:
             logs.error(f"Failed to remove track '{self.id}': {e}")
 
     @staticmethod
     async def get_list(num: int = 36) -> list:
         tracks_list = []
-        db_select = music.select().with_only_columns([music.c.title, music.c.artist, music.c.album, music.c.year, music.c.id, music.c.albumid, music.c.artistid])
-        db_result = await database.fetch_all(db_select)
+        db_select = tracks.select().with_only_columns([tracks.c.title, tracks.c.artist, tracks.c.album, tracks.c.year, tracks.c.id, tracks.c.albumid, tracks.c.artistid])
+        db_result = await db.fetch_all(db_select)
 
         if not db_result:
             return tracks_list
@@ -101,8 +102,8 @@ class Tracks:
     
     @staticmethod
     async def get_info(id: str) -> dict:
-        db_select = music.select().where(music.c.id == id)
-        db_result = await database.fetch_all(db_select)
+        db_select = tracks.select().where(tracks.c.id == id)
+        db_result = await db.fetch_all(db_select)
 
         if not db_result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

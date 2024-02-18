@@ -1,6 +1,6 @@
 from databases import Database
 from tools.path import *
-from .logger import *
+from core.logs import *
 import sqlalchemy
 import asyncio
 
@@ -8,8 +8,8 @@ db_url = get_path('data', 'tamaya.db', is_rel=False, is_str=False)
 DATABASE_URL = "sqlite:///" + db_url.as_posix()
 
 metadata = sqlalchemy.MetaData()
-music = sqlalchemy.Table(
-    "music",
+tracks = sqlalchemy.Table(
+    "tracks",
     metadata,
     sqlalchemy.Column("album", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("albumid", sqlalchemy.String(''), nullable=False),
@@ -84,22 +84,24 @@ if not db_url.exists():
         DATABASE_URL, connect_args={"check_same_thread": False}
     )
     metadata.create_all(engine)
-    database = Database(DATABASE_URL)
+    db = Database(DATABASE_URL)
     logs.debug("Creating new database...")
 else:
-    database = Database(DATABASE_URL)
+    db = Database(DATABASE_URL)
     logs.debug("Initializing database...")
 
 async def connect_database():
-    await database.connect()
+    await db.connect()
     logs.debug("Connected to database successfully.")
 
 async def disconnect_database():
-    await database.disconnect()
+    await db.disconnect()
+
+# 모듈화 해야함
 
 async def get_abs_path_from_id(value: str) -> Path:
-    query = music.select().with_only_columns([music.c.path]).where(music.c.id == value)
-    result = await database.fetch_one(query)
+    query = tracks.select().with_only_columns([tracks.c.path]).where(tracks.c.id == value)
+    result = await db.fetch_one(query)
 
     if result is not None:
         path = get_path(result.path, is_rel=False, is_str=False)
