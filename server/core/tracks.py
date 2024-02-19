@@ -49,11 +49,11 @@ class Tracks:
     async def delete(self, file_states: str):
         print(self.strpath)
         if file_states == 'file':
-            get_image_id = await db.fetch_one(
+            get_image_ids = await db.fetch_one(
                 tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.id == self.tracks.id)
             )
-            if get_image_id:
-                image_id = get_image_id['imageid']
+            if get_image_ids:
+                image_id = get_image_ids['imageid']
                 image_path = get_path('data', 'images', rel=False)
                 for image_file in image_path.glob(f"{image_id}"):
                     if image_file.is_file():
@@ -76,7 +76,8 @@ class Tracks:
             if get_image_ids:
                 for image_id in get_image_ids:
                     image_path_target = image_id['imageid']
-                    for image_path_delete in image_path.glob(f"{image_path_target}"):
+                    print(image_path_target)
+                    for image_path_delete in image_path.glob(f"{image_path_target}*"):
                         if image_path_delete.is_file():
                             image_path_delete.unlink(missing_ok=True)
             else:
