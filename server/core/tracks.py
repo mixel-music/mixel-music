@@ -11,7 +11,11 @@ list_tags = [column.name for column in tracks.columns]
 class Tracks:
     def __init__(self, path: str | Path):
         self.path = get_path(path, rel=False)
+        """Path, rel = False"""
+
         self.strpath = get_strpath(self.path)
+        """str, rel = True"""
+
         self.tracks_id = get_hash(self.strpath)
         self.tracks_list = None
 
@@ -42,37 +46,41 @@ class Tracks:
                 await db.execute(tracks.update().values(self.tracks_tags).where(tracks.c.id == self.tracks_id))
             logs.debug('Finished updating tags.')
 
-    async def delete(self, file_states):
+    async def delete(self, file_states: str):
+        print(self.strpath)
         if file_states == 'file':
-            is_image = await db.fetch_one(
-                tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == self.tracks_id)
+            get_image_id = await db.fetch_one(
+                tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.id == self.tracks.id)
             )
-            if is_image[0] != '':
-                image_id = is_image['imageid']
+            if get_image_id:
+                image_id = get_image_id['imageid']
                 image_path = get_path('data', 'images', rel=False)
-                for image_file in image_path.glob(f"{image_id}*"):
+                for image_file in image_path.glob(f"{image_id}"):
                     if image_file.is_file():
                         image_file.unlink(missing_ok=True)
             try:
                 await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
-                logs.debug("Removed")
-            except Exception as delete_error:
-                logs.error(f"Failed to remove track '{self.tracks_id}': {delete_error}")
+                logs.debug("track successfully deleted.")
+            except:
+                logs.error("Failed to delete track.")
                 return False
             
         elif file_states == 'dir':
-            img_path = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.path.like(f'{self.strpath}%')))
+            get_image_ids = await db.fetch_all(
+                tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.path.like(f'{self.strpath}%'))
+            )
+            print(get_image_ids)
 
             # Removing all images from database with names starting from the image id
-            if img_path:
-                img_path_target = img_path['imageid']
-                img_path = get_path('data', 'images', rel=False)
+            image_path = get_path('data', 'images', rel=False)
+            if get_image_ids:
+                for image_id in get_image_ids:
+                    image_path_target = image_id['imageid']
+                    for image_path_delete in image_path.glob(f"{image_path_target}"):
+                        if image_path_delete.is_file():
+                            image_path_delete.unlink(missing_ok=True)
             else:
-                return None
-            
-            for img_path_delete in img_path.glob(f"{img_path_target}*"):
-                if img_path_delete.is_file():
-                    img_path_delete.unlink(missing_ok=True)
+                return False
 
             # Removing all tracks from database with paths starting from the target directory
             await db.execute(tracks.delete().where(tracks.c.path.like(f'{self.strpath}%')))

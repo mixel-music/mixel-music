@@ -55,7 +55,7 @@ async def upcert(path: Path):
                 else:
                     tracks_obj = Tracks(get_strpath(path))
                     image_task = Images(get_strpath(path))
-                    asyncio.create_task(tracks_obj.upcert(), name=f"event_{path}")
+                    await asyncio.gather(asyncio.create_task(tracks_obj.upcert(), name=f"event_{path}"))
                     asyncio.create_task(image_task.image_extract_db())
         except (MutagenError, IOError):
             return False

@@ -75,6 +75,7 @@ class Images:
 
         if self.image_data != None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
+            print(self.strpath)
             await db.execute(
                 tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)
             )
