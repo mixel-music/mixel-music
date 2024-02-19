@@ -13,65 +13,60 @@ import io
 import re
 
 IMAGE_QUALITY = 70
-IMAGE_RESIZES = [(64, 64), (128, 128), (300, 300), (500, 500)]
 IMAGE_SUFFIX = 'webp'
+IMAGE_RESIZES = [(64, 64), (128, 128), (300, 300), (500, 500)]
 
 class ImagesObject:
     def __init__(self, path: str | Path):
-        self.path_real = get_path(path, is_rel=False, is_str=False)
-        """is_rel = False, is_str = False"""
+        self.path = get_path(path, rel=False)
+        self.imgpath = get_path('data', 'images', rel=False)
+        self.strpath = get_path(self.path)
 
-        self.path_save = get_path('data', 'images', is_rel=False, is_str=False)
-        """is_rel = False, is_str = False"""
-
-        self.path = get_path(self.path_real)
-        """is_rel = True, is_str = True"""
-
-        if self.path_real.is_dir():
+        if self.path.is_dir():
             logs.error("It's directory.")
 
-        self.id = get_hash(self.path)
-        self.suffix = get_name(self.path)[2]
+        self.id = get_hash(self.strpath)
+        self.suffix = get_name(self.strpath)[2]
         self.image_data = None
         
     async def image_extract(self):
         if self.suffix == '.mp3':
-            audio = ID3(self.path_real)
+            audio = ID3(self.path)
             for tag in audio.values():
                 if isinstance(tag, APIC):
                     self.image_data = tag.data 
 
         elif self.suffix == '.mp4' or self.suffix == '.m4a' or self.suffix == '.aac':
-            audio = MP4(self.path_real)
+            audio = MP4(self.path)
             covers = audio.get('covr')
             if covers:
                 self.image_data = covers[0]
 
         elif self.suffix == '.flac':
-            audio = FLAC(self.path_real)
+            audio = FLAC(self.path)
             for picture in audio.pictures:
                 if picture.type == 3:
                     self.image_data = picture.data
 
         elif self.suffix == '.alac':
-            audio = MP4(self.path_real)
+            audio = MP4(self.path)
             covers = audio.tags.get('covr')
             if covers:
                 self.image_data = covers[0].data
 
         elif self.suffix == '.wma':
-            audio = ASF(self.path_real)
+            audio = ASF(self.path)
             if 'WM/Picture' in audio.asf_tags:
                 pictures = audio.asf_tags['WM/Picture']
                 if pictures:
                     self.image_data = pictures[0].value.data
 
         elif self.suffix == '.aiff':
-            audio = AIFF(self.path_real)
+            audio = AIFF(self.path)
             if audio.tags is None:
                 pass
 
-            id3 = ID3(self.path_real)
+            id3 = ID3(self.path)
             for tag in id3.values():
                 if isinstance(tag, APIC):
                     self.image_data = tag.data
@@ -81,7 +76,7 @@ class ImagesObject:
         if self.image_data != None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
             print(self.image_hash)
-            await db.execute(tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.path))
+            await db.execute(tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath))
             await self.image_process()
 
     async def image_process(self):
@@ -91,19 +86,19 @@ class ImagesObject:
         if suffix is None:
             return None
         
-        image_original_path = self.path_save / f"{self.image_hash}_orig.{suffix}"
+        image_original_path = self.imgpath / f"{self.image_hash}_orig.{suffix}"
 
         if image_original_path.exists():
             logs.debug("Original image already exists.")
         else:
-            image_original_name = self.path_save / f"{self.image_hash}_orig.{suffix}"
+            image_original_name = self.imgpath / f"{self.image_hash}_orig.{suffix}"
             image_original.save(image_original_name.as_posix(), suffix, quality=IMAGE_QUALITY)
 
         sizes_pattern = '|'.join([f'{width}_{height}' for width, height in IMAGE_RESIZES])
         pattern = re.compile(rf'{self.image_hash}_({sizes_pattern})\.{IMAGE_SUFFIX}$')
         missing_sizes = set([f'{width}_{height}' for width, height in IMAGE_RESIZES])
 
-        for file in self.path_save.iterdir():
+        for file in self.strpath_save.iterdir():
             if file.is_file() and pattern.search(file.name):
                 match = pattern.search(file.name)
                 if match:
@@ -114,7 +109,7 @@ class ImagesObject:
             for size in missing_sizes:
                 image_thumbnail = image_original.copy()
                 image_thumbnail.thumbnail(tuple(int(item) for item in size.split('_'))) #Image.Resampling.LANCZOS)
-                image_thumbnail_name = self.path_save / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}"
+                image_thumbnail_name = self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}"
                 image_thumbnail.save(image_thumbnail_name.as_posix(), "WEBP", quality=IMAGE_QUALITY)
         else:
             logs.debug("All specified sizes were found.")

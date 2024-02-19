@@ -17,7 +17,7 @@ print_handler = RichHandler(
 )
 
 write_console = Console(
-    file=open(get_path('data', 'tamaya.log', is_rel=False), "a"),
+    file=open(get_path('data', 'tamaya.log', rel=False), "a"),
     record=True,
 )
 

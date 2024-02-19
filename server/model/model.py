@@ -4,7 +4,7 @@ from core.logs import *
 import sqlalchemy
 import asyncio
 
-db_url = get_path('data', 'tamaya.db', is_rel=False, is_str=False)
+db_url = get_path('data', 'tamaya.db', rel=False)
 DATABASE_URL = "sqlite:///" + db_url.as_posix()
 
 metadata = sqlalchemy.MetaData()
@@ -104,7 +104,7 @@ async def get_abs_path_from_id(value: str) -> Path:
     result = await db.fetch_one(query)
 
     if result is not None:
-        path = get_path(result.path, is_rel=False, is_str=False)
+        path = get_path(result.path, rel=False)
         return path
     else:
         logs.error("Failed to load: ID not found in database.")

@@ -11,15 +11,16 @@ import uvicorn
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_database()
-    asyncio.create_task(ScanTools.scan_manual())
-    asyncio.create_task(ScanTools.scan_detect())
+    #asyncio.create_task(original_scan())
+    asyncio.create_task(scan_path())
+    # asyncio.create_task(ScanTools.scan_detect())
     yield
     await disconnect_database()
 
 app = FastAPI(
     debug=True,
     title="Tamaya",
-    version="0.1.05a",
+    version="0.1.0-a6",
     lifespan=lifespan
 )
 

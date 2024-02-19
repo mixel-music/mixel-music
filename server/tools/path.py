@@ -1,33 +1,47 @@
 from pathlib import Path
-import mimetypes
 import aiofiles
 import hashlib
 
 root = (Path.cwd().resolve()).parent
 
-def get_path(*args: str | Path, is_rel: bool = True, is_str: bool = True) -> str | Path:
+def get_path(*args: str | Path, rel: bool = True) -> str | Path:
     """
-    애플리케이션의 루트 디렉터리, 디렉터리 및 파일 경로를 추상화하는 함수.
+    애플리케이션 내 경로를 추상화 및 Path로 반환하는 함수.
 
     Args:
-        *args (str, Path, optional): 디렉토리 혹은 파일명. Defaults to the app root dir.
-        is_rel (bool, optional): 루트 디렉토리에 대한 상대 경로를 반환. Defaults to True.
-        is_str (bool, optional): str 타입 반환, False 시 Path 타입 반환. Defaults to True.
+        *args (str | Path, optional): 디렉토리 혹은 파일명. Defaults to the app root dir.
+        rel (bool, optional): 애플리케이션 루트에 대한 상대 경로 반환. Defaults to True.
     """
     home = root
 
     for arg in args:
         home = home / arg
 
-    if is_rel:
+    if rel:
         home = home.relative_to(root)
-    if is_str:
-        home = home.as_posix()
 
     return home
+
+def get_strpath(*args: str | Path, rel: bool = True) -> str | Path:
+    """
+    애플리케이션 내 경로를 추상화 및 str로 반환하는 함수.
+
+    Args:
+        *args (str | Path, optional): 디렉토리 혹은 파일명. Defaults to the app root dir.
+        rel (bool, optional): 애플리케이션 루트에 대한 상대 경로 반환. Defaults to True.
+    """
+    home = root
+
+    for arg in args:
+        home = home / arg
+
+    if rel:
+        home = home.relative_to(root)
+
+    return home.as_posix()
     
-def get_hash(input_value: str) -> str:
-    return hashlib.md5(input_value.encode()).hexdigest().upper()
+def get_hash(value: str) -> str:
+    return hashlib.md5(value.encode()).hexdigest().upper()
     
 def get_name(*args: str | Path) -> list:
     if not args:
@@ -50,7 +64,5 @@ def get_name(*args: str | Path) -> list:
 
     return [name, stem, suffix]
 
-def get_mime(input_value: str | Path) -> bool:
-    input_value = get_path(input_value, is_rel=False)
-    mime_type, _ = mimetypes.guess_type(input_value)
-    return mime_type is not None and mime_type.startswith('audio/')
+async def remove_cache():
+    get_path('data', 'images').unlink(missing_ok=True)

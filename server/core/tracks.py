@@ -11,18 +11,21 @@ list_tags = [column.name for column in tracks.columns]
 
 class TracksObject:
     def __init__(self, path: str | Path):
-        self.path_real = get_path(path, is_rel=False, is_str=False)
-        """is_rel = False, is_str = False"""
-
-        self.path = get_path(self.path_real)
-        """is_rel = True, is_str = True"""
-
-        self.id = get_hash(self.path)
+        self.path = get_path(path, rel=False)
+        self.strpath = get_strpath(self.path)
         self.tracks_list = None
+        self.tracks_id = get_hash(self.strpath)
 
     async def insert(self):
         self.tracks_list = await db.fetch_one(
-            tracks.select().with_only_columns([tracks.c.id, tracks.c.createdate]).where(tracks.c.id == self.id)
+            tracks.select().with_only_columns(
+                [
+                    tracks.c.id,
+                    tracks.c.createdate
+                ]
+            ).where(
+                tracks.c.id == self.tracks_id
+            )
         )
         
         if self.tracks_list:
@@ -30,7 +33,7 @@ class TracksObject:
             return False
 
         logs.debug("Find new track! Inserting tags...")
-        self.tracks_tags = await TagsTools(self.path_real, list_tags)
+        self.tracks_tags = await TagsTools(self.path, list_tags)
 
         if self.tracks_tags is None:
             logs.error("Failed to read tags. Is it a valid audio file?")
@@ -41,11 +44,11 @@ class TracksObject:
 
     async def update(self):
         self.tracks_list = await db.fetch_one(
-            tracks.select().with_only_columns([tracks.c.id, tracks.c.createdate]).where(tracks.c.id == self.id)
+            tracks.select().with_only_columns([tracks.c.id, tracks.c.createdate]).where(tracks.c.id == self.tracks_id)
         )
         
         create_date = self.tracks_list['createdate']
-        self.tracks_tags = await TagsTools(self.path_real, list_tags)
+        self.tracks_tags = await TagsTools(self.path, list_tags)
         
         if self.tracks_tags is None:
             logs.error("Failed to read tags. Is it a valid audio file?")
@@ -57,22 +60,22 @@ class TracksObject:
         logs.debug('Finished updating tags.')
 
     async def delete(self):
-        is_image = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == self.id))
+        is_image = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == self.tracks_id))
 
         if is_image[0] != '':
             image_id = is_image['imageid']
-            image_path = get_path('data', 'images', is_rel=False, is_str=False)
+            image_path = get_path('data', 'images', rel=False, is_str=False)
 
             for image_file in image_path.glob(f"{image_id}*"):
                 if image_file.is_file():
                     image_file.unlink(missing_ok=True)
 
         try:
-            await db.execute(tracks.delete().where(tracks.c.id == self.id))
+            await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
             logs.debug("Completed deleting track.")
 
         except Exception as delete_error:
-            logs.error(f"Failed to remove track '{self.id}': {delete_error}")
+            logs.error(f"Failed to remove track '{self.tracks_id}': {delete_error}")
             return False
 
     @staticmethod
