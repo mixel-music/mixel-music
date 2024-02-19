@@ -5,6 +5,9 @@ from tools.path import *
 
 router = APIRouter()
 
+# 사전생성 이미지 로드
+# 특정 사이즈 req시 생성작업으로 넘기기
+
 @router.get("/images/{id}")
 async def images_api(id: str, type: int | str = 'orig'):
     img_dir = get_path('data', 'images', rel=False)
