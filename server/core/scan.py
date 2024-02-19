@@ -6,8 +6,8 @@ from tools.path import *
 from core.logs import *
 
 LIBRARY_PATH = get_path('library', rel=False)
-file_states = {}
 sem = asyncio.Semaphore(8)
+file_states = {}
 
 async def scan_path(path: Path = LIBRARY_PATH):
     tasks = []
@@ -54,14 +54,14 @@ async def upcert(path: Path):
                     return False
                 else:
                     tracks_obj = Tracks(get_strpath(path))
+                    image_task = Images(path)
                     asyncio.create_task(tracks_obj.upcert(), name=f"event_{path}")
+                    asyncio.create_task(image_task.image_extract_db())
         except (MutagenError, IOError):
             return False
 
 async def delete(path: Path):
-    if file_states.get(path) == 'dir':
-        logs.debug("Initiating delete dir process...")
-    else:
-        logs.debug("Initiating delete process...")
+    tracks_obj = Tracks(get_strpath(path))
+    await tracks_obj.delete(file_states.get(path))
 
     file_states.pop(path, None)

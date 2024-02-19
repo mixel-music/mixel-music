@@ -4,6 +4,8 @@
   <h3 align="center">Tamaya</h3>
   <p align="center">Self-hosted music streaming platform
   <br><br>
+  <img src="https://img.shields.io/pypi/pyversions/fastapi?style=flat-square">
+  <br>
   <img src="https://img.shields.io/github/license/bunubbv/tamaya?style=flat-square">
   <img src="https://img.shields.io/github/last-commit/bunubbv/tamaya?style=flat-square">
 </p>

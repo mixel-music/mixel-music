@@ -6,7 +6,6 @@ from mutagen.asf import ASF
 from model.model import *
 from tools.path import *
 from core.logs import *
-from core.logs import *
 from PIL import Image
 import imghdr
 import io
@@ -14,13 +13,13 @@ import re
 
 IMAGE_QUALITY = 70
 IMAGE_SUFFIX = 'webp'
-IMAGE_RESIZES = [(64, 64), (128, 128), (300, 300), (500, 500)]
+IMAGE_SIZES = [(64, 64), (128, 128), (300, 300), (500, 500)]
 
-class ImagesObject:
+class Images:
     def __init__(self, path: str | Path):
         self.path = get_path(path, rel=False)
         self.imgpath = get_path('data', 'images', rel=False)
-        self.strpath = get_path(self.path)
+        self.strpath = get_strpath(self.path)
 
         if self.path.is_dir():
             logs.error("It's directory.")
@@ -73,16 +72,19 @@ class ImagesObject:
 
     async def image_extract_db(self):
         await self.image_extract()
+
         if self.image_data != None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
-            print(self.image_hash)
-            await db.execute(tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath))
-            await self.image_process()
+            await db.execute(
+                tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)
+            )
+            asyncio.create_task(self.image_process())
 
     async def image_process(self):
         self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
         image_original = Image.open(io.BytesIO(self.image_data))
         suffix = imghdr.what(io.BytesIO(self.image_data))
+
         if suffix is None:
             return None
         
@@ -94,11 +96,11 @@ class ImagesObject:
             image_original_name = self.imgpath / f"{self.image_hash}_orig.{suffix}"
             image_original.save(image_original_name.as_posix(), suffix, quality=IMAGE_QUALITY)
 
-        sizes_pattern = '|'.join([f'{width}_{height}' for width, height in IMAGE_RESIZES])
+        sizes_pattern = '|'.join([f'{width}_{height}' for width, height in IMAGE_SIZES])
         pattern = re.compile(rf'{self.image_hash}_({sizes_pattern})\.{IMAGE_SUFFIX}$')
-        missing_sizes = set([f'{width}_{height}' for width, height in IMAGE_RESIZES])
+        missing_sizes = set([f'{width}_{height}' for width, height in IMAGE_SIZES])
 
-        for file in self.strpath_save.iterdir():
+        for file in self.imgpath.iterdir():
             if file.is_file() and pattern.search(file.name):
                 match = pattern.search(file.name)
                 if match:

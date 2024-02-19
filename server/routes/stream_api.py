@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Header, status, Response
+from fastapi import APIRouter, Header, status, Response, HTTPException
 from core.tracks import *
 from tools.path import *
 
 router = APIRouter()
 
 @router.get("/stream/{id}")
-async def api_stream(id: str, range: str = Header(None)):
+async def stream_api(id: str, range: str = Header(None)):
     music_path = await get_abs_path_from_id(id)
     
     if music_path is None:

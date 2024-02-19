@@ -1,4 +1,3 @@
-from fastapi import HTTPException, status
 from core.images import *
 from core.tracks import *
 from core.logs import *
@@ -43,24 +42,40 @@ class Tracks:
                 await db.execute(tracks.update().values(self.tracks_tags).where(tracks.c.id == self.tracks_id))
             logs.debug('Finished updating tags.')
 
-    async def delete(self):
-        is_image = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == self.tracks_id))
+    async def delete(self, file_states):
+        if file_states == 'file':
+            is_image = await db.fetch_one(
+                tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == self.tracks_id)
+            )
+            if is_image[0] != '':
+                image_id = is_image['imageid']
+                image_path = get_path('data', 'images', rel=False)
+                for image_file in image_path.glob(f"{image_id}*"):
+                    if image_file.is_file():
+                        image_file.unlink(missing_ok=True)
+            try:
+                await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
+                logs.debug("Removed")
+            except Exception as delete_error:
+                logs.error(f"Failed to remove track '{self.tracks_id}': {delete_error}")
+                return False
+            
+        elif file_states == 'dir':
+            img_path = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.path.like(f'{self.strpath}%')))
 
-        if is_image[0] != '':
-            image_id = is_image['imageid']
-            image_path = get_path('data', 'images', rel=False, is_str=False)
+            # Removing all images from database with names starting from the image id
+            if img_path:
+                img_path_target = img_path['imageid']
+                img_path = get_path('data', 'images', rel=False)
+            else:
+                return None
+            
+            for img_path_delete in img_path.glob(f"{img_path_target}*"):
+                if img_path_delete.is_file():
+                    img_path_delete.unlink(missing_ok=True)
 
-            for image_file in image_path.glob(f"{image_id}*"):
-                if image_file.is_file():
-                    image_file.unlink(missing_ok=True)
-
-        try:
-            await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
-            logs.debug("Completed deleting track.")
-
-        except Exception as delete_error:
-            logs.error(f"Failed to remove track '{self.tracks_id}': {delete_error}")
-            return False
+            # Removing all tracks from database with paths starting from the target directory
+            await db.execute(tracks.delete().where(tracks.c.path.like(f'{self.strpath}%')))
 
     @staticmethod
     async def get_list(num: int = 36) -> list:

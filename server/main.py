@@ -10,6 +10,7 @@ import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    create_dir_init()
     await connect_database()
     await db.execute("PRAGMA journal_mode=WAL;")
 
@@ -33,7 +34,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-    
+
+app.include_router(images_api.router, prefix="/api")
 app.include_router(stream_api.router, prefix="/api")
 app.include_router(tracks_api.router, prefix="/api")
 
