@@ -69,7 +69,7 @@ sniffio==1.3.0
 soupsieve==2.5
 SQLAlchemy==1.4.51
 sqlmodel==0.0.14
-starlette==0.35.1
+starlette==0.36.2
 streamrip==2.0.5
 tidal-dl==2022.10.31.1
 tomli==2.0.1
