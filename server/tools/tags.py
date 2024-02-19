@@ -5,7 +5,7 @@ from mutagen.flac import FLAC, Picture
 from mutagen.asf import ASF
 from datetime import datetime
 from tools.path import *
-import mutagen
+from mutagen import File
 
 # 코드 모듈화 및 갈아 엎을 필요 있음
 
@@ -16,10 +16,10 @@ def safe_int(value: int) -> int:
         return 0
 
 async def TagsTools(music_path: Path, list_tags: list) -> dict:
-    rel_path = get_path(music_path)
+    rel_path = get_strpath(music_path)
 
     try:
-        get_tags = mutagen.File(music_path)
+        get_tags = File(music_path)
     except:
         return None
     

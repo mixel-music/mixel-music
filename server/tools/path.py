@@ -1,4 +1,4 @@
-from pathlib import Path
+from pathlib import Path, PurePath
 import aiofiles
 import hashlib
 
@@ -63,6 +63,3 @@ def get_name(*args: str | Path) -> list:
         suffix = stem
 
     return [name, stem, suffix]
-
-async def remove_cache():
-    get_path('data', 'images').unlink(missing_ok=True)

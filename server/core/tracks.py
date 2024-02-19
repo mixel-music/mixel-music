@@ -9,55 +9,39 @@ from tools.tags import *
 global list_tags
 list_tags = [column.name for column in tracks.columns]
 
-class TracksObject:
+class Tracks:
     def __init__(self, path: str | Path):
         self.path = get_path(path, rel=False)
         self.strpath = get_strpath(self.path)
-        self.tracks_list = None
         self.tracks_id = get_hash(self.strpath)
+        self.tracks_list = None
 
-    async def insert(self):
-        self.tracks_list = await db.fetch_one(
-            tracks.select().with_only_columns(
-                [
-                    tracks.c.id,
-                    tracks.c.createdate
-                ]
-            ).where(
-                tracks.c.id == self.tracks_id
-            )
-        )
-        
-        if self.tracks_list:
-            logs.debug("Find tags in database, skip inserting.")
-            return False
-
-        logs.debug("Find new track! Inserting tags...")
-        self.tracks_tags = await TagsTools(self.path, list_tags)
-
-        if self.tracks_tags is None:
-            logs.error("Failed to read tags. Is it a valid audio file?")
-            return False
-        
-        await db.execute(query=tracks.insert().values(self.tracks_tags))
-        logs.debug('Finished inserting tags.')
-
-    async def update(self):
+    async def upcert(self):
         self.tracks_list = await db.fetch_one(
             tracks.select().with_only_columns([tracks.c.id, tracks.c.createdate]).where(tracks.c.id == self.tracks_id)
         )
         
-        create_date = self.tracks_list['createdate']
+        if self.tracks_list and self.tracks_list['createdate']:
+            create_date = self.tracks_list['createdate']
+            is_upcert = True
+        else:
+            is_upcert = False
+
         self.tracks_tags = await TagsTools(self.path, list_tags)
-        
         if self.tracks_tags is None:
             logs.error("Failed to read tags. Is it a valid audio file?")
             return False
         
-        self.tracks_tags['createdate'] = create_date
+        if is_upcert == False:
+            async with db.transaction():
+                await db.execute(tracks.insert().values(self.tracks_tags))
+            logs.debug('Finished inserting tags.')
+        else:
+            self.tracks_tags['createdate'] = create_date
 
-        await db.execute(query=tracks.insert().values(self.tracks_tags))
-        logs.debug('Finished updating tags.')
+            async with db.transaction():
+                await db.execute(tracks.update().values(self.tracks_tags).where(tracks.c.id == self.tracks_id))
+            logs.debug('Finished updating tags.')
 
     async def delete(self):
         is_image = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == self.tracks_id))

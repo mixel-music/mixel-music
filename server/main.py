@@ -11,9 +11,11 @@ import uvicorn
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_database()
-    #asyncio.create_task(original_scan())
+    await db.execute("PRAGMA journal_mode=WAL;")
+
     asyncio.create_task(scan_path())
-    # asyncio.create_task(ScanTools.scan_detect())
+    asyncio.create_task(scan_auto())
+
     yield
     await disconnect_database()
 
