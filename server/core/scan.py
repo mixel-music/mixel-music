@@ -7,7 +7,7 @@ from core.logs import *
 
 LIBRARY_PATH = get_path('library', rel=False)
 file_states = {}
-sem = asyncio.Semaphore(4)
+sem = asyncio.Semaphore(8)
 
 async def scan_path(path: Path = LIBRARY_PATH):
     tasks = []
@@ -32,8 +32,11 @@ async def scan_auto():
             events_path = Path(events_path)
 
             if events_type == Change.added or events_type == Change.modified:
-                file_states[events_path] = 'file'
-                asyncio.create_task(upcert(events_path))
+                if events_path.is_dir():
+                    file_states[events_path] = 'dir'
+                else:
+                    file_states[events_path] = 'file'
+                    asyncio.create_task(upcert(events_path))
             elif events_type == Change.deleted:
                 asyncio.create_task(delete(events_path))
 
@@ -41,16 +44,17 @@ async def upcert(path: Path):
     async with sem:
         try:
             is_track = File(path)
-            if path.suffix != '' and is_track:
+            if path.suffix and is_track:
                 file_id = get_hash(get_strpath(path))
                 file_id_list = await db.fetch_one(
                     tracks.select().with_only_columns([tracks.c.id]).where(tracks.c.id == file_id)
                 )
+
                 if file_id_list:
                     return False
                 else:
                     tracks_obj = Tracks(get_strpath(path))
-                    await tracks_obj.upcert()
+                    asyncio.create_task(tracks_obj.upcert(), name=f"event_{path}")
         except (MutagenError, IOError):
             return False
 
