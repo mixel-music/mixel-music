@@ -2,14 +2,13 @@ from core.images import *
 from core.tracks import *
 from core.logs import *
 from model.model import *
-from model.config import *
 from tools.path import *
 from tools.tags import *
 
-global list_tags
 list_tags = [column.name for column in tracks.columns]
 
 class Tracks:
+
     def __init__(self, path: str | Path):
         self.path = get_path(path, rel=False)
         """Path, rel = False"""
@@ -29,6 +28,8 @@ class Tracks:
         async with db.transaction():
             await db.execute(tracks.insert().values(self.tracks_tags))
         logs.debug('Finished inserting tags.')
+
+        return True
 
     async def delete(self, file_states: str):
         if file_states == 'dir':

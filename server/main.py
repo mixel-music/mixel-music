@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     await connect_database()
     await db.execute("PRAGMA journal_mode=WAL;")
 
-    asyncio.create_task(scan_path())
+    asyncio.create_task(init_scan())
     asyncio.create_task(scan_auto())
 
     yield
@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="Tamaya",
-    version="0.1.0-a6",
+    version="0.1.1a",
     lifespan=lifespan
 )
 

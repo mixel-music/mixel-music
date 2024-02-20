@@ -1,6 +1,5 @@
 from datetime import datetime
 from mutagen import File
-from model.config import *
 from tools.path import *
 
 # 코드 모듈화 및 갈아 엎을 필요 있음
@@ -57,7 +56,6 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
     else:
         tags_dict['compilation'] = True
 
-    tracks_hash = hashlib.md5()
     async with aiofiles.open(music_path, mode='rb') as afile:
         tracks_hash = hashlib.md5(await afile.read()).hexdigest().upper()
 
