@@ -71,8 +71,11 @@ async def scan_auto():
 
 async def insert(path):
     async with sem:
-        tracks_obj = Tracks(get_strpath(path))
-        await tracks_obj.insert()
+        try:
+            tracks_obj = Tracks(get_strpath(path))
+            await tracks_obj.insert()
+        except:
+            print("Failed to insert data into the database.")
 
 async def delete(path):
     tracks_obj = Tracks(get_strpath(path))
