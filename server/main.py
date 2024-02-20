@@ -10,7 +10,7 @@ import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_dir_init()
+    await check_dir_init()
     await connect_database()
     await db.execute("PRAGMA journal_mode=WAL;")
 
@@ -18,6 +18,8 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(scan_auto())
 
     yield
+    for task in asyncio.all_tasks():
+        task.cancel()
     await disconnect_database()
 
 app = FastAPI(

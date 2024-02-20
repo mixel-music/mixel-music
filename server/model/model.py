@@ -39,6 +39,7 @@ tracks = sqlalchemy.Table(
     sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),
     sqlalchemy.Column("genre", sqlalchemy.String(''), nullable=False),
     # sqlalchemy.Column("grouping", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("hash", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("id", sqlalchemy.String(''), nullable=False, primary_key=True),
     # sqlalchemy.Column("involved_people", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("imageid", sqlalchemy.String(''), nullable=False),
@@ -83,6 +84,7 @@ if not db_url.exists():
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
     )
+
     metadata.create_all(engine)
     db = Database(DATABASE_URL)
     logs.debug("Creating new database...")

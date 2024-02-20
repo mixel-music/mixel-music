@@ -11,18 +11,35 @@ file_states = {}
 
 async def scan_path(path: Path = LIBRARY_PATH):
     tasks = []
-    for target in path.iterdir():
-        if target.is_file():
-            file_states[target] = 'file'
-            task = asyncio.create_task(upcert(target))
-            tasks.append(task)
+    tracks_list = await db.fetch_all(
+        tracks.select().with_only_columns([tracks.c.path, tracks.c.hash])
+    )
 
+    if tracks_list:
+        for tracks_info in tracks_list:
+            tracks_real_path = get_path(tracks_info['path'], rel=False)
+            if not tracks_real_path.exists():
+                await delete(tracks_info['path'])
+            else:
+                async with aiofiles.open(tracks_real_path, mode='rb') as afile:
+                    tracks_hash = hashlib.md5(await afile.read()).hexdigest().upper()
+                if tracks_info['hash'] != tracks_hash:
+                    await delete(tracks_info['path'])
+                else:
+                    file_states[tracks_info['path']] = 'skip'
+
+    for target in path.iterdir():
+        if file_states.get(get_strpath(target)) == 'skip':
+            continue
+        elif target.is_file() and target.suffix in SUFFIXES:
+            task = asyncio.create_task(insert(target))
+            tasks.append(task)
         elif target.is_dir():
             file_states[target] = 'dir'
             task = asyncio.create_task(scan_path(target))
             tasks.append(task)
 
-        await asyncio.gather(*tasks)
+    await asyncio.gather(*tasks)
 
 async def scan_auto():
     logs.info("Library observer initiated.")
@@ -31,36 +48,27 @@ async def scan_auto():
         for events_type, events_path in events:
             events_path = Path(events_path)
 
-            if events_type == Change.added or events_type == Change.modified:
+            if events_type == Change.deleted:
+                if not events_path.suffix in SUFFIXES: asyncio.create_task(delete(events_path))
+            else:
                 if events_path.is_dir():
                     file_states[events_path] = 'dir'
                 else:
-                    file_states[events_path] = 'file'
-                    asyncio.create_task(upcert(events_path))
-            elif events_type == Change.deleted:
-                asyncio.create_task(delete(events_path))
+                    if events_path.suffix in SUFFIXES:
+                        if events_type is Change.modified: await delete(events_path)
+                        asyncio.create_task(insert(events_path))
 
-async def upcert(path: Path):
+async def insert(path):
     async with sem:
+        tracks_obj = Tracks(get_strpath(path))
         try:
-            is_track = File(path)
-            if path.suffix and is_track:
-                file_id = get_hash(get_strpath(path))
-                file_id_list = await db.fetch_one(
-                    tracks.select().with_only_columns([tracks.c.id]).where(tracks.c.id == file_id)
-                )
-
-                if file_id_list:
-                    return False
-                else:
-                    tracks_obj = Tracks(get_strpath(path))
-                    image_task = Images(get_strpath(path))
-                    await asyncio.gather(asyncio.create_task(tracks_obj.upcert(), name=f"event_{path}"))
-                    asyncio.create_task(image_task.image_extract_db())
-        except (MutagenError, IOError):
+            await tracks_obj.insert()
+        except:
+            print(get_strpath(path))
+            print("no insert!")
             return False
 
-async def delete(path: Path):
+async def delete(path):
     tracks_obj = Tracks(get_strpath(path))
     await tracks_obj.delete(file_states.get(path))
 

@@ -2,6 +2,22 @@ from pathlib import Path, PurePath
 import aiofiles
 import hashlib
 
+SUFFIXES = [
+    ".m4a", "mp4", ".3gp", ".m4b", ".m4p", "m4r", "m4v", ".aac",
+    ".ogg", ".ogv", ".oga", ".ogx", ".ogm", ".spx", ".opus",
+    ".aiff", ".aif", ".aifc",
+    ".asf", ".wma", ".wmv",
+    ".dff", ".wsd", ".dsf",
+    ".mpc", ".mp+", ".mpp",
+    ".wav", ".wave",
+    ".wv", ".wvc",
+    ".flac",
+    ".mp3",
+    ".ac3",
+    ".tak",
+    ".tta",
+]
+
 root = (Path.cwd().resolve()).parent
 
 def get_path(*args: str | Path, rel: bool = True) -> Path:
@@ -52,7 +68,7 @@ def get_name(*args: str | Path) -> list:
     if suffix == '' and stem.startswith('.'): stem, suffix = '', stem
     return [name, stem, suffix]
 
-def create_dir_init():
+async def check_dir_init():
     data_path = get_path('data', rel=False)
     data_images_path = get_path('data', 'images', rel=False)
     library_path = get_path('library', rel=False)
@@ -60,3 +76,15 @@ def create_dir_init():
     if data_path.exists() == False: data_path.mkdir()
     if data_images_path.exists() == False: data_images_path.mkdir()
     if library_path.exists() == False: library_path.mkdir()
+
+async def check_suffixes(path: str | Path) -> bool:
+    try:
+        suffix = PurePath(path).suffix
+    except:
+        return False
+
+    for check in SUFFIXES:
+        if suffix == check:
+            return True
+        
+    return False
