@@ -272,7 +272,7 @@ input[type='text']:focus {
 .player-left-text {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .player-center {
