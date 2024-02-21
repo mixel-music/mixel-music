@@ -7,13 +7,13 @@ from model.model import *
 from tools.path import *
 from core.logs import *
 from PIL import Image
-import imghdr
+import mimetypes
 import io
 import re
 
 IMAGE_QUALITY = 70
 IMAGE_SUFFIX = 'webp'
-IMAGE_SIZES = [(64, 64), (128, 128), (300, 300)]
+IMAGE_SIZES = [64, 128, 300, 500]
 
 class Images:
     def __init__(self, path: str | Path):
@@ -84,36 +84,51 @@ class Images:
 
     async def image_process(self):
         self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
-        image_original = Image.open(io.BytesIO(self.image_data))
-        suffix = imghdr.what(io.BytesIO(self.image_data))
+        original_image = Image.open(io.BytesIO(self.image_data))
+        suffix = original_image.format.lower()
 
-        if suffix is None:
-            return None
-        
-        image_original_path = self.imgpath / f"{self.image_hash}_orig.{suffix}"
+        if suffix is None: return None
+        original_image_path = self.imgpath / f"{self.image_hash}_orig.{suffix}"
 
-        if image_original_path.exists():
+        if original_image_path.exists():
             logs.debug("Original image already exists.")
         else:
-            image_original_name = self.imgpath / f"{self.image_hash}_orig.{suffix}"
-            image_original.save(image_original_name.as_posix(), suffix, quality=IMAGE_QUALITY)
+            original_image_name = self.imgpath / f"{self.image_hash}_orig.{suffix}"
+            original_image.save(original_image_name.as_posix(), suffix)
 
-        sizes_pattern = '|'.join([f'{width}_{height}' for width, height in IMAGE_SIZES])
-        pattern = re.compile(rf'{self.image_hash}_({sizes_pattern})\.{IMAGE_SUFFIX}$')
-        missing_sizes = set([f'{width}_{height}' for width, height in IMAGE_SIZES])
-
+        # ------------
+            
+        create_list = list(IMAGE_SIZES)
         for file in self.imgpath.iterdir():
-            if file.is_file() and pattern.search(file.name):
-                match = pattern.search(file.name)
-                if match:
-                    size = match.group(1)
-                    if size in missing_sizes:
-                        missing_sizes.remove(size)
-        if missing_sizes:
-            for size in missing_sizes:
-                image_thumbnail = image_original.copy()
-                image_thumbnail.thumbnail(tuple(int(item) for item in size.split('_'))) #Image.Resampling.LANCZOS)
-                image_thumbnail_name = self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}"
-                image_thumbnail.save(image_thumbnail_name.as_posix(), "WEBP", quality=IMAGE_QUALITY)
+            for size in IMAGE_SIZES:
+                if file.is_file() and file.name.endswith(f'{self.image_hash}_{size}.{IMAGE_SUFFIX}'):
+                    create_list.remove(size)
+
+        if create_list:
+            for size in create_list:
+                thumb_image = original_image.copy()
+                thumb_image.thumbnail([size, size])
+                thumb_image_name = (self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}").as_posix()
+                thumb_image.save(thumb_image_name, "WEBP", quality=IMAGE_QUALITY)
         else:
             logs.debug("All specified sizes were found.")
+
+        # sizes_pattern = '|'.join([f'{width}_{height}' for width, height in IMAGE_SIZES])
+        # pattern = re.compile(rf'{self.image_hash}_({sizes_pattern})\.{IMAGE_SUFFIX}$')
+        # missing_sizes = set([f'{width}_{height}' for width, height in IMAGE_SIZES])
+
+        # for file in self.imgpath.iterdir():
+        #     if file.is_file() and pattern.search(file.name):
+        #         match = pattern.search(file.name)
+        #         if match:
+        #             size = match.group(1)
+        #             if size in missing_sizes:
+        #                 missing_sizes.remove(size)
+        # if missing_sizes:
+        #     for size in missing_sizes:
+        #         image_thumbnail = original_image.copy()
+        #         image_thumbnail.thumbnail(tuple(int(item) for item in size.split('_'))) #Image.Resampling.LANCZOS)
+        #         image_thumbnail_name = self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}"
+        #         image_thumbnail.save(image_thumbnail_name.as_posix(), "WEBP", quality=IMAGE_QUALITY)
+        # else:
+        #     logs.debug("All specified sizes were found.")

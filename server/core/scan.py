@@ -57,11 +57,9 @@ async def scan_auto():
         LIBRARY_PATH,
         recursive=True,
         watch_filter=ScanFilter(),
-        debug=True,
     ):
        for events_type, events_path in events:
             events_path = Path(events_path)
-
             if events_type == Change.added or events_type == Change.modified:
                 if events_path.is_dir():
                     file_states[get_strpath(events_path)] = 'dir'
