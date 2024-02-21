@@ -1,4 +1,3 @@
-<br>
 <div align="center">
   <h3><img src="https://img.shields.io/badge/Python | 3.11 | 3.12-3776AB?style=flat-square&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/Vue.js-35495E?style=flat-square&logo=vue.js&logoColor=4FC08D"> <img src="https://img.shields.io/github/license/bunubbv/tamaya?style=flat-square"> <img src="https://img.shields.io/github/last-commit/bunubbv/tamaya?style=flat-square"></h3>
   <img src=".github/screenshots/tamaya.png" width="700">
