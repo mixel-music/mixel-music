@@ -55,7 +55,8 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
         tags_dict['compilation'] = False
     else:
         tags_dict['compilation'] = True
-        
+
+    tags_dict['dir'] = get_strpath(music_path.parent)        
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
     tags_dict['imageid'] = ' '

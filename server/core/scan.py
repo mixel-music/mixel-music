@@ -13,7 +13,6 @@ async def init_scan():
     tracks_list = await db.fetch_all(
         tracks.select().with_only_columns([tracks.c.path, tracks.c.size])
     )
-
     if tracks_list:
         async with asyncio.TaskGroup() as scan:
             for tracks_info in tracks_list:
@@ -25,8 +24,7 @@ async def init_scan():
                     if tracks_info['size'] != tracks_size:
                         scan.create_task(delete(tracks_info['path']))
                     else:
-                        file_states[tracks_info['path']] = 'skip'
-                        
+                        file_states[tracks_info['path']] = 'skip' 
     await scan_path()
 
 async def scan_path(path: Path = LIBRARY_PATH):
@@ -36,60 +34,46 @@ async def scan_path(path: Path = LIBRARY_PATH):
                 continue
             elif target.is_file() and target.suffix in SUFFIXES:
                 scan.create_task(insert(target))
-                image_task = Images(target)
-                scan.create_task(image_task.image_extract_db())
             elif target.is_dir():
                 file_states[get_strpath(target)] = 'dir'
-                try:
-                    scan.create_task(scan_path(target))
-                except:
-                    logs.error("File not found. unexcepted behavior.")
+                scan.create_task(scan_path(target))
 
-# class WebFilter(DefaultFilter):
-#     def __call__(self, change: Change, path: str) -> bool:
-#         real_path = get_path(path, rel=False)
-#         str_path = get_strpath(path)
-#         print("hi")
-#         print(str_path)
-#         print(file_states.get(str_path))
-#         if file_states.get(str_path) == 'dir' and Change.added:
-#             print(change)
-#             return (super().__call__(change, path)) and "hi"
+class ScanFilter(DefaultFilter):
+    def __call__(self, change: Change, path: str) -> bool:
+        pure_path = PurePath(path)
+        suffix = pure_path.suffix
+        diff_path = get_strpath(pure_path.parent)
+        library_path = get_strpath(LIBRARY_PATH)
+
+        if suffix == '' or (diff_path == library_path and suffix in SUFFIXES):
+            return (super().__call__(change, path) and path)
 
 async def scan_auto():
     logs.info("Library observer initiated.")
-
     async for events in awatch(
         LIBRARY_PATH,
         recursive=True,
-        # watch_filter=WebFilter()
+        watch_filter=ScanFilter(),
+        debounce=100
     ):
        for events_type, events_path in events:
             events_path = Path(events_path)
 
-            # if events_type == Change.added:
-            #     print("event %s %s", events_type, events_path)
-            # elif events_type == Change.modified:
-            #     print("event %s %s", events_type, events_path)
-            # elif events_type == Change.deleted:
-            #     print("event %s %s", events_type, events_path)
-
             if events_type == Change.added or events_type == Change.modified:
                 if events_path.is_dir():
                     file_states[get_strpath(events_path)] = 'dir'
-                    await init_scan(events_path)
+                    await scan_path(events_path)
+                    continue
                 else:
-                    if events_path.suffix in SUFFIXES:
-                        if events_type is Change.modified: await delete(events_path)
-                        asyncio.create_task(insert(events_path))
-                        image_task = Images(events_path)
-                        asyncio.create_task(image_task.image_extract_db())
+                    await delete(events_path)
+                    asyncio.create_task(insert(events_path))
+                    # image_task = Images(events_path)
+                    # asyncio.create_task(image_task.image_extract_db())
             elif events_type == Change.deleted:
                 if file_states.get(get_strpath(events_path)) == 'dir':
                     asyncio.create_task(delete(events_path))
                 else:
-                    if events_path.suffix in SUFFIXES:
-                        asyncio.create_task(delete(events_path))
+                    asyncio.create_task(delete(events_path))
 
 async def insert(path):
     async with sem:
@@ -102,5 +86,4 @@ async def insert(path):
 async def delete(path):
     tracks_obj = Tracks(get_strpath(path))
     await tracks_obj.delete(file_states.get(get_strpath(path)))
-
-    file_states.pop(path, None)
+    file_states.pop(get_strpath(path), None)

@@ -34,6 +34,7 @@ tracks = sqlalchemy.Table(
     sqlalchemy.Column("createdate", sqlalchemy.DateTime, nullable=False),
     sqlalchemy.Column("date", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("description", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("dir", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("discnumber", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("disctotal", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),

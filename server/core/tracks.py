@@ -45,8 +45,9 @@ class Tracks:
             else:
                 return False
 
-            # Removing all tracks from database with paths starting from the target directory
-            await db.execute(tracks.delete().where(tracks.c.path.like(f'{self.strpath}%')))
+            # Removing all tracks from database with dirs matching from the target directory
+            await db.execute(tracks.delete().where(tracks.c.dir == self.strpath))
+            logs.debug("directory successfully deleted.")
         else:
             get_image_ids = await db.fetch_one(
                 tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.id == self.tracks_id)
