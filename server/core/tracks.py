@@ -25,8 +25,7 @@ class Tracks:
             logs.error("Failed to read tags. Is it a valid audio file?")
             return False
         
-        async with db.transaction():
-            await db.execute(tracks.insert().values(self.tracks_tags))
+        await db.execute(tracks.insert().values(self.tracks_tags))
         logs.debug('Finished inserting tags.')
 
         return True

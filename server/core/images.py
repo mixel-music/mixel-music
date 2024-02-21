@@ -13,7 +13,7 @@ import re
 
 IMAGE_QUALITY = 70
 IMAGE_SUFFIX = 'webp'
-IMAGE_SIZES = [(64, 64), (128, 128), (300, 300), (500, 500)]
+IMAGE_SIZES = [(64, 64), (128, 128), (300, 300)]
 
 class Images:
     def __init__(self, path: str | Path):
@@ -75,7 +75,6 @@ class Images:
 
         if self.image_data != None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
-            print(self.strpath)
             await db.execute(
                 tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)
             )

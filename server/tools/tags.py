@@ -55,12 +55,7 @@ async def TagsTools(music_path: Path, list_tags: list) -> dict:
         tags_dict['compilation'] = False
     else:
         tags_dict['compilation'] = True
-
-    async with aiofiles.open(music_path, mode='rb') as afile:
-        tracks_hash = hashlib.md5(await afile.read()).hexdigest().upper()
-
-    tags_dict['hash'] = tracks_hash
-
+        
     tags_dict['discnumber'] = safe_int(tags_dict['discnumber'])
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
     tags_dict['imageid'] = ' '

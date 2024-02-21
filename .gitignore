@@ -1,9 +1,15 @@
 __pycache__
 .pytest_cache
 
+Scripts/
+Include/
+Lib/
+.venv/
+*.cfg
+
 data/*
 library/*
-test
+test/
 server/test
 *.db
 *.env
