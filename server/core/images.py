@@ -70,14 +70,16 @@ class Images:
                 if isinstance(tag, APIC):
                     self.image_data = tag.data
 
-    async def image_extract_db(self):
-        await self.image_extract()
+        if self.image_data:
+            asyncio.create_task(self.image_insert())
 
+    async def image_insert(self):
         if self.image_data != None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
             await db.execute(
                 tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)
             )
+
             asyncio.create_task(self.image_process())
 
     async def image_process(self):

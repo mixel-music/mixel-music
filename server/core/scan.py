@@ -33,7 +33,9 @@ async def scan_path(path: Path = LIBRARY_PATH):
             if file_states.get(get_strpath(target)) == 'skip':
                 continue
             elif target.is_file() and target.suffix in SUFFIXES:
-                scan.create_task(insert(target))
+                await insert(target)
+                image_task = Images(target)
+                asyncio.create_task(image_task.image_extract())
             elif target.is_dir():
                 file_states[get_strpath(target)] = 'dir'
                 scan.create_task(scan_path(target))
@@ -54,7 +56,7 @@ async def scan_auto():
         LIBRARY_PATH,
         recursive=True,
         watch_filter=ScanFilter(),
-        debounce=100
+        debounce=10000
     ):
        for events_type, events_path in events:
             events_path = Path(events_path)
@@ -65,10 +67,10 @@ async def scan_auto():
                     await scan_path(events_path)
                     continue
                 else:
-                    await delete(events_path)
-                    asyncio.create_task(insert(events_path))
-                    # image_task = Images(events_path)
-                    # asyncio.create_task(image_task.image_extract_db())
+                    if events_type == Change.modified: await delete(events_path)
+                    await insert(events_path)
+                    image_task = Images(events_path)
+                    asyncio.create_task(image_task.image_extract())
             elif events_type == Change.deleted:
                 if file_states.get(get_strpath(events_path)) == 'dir':
                     asyncio.create_task(delete(events_path))

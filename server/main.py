@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="Tamaya",
-    version="0.1.1a",
+    version="0.1.2a",
     lifespan=lifespan
 )
 
