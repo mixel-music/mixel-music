@@ -12,7 +12,7 @@
   --layout-padding: 21px;
   --sidebar-padding: 14px;
   --element-padding: 16px;
-  --element-radius: 8px;
+  --element-radius: 6px;
 }
 
 html {
@@ -260,6 +260,19 @@ input[type='text']:focus {
 
 .player-left {
   max-width: 33%;
+  display: flex;
+}
+
+.player-left img {
+  height: 65px;
+  border-radius: var(--element-radius);
+  margin-right: var(--element-padding);
+}
+
+.player-left-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .player-center {

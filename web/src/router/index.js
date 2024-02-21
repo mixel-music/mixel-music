@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Songs from '../views/Songs.vue'
+import Tracks from '../views/Tracks.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,17 +7,17 @@ const router = createRouter({
     {
       path: '/',
       name: 'Main',
-      component: Songs,  
+      component: Tracks,  
     },
 
     {
-      path: '/music',
-      name: 'Songs',
-      component: Songs,
+      path: '/tracks',
+      name: 'Tracks',
+      component: Tracks,
     },
 
     {
-      path: '/album',
+      path: '/albums',
       name: 'Albums',
       component: () => import('../views/Albums.vue'),
     },

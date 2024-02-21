@@ -37,7 +37,7 @@ export default {
 
   methods: {
     FetchMusicList() {
-      axios.get('http://localhost:8000/api/list?type=music')
+      axios.get('http://localhost:8000/api/tracks')
         .then(response => {
           this.list = response.data;
         })

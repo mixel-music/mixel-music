@@ -1,9 +1,12 @@
 <template>
   <div class="player">
     <div class="player-left">
-      <p class="text-title" v-bind="{ title: Title }">{{ Title }}</p>
-      <p class="text-description" v-bind="{ title: Artist + ' - ' + Album }" v-if="Title">{{ Artist }} - {{ Album }}</p>
-      <p class="text-description" v-bind="{ title: LengthNowFormatted + ' / ' + LengthFormatted }" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
+      <img v-bind="{ src: path }">
+      <div class="player-left-text">
+        <p class="text-title" v-bind="{ title: Title }">{{ Title }}</p>
+        <p class="text-description" v-bind="{ title: Artist + ' - ' + Album }" v-if="Title">{{ Artist }} - {{ Album }}</p>
+        <p class="text-description" v-bind="{ title: LengthNowFormatted + ' / ' + LengthFormatted }" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
+      </div>
     </div>
     <div class="player-center">
       <button class="player-button" title="Previous" @click="PreviousTrack">
@@ -97,6 +100,7 @@ export default {
       Title: null,
       Album: null,
       Artist: null,
+      path: null,
 
       Length: 0, // RAW Value (sec, float)
       LengthNow: 0, // RAW Value (sec, float)
@@ -163,6 +167,7 @@ export default {
       this.Album = album;
       this.Artist = artist;
       this.Music.src = `http://localhost:8000/api/stream/${path}`;
+      this.path = `http://localhost:8000/api/images/${path}?size=128`;
 
       if (this.Music.paused) {
         this.Music.play();
