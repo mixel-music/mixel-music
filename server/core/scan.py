@@ -31,6 +31,7 @@ async def scan_path(path: Path = LIBRARY_PATH):
     async with asyncio.TaskGroup() as scan:
         for target in path.iterdir():
             if file_states.get(get_strpath(target)) == 'skip':
+                file_states.pop(get_strpath(target), None)
                 continue
             elif target.is_file() and target.suffix in SUFFIXES:
                 await insert(target)
@@ -56,7 +57,7 @@ async def scan_auto():
         LIBRARY_PATH,
         recursive=True,
         watch_filter=ScanFilter(),
-        debounce=10000
+        debug=True,
     ):
        for events_type, events_path in events:
             events_path = Path(events_path)
@@ -64,8 +65,7 @@ async def scan_auto():
             if events_type == Change.added or events_type == Change.modified:
                 if events_path.is_dir():
                     file_states[get_strpath(events_path)] = 'dir'
-                    await scan_path(events_path)
-                    continue
+                    asyncio.create_task(scan_path(events_path))
                 else:
                     if events_type == Change.modified: await delete(events_path)
                     await insert(events_path)
