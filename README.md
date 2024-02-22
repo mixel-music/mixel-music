@@ -1,18 +1,16 @@
 <div align="center">
-  <h3><img src="https://img.shields.io/badge/Python | 3.11 | 3.12-3776AB?style=flat-square&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/Vue.js-35495E?style=flat-square&logo=vue.js&logoColor=4FC08D"> <img src="https://img.shields.io/github/license/bunubbv/tamaya?style=flat-square"> <img src="https://img.shields.io/github/last-commit/bunubbv/tamaya?style=flat-square"></h3>
-  <img src=".github/screenshots/tamaya.png" width="600">
-  <h3>Tamaya, Self-hosted music streaming application</h3>
+  <img src=".github/screenshots/0.1.2a_Tracks.png" width="600">
 </div>
 
-## About
-Tamaya is a fast, lightweight self-hosted music streaming application that supports various audio formats with simple interface.
+## Tamaya
+<img src="https://img.shields.io/badge/Python | 3.11 | 3.12-3776AB?style=flat-square&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/Vue.js-35495E?style=flat-square&logo=vue.js&logoColor=4FC08D"> <img src="https://img.shields.io/github/license/bunubbv/tamaya?style=flat-square"> <img src="https://img.shields.io/github/last-commit/bunubbv/tamaya?style=flat-square">
+
+Tamaya is an open-source, self-hosted application developed with Python and Vue.js, focusing on fast performance, beautiful UI, and extensive support for web and various devices.
 
 Since this project is part of my learning process, there may be many areas that need improvement. I have little experience doing backend development with Python, also this is my first time using JavaScript and Vue.js.
 
-Feedback is always welcome!
+### Getting Started
 
-## Documentation
+### Documentation
 
-## Installation
-
-## Features
+### Screenshots

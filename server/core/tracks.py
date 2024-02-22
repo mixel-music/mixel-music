@@ -46,7 +46,7 @@ class Tracks:
                 return False
 
             # Removing all tracks from database with dirs matching from the target directory
-            await db.execute(tracks.delete().where(tracks.c.dir == self.strpath))
+            await db.execute(tracks.delete().where(tracks.c.dir.like(f'{self.strpath}%')))
             logs.debug("directory successfully deleted.")
         else:
             get_image_ids = await db.fetch_one(
@@ -65,7 +65,7 @@ class Tracks:
                 return False
 
     @staticmethod
-    async def get_list(num: int = 36) -> list:
+    async def get_list(num: int = 24) -> list:
         tracks_tags = []
         tracks_tags_select = await db.fetch_all(
             tracks.select().with_only_columns(
@@ -78,7 +78,7 @@ class Tracks:
                     tracks.c.albumid,
                     tracks.c.artistid
                 ]
-            )
+            ).order_by(tracks.c.album.desc(), tracks.c.tracknumber.asc()).limit(28)
         )
 
         if not tracks_tags_select:

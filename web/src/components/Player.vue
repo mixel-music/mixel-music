@@ -1,7 +1,14 @@
 <template>
   <div class="player">
+    <div class="player-length">
+      <div class="player-range" @click="LengthSeek($event)" @mousedown="LengthDragStart($event)" @mouseup="DragStop">
+        <div class="player-range-length">
+          <div class="player-range-now" :style="{ 'width': LengthRangeValue + '%' }"></div>
+        </div>
+      </div>
+    </div>
     <div class="player-left">
-      <img v-bind="{ src: path }">
+      <img v-bind="{ src: path + '?size=128' }" v-if="path">
       <div class="player-left-text">
         <p class="text-title" v-bind="{ title: Title }">{{ Title }}</p>
         <p class="text-description" v-bind="{ title: Artist + ' - ' + Album }" v-if="Title">{{ Artist }} - {{ Album }}</p>
@@ -19,11 +26,6 @@
       <button class="player-button" title="Next" @click="NextTrack">
         <IconamoonPlayerEndFill />
       </button>
-      <div class="player-range" @click="LengthSeek($event)" @mousedown="LengthDragStart($event)" @mouseup="DragStop">
-        <div class="player-range-length">
-          <div class="player-range-now" :style="{ 'width': LengthRangeValue + '%' }"></div>
-        </div>
-      </div>
     </div>
     <div class="player-right">
       <div class="player-volume" @mouseover="this.VolumeNowEnable = true" @mouseleave="this.VolumeNowEnable = false">
@@ -167,7 +169,7 @@ export default {
       this.Album = album;
       this.Artist = artist;
       this.Music.src = `http://localhost:8000/api/stream/${path}`;
-      this.path = `http://localhost:8000/api/images/${path}?size=128`;
+      this.path = `http://localhost:8000/api/images/${path}`;
 
       if (this.Music.paused) {
         this.Music.play();
@@ -182,7 +184,11 @@ export default {
           title: this.Title,
           album: this.Album,
           artist: this.Artist,
-          artwork: [],
+          artwork: [
+            {
+              src: this.path + "?size=300",
+            }  
+          ],
         });
 
         navigator.mediaSession.setActionHandler("play", () => { this.ToggleTrack(); });

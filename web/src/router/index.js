@@ -6,8 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Main',
-      component: Tracks,  
+      redirect: '/tracks', 
     },
 
     {

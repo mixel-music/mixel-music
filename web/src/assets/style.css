@@ -1,16 +1,15 @@
 :root {
-  --dark-color-1: #191919;
-  --dark-color-2: #202020;
+  --dark-color-1: #161616;
+  --dark-color-2: #212121;
 
   --dark-text-1: #d7d7d7;
   --dark-text-2: #9b9b9b;
   
   --dark-focus: #9b9b9b;
-  --dark-border: #292929;
+  --dark-border: #303030;
   --dark-disbaled: #565656;
   
   --layout-padding: 21px;
-  --sidebar-padding: 14px;
   --element-padding: 16px;
   --element-radius: 6px;
 }
@@ -82,6 +81,7 @@ input[type='text']:focus {
   width: 100%;
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
 }
 
 /* sidebar */
@@ -155,16 +155,30 @@ input[type='text']:focus {
 /* content */
 
 .content {
-  margin-left: 260px;
-  width: 100%;
+  padding: var(--layout-padding) 12%;
+  width: -webkit-fill-available;
+  margin-bottom: 180px;
+}
+
+.content-header {
+  margin: var(--layout-padding) 0;
+}
+
+.content-title {
+  font-size: 64px;
+  font-weight: bolder;
+  letter-spacing: -1px;
 }
 
 .navbar {
-  position: fixed;
-  height: 78px;
+  position: sticky;
+  height: 90px;
+  width: 100%;
+  top: 0;
+  padding: 0 12% var(--layout-padding) 12%;
   width: -webkit-fill-available;
-  padding: var(--layout-padding);
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -186,10 +200,12 @@ input[type='text']:focus {
   width: 108px;
   display: flex;
   justify-content: space-between;
+  padding: var(--layout-padding) 0;
 }
 
 .navbar-right {
   height: 46px;
+  padding: var(--layout-padding) 0;
 }
 
 .navbar-icon {
@@ -208,38 +224,40 @@ input[type='text']:focus {
   color: var(--dark-text-2);
   font-size: smaller;
   display: block;
+  height: 19px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .card-grid {
-  padding: 10%;
-  padding-top: 0;
-  margin-top: 120px;
-  margin-bottom: 112.8px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
   grid-gap: 32px;
-  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .card {
-  background-color: var(--dark-color-2);
-  border-radius: var(--element-radius);
-  height: 200px;
   white-space: nowrap;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  border: 1px solid var(--dark-border);
+}
+
+.card-placeholder {
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-image {
-  padding: var(--element-padding);
+  object-fit: scale-down;
+  width: 100%;
+  height: 195px;
+  border-radius: var(--element-radius);
+  background-color: var(--dark-color-2);
+  border: 1px solid var(--dark-border);
 }
 
 .card-content {
-  padding: var(--element-padding);
+  padding: var(--element-padding) 0;
 }
 
 /* player */
@@ -248,34 +266,39 @@ input[type='text']:focus {
   position: fixed;
   display: flex;
   width: -webkit-fill-available;
-  height: 58px;
   background-color: var(--dark-color-2);
   bottom: 0;
-  padding: var(--layout-padding);
+  padding: 0 12%;
   justify-content: space-between;
   align-items: center;
   user-select: none;
-  border-top: 1px solid var(--dark-border);
+  height: 90px;
 }
 
 .player-left {
+  padding: var(--layout-padding) 0;
   max-width: 33%;
   display: flex;
 }
 
 .player-left img {
-  height: 65px;
+  width: 64px;
+  height: 64px;
   border-radius: var(--element-radius);
   margin-right: var(--element-padding);
+  object-fit: scale-down;
+  background-color: var(--dark-color-2);
+  border: 1px solid var(--dark-border);
 }
 
 .player-left-text {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .player-center {
+  padding: var(--layout-padding) 0;
   position: fixed;
   display: flex;
   width: 30%;
@@ -304,33 +327,38 @@ input[type='text']:focus {
   margin: 0 10px;
 }
 
-.player-range {
-  width: 100%;
-  padding: 10px;
-}
-
 .player-range * {
   cursor: pointer;
 }
 
 .player-range-length {
   width: 100%;
-  height: 4px;
+  height: 3px;
   background-color: var(--dark-border);
   border-radius: var(--element-radius);
 }
 
 .player-range-now {
   width: 0;
-  height: 4px;
+  height: 3px;
   background-color: var(--dark-text-1);
   border-radius: var(--element-radius);
 }
 
 .player-right {
+  padding: var(--layout-padding) 0;
   display: flex;
   align-items: center;
-  height: 100%;
+}
+
+.player-length {
+  width: 100%;
+  position: fixed;
+  padding: 0;
+  left: 0;
+  padding: 24px 0;
+  z-index: 1;
+  bottom: 64px;
 }
 
 .player-volume {

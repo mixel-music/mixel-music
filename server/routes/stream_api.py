@@ -23,9 +23,7 @@ async def stream_api(id: str, range: str = Header(None)):
     else:
         music_start = 0
         music_end = music_start + music_chunk
-
     music_end = min(music_end, music_size - 1) # ensure it does not exceed the file size
-    logs.debug("Streaming partial data in '%s'...", get_name(music_path)[0])
 
     async with aiofiles.open(music_path, mode="rb") as music_file:
         await music_file.seek(music_start)

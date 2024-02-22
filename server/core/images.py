@@ -7,11 +7,10 @@ from model.model import *
 from tools.path import *
 from core.logs import *
 from PIL import Image
-import mimetypes
 import io
 import re
 
-IMAGE_QUALITY = 70
+IMAGE_QUALITY = 80
 IMAGE_SUFFIX = 'webp'
 IMAGE_SIZES = [64, 128, 300, 500]
 
@@ -107,28 +106,8 @@ class Images:
         if create_list:
             for size in create_list:
                 thumb_image = original_image.copy()
-                thumb_image.thumbnail([size, size])
+                thumb_image.thumbnail([size, size], Image.Resampling.LANCZOS)
                 thumb_image_name = (self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}").as_posix()
                 thumb_image.save(thumb_image_name, "WEBP", quality=IMAGE_QUALITY)
         else:
             logs.debug("All specified sizes were found.")
-
-        # sizes_pattern = '|'.join([f'{width}_{height}' for width, height in IMAGE_SIZES])
-        # pattern = re.compile(rf'{self.image_hash}_({sizes_pattern})\.{IMAGE_SUFFIX}$')
-        # missing_sizes = set([f'{width}_{height}' for width, height in IMAGE_SIZES])
-
-        # for file in self.imgpath.iterdir():
-        #     if file.is_file() and pattern.search(file.name):
-        #         match = pattern.search(file.name)
-        #         if match:
-        #             size = match.group(1)
-        #             if size in missing_sizes:
-        #                 missing_sizes.remove(size)
-        # if missing_sizes:
-        #     for size in missing_sizes:
-        #         image_thumbnail = original_image.copy()
-        #         image_thumbnail.thumbnail(tuple(int(item) for item in size.split('_'))) #Image.Resampling.LANCZOS)
-        #         image_thumbnail_name = self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}"
-        #         image_thumbnail.save(image_thumbnail_name.as_posix(), "WEBP", quality=IMAGE_QUALITY)
-        # else:
-        #     logs.debug("All specified sizes were found.")

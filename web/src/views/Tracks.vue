@@ -1,16 +1,15 @@
 <template>
   <div class="card-grid">
-    <div class="card" v-for="(track, index) in list" :key="index" @click="this.$emit('SelectTrack', track['title'], track['album'], track['artist'], track['id']);">
-      <div class="card-image">
-        
+    <div v-for="(track, index) in fullCardList" :key="track.id" class="card">
+      <div v-if="track.title">
+        <img :src="`http://localhost:8000/api/images/${ track.id }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.id);">
+        <div class="card-content">
+          <p class="text-title">{{ track.title }}</p>
+          <p class="text-description">{{ track.artist }}</p>
+        </div>
       </div>
-      <div class="card-content">
-        <a class="text-title">
-          {{ track['title'] }}
-        </a>
-        <a class="text-description">
-          {{ track['artist'] }}
-        </a>
+      <div v-else class="card-placeholder">
+
       </div>
     </div>
   </div>
@@ -27,7 +26,7 @@ export default {
 
   data() {
     return {
-      list: null,
+      info: [],
     };
   },
 
@@ -39,12 +38,21 @@ export default {
     FetchMusicList() {
       axios.get('http://localhost:8000/api/tracks')
         .then(response => {
-          this.list = response.data;
+          this.info = response.data;
         })
         .catch(error => {
           console.error("Failed to fetch:", error);
         });
     },
-  }
+  },
+
+  computed: {
+    fullCardList() {
+      const totalItems = 7;
+      const emptyItemsToAdd = totalItems - this.info.length;
+      const emptyItems = Array.from({ length: emptyItemsToAdd }, () => ({}));
+      return [...this.info, ...emptyItems];
+    },
+  },
 }
 </script>
