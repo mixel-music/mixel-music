@@ -90,7 +90,6 @@ if not db_url.exists():
     logs.debug("Creating new database...")
 else:
     db = Database(DATABASE_URL)
-    logs.debug("Initializing database...")
 
 async def connect_database():
     await db.connect()
@@ -98,16 +97,3 @@ async def connect_database():
 
 async def disconnect_database():
     await db.disconnect()
-
-# 모듈화 해야함
-
-async def get_abs_path_from_id(value: str) -> Path:
-    query = tracks.select().with_only_columns([tracks.c.path]).where(tracks.c.id == value)
-    result = await db.fetch_one(query)
-
-    if result is not None:
-        path = get_path(result.path, rel=False)
-        return path
-    else:
-        logs.error("Failed to load: ID not found in database.")
-        return None

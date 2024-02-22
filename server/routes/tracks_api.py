@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Header, status, Response, HTTPException
+from fastapi import APIRouter, status, HTTPException
 from core.tracks import *
 from tools.path import *
 
 router = APIRouter()
 
 @router.get("/tracks")
-async def tracks_list_api():
-    tracks_list = await Tracks.get_list()
+async def tracks_list_api(num: int = 28):
+    count = safe_int(num)
+    tracks_list = await Tracks.get_list(count)
 
     return tracks_list
 

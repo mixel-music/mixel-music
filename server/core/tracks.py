@@ -1,5 +1,4 @@
 from core.images import *
-from core.tracks import *
 from core.logs import *
 from model.model import *
 from tools.path import *
@@ -8,13 +7,9 @@ from tools.tags import *
 list_tags = [column.name for column in tracks.columns]
 
 class Tracks:
-
-    def __init__(self, path: str | Path):
+    def __init__(self, path: str):
         self.path = get_path(path, rel=False)
-        """Path, rel = False"""
-
-        self.strpath = get_strpath(self.path)
-        """str, rel = True"""
+        self.strpath = get_strpath(path)
 
         self.tracks_id = get_hash(self.strpath)
         self.tracks_list = None
@@ -22,52 +17,54 @@ class Tracks:
     async def insert(self):
         self.tracks_tags = await TagsTools(self.path, list_tags)
         if self.tracks_tags is None:
-            logs.error("Failed to read tags. Is it a valid audio file?")
+            logs.debug("Failed to read tags. Is it a valid file?")
             return False
         
-        await db.execute(tracks.insert().values(self.tracks_tags))
-        logs.debug('Finished inserting tags.')
+        try:
+            await db.execute(tracks.insert().values(self.tracks_tags))
+            logs.debug('Finished inserting tags.')
+            return True
+        except:
+            logs.error("Failed to insert data into the database.")
+            return False
 
-        return True
-
-    async def delete(self, file_states: str):
-        if file_states == 'dir':
-            get_image_ids = await db.fetch_all(
+    async def delete(self, path_type: str):
+        if path_type == 'dir':
+            select_db = await db.fetch_all(
                 tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.path.like(f'{self.strpath}%'))
             )
-
             # Removing all images from database with names starting from the image id
             image_path = get_path('data', 'images', rel=False)
-            if get_image_ids:
-                for image_id in get_image_ids:
-                    for image_path_delete in image_path.glob(f"{image_id['imageid']}*"):
+            if select_db:
+                for result_db in select_db:
+                    for image_path_delete in image_path.glob(f"{result_db['imageid']}*"):
                         image_path_delete.unlink(missing_ok=True)
             else:
                 return False
 
             # Removing all tracks from database with dirs matching from the target directory
             await db.execute(tracks.delete().where(tracks.c.dir.like(f'{self.strpath}%')))
-            logs.debug("directory successfully deleted.")
+            logs.debug("Directory successfully deleted.")
         else:
-            get_image_ids = await db.fetch_one(
+            select_db = await db.fetch_one(
                 tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.id == self.tracks_id)
             )
-            if get_image_ids:
+            if select_db:
                 image_path = get_path('data', 'images', rel=False)
-                for image_file in image_path.glob(f"{get_image_ids['imageid']}"):
+                for image_file in image_path.glob(f"{select_db.imageid}"):
                     if image_file.is_file():
                         image_file.unlink(missing_ok=True)
             try:
                 await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
-                logs.debug("track successfully deleted.")
+                logs.debug("Track successfully deleted.")
             except:
                 logs.error("Failed to delete track.")
                 return False
 
     @staticmethod
-    async def get_list(num: int = 24) -> list:
+    async def get_list(num: int) -> list:
         tracks_tags = []
-        tracks_tags_select = await db.fetch_all(
+        tags_select = await db.fetch_all(
             tracks.select().with_only_columns(
                 [
                     tracks.c.title,
@@ -78,28 +75,34 @@ class Tracks:
                     tracks.c.albumid,
                     tracks.c.artistid
                 ]
-            ).order_by(tracks.c.album.desc(), tracks.c.tracknumber.asc()).limit(28)
+            ).order_by(
+                tracks.c.album.desc(),
+                tracks.c.tracknumber.asc()
+            ).limit(num)
         )
 
-        if not tracks_tags_select:
-            return tracks_tags
-
-        for tag in tracks_tags_select:
-            tracks_tags.append(dict(tag))
-
+        if tags_select: [tracks_tags.append(dict(tag)) for tag in tags_select]
         return tracks_tags
 
     @staticmethod
     async def get_info(id: str) -> dict:
-        tracks_data = []
-        tracks_data_select = await db.fetch_all(tracks.select().where(tracks.c.id == id))
+        try:
+            tracks_data = await db.fetch_all(tracks.select().where(tracks.c.id == id))
+        except:
+            logs.error("Failed to load the track information.")
+            return dict()
 
-        if not tracks_data_select:
-            logs.debug("Failed to load track info.")
-
-            return tracks_data
-
-        for data in tracks_data_select:
-            tracks_data = dict(data)
-
-        return tracks_data
+        for data in tracks_data: tracks_info = dict(data)
+        return tracks_info
+    
+    @staticmethod
+    async def get_path(id: str) -> Path:
+        try:
+            result = await db.fetch_one(
+                tracks.select().with_only_columns([tracks.c.path]).where(tracks.c.id == id)
+            )
+        except:
+            logs.error("Failed to find ID from the database.")
+            return False
+    
+        return get_path(result.path, rel=False) if result else None

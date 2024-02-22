@@ -29,7 +29,7 @@ export default {
     
   methods: {
     FetchAlbumList() {
-      axios.get('http://localhost:8000/api/list?type=album')
+      axios.get('http://localhost:2843/api/list?type=album')
       .then(response => {
         this.list = response.data;
       })

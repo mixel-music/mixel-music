@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from tools.path import *
 from core.logs import *
 from core.scan import *
-from model import *
 import uvicorn
 
 @asynccontextmanager
@@ -15,8 +14,8 @@ async def lifespan(app: FastAPI):
         await connect_database()
         await db.execute("PRAGMA journal_mode=WAL;")
         
-        asyncio.create_task(init_scan())
-        asyncio.create_task(scan_auto())
+        asyncio.create_task(check_db_data())
+        asyncio.create_task(event_watcher())
 
     except KeyboardInterrupt:
         for task in asyncio.all_tasks():
@@ -33,7 +32,6 @@ app = FastAPI(
     version="0.1.2a",
     lifespan=lifespan
 )
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -50,7 +48,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="127.0.0.1",
-        port=8000,
+        port=2843,
         log_level="debug",
         log_config=None,
         reload=True

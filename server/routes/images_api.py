@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Header, status, HTTPException
+from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import FileResponse
 from core.tracks import *
 from tools.path import *
@@ -8,8 +8,8 @@ router = APIRouter()
 @router.get("/images/{id}")
 async def images_api(id: str, size: int | str = 'orig'):
     image_dir = get_path('data', 'images', rel=False)
-    image_id = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == id))
-    image_id = image_id['imageid'] if image_id and image_id['imageid'] else None
+    db_result = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == id))
+    image_id = db_result.imageid if db_result and db_result.imageid else None
 
     if image_id is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

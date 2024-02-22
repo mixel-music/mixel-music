@@ -8,33 +8,30 @@ from tools.path import *
 from core.logs import *
 from PIL import Image
 import io
-import re
 
 IMAGE_QUALITY = 80
 IMAGE_SUFFIX = 'webp'
-IMAGE_SIZES = [64, 128, 300, 500]
+IMAGE_SIZES = [128, 300, 500]
 
 class Images:
     def __init__(self, path: str | Path):
         self.path = get_path(path, rel=False)
-        self.imgpath = get_path('data', 'images', rel=False)
         self.strpath = get_strpath(self.path)
-
-        if self.path.is_dir():
-            logs.error("It's directory.")
-
+        
+        self.suffix = get_name(self.strpath)[2].lower()
         self.id = get_hash(self.strpath)
-        self.suffix = get_name(self.strpath)[2]
+
+        self.image_path = get_path('data', 'images', rel=False)
         self.image_data = None
         
-    async def image_extract(self):
+    async def extract(self):
         if self.suffix == '.mp3':
             audio = ID3(self.path)
             for tag in audio.values():
                 if isinstance(tag, APIC):
                     self.image_data = tag.data 
 
-        elif self.suffix == '.mp4' or self.suffix == '.m4a' or self.suffix == '.aac':
+        elif self.suffix in ['.mp4', '.m4a', '.aac']:
             audio = MP4(self.path)
             covers = audio.get('covr')
             if covers:
@@ -70,35 +67,34 @@ class Images:
                     self.image_data = tag.data
 
         if self.image_data:
-            asyncio.create_task(self.image_insert())
+            asyncio.create_task(self.insert())
 
-    async def image_insert(self):
+    async def insert(self):
         if self.image_data != None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
             await db.execute(
                 tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)
             )
+            asyncio.create_task(self.process())
 
-            asyncio.create_task(self.image_process())
-
-    async def image_process(self):
+    async def process(self):
         self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
         original_image = Image.open(io.BytesIO(self.image_data))
         suffix = original_image.format.lower()
 
         if suffix is None: return None
-        original_image_path = self.imgpath / f"{self.image_hash}_orig.{suffix}"
+        original_image_path = self.image_path / f"{self.image_hash}_orig.{suffix}"
 
         if original_image_path.exists():
             logs.debug("Original image already exists.")
         else:
-            original_image_name = self.imgpath / f"{self.image_hash}_orig.{suffix}"
+            original_image_name = self.image_path / f"{self.image_hash}_orig.{suffix}"
             original_image.save(original_image_name.as_posix(), suffix)
 
         # ------------
             
         create_list = list(IMAGE_SIZES)
-        for file in self.imgpath.iterdir():
+        for file in self.image_path.iterdir():
             for size in IMAGE_SIZES:
                 if file.is_file() and file.name.endswith(f'{self.image_hash}_{size}.{IMAGE_SUFFIX}'):
                     create_list.remove(size)
@@ -107,7 +103,5 @@ class Images:
             for size in create_list:
                 thumb_image = original_image.copy()
                 thumb_image.thumbnail([size, size], Image.Resampling.LANCZOS)
-                thumb_image_name = (self.imgpath / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}").as_posix()
+                thumb_image_name = (self.image_path / f"{self.image_hash}_{size}.{IMAGE_SUFFIX}").as_posix()
                 thumb_image.save(thumb_image_name, "WEBP", quality=IMAGE_QUALITY)
-        else:
-            logs.debug("All specified sizes were found.")
