@@ -79,6 +79,29 @@ tracks = sqlalchemy.Table(
     sqlalchemy.Column("tracktotal", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("year", sqlalchemy.Integer, nullable=False),
 )
+albums = sqlalchemy.Table(
+    "albums",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("name", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artist", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artistid", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumartist", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumartistid", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("tracknumber", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("size", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("createdate", sqlalchemy.DateTime, nullable=False),
+    sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),
+    sqlalchemy.Column("dateafter", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("datebefore", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("dir", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("yearafter", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("yearbefore", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("imagepath", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("imageid", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("album", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumid", sqlalchemy.String(''), nullable=False),
+)
 
 if not db_url.exists():
     engine = sqlalchemy.create_engine(
@@ -87,13 +110,13 @@ if not db_url.exists():
 
     metadata.create_all(engine)
     db = Database(DATABASE_URL)
-    logs.debug("Creating new database...")
+    logs.info("Creating new database...")
 else:
     db = Database(DATABASE_URL)
 
 async def connect_database():
     await db.connect()
-    logs.debug("Connected to database successfully.")
+    logs.info("Connected to database successfully.")
 
 async def disconnect_database():
     await db.disconnect()

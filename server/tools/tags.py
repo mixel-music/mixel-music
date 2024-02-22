@@ -37,15 +37,6 @@ async def TagsTools(path: Path, tags: list) -> dict:
     tags_dict['size'] = path.stat().st_size
     tags_dict['tracknumber'] = safe_int(tags_dict['tracknumber'])
 
-    # if key == "size": tags_dict[key] = path.stat().st_size
-    # elif key == "duration": tags_dict[key] = getattr(get_tags.info, 'length', 0.0)
-    # elif key == "bitrate": tags_dict[key] = getattr(get_tags.info, 'bitrate', 0)
-    # elif key == "channels": tags_dict[key] = getattr(get_tags.info, 'channels', 0)
-    # elif key == "samplerate": tags_dict[key] = getattr(get_tags.info, 'sample_rate', 0)
-    # elif key == "mime": tags_dict[key] = getattr(get_tags, 'mime', '')[0]
-    # elif key == "path": tags_dict[key] = strpath
-    # elif key == "id": tags_dict[key] = get_hash(strpath)
-
     if tags_dict['title'] == '':
         if get_name(strpath)[1]:
             tags_dict['title'] = get_name(strpath)[1]
