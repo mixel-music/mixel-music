@@ -1,4 +1,4 @@
-from watchfiles import Change, DefaultFilter, awatch
+from watchfiles import Change, awatch
 from core.images import *
 from core.tracks import *
 from tools.path import *
@@ -25,11 +25,11 @@ async def check_db_data():
                 real_path = get_path(path_data, rel=False)
 
                 if not real_path.exists():
-                    scan.create_task(delete(path_data))
+                    scan.create_task(event_delete(path_data))
                 else:
                     tracks_size = real_path.stat().st_size
                     if size_data != tracks_size:
-                        scan.create_task(delete(path_data))
+                        scan.create_task(event_delete(path_data))
                     else:
                         file_states[path_data] = 'skip'
     await scan_dir_path()
@@ -43,28 +43,15 @@ async def scan_dir_path(path: Path = LIBRARY_PATH):
     async with asyncio.TaskGroup() as scan:
         for scan_path in path.iterdir():
             strpath = get_strpath(scan_path)
+            suffix = get_name(strpath)[2]
 
             if file_states.get(strpath) == 'skip':
                 file_states.pop(strpath, None)
-                continue
-            elif scan_path.is_file() and scan_path.suffix in SUFFIXES:
-                await insert(scan_path)
-                image_task = Images(scan_path)
-                asyncio.create_task(image_task.extract())
-                # insert, 이미지 처리 로직 개선 필요
+            elif suffix in SUFFIXES:
+                scan.create_task(event_create(strpath))
             elif scan_path.is_dir():
                 file_states[strpath] = 'dir'
                 scan.create_task(scan_dir_path(scan_path))
-
-class EventFilter(DefaultFilter):
-    def __call__(self, change: Change, path: str) -> bool:
-        pure_path = PurePath(path)
-        diff_path = get_strpath(pure_path.parent)
-        library_path = get_strpath(LIBRARY_PATH)
-        suffix = pure_path.suffix
-
-        if suffix == '' or (diff_path == library_path and suffix in SUFFIXES):
-            return (super().__call__(change, path) and path)
 
 async def event_watcher():
     """
@@ -73,36 +60,34 @@ async def event_watcher():
     If a directory is created or deleted, it starts the directory scanning task.
     """
     logs.info("Event watcher initiated.")
-    async for events in awatch(
-        LIBRARY_PATH,
-        recursive=True,
-        watch_filter=EventFilter(),
-    ):
-       for events_type, events_path in events:
-            events_path = Path(events_path)
+    async for event_handler in awatch(LIBRARY_PATH, recursive=True, force_polling=True):
+        for event_type, event_path in event_handler:
+            path = get_path(event_path)
+            strpath = get_strpath(event_path)
+            suffix = get_name(strpath)[2]
 
-            if events_type == Change.added or events_type == Change.modified:
-                if events_path.is_dir():
-                    file_states[get_strpath(events_path)] = 'dir'
-                    asyncio.create_task(scan_dir_path(events_path))
-                else:
-                    if events_type == Change.modified: await delete(events_path)
-                    await insert(events_path)
-                    image_task = Images(events_path)
-                    asyncio.create_task(image_task.extract())
-                    # insert, 이미지 처리 로직 개선 필요
-            elif events_type == Change.deleted:
-                if file_states.get(get_strpath(events_path)) == 'dir':
-                    asyncio.create_task(delete(events_path))
-                else:
-                    asyncio.create_task(delete(events_path))
+            if suffix == '' or file_states.get(strpath) == 'dir':
+                print(strpath)
+                if event_type == Change.added:
+                    await event_create(strpath, 'dir')
+                if event_type == Change.deleted:
+                    await event_delete(strpath, 'dir')
+            elif suffix in SUFFIXES:
+                if event_type in [Change.added or Change.modified]:
+                    await event_create(strpath)
+                elif event_type == Change.deleted and path.parent.exists():
+                    await event_delete(strpath)
 
-async def insert(path):
-    async with sem:
-        tracks_obj = Tracks(get_strpath(path))
-        await tracks_obj.insert()
+async def event_create(path: str, path_type: str = None):
+    tracks_obj = Tracks(path)
+    if path_type == 'dir':
+        file_states[path] = 'dir'
+        print("It's directory.")
+    else:
+        async with sem:
+            await tracks_obj.insert()
 
-async def delete(path):
-    tracks_obj = Tracks(get_strpath(path))
-    await tracks_obj.delete(file_states.get(get_strpath(path)))
-    file_states.pop(get_strpath(path), None)
+async def event_delete(path: str, path_type: str = None):
+    tracks_obj = Tracks(path)
+    if path_type == 'dir': file_states.pop(path, None)
+    await tracks_obj.delete(path_type)

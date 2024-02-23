@@ -42,18 +42,23 @@ def get_strpath(*args: str | Path, rel: bool = True) -> str:
 def get_hash(value: str) -> str:
     return hashlib.md5(value.encode()).hexdigest().upper()
     
-def get_name(*args: str | Path) -> list:
+def get_name(*args: str) -> list:
     if not args: raise ValueError('get_name() needs a str or Path')
 
     home = root
     for arg in args: home = home / arg
-    if not home.is_file(): return None
         
     name = home.name
     stem = home.stem
     suffix = home.suffix
 
-    if suffix == '' and stem.startswith('.'): stem, suffix = '', stem
+    if not suffix.isascii(): 
+        stem += suffix
+        suffix = ''
+        return [name, stem, suffix]
+    elif stem.startswith('.') and suffix == '':
+        stem, suffix = '', stem
+
     return [name, stem, suffix]
 
 def safe_int(value: int) -> int:

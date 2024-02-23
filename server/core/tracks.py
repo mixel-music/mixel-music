@@ -28,7 +28,7 @@ class Tracks:
             logs.error("Failed to insert data into the database.")
             return False
 
-    async def delete(self, path_type: str):
+    async def delete(self, path_type: str = None):
         if path_type == 'dir':
             select_db = await db.fetch_all(
                 tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.path.like(f'{self.strpath}%'))
@@ -43,16 +43,16 @@ class Tracks:
                 return False
 
             # Removing all tracks from database with dirs matching from the target directory
-            await db.execute(tracks.delete().where(tracks.c.dir.like(f'{self.strpath}%')))
-            logs.debug("Directory successfully deleted.")
+            await db.execute(tracks.delete().where(tracks.c.dir.like(f'{get_strpath(self.path.parent)}%')))
+            logs.debug("Directory and tracks successfully deleted.")
         else:
             select_db = await db.fetch_one(
                 tracks.select().with_only_columns([tracks.c.path, tracks.c.imageid]).where(tracks.c.id == self.tracks_id)
             )
             if select_db:
                 image_path = get_path('data', 'images', rel=False)
-                for image_file in image_path.glob(f"{select_db.imageid}"):
-                    if image_file.is_file():
+                for image_file in image_path.glob(f"{select_db.imageid}%"):
+                    if image_file.exists():
                         image_file.unlink(missing_ok=True)
             try:
                 await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
