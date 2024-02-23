@@ -86,7 +86,8 @@ class Images:
         original_image_path = self.image_path / f"{self.image_hash}_orig.{suffix}"
 
         if original_image_path.exists():
-            logs.debug("Original image already exists.")
+            pass
+            # logs.debug("Original image already exists.")
         else:
             original_image_name = self.image_path / f"{self.image_hash}_orig.{suffix}"
             original_image.save(original_image_name.as_posix(), suffix)

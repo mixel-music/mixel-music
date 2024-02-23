@@ -100,8 +100,6 @@ albums = sqlalchemy.Table(
     sqlalchemy.Column("yearbefore", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("imagepath", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("imageid", sqlalchemy.Integer, nullable=False),
-    sqlalchemy.Column("album", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("albumid", sqlalchemy.String(''), nullable=False),
 )
 
 if not db_url.exists():

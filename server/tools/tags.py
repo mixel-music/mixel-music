@@ -20,7 +20,7 @@ async def TagsTools(path: Path, tags: list) -> dict:
         else:
             tags_dict[key] = ''
 
-    tags_dict['albumid'] = get_hash(tags_dict['album'])
+    tags_dict['albumid'] = get_hash(f"{tags_dict['album']}-{tags_dict['artist']}-{tags_dict['year']}")
     tags_dict['artistid'] = get_hash(tags_dict['artist'])
     tags_dict['bitrate'] = getattr(get_tags.info, 'bitrate', 0)
     tags_dict['channels'] = getattr(get_tags.info, 'channels', 0)

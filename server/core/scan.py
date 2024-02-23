@@ -68,12 +68,12 @@ async def event_watcher():
                     asyncio.create_task(event_delete(strpath))
 
 async def event_create(path: str):
-    tracks_obj = Tracks(path)
     async with sem:
+        tracks_obj = Tracks(path)
         await tracks_obj.insert()
+        
         images_obj = Images(path)
         await images_obj.extract()
-        # Albums, Artists tags extraction with asyncio.TaskGroup
 
 async def event_delete(path: str):
     tracks_obj = Tracks(path)

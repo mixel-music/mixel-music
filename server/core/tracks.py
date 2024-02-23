@@ -1,3 +1,4 @@
+from core.albums import *
 from core.images import *
 from core.logs import *
 from model.model import *
@@ -22,7 +23,15 @@ class Tracks:
         
         try:
             await db.execute(tracks.insert().values(self.tracks_tags))
-            logs.debug('Finished inserting tags.')
+            logs.debug('Find new track! finished inserting tags.')
+
+            duplicate_check = await db.fetch_one(
+                albums.select().where(albums.c.id == self.tracks_id)
+            )
+            if not duplicate_check:
+                albums_obj = Albums(self.tracks_tags['album'], self.tracks_tags['artist'], self.tracks_tags['year'])
+                asyncio.create_task(albums_obj.init_album())
+
             return True
         except:
             logs.error("Failed to insert data into the database.")
