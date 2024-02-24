@@ -10,9 +10,9 @@
     <div class="player-left">
       <img v-bind="{ src: path + '?size=128' }" v-if="path">
       <div class="player-left-text">
-        <p class="text-title" v-bind="{ title: Title }">{{ Title }}</p>
-        <p class="text-description" v-bind="{ title: Artist + ' - ' + Album }" v-if="Title">{{ Artist }} - {{ Album }}</p>
-        <p class="text-description" v-bind="{ title: LengthNowFormatted + ' / ' + LengthFormatted }" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</p>
+        <span class="text-title" v-bind="{ title: Title }">{{ Title }}</span>
+        <span class="text-description" v-bind="{ title: Artist + ' - ' + Album }" v-if="Title">{{ Artist }} - {{ Album }}</span>
+        <span class="text-description" v-bind="{ title: LengthNowFormatted + ' / ' + LengthFormatted }" v-if="Title">{{ LengthNowFormatted }} / {{ LengthFormatted }}</span>
       </div>
     </div>
     <div class="player-center">
@@ -49,7 +49,7 @@
       <button class="player-button" title="Shuffle" :class="{ 'button-disabled': !Shuffle }" @click="Shuffle = true">
         <IconamoonPlaylistShuffle />
       </button>
-      <button class="player-button" title="Play queue">
+      <button class="player-button button-end" title="Play queue">
         <IconamoonPlaylist />
       </button>
     </div>

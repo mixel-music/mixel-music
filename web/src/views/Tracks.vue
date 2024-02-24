@@ -4,8 +4,8 @@
       <div v-if="track.title">
         <img :src="`http://localhost:2843/api/images/${ track.id }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.id);">
         <div class="card-content">
-          <p class="text-title">{{ track.title }}</p>
-          <p class="text-description">{{ track.artist }}</p>
+          <span class="text-title">{{ track.title }}</span>
+          <span class="text-description">{{ track.artist }}</span>
         </div>
       </div>
       <div v-else class="card-placeholder">

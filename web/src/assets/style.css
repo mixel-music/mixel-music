@@ -33,7 +33,6 @@ html {
 
   background-color: var(--dark-color-1);
   font-size: 16px;
-  line-height: 130%;
   user-select: none;
   letter-spacing: -0.2px;
 }
@@ -155,7 +154,7 @@ input[type='text']:focus {
 /* content */
 
 .content {
-  padding: var(--layout-padding) 12%;
+  padding: 0 12%;
   width: -webkit-fill-available;
   margin-bottom: 180px;
 }
@@ -175,7 +174,7 @@ input[type='text']:focus {
   height: 90px;
   width: 100%;
   top: 0;
-  padding: 0 12% var(--layout-padding) 12%;
+  padding: 0 12%;
   width: -webkit-fill-available;
   display: flex;
   align-items: center;
@@ -201,6 +200,7 @@ input[type='text']:focus {
   display: flex;
   justify-content: space-between;
   padding: var(--layout-padding) 0;
+  text-wrap: nowrap;
 }
 
 .navbar-right {
@@ -224,7 +224,6 @@ input[type='text']:focus {
   color: var(--dark-text-2);
   font-size: smaller;
   display: block;
-  height: 19px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -257,7 +256,7 @@ input[type='text']:focus {
 }
 
 .card-content {
-  padding: var(--element-padding) 0;
+  padding-top: var(--element-padding);
 }
 
 /* player */
@@ -276,40 +275,40 @@ input[type='text']:focus {
 }
 
 .player-left {
-  padding: var(--layout-padding) 0;
-  max-width: 33%;
+  height: -webkit-fill-available;
   display: flex;
+  align-items: center;
 }
 
 .player-left img {
   width: 64px;
   height: 64px;
   border-radius: var(--element-radius);
-  margin-right: var(--element-padding);
   object-fit: scale-down;
   background-color: var(--dark-color-2);
   border: 1px solid var(--dark-border);
+  margin-right: var(--element-padding);
 }
 
 .player-left-text {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  line-height: 130%;
 }
 
 .player-center {
-  padding: var(--layout-padding) 0;
+  height: -webkit-fill-available;
   position: fixed;
   display: flex;
-  width: 30%;
   left: 50%;
   transform: translate(-50%, 0);
-  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .player-button {
-  padding: 4px 10px;
+  padding: 10px;
   font-size: 20px;
   border-radius: var(--element-radius);
   color: var(--dark-text-1);
@@ -325,6 +324,10 @@ input[type='text']:focus {
 .player-button-primary {
   font-size: 28px;
   margin: 0 10px;
+}
+
+.button_end {
+  padding-right: 0
 }
 
 .player-range * {
@@ -346,9 +349,9 @@ input[type='text']:focus {
 }
 
 .player-right {
-  padding: var(--layout-padding) 0;
   display: flex;
   align-items: center;
+  height: -webkit-fill-available;
 }
 
 .player-length {
@@ -410,7 +413,7 @@ input[type='text']:focus {
 /* others */
 
 *::-webkit-scrollbar{
-  width: 4px;
+  width: 0px; /* 4px */
   background-color: transparent;
 }
 
