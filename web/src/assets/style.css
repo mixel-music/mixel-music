@@ -231,7 +231,8 @@ input[type='text']:focus {
 .card-grid {
   display: grid;
   grid-gap: 32px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  overflow-x: hidden;
 }
 
 .card {
@@ -249,7 +250,7 @@ input[type='text']:focus {
 .card-image {
   object-fit: scale-down;
   width: 100%;
-  height: 195px;
+  aspect-ratio: 1/1;
   border-radius: var(--element-radius);
   background-color: var(--dark-color-2);
   border: 1px solid var(--dark-border);
@@ -326,8 +327,9 @@ input[type='text']:focus {
   margin: 0 10px;
 }
 
-.button_end {
-  padding-right: 0
+.player-range {
+  padding: 24px 0;
+  cursor: pointer;
 }
 
 .player-range * {
@@ -352,6 +354,7 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   height: -webkit-fill-available;
+  margin-right: -10px;
 }
 
 .player-length {
@@ -359,8 +362,6 @@ input[type='text']:focus {
   position: fixed;
   padding: 0;
   left: 0;
-  padding: 24px 0;
-  z-index: 1;
   bottom: 64px;
 }
 
@@ -375,6 +376,7 @@ input[type='text']:focus {
   background-color: var(--dark-border);
   border-radius: var(--element-radius);
   width: 100px;
+  margin-right: 10px;
 }
 
 .button-disabled {
