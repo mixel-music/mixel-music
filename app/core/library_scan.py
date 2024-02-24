@@ -1,8 +1,8 @@
 from watchfiles import Change, awatch
-from core.images import *
-from core.tracks import *
-from tools.path import *
-from core.logs import *
+from service.tracks import *
+from core.image_task import *
+from infra.path_handler import *
+from infra.setup_logger import *
 
 LIBRARY_PATH = get_path('library', rel=False)
 sem = asyncio.Semaphore(8)

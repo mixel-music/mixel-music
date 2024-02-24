@@ -67,9 +67,9 @@ def safe_int(value: int) -> int:
     except ValueError:
         return 0
 
-async def check_dir_init():
-    data_path = get_path('data', rel=False)
-    data_images_path = get_path('data', 'images', rel=False)
+async def directory_create():
+    data_path = get_path('config', rel=False)
+    data_images_path = get_path('config', 'images', rel=False)
     library_path = get_path('library', rel=False)
 
     if data_path.exists() == False: data_path.mkdir()

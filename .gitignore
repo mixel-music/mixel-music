@@ -1,19 +1,17 @@
 __pycache__
 .pytest_cache
+config/
+library/
+test/
+*.db
+*.env
+*.log
 
 Scripts/
 Include/
 Lib/
 .venv/
 *.cfg
-
-data/*
-library/*
-test/
-server/test
-*.db
-*.env
-*.log
 
 logs
 npm-debug.log*

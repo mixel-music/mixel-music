@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header, status, Response, HTTPException
-from core.tracks import *
-from tools.path import *
+from infra.path_handler import *
+from service.tracks import *
 import aiofiles
 
 router = APIRouter()

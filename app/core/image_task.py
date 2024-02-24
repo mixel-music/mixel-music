@@ -1,13 +1,15 @@
-from mutagen.aiff import AIFF
 from mutagen.id3 import ID3, APIC
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.flac import FLAC, Picture
+from mutagen.aiff import AIFF
 from mutagen.asf import ASF
-from model.model import *
-from tools.path import *
-from core.logs import *
 from PIL import Image
+import asyncio
 import io
+
+from infra.database import *
+from infra.path_handler import *
+from infra.setup_logger import *
 
 IMAGE_QUALITY = 80
 IMAGE_SUFFIX = 'webp'
@@ -21,7 +23,7 @@ class Images:
         self.suffix = get_name(self.strpath)[2].lower()
         self.id = get_hash(self.strpath)
 
-        self.image_path = get_path('data', 'images', rel=False)
+        self.image_path = get_path('config', 'images', rel=False)
         self.image_data = None
         
     async def extract(self):

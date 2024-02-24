@@ -1,16 +1,20 @@
-from routes import albums_api, images_api, stream_api, tracks_api
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from tools.path import *
-from core.logs import *
-from core.scan import *
+import asyncio
 import uvicorn
+
+from api import images_api, stream_api, tracks_api
+from core.library_auto import *
+from core.library_scan import *
+from infra.database import *
+from infra.path_handler import *
+from infra.setup_logger import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        await check_dir_init()
+        await directory_create()
         await connect_database()
         await db.execute("PRAGMA journal_mode=WAL;")
         
@@ -29,7 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="Tamaya",
-    version="0.1.2a",
+    version="0.1.3a",
     lifespan=lifespan
 )
 app.add_middleware(

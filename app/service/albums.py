@@ -1,7 +1,7 @@
-from core.logs import *
-from model.model import *
-from tools.path import *
 import datetime
+from infra.database import *
+from infra.path_handler import *
+from infra.setup_logger import *
 
 class Albums:
     def __init__(self, album: str, artist: str, year: int):

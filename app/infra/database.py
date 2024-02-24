@@ -1,14 +1,10 @@
-from sqlalchemy import func, select
+from infra.setup_logger import *
 from databases import Database
-from tools.path import *
-from core.logs import *
 import sqlalchemy
-import asyncio
 
-db_url = get_path('data', 'tamaya.db', rel=False)
-DATABASE_URL = "sqlite:///" + db_url.as_posix()
-
+DATABASE_URL = "sqlite:///" + get_strpath('config', 'tamaya.db', rel=False)
 metadata = sqlalchemy.MetaData()
+
 tracks = sqlalchemy.Table(
     "tracks",
     metadata,
@@ -102,11 +98,10 @@ albums = sqlalchemy.Table(
     sqlalchemy.Column("imageid", sqlalchemy.Integer, nullable=False),
 )
 
-if not db_url.exists():
+if not get_path('config', 'tamaya.db', rel=False).exists():
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
     )
-
     metadata.create_all(engine)
     db = Database(DATABASE_URL)
     logs.info("Creating new database...")

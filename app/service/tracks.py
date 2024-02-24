@@ -1,9 +1,9 @@
-from core.albums import *
-from core.images import *
-from core.logs import *
-from model.model import *
-from tools.path import *
-from tools.tags import *
+from service.albums import *
+from core.extract_tags import *
+from core.image_task import *
+from infra.database import *
+from infra.path_handler import *
+from infra.setup_logger import *
 
 list_tags = [column.name for column in tracks.columns]
 

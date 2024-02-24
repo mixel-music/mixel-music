@@ -1,13 +1,14 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import FileResponse
-from core.tracks import *
-from tools.path import *
+from service.tracks import *
+from infra.database import *
+from infra.path_handler import *
 
 router = APIRouter()
 
 @router.get("/images/{id}")
 async def images_api(id: str, size: int | str = 'orig'):
-    image_dir = get_path('data', 'images', rel=False)
+    image_dir = get_path('config', 'images', rel=False)
     db_result = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.id == id))
     image_id = db_result.imageid if db_result and db_result.imageid else None
 

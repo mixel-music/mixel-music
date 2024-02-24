@@ -1,6 +1,5 @@
 from fastapi import APIRouter, status, HTTPException
-from core.tracks import *
-from tools.path import *
+from service.tracks import *
 
 router = APIRouter()
 

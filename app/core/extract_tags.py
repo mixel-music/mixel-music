@@ -1,6 +1,6 @@
-from datetime import datetime
 from mutagen import File
-from tools.path import *
+from datetime import datetime
+from infra.path_handler import *
 
 async def TagsTools(path: Path, tags: list) -> dict:
     tags += 'tracktotal', 'totaldisc', 'totaltracks', 'unsyncedlyrics'
