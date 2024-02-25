@@ -1,6 +1,6 @@
 {
-  "name": "tamaya",
-  "version": "0.1.0",
+  "name": "charmee",
+  "version": "0.1.5-alpha",
   "private": true,
   "type": "module",
   "scripts": {

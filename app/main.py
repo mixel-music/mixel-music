@@ -32,10 +32,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     debug=True,
-    title="Tamaya",
-    version="0.1.3a",
+    title="charmee",
+    version="0.1.5-alpha",
     lifespan=lifespan
 )
+
+# dev
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],

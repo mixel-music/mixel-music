@@ -2,7 +2,7 @@ from infra.setup_logger import *
 from databases import Database
 import sqlalchemy
 
-DATABASE_URL = "sqlite:///" + get_strpath('config', 'tamaya.db', rel=False)
+DATABASE_URL = "sqlite:///" + get_strpath('config', 'database.db', rel=False)
 metadata = sqlalchemy.MetaData()
 
 tracks = sqlalchemy.Table(
@@ -98,7 +98,7 @@ albums = sqlalchemy.Table(
     sqlalchemy.Column("imageid", sqlalchemy.Integer, nullable=False),
 )
 
-if not get_path('config', 'tamaya.db', rel=False).exists():
+if not get_path('config', 'database.db', rel=False).exists():
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
     )

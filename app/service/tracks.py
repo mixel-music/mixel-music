@@ -15,7 +15,7 @@ class Tracks:
         self.tracks_id = get_hash(self.strpath)
         self.tracks_list = None
 
-    async def insert(self):
+    async def create(self):
         self.tracks_tags = await TagsTools(self.path, list_tags)
         if self.tracks_tags is None:
             logs.debug("Failed to read tags. Is it a valid file?")
@@ -37,7 +37,7 @@ class Tracks:
             logs.error("Failed to insert data into the database.")
             return False
 
-    async def delete(self):
+    async def remove(self):
         try:
             await db.execute(tracks.delete().where(tracks.c.id == self.tracks_id))
             logs.debug("Track successfully deleted.")

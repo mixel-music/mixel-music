@@ -15,7 +15,7 @@ print_handler = RichHandler(
     rich_tracebacks=True
 )
 write_console = Console(
-    file=open(get_path('config', 'tamaya.log', rel=False), "a"),
+    file=open(get_path('config', '.log', rel=False), "a"),
     record=True,
 )
 write_handler = RichHandler(
@@ -26,7 +26,7 @@ write_handler = RichHandler(
 uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
 fastapi_logger = logging.getLogger("fastapi")
-logs = logging.getLogger('tamaya')
+logs = logging.getLogger('charmee')
 
 uvicorn_logger.setLevel(logging.DEBUG)
 uvicorn_access_logger.setLevel(logging.DEBUG)
