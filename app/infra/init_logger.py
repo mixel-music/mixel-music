@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
-from infra.path_handler import *
+from infra.handle_path import *
 import logging
 
 install()
@@ -15,7 +15,7 @@ print_handler = RichHandler(
     rich_tracebacks=True
 )
 write_console = Console(
-    file=open(get_path('config', '.log', rel=False), "a"),
+    file=open(get_path('config', '.log'), "a"),
     record=True,
 )
 write_handler = RichHandler(

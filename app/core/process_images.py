@@ -8,8 +8,8 @@ import asyncio
 import io
 
 from infra.database import *
-from infra.path_handler import *
-from infra.setup_logger import *
+from infra.init_logger import *
+from infra.handle_path import *
 
 IMAGE_QUALITY = 80
 IMAGE_SUFFIX = 'webp'
@@ -17,13 +17,13 @@ IMAGE_SIZES = [128, 300, 500]
 
 class Images:
     def __init__(self, path: str | Path):
-        self.path = get_path(path, rel=False)
-        self.strpath = get_strpath(self.path)
+        self.path = get_path(path)
+        self.strpath = str_path(path)
         
-        self.suffix = get_name(self.strpath)[2].lower()
-        self.id = get_hash(self.strpath)
+        self.suffix = get_filename(self.strpath)[2].lower()
+        self.id = get_hash_str(self.strpath)
 
-        self.image_path = get_path('config', 'images', rel=False)
+        self.image_path = get_path('config', 'images')
         self.image_data = None
         
     async def extract(self):
@@ -72,7 +72,7 @@ class Images:
             asyncio.create_task(self.insert())
 
     async def insert(self):
-        if self.image_data != None:
+        if not self.image_data == None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
             await db.execute(
                 tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)

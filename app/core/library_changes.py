@@ -1,14 +1,13 @@
 from watchfiles import Change, awatch
-from service.tracks import *
-from core.image_task import *
-from infra.path_handler import *
-from infra.setup_logger import *
+from core.tracks_service import *
+from infra.init_logger import *
+from infra.handle_path import *
 
-LIBRARY_PATH = get_path('library', rel=False)
+LIBRARY_PATH = get_path('library')
 sem = asyncio.Semaphore(8)
 path_property = {}
 
-async def check_db_data():
+async def check_changes():
     """
     It first retrieves all track information from the database and checks if the files actually exist with matching sizes.
 
@@ -20,31 +19,31 @@ async def check_db_data():
     if tracks_list:
         async with asyncio.TaskGroup() as scan:
             for image_id, path_data, size_data in tracks_list:
-                real_path = get_path(path_data, rel=False)
+                real_path = get_path(path_data)
 
                 if not real_path.exists():
-                    scan.create_task(event_delete(path_data))
-                    image_path = get_path('data', 'images', rel=False)
+                    scan.create_task(event_remove(path_data))
+                    image_path = get_path('data', 'images')
                     for image_file in image_path.glob(f"{image_id}*"):
                         if image_file.exists(): image_file.unlink(missing_ok=True)
                 else:
                     tracks_size = real_path.stat().st_size
                     if size_data != tracks_size:
-                        scan.create_task(event_delete(path_data))
+                        scan.create_task(event_remove(path_data))
                     else:
                         path_property[path_data] = 'skip'
-    await scan_dir_path()
+    await library_scan()
 
-async def scan_dir_path(path: Path = LIBRARY_PATH):
+async def library_scan(path: Path = LIBRARY_PATH):
     """
-    It retrieves all directories and files from the selected path, checks the suffix, and creates a track object if the path leads to a file.
+    It retrieves all directories and files from the selected path, checks the suffix, and creates a track if the path leads to a file.
     
-    If the path is a directory, it adds "the path is a directory" to path_property, and recursively calls itself to scan the subdirectories.
+    If the path is a directory, it adds a property to the file for skipping, and recursively calls itself to scan the subdirectories.
     """
     async with asyncio.TaskGroup() as scan:
         for scan_path in path.iterdir():
-            strpath = get_strpath(scan_path)
-            suffix = get_name(strpath)[2]
+            strpath = str_path(scan_path)
+            suffix = get_filename(strpath)[2]
 
             if path_property.get(strpath) == 'skip':
                 path_property.pop(strpath, None)
@@ -52,29 +51,26 @@ async def scan_dir_path(path: Path = LIBRARY_PATH):
                 scan.create_task(event_create(strpath))
             elif scan_path.is_dir():
                 path_property[strpath] = 'dir'
-                scan.create_task(scan_dir_path(scan_path))
+                scan.create_task(library_scan(scan_path))
 
 async def event_watcher():
     logs.info("Event watcher initiated.")
     async for event_handler in awatch(LIBRARY_PATH, recursive=True, force_polling=True):
         for event_type, event_path in event_handler:
-            strpath = get_strpath(event_path)
-            suffix = get_name(strpath)[2]
+            strpath = str_path(event_path)
+            suffix = get_filename(strpath)[2]
 
             if suffix in SUFFIXES:
                 if event_type == Change.added:
                     asyncio.create_task(event_create(strpath))
                 elif event_type == Change.deleted:
-                    asyncio.create_task(event_delete(strpath))
+                    asyncio.create_task(event_remove(strpath))
 
 async def event_create(path: str):
     async with sem:
-        tracks_obj = Tracks(path)
-        await tracks_obj.insert()
-        
-        images_obj = Images(path)
-        await images_obj.extract()
+        tracks = TracksService(path)
+        await tracks.create()
 
-async def event_delete(path: str):
-    tracks_obj = Tracks(path)
-    await tracks_obj.delete()
+async def event_remove(path: str):
+    tracks = TracksService(path)
+    await tracks.remove()

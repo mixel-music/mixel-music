@@ -5,26 +5,22 @@ import asyncio
 import uvicorn
 
 from api import images_api, stream_api, tracks_api
-from core.library_auto import *
-from core.library_scan import *
+from core.library_changes import *
 from infra.database import *
-from infra.path_handler import *
-from infra.setup_logger import *
+from infra.init_logger import *
+from infra.handle_path import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        await directory_create()
+        await create_directory()
         await connect_database()
-        await db.execute("PRAGMA journal_mode=WAL;")
-        
-        asyncio.create_task(check_db_data())
+        asyncio.create_task(check_changes())
         asyncio.create_task(event_watcher())
 
     except KeyboardInterrupt:
         for task in asyncio.all_tasks():
             task.cancel()
-
     yield
     for task in asyncio.all_tasks():
         task.cancel()
@@ -36,8 +32,6 @@ app = FastAPI(
     version="0.1.5-alpha",
     lifespan=lifespan
 )
-
-# dev
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
