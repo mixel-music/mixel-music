@@ -1,4 +1,5 @@
 from pathlib import Path
+import filetype
 
 root = (Path.cwd().resolve()).parent
 
@@ -43,7 +44,13 @@ def get_filename(*args: str | Path) -> list:
     elif stem.startswith('.') and suffix == '':
         stem, suffix = '', stem
 
-    return [name, stem, suffix]
+    return [name, stem, suffix.lower()]
+
+def get_filetype(path: str | Path) -> list:
+    if not path: raise ValueError('get_filetype() needs a str or Path')
+
+    type_check = filetype.guess(get_path(path))
+    return [type_check.extension, type_check.mime] if type_check else None
 
 async def create_directory():
     config_dir = get_path('config')

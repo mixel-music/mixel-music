@@ -30,7 +30,7 @@ app = FastAPI(
     debug=True,
     title="charmee",
     version="0.1.5-alpha",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 app.add_middleware(
     CORSMiddleware,
@@ -51,5 +51,5 @@ if __name__ == "__main__":
         port=2843,
         log_level="debug",
         log_config=None,
-        reload=True
+        reload=True,
     )

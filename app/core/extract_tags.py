@@ -3,24 +3,8 @@ from mutagen.mp4 import MP4FreeForm
 from datetime import datetime
 from core.convert_data import *
 from infra.handle_path import *
-import filetype
 
-# async def extract_tags(path: str | Path) -> dict:
-#     path = get_path(path)
-#     tags_list = {}
-
-#     try:
-#         get_tags = File(path)
-#         if not get_tags: return tags_list
-#     except MutagenError:
-#         return tags_list
-    
-#     for tag in get_tags:
-#         tags_list[tag] = get_tags[tag]
-
-#     print(sorted(tags_list.keys()))
-
-#     return tags_list.keys()
+FULL_SUPPORT = ['.mp3', '.mp4', '.m4a', '.aac', '.wav', '.flac']
 
 # For ID3, FLAC, MP4, WAV, WMA: Advanced tag extraction
 MAPPING_DICT = {
@@ -95,28 +79,33 @@ def sanitize_value(value):
         return ', '.join(str(item) for item in value)
     return str(value)
 
-async def extract_tags(path: str) -> dict:
+async def extract_tags(path: str, rows: list) -> dict:
     real_path = get_path(path)
     tags_dict = {}
 
     try:
-        tags = File(path)
+        tags = File(real_path, easy=True if get_filename(path)[2] in FULL_SUPPORT else False)
         if not tags: return tags_dict
-    except MutagenError:
+    except MutagenError as error:
+        logs.error("Failed to initialize mutagen, %s", error)
         return tags_dict
 
-    for key, value in tags.items():
-        # ID3, WAV, FLAC
-        if not isinstance(value, list) or (isinstance(value, list) and not isinstance(value[0], MP4FreeForm)):
-            sanitize_key = key.split('::')[0]
-            if key.startswith("TXXX:"):
-                sanitize_key = key[5:]
-            tags_dict[MAPPING_DICT.get(sanitize_key, sanitize_key)] = sanitize_value(value)
-        # MP4
-        elif isinstance(value, list) and all(isinstance(item, MP4FreeForm) for item in value):
-            strvalue = ', '.join(item.decode('utf-8') if isinstance(item, bytes) else str(item) for item in value)
-            key = key[len('----:com.apple.iTunes:'):] if key.startswith('----:com.apple.iTunes:') else key
-            tags_dict[MAPPING_DICT.get(key, key)] = strvalue
+    if get_filename(path)[2] in FULL_SUPPORT:
+        for key, value in tags.items():
+            # ID3, WAV, FLAC
+            if isinstance(value, list) and not isinstance(value[0], MP4FreeForm):
+                sanitize_key = key.split('::')[0]
+                if key.startswith("TXXX:"):
+                    sanitize_key = key[5:]
+                tags_dict[MAPPING_DICT.get(sanitize_key, sanitize_key)] = sanitize_value(value)
+            # MP4
+            elif isinstance(value, list) and all(isinstance(item, MP4FreeForm) for item in value):
+                strvalue = ', '.join(item.decode('utf-8') if isinstance(item, bytes) else str(item) for item in value)
+                key = key[len('----:com.apple.iTunes:'):] if key.startswith('----:com.apple.iTunes:') else key
+                tags_dict[MAPPING_DICT.get(key, key)] = strvalue
+    else:
+        for key, value in tags.items():
+            tags_dict[key] = value
 
     tags_dict.update({
         'bitrate': getattr(tags.info, 'bitrate', 0),
@@ -171,5 +160,7 @@ async def extract_tags(path: str) -> dict:
 
     tags_dict['date'] = date_result
     tags_dict['year'] = year_result
+
+    tags_dict = {key: tags_dict.get(key, '') for key in rows}
 
     return dict(sorted(tags_dict.items()))

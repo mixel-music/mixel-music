@@ -7,6 +7,7 @@ from PIL import Image
 import asyncio
 import io
 
+from core.convert_data import *
 from infra.database import *
 from infra.init_logger import *
 from infra.handle_path import *

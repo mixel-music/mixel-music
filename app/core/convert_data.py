@@ -42,6 +42,6 @@ async def id_to_str_path(id: str) -> str:
     )
     return query.path if query else None
     
-async def check_suffix(path: str | Path) -> bool:
-    suffix = Path(path).suffix
-    return True if suffix == [check for check in SUFFIXES] else False
+"""async def check_suffix(path: str | Path) -> bool:
+    suffix = get_path(path).suffix
+    return True if suffix == [check for check in SUFFIXES] else False"""
