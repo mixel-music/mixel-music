@@ -88,12 +88,12 @@ class TracksService:
                 ]
             ).order_by(
                 tracks.c.album.desc(),
-                tracks.c.tracknumber.asc()
+                tracks.c.track.asc()
             ).limit(num)
         )
 
         if tags_select: [track_tags.append(dict(tag)) for tag in tags_select]
-        
+
         return track_tags
 
     @staticmethod
