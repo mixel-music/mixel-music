@@ -50,7 +50,7 @@ async def library_scan(path: Path = LIBRARY_PATH):
             elif scan_path.is_dir():
                 path_property[strpath] = 'dir'
                 scan.create_task(library_scan(scan_path))
-            elif suffix in SUFFIXES or get_filetype(get_path(strpath))[1].startswith('audio'):
+            elif suffix in SUFFIXES:
                 scan.create_task(event_create(strpath))
 
 async def event_watcher():
