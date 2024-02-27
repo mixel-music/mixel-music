@@ -16,55 +16,52 @@ IMAGE_QUALITY = 80
 IMAGE_SUFFIX = 'webp'
 IMAGE_SIZES = [128, 300, 500]
 
-class Images:
-    def __init__(self, path: str | Path):
-        self.path = get_path(path)
-        self.strpath = str_path(path)
-        
-        self.suffix = get_filename(self.strpath)[2].lower()
-        self.id = get_hash_str(self.strpath)
-
+class ProcessImages:
+    def __init__(self, path: str):
+        self.path = path
+        self.real_path = get_path(path)
+        self.suffix = get_filename(path)[2].lower()
         self.image_path = get_path('config', 'images')
         self.image_data = None
         
     async def extract(self):
         if self.suffix == '.mp3':
-            audio = ID3(self.path)
+            audio = ID3(self.real_path)
             for tag in audio.values():
                 if isinstance(tag, APIC):
                     self.image_data = tag.data 
 
         elif self.suffix in ['.mp4', '.m4a', '.aac']:
-            audio = MP4(self.path)
+            audio = MP4(self.real_path)
             covers = audio.get('covr')
             if covers:
                 self.image_data = covers[0]
 
         elif self.suffix == '.flac':
-            audio = FLAC(self.path)
+            audio = FLAC(self.real_path)
             for picture in audio.pictures:
                 if picture.type == 3:
                     self.image_data = picture.data
 
         elif self.suffix == '.alac':
-            audio = MP4(self.path)
+            audio = MP4(self.real_path)
             covers = audio.tags.get('covr')
             if covers:
                 self.image_data = covers[0].data
 
         elif self.suffix == '.wma':
-            audio = ASF(self.path)
+            audio = ASF(self.real_path)
             if 'WM/Picture' in audio.asf_tags:
                 pictures = audio.asf_tags['WM/Picture']
                 if pictures:
                     self.image_data = pictures[0].value.data
 
         elif self.suffix == '.aiff':
-            audio = AIFF(self.path)
+            audio = AIFF(self.real_path)
             if audio.tags is None:
                 pass
 
-            id3 = ID3(self.path)
+            id3 = ID3(self.real_path)
             for tag in id3.values():
                 if isinstance(tag, APIC):
                     self.image_data = tag.data
@@ -76,7 +73,7 @@ class Images:
         if not self.image_data == None:
             self.image_hash = hashlib.md5(self.image_data).hexdigest().upper()
             await db.execute(
-                tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.strpath)
+                tracks.update().values(imageid = self.image_hash).where(tracks.c.path == self.path)
             )
             asyncio.create_task(self.process())
 

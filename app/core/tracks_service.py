@@ -49,13 +49,18 @@ class TracksService:
 
         if not self.track_tags:
             logs.debug("Failed to read tags. Is it a valid file?")
+
             return False
         
-        try:        
+        try:
             await db.execute(tracks.insert().values(self.track_tags))
             logs.debug('Find new track! finished inserting tags.')
 
+            images = ProcessImages(self.path)
+            asyncio.create_task(images.extract())
+
             return True
+        
         except ValueError as error:
             logs.error("Failed to insert data into the database. %s", error)
 
@@ -67,8 +72,29 @@ class TracksService:
     async def remove(self):
         pass
 
-    async def list(self):
-        pass
+    @staticmethod
+    async def list(num: int) -> list:
+        track_tags = []
+        tags_select = await db.fetch_all(
+            tracks.select().with_only_columns(
+                [
+                    tracks.c.title,
+                    tracks.c.artist,
+                    tracks.c.album,
+                    tracks.c.year,
+                    tracks.c.id,
+                    tracks.c.albumid,
+                    tracks.c.artistid
+                ]
+            ).order_by(
+                tracks.c.album.desc(),
+                tracks.c.tracknumber.asc()
+            ).limit(num)
+        )
+
+        if tags_select: [track_tags.append(dict(tag)) for tag in tags_select]
+        
+        return track_tags
 
     @staticmethod
     async def info(path: str) -> dict:

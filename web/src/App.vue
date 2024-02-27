@@ -14,14 +14,12 @@
 </template>
 
 <script>
-import Sidebar from './components/Sidebar.vue'
 import Navbar from './components/Navbar.vue'
 import Player from './components/Player.vue'
 
 export default {
   name: 'App',
   components: {
-    Sidebar,
     Navbar,
     Player,
   },
