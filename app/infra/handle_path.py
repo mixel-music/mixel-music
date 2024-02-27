@@ -32,8 +32,6 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
     return home.as_posix()
     
 def get_filename(*args: str | Path) -> list:
-    if not args: raise ValueError('get_filename() needs a str or Path')
-
     home = root
     for arg in args: home = home / arg
     name, stem, suffix = home.name, home.stem, home.suffix
@@ -47,8 +45,6 @@ def get_filename(*args: str | Path) -> list:
     return [name, stem, suffix.lower()]
 
 def get_filetype(path: str | Path) -> list:
-    if not path: raise ValueError('get_filetype() needs a str or Path')
-
     type_check = filetype.guess(get_path(path))
     return [type_check.extension, type_check.mime] if type_check else None
 

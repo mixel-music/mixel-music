@@ -84,7 +84,7 @@ async def extract_tags(path: str, rows: list) -> dict:
     tags_dict = {}
 
     try:
-        tags = File(real_path, easy=True if get_filename(path)[2] in FULL_SUPPORT else False)
+        tags = File(real_path, easy=False if get_filename(path)[2] in FULL_SUPPORT else True)
         if not tags: return tags_dict
     except MutagenError as error:
         logs.error("Failed to initialize mutagen, %s", error)
