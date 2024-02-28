@@ -15,7 +15,7 @@ print_handler = RichHandler(
     rich_tracebacks=True
 )
 write_console = Console(
-    file=open(log_path(), "a"),
+    file=open(log_path(), "a", encoding='utf-8'),
     record=True,
 )
 write_handler = RichHandler(

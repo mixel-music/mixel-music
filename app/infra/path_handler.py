@@ -27,6 +27,21 @@ SUFFIXES = [
 
 root = (Path.cwd().resolve()).parent
 
+def config_dir() -> Path:
+    return get_path('config')
+
+def images_dir() -> Path:
+    return get_path('config', 'images')
+
+def library_dir() -> Path:
+    return get_path('library')
+
+def log_path() -> Path:
+    return get_path('config', '.log')
+
+def database_url() -> str:
+    return str_path('config', 'database.db', rel=False)
+
 def get_path(*args: str | Path, rel: bool = False) -> Path:
     """
     Abstracts a path-like object or string path within the application and returns it as a path-like object.
@@ -54,21 +69,6 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
     if rel: home = home.relative_to(root)
 
     return home.as_posix()
-
-def config_dir() -> Path:
-    return get_path('config')
-
-def images_dir() -> Path:
-    return get_path('config', 'images')
-
-def library_dir() -> Path:
-    return get_path('library')
-
-def log_path() -> Path:
-    return get_path('config', '.log')
-
-def database_url() -> str:
-    return str_path('config', 'database.db', rel=False)
     
 def get_filename(*args: str | Path) -> list:
     home = root
@@ -86,13 +86,11 @@ def get_filename(*args: str | Path) -> list:
 def is_music_file(path: str) -> bool:
     try:
         guess = filetype.guess(get_path(path))
+        if str(guess.mime).startswith('audio') or str(guess.mime).startswith('video'):
+            return True
+        else:
+            return False
     except:
-        return True if get_path(path).suffix in SUFFIXES else False
-    
-    if not guess: return False
-    if str(guess.mime).startswith('audio') or str(guess.mime).startswith('video'):
-        return True
-    else:
         return False
 
 async def create_directory():

@@ -4,24 +4,33 @@ from core.tracks_service import *
 from infra.path_handler import *
 from infra.setup_logger import *
 
+sem = asyncio.Semaphore(8)
+
 class LibraryHandler:
     @staticmethod
     async def create(path: str):
         track = TracksService(path)
-        await track.create()
+        async with sem:
+            try:
+                await track.create()
+            except:
+                logs.error("Failed to create.")
 
     @staticmethod
     async def update(path: str):
-        track = TracksService(path)
-        print("updated!")
+        pass
 
     @staticmethod
     async def remove(path: str):
         track = TracksService(path)
-        await track.remove()
+        async with sem:
+            try:
+                await track.remove()
+            except:
+                logs.error("Failed to remove.")
 
     @staticmethod
-    def images(image_id: str, size: int | str):
+    async def images(image_id: str, size: int | str):
         image_dir = images_dir()
     
         if size == 'orig':

@@ -53,19 +53,15 @@ class TracksService:
         
         try:
             await db.execute(tracks.insert().values(self.track_tags))
-            logs.debug('Find new track! finished inserting tags.')
-
             return True
         
         except ValueError as error:
             logs.error("Failed to insert data into the database. %s", error)
-
             return False
 
     async def remove(self):
         try:
             await db.execute(tracks.delete().where(tracks.c.path == self.path))
-            logs.debug("Track successfully removed.")
         except:
             logs.error("Failed to remove track.")
             return False

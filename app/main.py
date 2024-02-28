@@ -1,7 +1,6 @@
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-import asyncio
 import uvicorn
 
 from api import images_api, stream_api, tracks_api
@@ -9,21 +8,17 @@ from core.event_watcher import *
 from infra.database import *
 from infra.path_handler import *
 from infra.setup_logger import *
+import asyncio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    try:
-        await create_directory()
-        await connect_database()
-        asyncio.create_task(check_changes())
-        asyncio.create_task(event_watcher())
+    await create_directory()
+    await connect_database()
 
-    except KeyboardInterrupt:
-        for task in asyncio.all_tasks():
-            task.cancel()
+    asyncio.create_task(check_changes())
+    asyncio.create_task(event_watcher())
+
     yield
-    for task in asyncio.all_tasks():
-        task.cancel()
     await disconnect_database()
 
 app = FastAPI(

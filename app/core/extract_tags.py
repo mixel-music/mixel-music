@@ -141,8 +141,8 @@ class ExtractTags:
         self.tags_dict['tracknumber'] = max(sanitize_num(self.tags_dict.get('track', 0)), sanitize_num(self.tags_dict.pop('tracknumber', 0)))
         self.tags_dict['tracktotal'] = max(sanitize_num(self.tags_dict.get('tracktotal', 0)), sanitize_num(self.tags_dict.pop('totaltracks', 0)))
 
-        date_result, date_raw = None, self.tags_dict.get('date', '')
-        year_result, year_raw = None, self.tags_dict.get('year', '')
+        date_result, date_raw = None, self.tags_dict.get('date', '0')
+        year_result, year_raw = None, self.tags_dict.get('year', '0')
 
         if '-' or '.' or ',' in date_raw:
             date_result = date_raw
