@@ -1,9 +1,9 @@
+from core.convert_tools import *
 from core.extract_tags import *
-from core.convert_data import *
-from core.process_images import *
+from infra.convert_image import *
 from infra.database import *
-from infra.init_logger import *
-from infra.handle_path import *
+from infra.path_handler import *
+from infra.setup_logger import *
 import aiofiles
 
 class TracksService:
@@ -44,19 +44,16 @@ class TracksService:
 
     async def create(self):
         list_tags = [column.name for column in tracks.columns]
-        self.track_tags = await extract_tags(self.path, list_tags)
+        tags = ExtractTags(self.path)
+        self.track_tags = await tags.extract_tags(list_tags)
 
         if not self.track_tags:
             logs.debug("Failed to read tags. Is it a valid file?")
-
             return False
         
         try:
             await db.execute(tracks.insert().values(self.track_tags))
             logs.debug('Find new track! finished inserting tags.')
-
-            images = ProcessImages(self.path)
-            asyncio.create_task(images.extract())
 
             return True
         
@@ -89,7 +86,7 @@ class TracksService:
                 ]
             ).order_by(
                 tracks.c.album.desc(),
-                tracks.c.track.asc()
+                tracks.c.tracknumber.asc()
             ).limit(num)
         )
 

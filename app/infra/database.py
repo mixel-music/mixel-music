@@ -1,10 +1,10 @@
-from infra.init_logger import *
+from infra.path_handler import *
+from infra.setup_logger import *
 from databases import Database
 import sqlalchemy
 
-DATABASE_URL = "sqlite:///" + str_path('config', 'database.db', rel=False)
+DATABASE_URL = "sqlite:///" + database_url()
 metadata = sqlalchemy.MetaData()
-
 tracks = sqlalchemy.Table(
     "tracks",
     metadata,
@@ -46,7 +46,7 @@ tracks = sqlalchemy.Table(
     sqlalchemy.Column("lyricist", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("lyrics", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("media", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("mediatype", sqlalchemy.String(''), nullable=False),
+    # sqlalchemy.Column("mediatype", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("mime", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("mixartist", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("musicbrainz_albumartistid", sqlalchemy.String(''), nullable=False),
@@ -67,51 +67,67 @@ tracks = sqlalchemy.Table(
     sqlalchemy.Column("originaldate", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("originalyear", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("origlyricist", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("origyear", sqlalchemy.String(''), nullable=False),
+    # sqlalchemy.Column("origyear", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("path", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("releasestatus", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("releasetype", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("sample_rate", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("samplerate", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("script", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("setsubtitle", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("size", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("subtitle", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("title", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("titlesort", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("track", sqlalchemy.String(''), nullable=False),
+    # sqlalchemy.Column("track", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("tracknumber", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("tracktotal", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("update_date", sqlalchemy.DateTime, nullable=False),
     sqlalchemy.Column("year", sqlalchemy.Integer, nullable=False),
 )
-# albums = sqlalchemy.Table(
-#     "albums",
-#     metadata,
-#     sqlalchemy.Column("id", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("name", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("artist", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("artistid", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("albumartist", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("albumartistid", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("tracknumber", sqlalchemy.Integer, nullable=False),
-#     sqlalchemy.Column("size", sqlalchemy.Integer, nullable=False),
-#     sqlalchemy.Column("createdate", sqlalchemy.DateTime, nullable=False),
-#     sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),
-#     sqlalchemy.Column("dateafter", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("datebefore", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("dir", sqlalchemy.String(''), nullable=False),
-#     sqlalchemy.Column("yearafter", sqlalchemy.Integer, nullable=False),
-#     sqlalchemy.Column("yearbefore", sqlalchemy.Integer, nullable=False),
-#     sqlalchemy.Column("imagepath", sqlalchemy.Integer, nullable=False),
-#     sqlalchemy.Column("imageid", sqlalchemy.Integer, nullable=False),
-# )
+albums = sqlalchemy.Table(
+    "albums",
+    metadata,
+    sqlalchemy.Column("album", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumartist", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumartistsort", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumid", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("albumsort", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artist", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artistid", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artists", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artistsort", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("create_date", sqlalchemy.DateTime, nullable=False),
+    sqlalchemy.Column("date_new", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("date_old", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("directory", sqlalchemy.String(''), nullable=False), #
+    sqlalchemy.Column("disctotal", sqlalchemy.Integer, nullable=False), #
+    sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),
+    sqlalchemy.Column("image_path", sqlalchemy.Integer, nullable=False), #
+    sqlalchemy.Column("size", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("tracknumber", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("update_date", sqlalchemy.DateTime, nullable=False),
+    sqlalchemy.Column("year_new", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("year_old", sqlalchemy.Integer, nullable=False),
+)
+artists = sqlalchemy.Table(
+    "artists",
+    metadata,
+    sqlalchemy.Column("artist", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artistid", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artists", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("artistsort", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),
+    sqlalchemy.Column("image_path", sqlalchemy.Integer, nullable=False), #
+    sqlalchemy.Column("size", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("tracknumber", sqlalchemy.Integer, nullable=False),
+)
 
-if not get_path('config', 'database.db').exists():
+if not get_path(database_url()).exists():
     logs.info("Creating new database...")
-
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
     )
+
     metadata.create_all(engine)
     db = Database(DATABASE_URL)
 else:

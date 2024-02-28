@@ -1,6 +1,30 @@
 from pathlib import Path
 import filetype
 
+SUFFIXES = [
+    '.3gp',
+    '.aif',
+    '.aifc',
+    '.aiff',
+    '.amr',
+    '.avi',
+    '.flac',
+    '.m4a',
+    '.m4b',
+    '.m4p',
+    '.m4r',
+    '.m4v',
+    '.mkv',
+    '.mov',
+    '.mp3',
+    '.mp4',
+    '.mpg',
+    '.ogg',
+    '.wav',
+    '.webm',
+    '.wmv',
+]
+
 root = (Path.cwd().resolve()).parent
 
 def get_path(*args: str | Path, rel: bool = False) -> Path:
@@ -30,6 +54,21 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
     if rel: home = home.relative_to(root)
 
     return home.as_posix()
+
+def config_dir() -> Path:
+    return get_path('config')
+
+def images_dir() -> Path:
+    return get_path('config', 'images')
+
+def library_dir() -> Path:
+    return get_path('library')
+
+def log_path() -> Path:
+    return get_path('config', '.log')
+
+def database_url() -> str:
+    return str_path('config', 'database.db', rel=False)
     
 def get_filename(*args: str | Path) -> list:
     home = root
@@ -44,15 +83,19 @@ def get_filename(*args: str | Path) -> list:
 
     return [name, stem, suffix.lower()]
 
-def get_filetype(path: str | Path) -> list:
-    type_check = filetype.guess(get_path(path))
-    return [type_check.extension, type_check.mime] if type_check else None
+def is_music_file(path: str) -> bool:
+    try:
+        guess = filetype.guess(get_path(path))
+    except:
+        return True if get_path(path).suffix in SUFFIXES else False
+    
+    if not guess: return False
+    if str(guess.mime).startswith('audio') or str(guess.mime).startswith('video'):
+        return True
+    else:
+        return False
 
 async def create_directory():
-    config_dir = get_path('config')
-    config_images_dir = get_path('config', 'images')
-    library_dir = get_path('library')
-
-    if not config_dir.exists(): config_dir.mkdir()
-    if not config_images_dir.exists(): config_images_dir.mkdir()
-    if not library_dir.exists(): library_dir.mkdir()
+    if not config_dir().exists(): config_dir().mkdir()
+    if not images_dir().exists(): images_dir().mkdir()
+    if not library_dir().exists(): library_dir().mkdir()

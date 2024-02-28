@@ -5,10 +5,10 @@ import asyncio
 import uvicorn
 
 from api import images_api, stream_api, tracks_api
-from core.library_changes import *
+from core.event_watcher import *
 from infra.database import *
-from infra.init_logger import *
-from infra.handle_path import *
+from infra.path_handler import *
+from infra.setup_logger import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="charmee",
-    version="0.1.5-alpha",
+    version="0.1.6-alpha",
     lifespan=lifespan,
 )
 app.add_middleware(
