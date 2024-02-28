@@ -1,3 +1,4 @@
+from core.albums_service import *
 from core.convert_tools import *
 from core.extract_tags import *
 from core.tracks_service import *
@@ -14,7 +15,15 @@ class LibraryHandler:
             try:
                 await track.create()
             except:
-                logs.error("Failed to create.")
+                logs.error("Failed to create track.")
+
+        track_info = await TracksService.info(path)
+        album = AlbumsService(track_info.items())
+        try:
+            await album.create()
+        except ExceptionGroup as e:
+            print(e)
+            logs.error("Failed to create album.")
 
     @staticmethod
     async def update(path: str):

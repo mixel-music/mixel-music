@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import uvicorn
 
-from api import images_api, stream_api, tracks_api
+from api import albums_api, images_api, stream_api, tracks_api
 from core.event_watcher import *
 from infra.database import *
 from infra.path_handler import *
@@ -35,6 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(albums_api.router, prefix="/api")
 app.include_router(images_api.router, prefix="/api")
 app.include_router(stream_api.router, prefix="/api")
 app.include_router(tracks_api.router, prefix="/api")

@@ -52,4 +52,4 @@ async def event_watcher():
                     if event_type == Change.added:
                         tg.create_task(LibraryHandler.create(strpath))
                     elif event_type == Change.deleted:
-                        tg.create_task(LibraryHandler.remove(strpath))
+                        await LibraryHandler.remove(strpath)

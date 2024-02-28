@@ -116,7 +116,7 @@ class ExtractTags:
 
         self.tags_dict.update({
             'album': self.tags_dict.get('album', 'Unknown Album'),
-            'albumid': get_hash_str(self.tags_dict.get('album', 'Unknown Album')),
+            'albumid': get_hash_str(self.tags_dict.get('album', 'Unknown Album') + str(sanitize_num(self.tags_dict.get('year')))),
             'artist': self.tags_dict.get('artist', 'Unknown Artist'),
             'artistid': get_hash_str(self.tags_dict.get('artist', 'Unknown Artist')),
             'bitrate': getattr(tags.info, 'bitrate', 0),
@@ -161,8 +161,6 @@ class ExtractTags:
 
         self.tags_dict['date'] = date_result
         self.tags_dict['year'] = year_result
-
-        # print(self.tags_dict)
 
         image_data = await self._extract_image()
         if image_data:

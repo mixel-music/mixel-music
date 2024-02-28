@@ -87,25 +87,15 @@ tracks = sqlalchemy.Table(
 albums = sqlalchemy.Table(
     "albums",
     metadata,
-    sqlalchemy.Column("album", sqlalchemy.String(''), nullable=False),
+    sqlalchemy.Column("name", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("albumartist", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("albumartistsort", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("albumid", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("albumsort", sqlalchemy.String(''), nullable=False),
     sqlalchemy.Column("artist", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("artistid", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("artists", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("artistsort", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("create_date", sqlalchemy.DateTime, nullable=False),
-    sqlalchemy.Column("date_new", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("date_old", sqlalchemy.String(''), nullable=False),
-    sqlalchemy.Column("directory", sqlalchemy.String(''), nullable=False), #
     sqlalchemy.Column("disctotal", sqlalchemy.Integer, nullable=False), #
     sqlalchemy.Column("duration", sqlalchemy.REAL, nullable=False),
     sqlalchemy.Column("image_path", sqlalchemy.Integer, nullable=False), #
     sqlalchemy.Column("size", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("tracknumber", sqlalchemy.Integer, nullable=False),
-    sqlalchemy.Column("update_date", sqlalchemy.DateTime, nullable=False),
     sqlalchemy.Column("year_new", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("year_old", sqlalchemy.Integer, nullable=False),
 )
