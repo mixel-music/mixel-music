@@ -1,8 +1,8 @@
 <template>
   <div class="card-grid">
-    <div v-for="(track, index) in fullCardList" :key="track.id" class="card">
+    <div v-for="(track, index) in fullCardList" :key="track.trackid" class="card">
       <div v-if="track.title">
-        <img :src="`http://localhost:2843/api/images/${ track.id }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.id);">
+        <img :src="`http://localhost:2843/api/images/${ track.trackid }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.trackid);">
         <div class="card-content">
           <span class="text-title">{{ track.title }}</span>
           <span class="text-description">{{ track.artist }}</span>

@@ -24,7 +24,7 @@ class ExtractTags:
             if not tags: return self.tags_dict
             
             for key, value in dict(tags).items():
-                if isinstance(value, list) and all(isinstance(value, list) for item in value):
+                if isinstance(value, list):
                     str_value = ', '.join(str(item) for item in value)
                     self.tags_dict[key] = str_value
 

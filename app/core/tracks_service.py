@@ -75,7 +75,7 @@ class TracksService:
                     tracks.c.title,
                     tracks.c.artist,
                     tracks.c.album,
-                    tracks.c.year,
+                    tracks.c.date,
                     tracks.c.trackid,
                     tracks.c.albumid,
                     tracks.c.artistid
