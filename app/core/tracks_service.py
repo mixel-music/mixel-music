@@ -92,13 +92,22 @@ class TracksService:
 
     @staticmethod
     async def info(path: str) -> dict:
+        print(path)
         id = get_hash_str(path)
+        print(id)
         track_info = {}
+
+        track_data = await db.fetch_all(tracks.select().where(tracks.c.id == id))
+        for data in track_data:
+            track_info = dict(data)
+            print(track_data)
 
         try:
             track_data = await db.fetch_all(tracks.select().where(tracks.c.id == id))
+            for data in track_data: track_info = dict(data)
         except:
             logs.error("Failed to load the track information.")
 
-        for data in track_data: track_info = dict(data)
+        print(track_info)
+
         return track_info

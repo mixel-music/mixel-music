@@ -18,7 +18,8 @@ class LibraryHandler:
                 logs.error("Failed to create track.")
 
         track_info = await TracksService.info(path)
-        album = AlbumsService(track_info.items())
+        print(track_info)
+        album = AlbumsService(track_info)
         try:
             await album.create()
         except ExceptionGroup as e:

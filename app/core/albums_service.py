@@ -5,33 +5,32 @@ from infra.setup_logger import *
 
 class AlbumsService:
     def __init__(self, track: dict):
-        self.track_info = {}
-        for key, data in track:
-            self.track_info[key] = data
+        self.track_info = track
+        print(self.track_info)
 
     async def create(self):
         album_select = await db.fetch_one(
-            albums.select().where(albums.c.albumid == self.track_info['albumid'])
+            albums.select().where(albums.c.albumid == self.track_info.get('albumid'))
         )
-        if not album_select:
-            await db.execute(
-                albums.insert().values(
-                    name=self.track_info['album'],
-                    albumartist=self.track_info['albumartist'],
-                    albumid=self.track_info['albumid'],
-                    artist=self.track_info['artist'],
-                    disctotal=self.track_info['disctotal'],
-                    duration=self.track_info['duration'],
-                    image_path=self.track_info['imageid'],
-                    size=self.track_info['size'],
-                    tracknumber=self.track_info['tracknumber'],
-                    year_new=self.track_info['year'],
-                    year_old=self.track_info['year'],
-                )
-            )
+        # if not album_select:
+        #     await db.execute(
+        #         albums.insert().values(
+        #             name=self.track_info.get('album', ''),
+        #             albumartist=self.track_info.get('albumartist'),
+        #             albumid=self.track_info.get('albumid'),
+        #             artist=self.track_info.get('artist'),
+        #             disctotal=self.track_info.get('disctotal'),
+        #             duration=self.track_info.get('duration'),
+        #             image_path=self.track_info.get('imageid'),
+        #             size=self.track_info.get('size'),
+        #             tracknumber=0,
+        #             year_new=self.track_info.get('year'),
+        #             year_old=self.track_info.get('year'),
+        #         )
+        #     )
 
-        else:
-            pass
+        # else:
+        #     logs.debug("Album already exists.")
 
     async def update(self):
         pass
