@@ -25,7 +25,6 @@ async def check_changes():
                     tg.create_task(LibraryHandler.remove(path_data))
                 else:
                     path_property[path_data] = 'skip'
-
     await library_scan()
 
 async def library_scan(path: Path = library_dir()):

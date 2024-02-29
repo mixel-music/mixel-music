@@ -6,7 +6,6 @@ from infra.setup_logger import *
 class AlbumsService:
     def __init__(self, track: dict):
         self.track_info = track
-        print(self.track_info)
 
     async def create(self):
         album_select = await db.fetch_one(

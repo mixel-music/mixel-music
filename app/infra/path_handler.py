@@ -1,30 +1,6 @@
 from pathlib import Path
 import filetype
 
-SUFFIXES = [
-    '.3gp',
-    '.aif',
-    '.aifc',
-    '.aiff',
-    '.amr',
-    '.avi',
-    '.flac',
-    '.m4a',
-    '.m4b',
-    '.m4p',
-    '.m4r',
-    '.m4v',
-    '.mkv',
-    '.mov',
-    '.mp3',
-    '.mp4',
-    '.mpg',
-    '.ogg',
-    '.wav',
-    '.webm',
-    '.wmv',
-]
-
 root = (Path.cwd().resolve()).parent
 
 def config_dir() -> Path:
@@ -90,7 +66,7 @@ def is_music_file(path: str) -> bool:
             return True
         else:
             return False
-    except:
+    except Exception as error:
         return False
 
 async def create_directory():

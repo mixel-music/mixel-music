@@ -13,8 +13,8 @@ class LibraryHandler:
         async with sem:
             try:
                 await track.create()
-            except ExceptionGroup as error:
-                logs.error("Failed to create track.", error)
+            except Exception as error:
+                logs.error("Failed to create track, %s", error)
 
         # track_info = await TracksService.info(path)
         # print(track_info)
@@ -35,8 +35,8 @@ class LibraryHandler:
         async with sem:
             try:
                 await track.remove()
-            except:
-                logs.error("Failed to remove.")
+            except Exception as error:
+                logs.error("Failed to remove track, %s", error)
 
     @staticmethod
     async def images(image_id: str, size: int | str):

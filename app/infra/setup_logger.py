@@ -43,3 +43,5 @@ uvicorn_access_logger.addHandler(print_handler)
 fastapi_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
 logs.addHandler(write_handler)
+
+logs.info("Logger initiated. Level: %s", logs.level)

@@ -62,8 +62,8 @@ class TracksService:
     async def remove(self):
         try:
             await db.execute(tracks.delete().where(tracks.c.path == self.path))
-        except:
-            logs.error("Failed to remove track.")
+        except Exception as error:
+            logs.error("Failed to remove track, %s", error)
             return False
 
     @staticmethod
@@ -92,22 +92,17 @@ class TracksService:
 
     @staticmethod
     async def info(path: str) -> dict:
-        print(path)
         id = get_hash_str(path)
-        print(id)
         track_info = {}
 
         track_data = await db.fetch_all(tracks.select().where(tracks.c.trackid == id))
         for data in track_data:
             track_info = dict(data)
-            print(track_data)
 
         try:
             track_data = await db.fetch_all(tracks.select().where(tracks.c.trackid == id))
             for data in track_data: track_info = dict(data)
-        except:
-            logs.error("Failed to load the track information.")
-
-        print(track_info)
+        except Exception as error:
+            logs.error("Failed to load the track information, %s", error)
 
         return track_info

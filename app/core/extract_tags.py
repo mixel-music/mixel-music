@@ -1,6 +1,6 @@
 from mutagen import File, MutagenError
 from mutagen.id3 import ID3, APIC
-from mutagen.mp4 import MP4, MP4FreeForm
+from mutagen.mp4 import MP4
 from mutagen.flac import FLAC
 from mutagen.aiff import AIFF
 from mutagen.asf import ASF
