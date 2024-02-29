@@ -26,7 +26,7 @@ write_handler = RichHandler(
 uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
 fastapi_logger = logging.getLogger("fastapi")
-logs = logging.getLogger('charmee')
+logs = logging.getLogger('seoneuls')
 
 uvicorn_logger.setLevel(logging.DEBUG)
 uvicorn_access_logger.setLevel(logging.DEBUG)
