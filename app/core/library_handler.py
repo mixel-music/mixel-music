@@ -5,8 +5,7 @@ from core.tracks_service import *
 from infra.path_handler import *
 from infra.setup_logger import *
 
-sem = asyncio.Semaphore(8)
-
+sem = asyncio.Semaphore(20)
 class LibraryHandler:
     @staticmethod
     async def create(path: str):
@@ -14,17 +13,17 @@ class LibraryHandler:
         async with sem:
             try:
                 await track.create()
-            except:
-                logs.error("Failed to create track.")
+            except ExceptionGroup as error:
+                logs.error("Failed to create track.", error)
 
-        track_info = await TracksService.info(path)
-        print(track_info)
-        album = AlbumsService(track_info)
-        try:
-            await album.create()
-        except ExceptionGroup as e:
-            print(e)
-            logs.error("Failed to create album.")
+        # track_info = await TracksService.info(path)
+        # print(track_info)
+        # album = AlbumsService(track_info)
+        # try:
+        #     await album.create()
+        # except ExceptionGroup as e:
+        #     print(e)
+        #     logs.error("Failed to create album.")
 
     @staticmethod
     async def update(path: str):

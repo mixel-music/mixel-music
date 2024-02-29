@@ -76,7 +76,7 @@ class TracksService:
                     tracks.c.artist,
                     tracks.c.album,
                     tracks.c.year,
-                    tracks.c.id,
+                    tracks.c.trackid,
                     tracks.c.albumid,
                     tracks.c.artistid
                 ]
@@ -97,13 +97,13 @@ class TracksService:
         print(id)
         track_info = {}
 
-        track_data = await db.fetch_all(tracks.select().where(tracks.c.id == id))
+        track_data = await db.fetch_all(tracks.select().where(tracks.c.trackid == id))
         for data in track_data:
             track_info = dict(data)
             print(track_data)
 
         try:
-            track_data = await db.fetch_all(tracks.select().where(tracks.c.id == id))
+            track_data = await db.fetch_all(tracks.select().where(tracks.c.trackid == id))
             for data in track_data: track_info = dict(data)
         except:
             logs.error("Failed to load the track information.")
