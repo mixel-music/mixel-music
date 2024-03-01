@@ -1,5 +1,5 @@
 <div align="center">
-    <img src=".github/preview.png" width="850">
+    <img src=".github/header.png">
 </div>
 
 ## Seoneuls
@@ -14,3 +14,4 @@ Since this project is part of my learning process, there may be many areas that 
 ### Documentation
 
 ### Screenshots
+<img src=".github/preview.png" width=850>
