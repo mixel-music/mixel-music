@@ -98,6 +98,12 @@ class ExtractTags:
                     return cover_image.data if cover_image else None
             except:
                 return None
+            
+        elif self.suffix in ['.mp4', '.m4a', '.aac']:
+            track_tags = MP4(self.real_path)
+            covers = track_tags.get('covr')
+
+            return covers[0] if covers else None
 
         elif self.suffix == '.flac':
             track_tags = FLAC(self.real_path)
