@@ -5,6 +5,7 @@ from mutagen.mp4 import MP4, MP4Cover
 from mutagen.flac import FLAC, Picture
 from mutagen.aiff import AIFF
 from mutagen.asf import ASF
+from mutagen.wave import WAVE
 from datetime import datetime
 
 from core.convert_tools import *
@@ -115,6 +116,14 @@ class ExtractTags:
             covers = track_tags.tags.get('covr')
 
             return covers[0].data if covers else None
+        
+        elif self.suffix == '.wav':
+            try:
+                track_tags = WAVE(self.real_path)
+                for cover_image in track_tags.tags.getall("APIC"):
+                    return cover_image.data if cover_image else None
+            except:
+                return None
         
         elif self.suffix == '.wma':
             track_tags = ASF(self.real_path)
