@@ -2,10 +2,10 @@
   <div class="card-grid">
     <div v-for="(album, index) in fullCardList" :key="album.albumid" class="card">
       <div v-if="album.name">
-        <img :src="`http://localhost:2843/api/images/${ album.image_path }?size=300`" class="card-image">
+        <img :src="`http://localhost:2843/api/images/${ album.imageid }?size=300`" class="card-image">
         <div class="card-content">
           <span class="text-title">{{ album.name }}</span>
-          <span class="text-description">{{ album.artist }}</span>
+          <span class="text-description">{{ album.albumartist }}</span>
         </div>
       </div>
       <div v-else class="card-placeholder">

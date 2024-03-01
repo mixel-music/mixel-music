@@ -9,21 +9,37 @@ sem = asyncio.Semaphore(20)
 class LibraryHandler:
     @staticmethod
     async def create(path: str):
+        # Track
         track = TracksService(path)
         async with sem:
             try:
                 await track.create()
             except Exception as error:
                 logs.error("Failed to create track, %s", error)
+                return False
 
-        # track_info = await TracksService.info(path)
-        # print(track_info)
-        # album = AlbumsService(track_info)
-        # try:
-        #     await album.create()
-        # except ExceptionGroup as e:
-        #     print(e)
-        #     logs.error("Failed to create album.")
+        # common
+        track_info = await TracksService.info(path)
+
+        # Album
+        if not await AlbumsService.info(
+            name=track_info.get('album'),
+            albumartist=track_info.get('albumartist'),
+            total_discnumber=track_info.get('disctotal'),
+        ):
+            album = AlbumsService(
+                name=track_info.get('album'),
+                albumartist=track_info.get('albumartist'),
+                total_discnumber=track_info.get('disctotal'),
+                imageid=track_info.get('imageid'),
+            )
+            try:
+                await album.create()
+            except Exception as error:
+                logs.debug("Error: %s", error)
+                return False
+                
+        # Artist
 
     @staticmethod
     async def update(path: str):

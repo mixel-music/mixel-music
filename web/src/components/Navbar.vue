@@ -1,12 +1,18 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <button class="navbar-button navbar-previous" @click="$router.back()">
+      <span class="navbar-link" @click="$router.back()">
         <IconamoonArrowLeft2 class="navbar-icon" />
-      </button>
-      <button class="navbar-button navbar-next" @click="$router.go(1)">
+      </span>
+      <span class="navbar-link" @click="$router.go(1)">
         <IconamoonArrowRight2 class="navbar-icon" />
-      </button>
+      </span>
+      <span class="navbar-link">
+        <router-link to="/albums">Albums</router-link>
+      </span>
+      <span class="navbar-link">
+        <router-link to="/tracks">Tracks</router-link>
+      </span>
     </div>
     <div class="navbar-center">
       

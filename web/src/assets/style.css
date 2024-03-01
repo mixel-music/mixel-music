@@ -14,20 +14,22 @@
   --element-radius: 6px;
 }
 
-html {
+* {
   font-family:
-  "Pretendard",
-  "-apple-system",
-  "BlinkMacSystemFont",
-  "Noto Sans KR",
-  "Segoe UI",
-  "Apple SD Gothic Neo",
-  "Helvetica Neue",
-  "Arial",
-  "sans-serif";
-
+  Pretendard,
+  -apple-system,
+  BlinkMacSystemFont,
+  Noto Sans KR,
+  Segoe UI,
+  Apple SD Gothic Neo,
+  Helvetica Neue,
+  Arial,
+  sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+}
+
+html {
   word-break: keep-all;
   word-wrap: break-word;
 
@@ -50,6 +52,8 @@ p {
 
 a {
   cursor: pointer;
+  text-decoration: none;
+  color: unset;
 }
 
 button:focus {
@@ -59,20 +63,23 @@ button:focus {
 
 input[type='text'] {
   margin: 0;
-  padding: 12px;
+  padding: 6px;
   border-radius: var(--element-radius);
 
   width: 300px;
   height: -webkit-fill-available;
-  font-size: 14px;
+  font-size: 16px;
+  border: none;
 
-  background-color: var(--dark-color-2);
-  border: 1px solid var(--dark-border);
+  background-color: var(--dark-color-1);
   color: var(--dark-text-2);
+  margin-right: -10px;
+  text-align: right;
 }
 
 input[type='text']:focus {
-  outline: 2px solid var(--dark-focus);
+  outline: none;
+  color: var(--dark-text-1);
   transition: all 0.05s ease;
 }
 
@@ -111,9 +118,10 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: var(--dark-color-1);
 }
 
-.navbar-button {
+/* .navbar-button {
   margin: 0;
   padding: 10px;
   width: 46px;
@@ -126,14 +134,23 @@ input[type='text']:focus {
   border: 1px solid var(--dark-border);
   color: var(--dark-text-2);
   cursor: pointer;
-}
+} */
 
 .navbar-left {
-  width: 108px;
   display: flex;
   justify-content: space-between;
   padding: var(--layout-padding) 0;
   text-wrap: nowrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-link {
+  color: var(--dark-text-1);
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-right {

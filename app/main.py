@@ -14,7 +14,6 @@ import asyncio
 async def lifespan(app: FastAPI):
     await create_directory()
     await connect_database()
-
     asyncio.create_task(check_changes())
     asyncio.create_task(event_watcher())
 
@@ -24,7 +23,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="seoneuls",
-    version="0.1.6-alpha",
+    version="0.1.7-alpha",
     lifespan=lifespan,
 )
 app.add_middleware(

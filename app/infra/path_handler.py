@@ -62,11 +62,8 @@ def get_filename(*args: str | Path) -> list:
 def is_music_file(path: str) -> bool:
     try:
         guess = filetype.guess(get_path(path))
-        if str(guess.mime).startswith('audio') or str(guess.mime).startswith('video'):
-            return True
-        else:
-            return False
-    except Exception as error:
+        return True if str(guess.mime).startswith('audio') or str(guess.mime).startswith('video') else False
+    except:
         return False
 
 async def create_directory():

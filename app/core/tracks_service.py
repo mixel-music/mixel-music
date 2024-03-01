@@ -43,18 +43,17 @@ class TracksService:
             raise LookupError('Failed to lookup the tags data.')
 
     async def create(self):
-        list_tags = [column.name for column in tracks.columns]
         tags = ExtractTags(self.path)
+        list_tags = [column.name for column in tracks.columns]
         self.track_tags = await tags.extract_tags(list_tags)
 
         if not self.track_tags:
             logs.debug("Failed to read tags. Is it a valid file?")
             return False
-        
+    
         try:
             await db.execute(tracks.insert().values(self.track_tags))
             return True
-        
         except ValueError as error:
             logs.error("Failed to insert data into the database. %s", error)
             return False
@@ -93,11 +92,7 @@ class TracksService:
     async def info(path: str) -> dict:
         id = get_hash_str(path)
         track_info = {}
-
-        track_data = await db.fetch_all(tracks.select().where(tracks.c.trackid == id))
-        for data in track_data:
-            track_info = dict(data)
-
+        
         try:
             track_data = await db.fetch_all(tracks.select().where(tracks.c.trackid == id))
             for data in track_data: track_info = dict(data)
