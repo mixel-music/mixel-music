@@ -64,7 +64,7 @@ class AlbumsService:
                     albums.c.release_year,
                 ]
             ).order_by(
-                albums.c.name.desc()
+                albums.c.name.asc()
             ).limit(num)
         )
 
