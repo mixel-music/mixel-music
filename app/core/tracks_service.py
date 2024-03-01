@@ -81,9 +81,8 @@ class TracksService:
                     tracks.c.artistid
                 ]
             ).order_by(
-                tracks.c.album.desc(),
-                tracks.c.tracknumber.asc()
-            ).limit(num)
+                tracks.c.title.asc(),
+            ).limit(500)
         )
 
         if tags_select: [track_tags.append(dict(tag)) for tag in tags_select]

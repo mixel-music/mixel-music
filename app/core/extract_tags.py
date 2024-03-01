@@ -1,7 +1,8 @@
 from mutagen import File, MutagenError
 from mutagen.id3 import ID3, APIC
-from mutagen.mp4 import MP4
-from mutagen.flac import FLAC
+from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4, MP4Cover
+from mutagen.flac import FLAC, Picture
 from mutagen.aiff import AIFF
 from mutagen.asf import ASF
 from datetime import datetime
@@ -20,10 +21,10 @@ class ExtractTags:
 
     async def extract_tags(self, rows: list) -> dict:
         try:
-            tags = File(self.real_path, easy=True)
-            if not tags: return self.tags_dict
+            self.get_tags = File(self.real_path, easy=True)
+            if not self.get_tags: return self.tags_dict
             
-            for key, value in dict(tags).items():
+            for key, value in dict(self.get_tags).items():
                 if isinstance(value, list):
                     str_value = ', '.join(str(item) for item in value)
                     self.tags_dict[key] = str_value
@@ -36,16 +37,16 @@ class ExtractTags:
             'albumid': get_hash_str(self.tags_dict.get('album', 'Unknown Album')),
             'artist': self.tags_dict.get('artist', 'Unknown Artist'),
             'artistid': get_hash_str(self.tags_dict.get('artist', 'Unknown Artist')),
-            'bitrate': getattr(tags.info, 'bitrate', 0),
+            'bitrate': getattr(self.get_tags.info, 'bitrate', 0),
             'bpm': int(self.tags_dict.get('bpm', 0)),
-            'channels': getattr(tags.info, 'channels', 0),
+            'channels': getattr(self.get_tags.info, 'channels', 0),
             'create_date': datetime.now(),
             'directory': str_path(self.real_path.parent),
-            'duration': getattr(tags.info, 'length', 0.0),
+            'duration': getattr(self.get_tags.info, 'length', 0.0),
             'trackid': get_hash_str(self.path),
-            'mime': getattr(tags, 'mime', [''])[0],
+            'mime': getattr(self.get_tags, 'mime', [''])[0],
             'path': self.path,
-            'samplerate': getattr(tags.info, 'sample_rate', 0),
+            'samplerate': getattr(self.get_tags.info, 'sample_rate', 0),
             'size': self.real_path.stat().st_size,
             'update_date': datetime.now(),
         })
@@ -91,16 +92,13 @@ class ExtractTags:
     
     async def _extract_image(self):
         if self.suffix == '.mp3':
-            track_tags = ID3(self.real_path)
-            for tag in track_tags.values():
-                return tag.data if isinstance(tag, APIC) else None
-            
-        elif self.suffix in ['.mp4', '.m4a', '.aac']:
-            track_tags = MP4(self.real_path)
-            covers = track_tags.get('covr')
-            
-            return covers[0] if covers else None
-        
+            try:
+                mp3_image = MP3(self.real_path)
+                for cover_image in mp3_image.tags.getall("APIC"):
+                    return cover_image.data if cover_image else None
+            except:
+                return None
+
         elif self.suffix == '.flac':
             track_tags = FLAC(self.real_path)
             for picture in track_tags.pictures:

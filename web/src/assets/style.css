@@ -16,15 +16,15 @@
 
 html {
   font-family:
-  Pretendard,
-  -apple-system,
-  BlinkMacSystemFont,
-  Noto Sans KR,
-  Segoe UI,
-  Apple SD Gothic Neo,
-  Helvetica Neue,
-  Arial,
-  sans-serif;
+  "Pretendard",
+  "-apple-system",
+  "BlinkMacSystemFont",
+  "Noto Sans KR",
+  "Segoe UI",
+  "Apple SD Gothic Neo",
+  "Helvetica Neue",
+  "Arial",
+  "sans-serif";
 
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -83,74 +83,6 @@ input[type='text']:focus {
   flex-direction: column;
 }
 
-/* sidebar */
-
-.sidebar {
-  width: 300px;
-  background-color: var(--dark-color-2);
-  border-right: 1px solid var(--dark-border);
-  position: fixed;
-  height: 100%;
-}
-
-.sidebar-group {
-  overflow-y: hidden;
-  transition: 0.2s ease;
-}
-
-.sidebar-link {
-  color: var(--dark-text-1);
-  text-decoration: none;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-}
-
-.sidebar-link:hover {
-  color: var(--dark-text-1);
-}
-
-.sidebar-link-group {
-  color: var(--dark-text-2);
-  font-weight: 500;
-}
-
-.sidebar-menu {
-  padding: var(--sidebar-padding) var(--layout-padding);
-}
-
-.sidebar-menu-logo {
-  padding: var(--layout-padding);
-  height: 58px;
-}
-
-/* .sidebar-menu-group {
-  margin-left: var(--sidebar-padding);
-} */
-
-.sidebar-icon {
-  width: 21px;
-  height: 21px;
-}
-
-.sidebar-icon-logo {
-  width: 52px;
-  height: 52px;
-}
-
-.sidebar-info {
-  font-weight: 600;
-  padding: var(--layout-padding);
-  padding-bottom: var(--sidebar-padding);
-  margin-top: var(--element-padding);
-}
-
-.sidebar-info, .sidebar-info svg {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 /* content */
 
 .content {
@@ -193,6 +125,7 @@ input[type='text']:focus {
   background-color: var(--dark-color-2);
   border: 1px solid var(--dark-border);
   color: var(--dark-text-2);
+  cursor: pointer;
 }
 
 .navbar-left {
@@ -239,6 +172,7 @@ input[type='text']:focus {
   white-space: nowrap;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .card-placeholder {
@@ -254,6 +188,7 @@ input[type='text']:focus {
   border-radius: var(--element-radius);
   background-color: var(--dark-color-2);
   border: 1px solid var(--dark-border);
+  cursor: pointer;
 }
 
 .card-content {
@@ -328,7 +263,7 @@ input[type='text']:focus {
 }
 
 .player-range {
-  padding: 24px 0;
+  padding: 12px 0;
   cursor: pointer;
 }
 
@@ -362,7 +297,7 @@ input[type='text']:focus {
   position: fixed;
   padding: 0;
   left: 0;
-  bottom: 64px;
+  bottom: 76px;
 }
 
 .player-volume {

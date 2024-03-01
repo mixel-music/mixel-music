@@ -1,13 +1,13 @@
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-import uvicorn
 
 from api import albums_api, images_api, stream_api, tracks_api
 from core.event_watcher import *
 from infra.database import *
 from infra.path_handler import *
 from infra.setup_logger import *
+import uvicorn
 import asyncio
 
 @asynccontextmanager

@@ -1,10 +1,11 @@
 from PIL import Image
 from infra.path_handler import *
 from infra.setup_logger import *
+# import pillow_avif
 import hashlib
 import io
 
-IMAGE_QUALITY = 80
+IMAGE_QUALITY = 100
 IMAGE_SUFFIX = 'webp'
 IMAGE_SIZES = [128, 300, 500]
 
@@ -17,12 +18,8 @@ async def convert_image(image_data: bin):
     if suffix is None: return None
     original_image_path = image_path / f"{image_hash}_orig.{suffix}"
 
-    if original_image_path.exists():
-        pass
-        # logs.debug("Original image already exists.")
-    else:
-        original_image_name = image_path / f"{image_hash}_orig.{suffix}"
-        original_image.save(original_image_name.as_posix(), suffix)
+    # if not original_image_path.exists():
+    #     original_image.save(original_image_path.as_posix(), suffix)
         
     create_list = list(IMAGE_SIZES)
     for file in image_path.iterdir():
@@ -35,4 +32,4 @@ async def convert_image(image_data: bin):
             thumb_image = original_image.copy()
             thumb_image.thumbnail([size, size], Image.Resampling.LANCZOS)
             thumb_image_name = (image_path / f"{image_hash}_{size}.{IMAGE_SUFFIX}").as_posix()
-            thumb_image.save(thumb_image_name, "WEBP", quality=IMAGE_QUALITY)
+            thumb_image.save(thumb_image_name, "webp", quality=IMAGE_QUALITY)
