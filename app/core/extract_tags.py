@@ -6,7 +6,6 @@ from mutagen.flac import FLAC, Picture
 from mutagen.aiff import AIFF
 from mutagen.asf import ASF
 from mutagen.wave import WAVE
-from datetime import datetime
 
 from core.convert_tools import *
 from infra.convert_image import *
@@ -19,6 +18,7 @@ class ExtractTags:
         self.real_path = get_path(path)
         self.tags_dict = {}
         self.suffix = get_filename(path)[2]
+
 
     async def extract_tags(self, rows: list) -> dict:
         try:
@@ -35,21 +35,13 @@ class ExtractTags:
 
         self.tags_dict.update({
             'album': self.tags_dict.get('album', 'Unknown Album'),
-            'albumid': get_hash_str(self.tags_dict.get('album', 'Unknown Album')),
             'artist': self.tags_dict.get('artist', 'Unknown Artist'),
-            'artistid': get_hash_str(self.tags_dict.get('artist', 'Unknown Artist')),
             'bitrate': getattr(self.get_tags.info, 'bitrate', 0),
             'bpm': int(self.tags_dict.get('bpm', 0)),
             'channels': getattr(self.get_tags.info, 'channels', 0),
-            'create_date': datetime.now(),
-            'directory': str_path(self.real_path.parent),
             'duration': getattr(self.get_tags.info, 'length', 0.0),
-            'trackid': get_hash_str(self.path),
             'mime': getattr(self.get_tags, 'mime', [''])[0],
-            'path': self.path,
             'samplerate': getattr(self.get_tags.info, 'sample_rate', 0),
-            'size': self.real_path.stat().st_size,
-            'update_date': datetime.now(),
         })
 
         self.tags_dict['compilation'] = False if not self.tags_dict.get('compilation') else True
@@ -91,21 +83,20 @@ class ExtractTags:
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
         return dict(sorted(self.tags_dict.items()))
     
+
     async def _extract_image(self):
         if self.suffix == '.mp3':
             try:
                 mp3_image = MP3(self.real_path)
                 for cover_image in mp3_image.tags.getall("APIC"):
                     return cover_image.data if cover_image else None
-            except:
-                return None
-            
+            except: return None
+
         elif self.suffix in ['.mp4', '.m4a', '.aac']:
             track_tags = MP4(self.real_path)
             covers = track_tags.get('covr')
-
             return covers[0] if covers else None
-
+        
         elif self.suffix == '.flac':
             track_tags = FLAC(self.real_path)
             for picture in track_tags.pictures:
@@ -114,7 +105,6 @@ class ExtractTags:
         elif self.suffix == '.alac':
             track_tags = MP4(self.real_path)
             covers = track_tags.tags.get('covr')
-
             return covers[0].data if covers else None
         
         elif self.suffix == '.wav':
@@ -122,19 +112,16 @@ class ExtractTags:
                 track_tags = WAVE(self.real_path)
                 for cover_image in track_tags.tags.getall("APIC"):
                     return cover_image.data if cover_image else None
-            except:
-                return None
-        
+            except: return None
+
         elif self.suffix == '.wma':
             track_tags = ASF(self.real_path)
             if 'WM/Picture' in track_tags.asf_tags:
                 pictures = track_tags.asf_tags['WM/Picture']
-
                 return pictures[0].value.data if pictures else None
             
         elif self.suffix == '.aiff':
             track_tags = AIFF(self.real_path)
             if track_tags.tags is None: pass
             id3 = ID3(self.real_path)
-            for tag in id3.values():
-                return tag.data if isinstance(tag, APIC) else None
+            for tag in id3.values(): return tag.data if isinstance(tag, APIC) else None

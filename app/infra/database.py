@@ -76,22 +76,31 @@ tracks = sqlalchemy.Table(
 albums = sqlalchemy.Table(
     "albums",
     metadata,
-    sqlalchemy.Column("name", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("albumartist", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("albumid", sqlalchemy.String, nullable=False, primary_key=True),
-    sqlalchemy.Column("total_discnumber", sqlalchemy.Integer, nullable=False), #
-    sqlalchemy.Column("total_duration", sqlalchemy.REAL, nullable=False),
-    sqlalchemy.Column("imageid", sqlalchemy.String, nullable=False), #
-    sqlalchemy.Column("total_size", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("imageid", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("musicbrainz_albumartistid", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("musicbrainz_albumid", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("name", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("release_year", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("total_discnumber", sqlalchemy.Integer, nullable=False),
+    sqlalchemy.Column("total_duration", sqlalchemy.REAL, nullable=False),
+    sqlalchemy.Column("total_size", sqlalchemy.Integer, nullable=False),
 )
 artists = sqlalchemy.Table(
     "artists",
     metadata,
     sqlalchemy.Column("artist", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("artistid", sqlalchemy.String, nullable=False, primary_key=True),
-    sqlalchemy.Column("artistsort", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("imageid", sqlalchemy.Integer, nullable=False),
+)
+users = sqlalchemy.Table(
+    "users",
+    metadata,
+    sqlalchemy.Column("email", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("username", sqlalchemy.String, nullable=False, primary_key=True),
+    sqlalchemy.Column("password", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("admin", sqlalchemy.Boolean, nullable=False),
 )
 
 if not get_path(database_url()).exists():

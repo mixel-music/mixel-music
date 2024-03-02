@@ -10,6 +10,7 @@ class TracksService:
     def __init__(self, path: str):
         self.path = path
 
+
     async def stream(self, range):  
         track_info = await self.info(self.path)
         real_path = get_path(self.path)
@@ -26,8 +27,8 @@ class TracksService:
             else:
                 track_start = 0
                 track_end = track_start + track_chunk
+            
             track_end = min(track_end, track_size - 1)
-
             async with aiofiles.open(real_path, mode="rb") as track_file:
                 await track_file.seek(track_start)
                 data = await track_file.read(track_end - track_start + 1)
@@ -37,20 +38,16 @@ class TracksService:
                     'Content-Length': str(track_end - track_start + 1),
                     'Content-Type': track_mime
                 }
-
                 return data, headers
         else:
             raise LookupError('Failed to lookup the tags data.')
 
-    async def create(self):
-        tags = ExtractTags(self.path)
-        list_tags = [column.name for column in tracks.columns]
-        self.track_tags = await tags.extract_tags(list_tags)
 
+    async def create(self, tags: dict):
+        self.track_tags = tags
         if not self.track_tags:
             logs.debug("Failed to read tags. Is it a valid file?")
             return False
-    
         try:
             await db.execute(tracks.insert().values(self.track_tags))
             return True
@@ -58,12 +55,14 @@ class TracksService:
             logs.error("Failed to insert data into the database. %s", error)
             return False
 
+
     async def remove(self):
         try:
             await db.execute(tracks.delete().where(tracks.c.path == self.path))
         except Exception as error:
             logs.error("Failed to remove track, %s", error)
             return False
+
 
     @staticmethod
     async def list(num: int) -> list:
@@ -85,8 +84,8 @@ class TracksService:
         )
 
         if tags_select: [track_tags.append(dict(tag)) for tag in tags_select]
-
         return track_tags
+
 
     @staticmethod
     async def info(path: str) -> dict:

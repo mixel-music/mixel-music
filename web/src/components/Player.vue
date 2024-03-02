@@ -174,6 +174,7 @@ export default {
       if (this.Music.paused) {
         this.Music.play();
         this.IsPlayNow = true;
+        document.title = this.Title + ' - mixel-music';
         this.SetMediaControls();
       }
     },
@@ -228,6 +229,7 @@ export default {
       else if (this.Music.paused) {
         if (this.Music.src) {
           this.Music.play();
+          document.title = this.Title + ' - mixel-music';
           this.IsPlayNow = true;
           this.SetMediaControls();
         }
@@ -238,6 +240,7 @@ export default {
       else {
         this.Music.pause();
         this.IsPlayNow = false;
+        document.title = 'mixel-music';
         this.SetMediaControls();
       }
     },

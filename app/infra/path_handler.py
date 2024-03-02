@@ -45,7 +45,7 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
     if rel: home = home.relative_to(root)
 
     return home.as_posix()
-    
+
 def get_filename(*args: str | Path) -> list:
     home = root
     for arg in args: home = home / arg
