@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     debug=True,
-    title="seoneuls",
+    title="mixel-music",
     version="0.1.7-alpha",
     lifespan=lifespan,
 )

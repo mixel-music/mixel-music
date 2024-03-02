@@ -26,7 +26,7 @@ write_handler = RichHandler(
 uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
 fastapi_logger = logging.getLogger("fastapi")
-logs = logging.getLogger('seoneuls')
+logs = logging.getLogger('mixel-music')
 
 uvicorn_logger.setLevel(logging.DEBUG)
 uvicorn_access_logger.setLevel(logging.DEBUG)
@@ -44,4 +44,4 @@ fastapi_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
 logs.addHandler(write_handler)
 
-logs.info("Started logger, Level [%s]", logs.level)
+logs.info("Started logger level [%s]", logs.level)
