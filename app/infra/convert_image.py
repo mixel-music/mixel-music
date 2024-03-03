@@ -1,7 +1,6 @@
 from PIL import Image
 from infra.path_handler import *
 from infra.setup_logger import *
-# import pillow_avif
 import hashlib
 import io
 

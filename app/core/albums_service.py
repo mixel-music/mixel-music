@@ -55,7 +55,16 @@ class AlbumsService:
 
 
     async def remove(self):
-        pass
+        try:
+            await db.execute(
+                albums.delete().where(
+                    albums.c.name == self.name,
+                    albums.c.albumartist == self.albumartist,
+                )
+            )
+        except Exception as error:
+            logs.error("Failed to remove album, %s", error)
+            return False
 
 
     @staticmethod

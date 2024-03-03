@@ -36,12 +36,12 @@ class LibraryHandler:
                 logs.error("Failed to create track, %s", error)
                 return False
             
-        album_info = await AlbumsService.info(
-            name=track_tags.get('album'),
-            albumartist=track_tags.get('albumartist'),
+        album_check = await db.fetch_one(
+            albums.select().where(
+                albums.c.name == track_tags.get('album'),
+            )
         )
-            
-        if album_info == {}:
+        if not album_check:
             album = AlbumsService(
                 name=track_tags.get('album'),
                 albumartist=track_tags.get('albumartist'),
@@ -57,27 +57,6 @@ class LibraryHandler:
             )
 
 
-        # # Album
-        # if not await AlbumsService.info(
-        #     name=track_info.get('album'),
-        #     albumartist=track_info.get('albumartist'),
-        #     total_discnumber=track_info.get('disctotal'),
-        # ):
-        #     album = AlbumsService(
-        #         name=track_info.get('album'),
-        #         albumartist=track_info.get('albumartist'),
-        #         total_discnumber=track_info.get('disctotal'),
-        #         imageid=track_info.get('imageid'),
-        #     )
-        #     try:
-        #         await album.create()
-        #     except Exception as error:
-        #         logs.debug("Error: %s", error)
-        #         return False
-                
-        # # Artist
-
-
     @staticmethod
     async def update(path: str):
         pass
@@ -91,6 +70,24 @@ class LibraryHandler:
                 await track.remove()
             except Exception as error:
                 logs.error("Failed to remove track, %s", error)
+
+        album_check = await db.fetch_one(
+        albums.select().with_only_columns(albums.c.album, albums.c.albumartist).where(
+            albums.c.path == path,
+            )
+        )
+        if not album_check:
+            album = AlbumsService(
+                name='',
+                albumartist='',
+                release_year=0,
+                total_discnumber=0,
+                musicbrainz_albumartistid='',
+                musicbrainz_albumid='',
+            )
+            await album.remove(
+                ''
+            )
 
 
     @staticmethod

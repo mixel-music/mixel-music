@@ -1,6 +1,6 @@
 {
   "name": "mixel-music",
-  "version": "0.1.5-alpha",
+  "version": "0.1.8-alpha",
   "private": true,
   "type": "module",
   "scripts": {
