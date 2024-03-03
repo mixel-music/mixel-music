@@ -19,7 +19,7 @@
       <button class="player-button" title="Previous" @click="PreviousTrack">
         <IconamoonPlayerStartFill />
       </button>
-      <button class="player-button player-button-primary" v-bind="{ title: IsPlayNow ? 'Pause' : 'Play' }" @click="ToggleTrack">
+      <button class="player-button player-button-primary" v-bind="{ title: IsPlayNow ? 'Pause' : 'Play' }" @click="ToggleTrack" ref="ToggleButton">
         <IconamoonPlayerPauseFill v-if="IsPlayNow" />
         <IconamoonPlayerPlayFill v-else="IsPlayNow" />
       </button>
@@ -128,10 +128,9 @@ export default {
 
   beforeUnmount() {
     this.Music.removeEventListener('timeupdate', this.UpdateTime);
-    this.Music.removeEventListener('loadedmetadata', () => {
-      this.Length = this.Music.duration;
-    });
+    this.Music.removeEventListener('loadedmetadata');
     this.Music.removeEventListener('ended', this.HandleMusicEnd);
+    window.removeEventListener('keydown', this.HandleSpace);
     this.Music.pause();
 
     if (this.IsDragNow) {
@@ -143,6 +142,7 @@ export default {
 
   mounted() {
     this.Music.addEventListener('ended', this.HandleMusicEnd);
+    window.addEventListener('keydown', this.HandleSpace);
   },
 
   computed: {
@@ -178,6 +178,15 @@ export default {
         this.SetMediaControls();
       }
     },
+
+    HandleSpace(event) {
+      if (event.key === ' ' || event.keyCode === 32) {
+        if (this.$refs.ToggleButton === document.activeElement || document.activeElement === document.body) {
+          event.preventDefault();
+          this.ToggleTrack();
+        }
+      }
+    },
     
     SetMediaControls: function () {
       if ('mediaSession' in navigator) {
@@ -206,6 +215,7 @@ export default {
       this.MusicSlider = (this.MusicCurrent / this.MusicDuration) * 100;
       if (!this.IsDrag && this.MusicCurrent >= this.MusicDuration) {
         this.resetPlayer();
+        document.title = 'mixel-music';
       }
     },
 
@@ -240,7 +250,6 @@ export default {
       else {
         this.Music.pause();
         this.IsPlayNow = false;
-        document.title = 'mixel-music';
         this.SetMediaControls();
       }
     },
@@ -254,6 +263,7 @@ export default {
         this.IsPlayNow = false;
         this.Music.pause();
         this.SetMediaControls();
+        document.title = 'mixel-music';
       }
     },
 

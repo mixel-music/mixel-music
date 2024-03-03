@@ -99,3 +99,13 @@ class TracksService:
             logs.error("Failed to load the track information, %s", error)
 
         return track_info
+    
+    
+    @staticmethod
+    async def exists(path: str) -> bool:
+        try:
+            track_data = await db.fetch_one(tracks.select().where(tracks.c.path == path))
+            return True if track_data else False
+        except Exception as error:
+            logs.debug("Failed to find track, %s", error)
+            return False
