@@ -1,6 +1,5 @@
 from PIL import Image
-from infra.path_handler import *
-from infra.setup_logger import *
+from tools.standard_path import *
 import hashlib
 import io
 
@@ -8,7 +7,7 @@ IMAGE_QUALITY = 100
 IMAGE_SUFFIX = 'webp'
 IMAGE_SIZES = [128, 300, 500]
 
-async def convert_image(image_data: bin):
+async def process_image(image_data: bin):
     image_path = images_dir()
     image_hash = hashlib.md5(image_data).hexdigest().upper()
     original_image = Image.open(io.BytesIO(image_data))

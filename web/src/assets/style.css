@@ -56,11 +56,11 @@ a {
   color: unset;
 }
 
-button:focus {
+/* button:focus {
   outline: none;
   color: var(--dark-focus);
   transition: all 0.2s ease;
-}
+} */
 
 button:hover {
   color: var(--dark-focus);
@@ -160,6 +160,7 @@ input[type='text']:focus {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .text-description {
@@ -168,6 +169,7 @@ input[type='text']:focus {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .card-grid {
@@ -179,9 +181,6 @@ input[type='text']:focus {
 
 .card {
   white-space: nowrap;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
 }
 
 .card-placeholder {
@@ -233,6 +232,7 @@ input[type='text']:focus {
   background-color: var(--dark-color-2);
   border: 1px solid var(--dark-border);
   margin-right: var(--element-padding);
+  cursor: pointer;
 }
 
 .player-left-text {
@@ -240,6 +240,10 @@ input[type='text']:focus {
   flex-direction: column;
   justify-content: space-evenly;
   line-height: 130%;
+}
+
+.player-left-text .text-description {
+  cursor: auto;
 }
 
 .player-center {
@@ -264,6 +268,10 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   transition: 0.2s ease;
+}
+
+.player-button:focus {
+  outline: none;
 }
 
 .player-button-primary {

@@ -1,10 +1,10 @@
 <template>
   <div class="card-grid">
-    <div v-for="(album, index) in fullCardList" :key="album.albumid" class="card">
-      <div v-if="album.name">
-        <img :src="`http://localhost:2843/api/images/${ album.imageid }?size=300`" class="card-image">
+    <div v-for="(album, index) in fullCardList" :key="album.hash" class="card">
+      <div v-if="album.title">
+        <img :src="`http://localhost:2843/api/images/${ album.imagehash }?size=300`" class="card-image">
         <div class="card-content">
-          <span class="text-title">{{ album.name }}</span>
+          <span class="text-title">{{ album.title }}</span>
           <span class="text-description">{{ album.albumartist }}</span>
         </div>
       </div>

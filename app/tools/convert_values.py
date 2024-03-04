@@ -1,4 +1,5 @@
-from infra.database import *
+from core.models import Tracks
+from infra.session import *
 import hashlib
 
 def list_join(value: list) -> str:
@@ -12,14 +13,14 @@ def sanitize_num(num: int) -> int:
     try: return int(num)
     except ValueError: return 0
 
-async def id_to_image_id(id: str) -> str:
-    db_result = await db.fetch_one(tracks.select().with_only_columns([tracks.c.imageid]).where(tracks.c.trackid == id))
-    image_id = db_result.imageid if db_result and db_result.imageid else None
-    
-    return image_id
-    
-async def id_to_str_path(id: str) -> str:
+async def hash_to_image(hash: str) -> str:
     query = await db.fetch_one(
-        tracks.select().with_only_columns(tracks.c.path).where(tracks.c.trackid == id)
+        select(Tracks.imagehash).where(Tracks.hash == hash)
+    )
+    return query.imagehash if query and query.imagehash else None
+    
+async def hash_to_track(hash: str) -> str:
+    query = await db.fetch_one(
+        select(Tracks.path).where(Tracks.hash == hash)
     )
     return query.path if query else None

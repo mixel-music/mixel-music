@@ -1,12 +1,12 @@
+from api import albums_api, images_api, stream_api, tracks_api
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from api import albums_api, images_api, stream_api, tracks_api
-from core.event_watcher import *
-from infra.database import *
-from infra.path_handler import *
-from infra.setup_logger import *
+from core.watcher import *
+from infra.logging import *
+from infra.session import *
+from tools.standard_path import *
 import uvicorn
 import asyncio
 
@@ -14,8 +14,8 @@ import asyncio
 async def lifespan(app: FastAPI):
     await create_directory()
     await connect_database()
-    asyncio.create_task(check_changes())
-    asyncio.create_task(event_watcher())
+    asyncio.create_task(find_changes())
+    asyncio.create_task(watch_change())
 
     yield
     await disconnect_database()
@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="mixel-music",
-    version="0.1.8-alpha",
+    version="0.1.9-alpha",
     lifespan=lifespan,
 )
 app.add_middleware(

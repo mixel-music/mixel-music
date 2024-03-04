@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
-from infra.path_handler import *
+from tools.standard_path import *
 import logging
 
 install()
@@ -43,5 +43,3 @@ uvicorn_access_logger.addHandler(print_handler)
 fastapi_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
 logs.addHandler(write_handler)
-
-logs.info("Started logger level [%s]", logs.level)

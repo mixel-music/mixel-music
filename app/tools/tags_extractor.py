@@ -7,9 +7,10 @@ from mutagen.aiff import AIFF
 from mutagen.asf import ASF
 from mutagen.wave import WAVE
 
-from core.convert_tools import *
-from infra.convert_image import *
-from infra.path_handler import *
+from infra.logging import *
+from tools.convert_values import *
+from tools.process_image import *
+from tools.standard_path import *
 import asyncio
 
 class ExtractTags:
@@ -46,11 +47,11 @@ class ExtractTags:
 
         self.tags_dict['compilation'] = False if not self.tags_dict.get('compilation') else True
         self.tags_dict['discnumber'] = sanitize_num(self.tags_dict.get('discnumber', 0))
-        self.tags_dict['disctotal'] = max(sanitize_num(self.tags_dict.get('disctotal', 0)), sanitize_num(self.tags_dict.pop('totaldiscs', 0)))
+        self.tags_dict['disctotals'] = max(sanitize_num(self.tags_dict.get('disctotal', 0)), sanitize_num(self.tags_dict.pop('totaldiscs', 0)))
         self.tags_dict['lyrics'] = self.tags_dict.pop('unsyncedlyrics', self.tags_dict.get('lyrics', ''))
         self.tags_dict['title'] = self.tags_dict.get('title', get_filename(self.path)[1] if get_filename(self.path)[1] else 'Unknown Title')
         self.tags_dict['tracknumber'] = max(sanitize_num(self.tags_dict.get('track', 0)), sanitize_num(self.tags_dict.pop('tracknumber', 0)))
-        self.tags_dict['tracktotal'] = max(sanitize_num(self.tags_dict.get('tracktotal', 0)), sanitize_num(self.tags_dict.pop('totaltracks', 0)))
+        self.tags_dict['tracktotals'] = max(sanitize_num(self.tags_dict.get('tracktotal', 0)), sanitize_num(self.tags_dict.pop('totaltracks', 0)))
 
         date_result, date_raw = None, self.tags_dict.get('date', '0')
         year_result, year_raw = None, self.tags_dict.get('year', '0')
@@ -75,10 +76,10 @@ class ExtractTags:
 
         image_data = await self._extract_image()
         if image_data:
-            self.tags_dict['imageid'] = hashlib.md5(image_data).hexdigest().upper()
-            asyncio.create_task(convert_image(image_data))
+            self.tags_dict['imagehash'] = hashlib.md5(image_data).hexdigest().upper()
+            asyncio.create_task(process_image(image_data))
         else:
-            self.tags_dict['imageid'] = ''
+            self.tags_dict['imagehash'] = ''
 
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
         return dict(sorted(self.tags_dict.items()))
