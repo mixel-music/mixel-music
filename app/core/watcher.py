@@ -1,6 +1,6 @@
 from watchfiles import Change, awatch
+from core.library import *
 from core.models import Tracks
-from core.services import *
 from infra.session import *
 from tools.standard_path import *
 import asyncio
@@ -53,3 +53,5 @@ async def watch_change():
                         tg.create_task(Library.create(strpath))
                     elif event_type == Change.deleted:
                         tg.create_task(Library.remove(strpath))
+                    elif event_type == Change.modified:
+                        tg.create_task(Library.update(strpath))

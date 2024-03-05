@@ -1,22 +1,8 @@
-from pathlib import Path
-import filetype
+from tinytag import TinyTag
+from filetype import guess
+from pathlib import Path, PurePath
 
 root = (Path.cwd().resolve()).parent
-
-def config_dir() -> Path:
-    return get_path('config')
-
-def images_dir() -> Path:
-    return get_path('config', 'images')
-
-def library_dir() -> Path:
-    return get_path('library')
-
-def log_path() -> Path:
-    return get_path('config', '.log')
-
-def database_url() -> str:
-    return str_path('config', 'database.db', rel=False)
 
 def get_path(*args: str | Path, rel: bool = False) -> Path:
     """
@@ -60,13 +46,29 @@ def get_filename(*args: str | Path) -> list:
     return [name, stem, suffix.lower()]
 
 def is_music_file(path: str) -> bool:
-    try:
-        guess = filetype.guess(get_path(path))
-        return True if str(guess.mime).startswith('audio') or str(guess.mime).startswith('video') else False
-    except:
-        return False
+    if get_path(path).suffix in TinyTag.SUPPORTED_FILE_EXTENSIONS:
+        return True
+    else:
+        try: return True if str(guess(get_path(path)).mime).startswith(['audio', 'video']) else False
+        except: return False
 
-async def create_directory():
-    if not config_dir().exists(): config_dir().mkdir()
-    if not images_dir().exists(): images_dir().mkdir()
-    if not library_dir().exists(): library_dir().mkdir()
+def config_dir() -> Path:
+    create_directory(get_path('config'))
+    return get_path('config')
+
+def images_dir() -> Path:
+    create_directory(get_path('config', 'images'))
+    return get_path('config', 'images')
+
+def library_dir() -> Path:
+    create_directory(get_path('library'))
+    return get_path('library')
+
+def log_path() -> Path:
+    return get_path('config', '.log')
+
+def database_url() -> str:
+    return str_path('config', 'database.db', rel=False)
+
+def create_directory(path: Path):
+    if not path.exists(): path.mkdir()

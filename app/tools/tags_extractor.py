@@ -6,6 +6,7 @@ from mutagen.flac import FLAC, Picture
 from mutagen.aiff import AIFF
 from mutagen.asf import ASF
 from mutagen.wave import WAVE
+from tinytag import TinyTag
 
 from infra.logging import *
 from tools.convert_values import *
@@ -19,6 +20,15 @@ class ExtractTags:
         self.real_path = get_path(path)
         self.tags_dict = {}
         self.suffix = get_filename(path)[2]
+
+    
+    # test
+    async def extract_tinytag(self, rows: list) -> dict:
+        try:
+            self.get_tags = TinyTag.get(self.real_path)
+            return self.get_tags if self.get_tags else None
+        except Exception as error:
+            logs.error("Failed to extract tags using TinyTags, %s", error)
 
 
     async def extract_tags(self, rows: list) -> dict:
@@ -74,6 +84,7 @@ class ExtractTags:
         self.tags_dict['date'] = date_result
         self.tags_dict['year'] = year_result
 
+        # issue: tight coupling
         image_data = await self._extract_image()
         if image_data:
             self.tags_dict['imagehash'] = hashlib.md5(image_data).hexdigest().upper()

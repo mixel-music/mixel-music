@@ -12,7 +12,6 @@ import asyncio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await create_directory()
     await connect_database()
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import FileResponse
-from core.services import *
+from core.library import *
 
 router = APIRouter()
 
