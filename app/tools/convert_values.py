@@ -5,8 +5,11 @@ import hashlib
 def list_join(value: list) -> str:
     return ', '.join(str(v) for v in value) if isinstance(value, list) else str(value)
 
-def get_hash_str(value: str) -> str:
-    return hashlib.md5(value.encode()).hexdigest().upper()
+def get_hash_str(*args) -> str:
+    try:
+        return hashlib.md5(''.join(str(arg) for arg in args).encode()).hexdigest().upper()
+    except ValueError:
+        return ''
 
 def sanitize_num(num: int) -> int:
     if isinstance(num, tuple): num = num[0]

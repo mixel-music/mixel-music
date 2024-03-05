@@ -1,7 +1,7 @@
 from datetime import datetime
 from infra.logging import *
 from infra.session import *
-from core.models import Tracks
+from core.models import Tracks, Albums
 from tools.convert_values import *
 from tools.tags_extractor import *
 from tools.process_image import *
@@ -18,9 +18,15 @@ class Library:
         track_tags = await ExtractTags(path).extract_tags(track_list)
         if not track_tags: return None
 
+        album_hash = get_hash_str(
+            track_tags.get('album'),
+            track_tags.get('albumartist'),
+            track_tags.get('musicbrainz_albumid'),
+            track_tags.get('year'),
+        )
         track_tags.update({
-            'albumhash': '',
-            'artisthash': '',
+            'albumhash': album_hash,
+            'artisthash': get_hash_str(track_tags.get('artist')),
             'created_date': date,
             'updated_date': datetime.now(),
             'directory': str_path(real_path.parent),
@@ -36,7 +42,9 @@ class Library:
             except Exception as error:
                 logs.error("Failed to create track, %s", error)
                 return False
-
+            
+        if not await Library.get_albums(album_hash):
+            pass
 
     @staticmethod
     async def update(path: str):
@@ -142,8 +150,41 @@ class Library:
 
 
     @staticmethod
-    async def get_albums(path: str = None, num: int = None):
-        return None
+    async def get_albums(hash: str = None, num: int = None):
+        if not hash:
+            albums = []
+            try:
+                list_albums = await db.fetch_all(
+                    select(
+                        Albums.albumhash,
+                        Albums.album,
+                        Albums.albumartist,
+                        Albums.imagehash,
+                        Albums.year,
+                        Albums.tracktotals,
+                        Albums.disctotals,
+                    )
+                    .order_by(Albums.title.asc())
+                    .limit(num)
+                )
+                if list_albums:
+                    for tag in list_albums: albums.append(dict(tag))
+                    return albums
+                else:
+                    return None
+            except Exception as error:
+                logs.error("Failed to load albums list, %s", error)
+        else:
+            try:
+                album_data = await db.fetch_one(
+                    select(Albums).where(Tracks.hash == hash)
+                )
+                if album_data:
+                    return dict(album_data)
+                else:
+                    return None
+            except Exception as error:
+                logs.error("Failed to load the album information, %s", error)
 
 
     @staticmethod
