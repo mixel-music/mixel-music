@@ -164,7 +164,7 @@ class Library:
                         Albums.tracktotals,
                         Albums.disctotals,
                     )
-                    .order_by(Albums.title.asc())
+                    .order_by(Albums.album.asc())
                     .limit(num)
                 )
                 if list_albums:
@@ -177,7 +177,7 @@ class Library:
         else:
             try:
                 album_data = await db.fetch_one(
-                    select(Albums).where(Tracks.hash == hash)
+                    select(Albums).where(Albums.albumhash == hash)
                 )
                 if album_data:
                     return dict(album_data)
