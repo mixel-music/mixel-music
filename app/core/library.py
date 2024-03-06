@@ -1,7 +1,7 @@
 from datetime import datetime
 from infra.logging import *
 from infra.session import *
-from core.models import Tracks, Albums
+from core.models import Tracks, Albums, Artists
 from tools.convert_values import *
 from tools.tags_extractor import *
 from tools.process_image import *
@@ -35,16 +35,87 @@ class Library:
             'path': path,
         })
         track_tags = dict(sorted(track_tags.items()))
+        artist_hash = get_hash_str(track_tags.get('artist'))
         
         async with sem:
             try:
                 await db.execute(insert(Tracks).values(**track_tags))
+                album_exist = await db.fetch_one(
+                    select(Albums).where(Albums.albumhash == album_hash)
+                )
+                if not album_exist:
+                    try:
+                        await db.execute(insert(Albums).values(
+                            albumhash=album_hash,
+                            album=track_tags.get('album'),
+                            albumartist=track_tags.get('albumartist'),
+                            imagehash=track_tags.get('imagehash'),
+                            date=track_tags.get('date'),
+                            year=track_tags.get('year'),
+                            durationtotals=track_tags.get('duration'),
+                            tracktotals=track_tags.get('tracktotals'),
+                            disctotals=track_tags.get('disctotals'),
+                            sizetotals=track_tags.get('size'),
+                            musicbrainz_albumartistid=track_tags.get('musicbrainz_albumartistid'),
+                            musicbrainz_albumid=track_tags.get('musicbrainz_albumid'),
+                        ))
+                    except Exception as error:
+                        logs.error("Failed to insert album, %s", error)
+                else:
+                    try:
+                        old_values = await db.fetch_one(
+                            select(
+                                Albums.imagehash,
+                                Albums.durationtotals,
+                                Albums.tracktotals,
+                                Albums.disctotals,
+                                Albums.sizetotals,
+                                Albums.musicbrainz_albumartistid,
+                                Albums.musicbrainz_albumid,
+                            ).where(Albums.albumhash == album_hash)
+                        )
+                        old_values = dict(old_values)
+
+                        if old_values:
+                            new_tracktotals = max(track_tags.get('tracktotals', 0), old_values.get('tracktotals', 0))
+
+                            new_duration = old_values.get('durationtotals', 0) + track_tags.get('duration', 0)
+                            new_size = old_values.get('sizetotals', 0) + track_tags.get('size', 0)
+                            new_imagehash = track_tags.get('imagehash', '') if not old_values.get('imagehash') else old_values.get('imagehash')
+                            new_mbz_albumartistid = track_tags.get('musicbrainz_albumartistid', '') if not old_values.get('musicbrainz_albumartistid') else old_values.get('musicbrainz_albumartistid')
+                            new_mbz_albumid = track_tags.get('musicbrainz_albumid', '') if not old_values.get('musicbrainz_albumid') else old_values.get('musicbrainz_albumid')
+
+                            await db.execute(
+                                update(Albums).where(Albums.albumhash == album_hash).values(
+                                    imagehash=new_imagehash,
+                                    durationtotals=new_duration,
+                                    tracktotals=new_tracktotals,
+                                    sizetotals=new_size,
+                                    musicbrainz_albumartistid=new_mbz_albumartistid,
+                                    musicbrainz_albumid=new_mbz_albumid,
+                                )
+                            )
+                    except Exception as error:
+                        logs.error("Failed to update album, %s", error)
+
+                artist_exist = await db.fetch_one(
+                    select(Artists).where(Artists.artisthash == artist_hash)
+                )
+                if not artist_exist:
+                    try:
+                        await db.execute(
+                            insert(Artists).values(
+                                artisthash=artist_hash,
+                                artist=track_tags.get('artist'),
+                                imagehash='',
+                            )
+                        )
+                    except Exception as error:
+                        logs.error("Failed to insert artist, %s", error)
+
             except Exception as error:
-                logs.error("Failed to create track, %s", error)
-                return False
-            
-        if not await Library.get_albums(album_hash):
-            pass
+                logs.error("Failed to insert track, %s", error)
+
 
     @staticmethod
     async def update(path: str):
@@ -58,6 +129,7 @@ class Library:
             logs.error("Failed to update track, %s", error)
 
 
+    # 여기 부분 때문에 정적 메서드 쓰면 안 됨 구현이 매우 힘들어짐
     @staticmethod
     async def remove(path: str):
         try:
@@ -112,7 +184,7 @@ class Library:
         
 
     @staticmethod
-    async def get_tracks(path: str = None, num: int = None) -> dict:
+    async def get_tracks(path: str = None, num: int = 35) -> dict:
         if not path:
             tracks = []
             try:
@@ -133,9 +205,10 @@ class Library:
                     for tag in list_tracks: tracks.append(dict(tag))
                     return tracks
                 else:
-                    return None
+                    return {}
             except Exception as error:
                 logs.error("Failed to load tracks list, %s", error)
+                return {}
         else:
             try:
                 track_data = await db.fetch_one(
@@ -144,13 +217,14 @@ class Library:
                 if track_data:
                     return dict(track_data)
                 else:
-                    return None
+                    return {}
             except Exception as error:
                 logs.error("Failed to load the track information, %s", error)
+                return {}
 
 
     @staticmethod
-    async def get_albums(hash: str = None, num: int = None):
+    async def get_albums(hash: str = None, num: int = 35) -> dict:
         if not hash:
             albums = []
             try:
@@ -171,27 +245,27 @@ class Library:
                     for tag in list_albums: albums.append(dict(tag))
                     return albums
                 else:
-                    return None
+                    return {}
             except Exception as error:
                 logs.error("Failed to load albums list, %s", error)
+                return {}
         else:
             try:
                 album_data = await db.fetch_one(
                     select(Albums).where(Albums.albumhash == hash)
                 )
-                if album_data:
-                    return dict(album_data)
-                else:
-                    return None
+                logs.warn('%s', album_data)
+                return dict(album_data) if album_data else {}
             except Exception as error:
                 logs.error("Failed to load the album information, %s", error)
+                return {}
 
 
     @staticmethod
-    async def get_artists(path: str = None, num: int = None):
+    async def get_artists(path: str = None, num: int = 35) -> dict:
         pass
 
 
     @staticmethod
-    async def get_playlists(path: str = None, num: int = None):
+    async def get_playlist(path: str = None, num: int = 35) -> dict:
         pass

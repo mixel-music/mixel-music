@@ -93,7 +93,7 @@ class ExtractTags:
             self.tags_dict['imagehash'] = ''
 
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
-        return dict(sorted(self.tags_dict.items()))
+        return self.tags_dict
     
 
     async def _extract_image(self):
