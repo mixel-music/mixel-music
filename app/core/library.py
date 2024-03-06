@@ -262,10 +262,19 @@ class Library:
 
 
     @staticmethod
-    async def get_artists(path: str = None, num: int = 35) -> dict:
-        pass
-
+    async def get_artists(num: int = 35) -> dict:
+        try:
+            artists = []
+            list_artists = await db.fetch_all(
+                select(Artists).order_by(Artists.artist.asc()).limit(num)
+            )
+            if list_artists:
+                for tag in list_artists: artists.append(dict(tag))
+                return artists
+        except Exception as error:
+            logs.error("Failed to load artists, %s", error)
+            return {}
 
     @staticmethod
-    async def get_playlist(path: str = None, num: int = 35) -> dict:
+    async def get_playlist(num: int = 35) -> dict:
         pass

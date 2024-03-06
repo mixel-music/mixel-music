@@ -5,7 +5,7 @@ from tools.convert_values import *
 router = APIRouter()
 
 @router.get("/tracks")
-async def tracks_list_api(num: int = 28) -> list:
+async def tracks_list_api(num: int = 35) -> list:
     limit = sanitize_num(num)
     tracks_list = await Library.get_tracks(num=limit)
 

@@ -1,4 +1,4 @@
-from api import albums_api, images_api, stream_api, tracks_api
+from api import albums_api, artists_api, images_api, stream_api, tracks_api
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -34,6 +34,7 @@ app.add_middleware(
 )
 
 app.include_router(albums_api.router, prefix="/api")
+app.include_router(artists_api.router, prefix="/api")
 app.include_router(images_api.router, prefix="/api")
 app.include_router(stream_api.router, prefix="/api")
 app.include_router(tracks_api.router, prefix="/api")
