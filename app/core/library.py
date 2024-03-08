@@ -8,7 +8,7 @@ from tools.process_image import *
 from tools.standard_path import *
 import aiofiles
 
-sem = asyncio.Semaphore(20)
+sem = asyncio.Semaphore(4)
 
 class Library:
     @staticmethod
@@ -24,6 +24,7 @@ class Library:
             track_tags.get('musicbrainz_albumid'),
             track_tags.get('year'),
         )
+        artist_hash = get_hash_str(track_tags.get('artist'))
         track_tags.update({
             'albumhash': album_hash,
             'artisthash': get_hash_str(track_tags.get('artist')),
@@ -35,86 +36,11 @@ class Library:
             'path': path,
         })
         track_tags = dict(sorted(track_tags.items()))
-        artist_hash = get_hash_str(track_tags.get('artist'))
-        
-        async with sem:
-            try:
-                await db.execute(insert(Tracks).values(**track_tags))
-                album_exist = await db.fetch_one(
-                    select(Albums).where(Albums.albumhash == album_hash)
-                )
-                if not album_exist:
-                    try:
-                        await db.execute(insert(Albums).values(
-                            albumhash=album_hash,
-                            album=track_tags.get('album'),
-                            albumartist=track_tags.get('albumartist'),
-                            imagehash=track_tags.get('imagehash'),
-                            date=track_tags.get('date'),
-                            year=track_tags.get('year'),
-                            durationtotals=track_tags.get('duration'),
-                            tracktotals=track_tags.get('tracktotals'),
-                            disctotals=track_tags.get('disctotals'),
-                            sizetotals=track_tags.get('size'),
-                            musicbrainz_albumartistid=track_tags.get('musicbrainz_albumartistid'),
-                            musicbrainz_albumid=track_tags.get('musicbrainz_albumid'),
-                        ))
-                    except Exception as error:
-                        logs.error("Failed to insert album, %s", error)
-                else:
-                    try:
-                        old_values = await db.fetch_one(
-                            select(
-                                Albums.imagehash,
-                                Albums.durationtotals,
-                                Albums.tracktotals,
-                                Albums.disctotals,
-                                Albums.sizetotals,
-                                Albums.musicbrainz_albumartistid,
-                                Albums.musicbrainz_albumid,
-                            ).where(Albums.albumhash == album_hash)
-                        )
-                        old_values = dict(old_values)
 
-                        if old_values:
-                            new_tracktotals = max(track_tags.get('tracktotals', 0), old_values.get('tracktotals', 0))
-
-                            new_duration = old_values.get('durationtotals', 0) + track_tags.get('duration', 0)
-                            new_size = old_values.get('sizetotals', 0) + track_tags.get('size', 0)
-                            new_imagehash = track_tags.get('imagehash', '') if not old_values.get('imagehash') else old_values.get('imagehash')
-                            new_mbz_albumartistid = track_tags.get('musicbrainz_albumartistid', '') if not old_values.get('musicbrainz_albumartistid') else old_values.get('musicbrainz_albumartistid')
-                            new_mbz_albumid = track_tags.get('musicbrainz_albumid', '') if not old_values.get('musicbrainz_albumid') else old_values.get('musicbrainz_albumid')
-
-                            await db.execute(
-                                update(Albums).where(Albums.albumhash == album_hash).values(
-                                    imagehash=new_imagehash,
-                                    durationtotals=new_duration,
-                                    tracktotals=new_tracktotals,
-                                    sizetotals=new_size,
-                                    musicbrainz_albumartistid=new_mbz_albumartistid,
-                                    musicbrainz_albumid=new_mbz_albumid,
-                                )
-                            )
-                    except Exception as error:
-                        logs.error("Failed to update album, %s", error)
-
-                artist_exist = await db.fetch_one(
-                    select(Artists).where(Artists.artisthash == artist_hash)
-                )
-                if not artist_exist:
-                    try:
-                        await db.execute(
-                            insert(Artists).values(
-                                artisthash=artist_hash,
-                                artist=track_tags.get('artist'),
-                                imagehash='',
-                            )
-                        )
-                    except Exception as error:
-                        logs.error("Failed to insert artist, %s", error)
-
-            except Exception as error:
-                logs.error("Failed to insert track, %s", error)
+        async with sem, db.transaction():
+            await LibraryTask.add_track(track_tags)
+            await LibraryTask.add_album(album_hash, track_tags)
+            await LibraryTask.add_artist(artist_hash, track_tags)
 
 
     @staticmethod
@@ -129,7 +55,6 @@ class Library:
             logs.error("Failed to update track, %s", error)
 
 
-    # 여기 부분 때문에 정적 메서드 쓰면 안 됨 구현이 매우 힘들어짐
     @staticmethod
     async def remove(path: str):
         try:
@@ -172,7 +97,7 @@ class Library:
         
 
     @staticmethod
-    async def images(hash: str, size: int | str):
+    async def get_images(hash: str, size: int | str):
         if size == 'orig':
             for orig_image in images_dir().glob(f"{hash}_orig*"):
                 if orig_image.is_file(): return orig_image
@@ -275,6 +200,102 @@ class Library:
             logs.error("Failed to load artists, %s", error)
             return {}
 
+
     @staticmethod
     async def get_playlist(num: int = 35) -> dict:
         pass
+
+
+class LibraryTask:
+    @staticmethod
+    async def add_track(tags):
+        try:
+            await db.execute(
+                insert(Tracks).prefix_with("OR REPLACE").values(**tags)
+            )
+            print("Okay!")
+        except Exception as error:
+            logs.error("Failed to upsert track, %s", error)
+
+
+    @staticmethod
+    async def add_album(hash, tags):
+        is_exist = await db.fetch_one(
+            select(Albums).where(Albums.albumhash == hash)
+        )
+        if not is_exist:
+            await LibraryTask.insert_album(hash, tags)
+        else:
+            await LibraryTask.update_album(hash, tags)
+
+
+    @staticmethod
+    async def add_artist(hash, tags):
+        try:
+            await db.execute(
+                insert(Artists).prefix_with("OR REPLACE").values(
+                    artisthash=hash,
+                    artist=tags.get('artist'),
+                    imagehash='',
+                )
+            )
+        except Exception as error:
+            logs.error("Failed to upsert artist, %s", error)
+
+    
+    @staticmethod
+    async def insert_album(hash, tags):
+        try:
+            await db.execute(insert(Albums).values(
+                albumhash=hash,
+                album=tags.get('album'),
+                albumartist=tags.get('albumartist'),
+                imagehash=tags.get('imagehash'),
+                date=tags.get('date'),
+                year=tags.get('year'),
+                durationtotals=tags.get('duration'),
+                tracktotals=tags.get('tracktotals'),
+                disctotals=tags.get('disctotals'),
+                sizetotals=tags.get('size'),
+                musicbrainz_albumartistid=tags.get('musicbrainz_albumartistid'),
+                musicbrainz_albumid=tags.get('musicbrainz_albumid'),
+            ))
+        except Exception as error:
+            logs.error("Failed to insert album, %s", error)
+
+
+    @staticmethod
+    async def update_album(hash, tags):
+        try:
+            old_values = await db.fetch_one(
+                select(
+                    Albums.imagehash,
+                    Albums.durationtotals,
+                    Albums.tracktotals,
+                    Albums.disctotals,
+                    Albums.sizetotals,
+                    Albums.musicbrainz_albumartistid,
+                    Albums.musicbrainz_albumid,
+                ).where(Albums.albumhash == hash)
+            )
+            old_values = dict(old_values)
+
+            if old_values:
+                new_values = LibraryTask.album_values(old_values, tags)
+                await db.execute(
+                    update(Albums).where(Albums.albumhash == hash).values(**new_values)
+                )
+        except Exception as error:
+            logs.error("Failed to update album, %s", error)
+
+
+    @staticmethod
+    def album_values(old, tags):
+        return {
+            'tracktotals': max(tags.get('tracktotals'), old.get('tracktotals')),
+            'durationtotals': old.get('durationtotals') + tags.get('duration'),
+            'sizetotals': old.get('sizetotals') + tags.get('size', 0),
+            'imagehash': tags.get('imagehash') if not old.get('imagehash') else old.get('imagehash'),
+            'musicbrainz_albumartistid': tags.get('musicbrainz_albumartistid') if not old.get('musicbrainz_albumartistid') else old.get('musicbrainz_albumartistid'),
+            'musicbrainz_albumid': tags.get('musicbrainz_albumid') if not old.get('musicbrainz_albumid') else old.get('musicbrainz_albumid'),
+        }
