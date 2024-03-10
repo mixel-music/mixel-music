@@ -2,7 +2,6 @@
 <div align="center">
   <img src=".github/header.svg">
 </div>
-<br>
 
 ## mixel-music <img src="https://img.shields.io/badge/Python | 3.11+-3776AB?style=flat-square&logo=python&logoColor=white" align="right"> <img src="https://img.shields.io/github/license/mixel-music/mixel-music?style=flat-square" align="right">
 An open-source, self-hosted music streaming application developed with Python and Vue.js, focusing on fast performance, beautiful UI, and various device support.
