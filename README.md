@@ -4,9 +4,9 @@
 </div>
 
 ## mixel-music <img src="https://img.shields.io/badge/Python | 3.11+-3776AB?style=flat-square&logo=python&logoColor=white" align="right"> <img src="https://img.shields.io/github/license/mixel-music/mixel-music?style=flat-square" align="right">
-An open-source, self-hosted music streaming application developed with Python and Vue.js, focusing on fast performance, beautiful UI, and various device support.
+An open-source, self-hosted music streaming app, developed with Python and Vue.js, provides fast performance, simple UI, and wide device support for a consistent music experience across platforms.
 
-- Since this project is part of my learning process, there may be many areas that need improvement. I have little experience doing backend development with Python. Also, this is my first time using JavaScript and Vue.js.
+- Since this project is part of my learning process, there may be many areas that need improvement. I have little experience doing backend development. Also, this is my first time using JavaScript and Vue.js.
 - As I'm focusing on preparing for the CSAT this year, more time will be dedicated to my studies. Therefore, the application's completion might face delays until at least the end of the year.
 
 ## Features

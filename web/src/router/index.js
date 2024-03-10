@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import Tracks from '../views/Tracks.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -16,14 +16,32 @@ const router = createRouter({
     },
 
     {
+      path: '/tracks/:hash',
+      name: 'Track',
+      component: Tracks,
+    },
+
+    {
       path: '/albums',
       name: 'Albums',
       component: () => import('../views/Albums.vue'),
     },
 
     {
+      path: '/albums/:albumhash',
+      name: 'Album',
+      component: () => import ('../views/Albums.vue'),
+    },
+
+    {
       path: '/artists',
       name: 'Artists',
+      component: () => import('../views/Artists.vue'),
+    },
+
+    {
+      path: '/artists/:artisthash',
+      name: 'Artist',
       component: () => import('../views/Artists.vue'),
     },
   ]
