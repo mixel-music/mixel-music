@@ -1,7 +1,7 @@
 from datetime import datetime
 from infra.logging import *
 from infra.session import *
-from core.models import Tracks, Albums, Artists
+from core.models import *
 from tools.convert_values import *
 from tools.tags_extractor import *
 from tools.process_image import *

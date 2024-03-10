@@ -4,7 +4,7 @@ from core.library import *
 router = APIRouter()
 
 @router.get("/tracks")
-async def tracks_list_api(num: int = Query(35, alias='num', gt=0, le=100)) -> list:
+async def tracks_list_api(num: int = Query(35, alias='num', gt=1, le=100)) -> list:
     tracks_list = await Library.get_tracks(num=num)
 
     if not tracks_list:

@@ -15,7 +15,7 @@ async def find_changes():
     """
     async with session() as conn:
         track_info = await conn.execute(select(Tracks.path, Tracks.size))
-        track_info = track_info.fetchall()
+        track_info = track_info.all()
 
     if track_info:
         async with asyncio.TaskGroup() as tg:
