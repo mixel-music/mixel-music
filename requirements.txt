@@ -5,10 +5,12 @@ anyio==4.3.0
 click==8.1.7
 colorama==0.4.6
 fastapi==0.110.0
+fastapi-sessions==0.3.2
 filetype==1.2.0
 greenlet==3.0.3
 h11==0.14.0
 idna==3.6
+itsdangerous==2.1.2
 markdown-it-py==3.0.0
 mdurl==0.1.2
 mutagen==1.47.0

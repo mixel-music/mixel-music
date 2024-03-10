@@ -14,7 +14,7 @@ async def tracks_list_api(num: int = Query(35, alias='num', gt=1, le=100)) -> li
     return tracks_list
 
 @router.get("/tracks/{hash}")
-async def tracks_api(hash: str) -> list[dict]:
+async def tracks_api(hash: str) -> dict:
     tracks_path = await hash_to_track(hash)
     if not tracks_path: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 

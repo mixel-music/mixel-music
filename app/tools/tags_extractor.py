@@ -21,8 +21,8 @@ class ExtractTags:
         self.tags_dict = {}
         self.suffix = get_filename(path)[2]
 
-    
-    # test
+
+
     async def extract_tinytag(self, rows: list) -> dict:
         try:
             self.get_tags = TinyTag.get(self.real_path)
@@ -30,6 +30,7 @@ class ExtractTags:
         except Exception as error:
             logs.error("Failed to extract tags using TinyTags, %s", error)
             return self.tags_dict
+
 
 
     async def extract_tags(self, rows: list) -> dict:
@@ -88,7 +89,7 @@ class ExtractTags:
         self.tags_dict['year'] = year_result
 
         # issue: tight coupling
-        image_data = await self._extract_image()
+        image_data = await self.__extract_image()
         if image_data:
             self.tags_dict['imagehash'] = hashlib.md5(image_data).hexdigest().upper()
             asyncio.create_task(process_image(image_data))
@@ -97,9 +98,10 @@ class ExtractTags:
 
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
         return self.tags_dict
-    
 
-    async def _extract_image(self) -> bin:
+
+
+    async def __extract_image(self) -> bin:
         if self.suffix == '.mp3':
             try:
                 mp3_image = MP3(self.real_path)

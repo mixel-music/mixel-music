@@ -31,6 +31,7 @@ class LibraryTasks:
                 track_tags.get('imagehash'),
                 track_tags.get('date')
             )
+
         artist_hash = get_hash_str(track_tags.get('artist'))
         track_tags.update({
             'albumhash': album_hash,
@@ -53,6 +54,7 @@ class LibraryTasks:
             await conn.commit()
 
 
+
     @staticmethod
     async def update(path: str) -> None:
         async with session() as conn:
@@ -64,6 +66,7 @@ class LibraryTasks:
                 await LibraryTasks.remove(path)
                 await LibraryTasks.create(path, result.created_date)
             await conn.commit()
+
 
 
     @staticmethod
@@ -84,6 +87,7 @@ class LibraryTasks:
 
                 await LibraryStore.delete_track(conn, path)
             await conn.commit()
+
 
 
     @staticmethod
@@ -117,6 +121,7 @@ class LibraryTasks:
             return data, headers
         
 
+
     @staticmethod
     async def get_images(hash: str, size: int | str) -> Path:
         if size == 'orig':
@@ -128,6 +133,7 @@ class LibraryTasks:
         else:
             return None
         
+
 
     @staticmethod
     async def get_tracks(path: str = None, num: int = 35) -> list[dict] | dict:
@@ -151,8 +157,8 @@ class LibraryTasks:
                     return [dict(track) for track in track_list] if track_list else []
 
             except OperationalError as err:
-                logs.error("Failed to load track list, %s", err)
-                return
+                logs.error("Failed to load tracks, %s", err)
+                raise err
         else:
             try:
                 async with session() as conn:
@@ -163,12 +169,13 @@ class LibraryTasks:
                     return dict(track_data) if track_data else {}
 
             except OperationalError as err:
-                logs.error("Failed to load the track info, %s", err)
-                return
+                logs.error("Failed to load the track, %s", err)
+                raise err
+
 
 
     @staticmethod
-    async def get_albums(hash: str = None, num: int = 35) -> list[dict] | dict:
+    async def get_albums(hash: str = None, num: int = 35):
         if not hash:
             try:
                 async with session() as conn:
@@ -189,20 +196,38 @@ class LibraryTasks:
                 return [dict(album) for album in album_list] if album_list else []
             
             except OperationalError as err:
-                logs.error("Failed to load album list, %s", err)
+                logs.error("Failed to load albums, %s", err)
                 raise err
         else:
             try:
                 async with session() as conn:
                     album_data = await conn.execute(
-                        select(Albums).where(Albums.albumhash == hash)
+                        select(Albums.__table__).where(Albums.albumhash == hash)
                     )
-                    album_data = album_data.mappings().first()
-                    return dict(album_data) if album_data else {}
+                    album_data = [album_data.mappings().first()]
+                    track_data = await conn.execute(
+                        select(
+                            Tracks.title,
+                            Tracks.artist,
+                            Tracks.hash,
+                            Tracks.artisthash,
+                            Tracks.tracknumber,
+                        )
+                        .where(Tracks.albumhash == hash)
+                        .order_by(Tracks.tracknumber.asc())
+                    )
+                    track_data = track_data.mappings().all()
+                    track_data = [dict(track) for track in track_data]
+
+                    if album_data and track_data:
+                        return album_data + [track_data]
+                    else:
+                        return []
                 
             except OperationalError as err:
-                logs.error("Failed to load the album info, %s", err)
+                logs.error("Failed to load the album, %s", err)
                 raise err
+
 
 
     @staticmethod
@@ -210,19 +235,21 @@ class LibraryTasks:
         try:
             async with session() as conn:
                 artist_list = await conn.execute(
-                    select(Artists.__table__).order_by(Artists.artist.asc()).limit(num)
+                    select(Artists.__table__).order_by(Artists.artist.asc()).limit(500)
                 )
                 artist_list = artist_list.mappings().all()
             return [dict(artist) for artist in artist_list] if artist_list else []
         
         except OperationalError as err:
-            logs.error("Failed to load artist list, %s", err)
+            logs.error("Failed to load artists, %s", err)
             raise err
+
 
 
     @staticmethod
     async def get_playlist(hash: str = None, num: int = 35) -> list[dict] | dict:
         pass
+
 
 
 class LibraryStore:
@@ -236,6 +263,7 @@ class LibraryStore:
             logs.error("Failed to insert track, %s", err)
             raise err
         
+
         
     @staticmethod
     async def delete_track(conn: AsyncSession, path: str) -> None:
@@ -244,6 +272,7 @@ class LibraryStore:
         except OperationalError as err:
             logs.error("Failed to delete track, %s", err)
             raise err
+
 
 
     @staticmethod
@@ -300,7 +329,8 @@ class LibraryStore:
                     except OperationalError as err:
                         logs.error("Failed to update album, %s", err)
                         raise err
-                    
+
+
     
     @staticmethod
     async def delete_album(conn: AsyncSession, path: str) -> None:
@@ -312,6 +342,7 @@ class LibraryStore:
         except OperationalError as err:
             logs.error("Failed to delete album, %s", err)
             raise err
+
 
 
     @staticmethod
@@ -333,6 +364,8 @@ class LibraryStore:
                 except Exception as error:
                     logs.error("Failed to insert artist, %s", error)
 
+
+
     @staticmethod
     async def delete_artist(conn: AsyncSession, path: str) -> None:
         try:
@@ -343,14 +376,3 @@ class LibraryStore:
         except OperationalError as err:
             logs.error("Failed to delete artist, %s", err)
             raise err
-
-
-def album_values(old: dict, tags: dict) -> dict:
-    return {
-        'tracktotals': max(tags.get('tracktotals'), old.get('tracktotals')),
-        'durationtotals': old.get('durationtotals') + tags.get('duration'),
-        'sizetotals': old.get('sizetotals') + tags.get('size', 0),
-        'imagehash': tags.get('imagehash') if not old.get('imagehash') else old.get('imagehash'),
-        'musicbrainz_albumartistid': tags.get('musicbrainz_albumartistid') if not old.get('musicbrainz_albumartistid') else old.get('musicbrainz_albumartistid'),
-        'musicbrainz_albumid': tags.get('musicbrainz_albumid') if not old.get('musicbrainz_albumid') else old.get('musicbrainz_albumid'),
-    }

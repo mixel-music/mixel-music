@@ -16,6 +16,16 @@ def sanitize_num(num: int) -> int:
     try: return int(num)
     except ValueError: return 0
 
+def album_values(old: dict, tags: dict) -> dict:
+    return {
+        'tracktotals': max(tags.get('tracktotals'), old.get('tracktotals')),
+        'durationtotals': old.get('durationtotals') + tags.get('duration'),
+        'sizetotals': old.get('sizetotals') + tags.get('size', 0),
+        'imagehash': tags.get('imagehash') if not old.get('imagehash') else old.get('imagehash'),
+        'musicbrainz_albumartistid': tags.get('musicbrainz_albumartistid') if not old.get('musicbrainz_albumartistid') else old.get('musicbrainz_albumartistid'),
+        'musicbrainz_albumid': tags.get('musicbrainz_albumid') if not old.get('musicbrainz_albumid') else old.get('musicbrainz_albumid'),
+    }
+
 async def hash_to_image(hash: str) -> str:
     try:
         async with session() as conn:

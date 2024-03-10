@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="mixel-music",
-    version="0.1.9-alpha",
+    version="0.1.10a",
     lifespan=lifespan,
 )
 app.add_middleware(
