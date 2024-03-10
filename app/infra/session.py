@@ -1,6 +1,7 @@
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import text, select, insert, update, delete
+from sqlalchemy import text, func, select, insert, update, delete
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 from core.models import Base
 from tools.standard_path import *
 

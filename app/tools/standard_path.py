@@ -32,7 +32,7 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
 
     return home.as_posix()
 
-def get_filename(*args: str | Path) -> list:
+def get_filename(*args: str | Path) -> list[str]:
     home = root
     for arg in args: home = home / arg
     name, stem, suffix = home.name, home.stem, home.suffix

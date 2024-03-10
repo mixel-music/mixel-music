@@ -26,9 +26,10 @@ class ExtractTags:
     async def extract_tinytag(self, rows: list) -> dict:
         try:
             self.get_tags = TinyTag.get(self.real_path)
-            return self.get_tags if self.get_tags else None
+            return self.get_tags if self.get_tags else self.tags_dict
         except Exception as error:
             logs.error("Failed to extract tags using TinyTags, %s", error)
+            return self.tags_dict
 
 
     async def extract_tags(self, rows: list) -> dict:
@@ -43,6 +44,7 @@ class ExtractTags:
 
         except MutagenError as error:
             logs.error("Failed to init mutagen, %s", error)
+            return self.tags_dict
 
         self.tags_dict.update({
             'album': self.tags_dict.get('album', 'Unknown Album'),
@@ -96,7 +98,7 @@ class ExtractTags:
         return self.tags_dict
     
 
-    async def _extract_image(self):
+    async def _extract_image(self) -> bin:
         if self.suffix == '.mp3':
             try:
                 mp3_image = MP3(self.real_path)

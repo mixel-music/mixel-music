@@ -17,19 +17,25 @@ def sanitize_num(num: int) -> int:
     except ValueError: return 0
 
 async def hash_to_image(hash: str) -> str:
-    async with session() as conn:
-        result = await conn.execute(
-            select(Tracks.imagehash).where(Tracks.hash == hash)
-        )
-        row = result.scalars().first()
+    try:
+        async with session() as conn:
+            result = await conn.execute(
+                select(Tracks.imagehash).where(Tracks.hash == hash)
+            )
+            row = result.scalars().first()
+    except:
+        return ''
 
-    return row if row else None
+    return row if row else ''
     
 async def hash_to_track(hash: str) -> str:
-    async with session() as conn:
-        result = await conn.execute(
-            select(Tracks.path).where(Tracks.hash == hash)
-        )
-        row = result.scalars().first()
+    try:
+        async with session() as conn:
+            result = await conn.execute(
+                select(Tracks.path).where(Tracks.hash == hash)
+            )
+            row = result.scalars().first()
+    except:
+        return ''
         
-    return row if row else None
+    return row if row else ''

@@ -1,9 +1,8 @@
 from watchfiles import Change, awatch
 from core.library import *
-from core.models import *
+from core.models import Tracks
 from infra.session import *
 from tools.standard_path import *
-import asyncio
 
 path_property = {}
 
@@ -22,9 +21,9 @@ async def find_changes():
             for path_data, size_data in track_info:
                 real_path = get_path(path_data)
                 if not real_path.exists():
-                    tg.create_task(Library.remove(path_data))
+                    tg.create_task(LibraryTasks.remove(path_data))
                 elif real_path.stat().st_size != size_data:
-                    tg.create_task(Library.remove(path_data))
+                    tg.create_task(LibraryTasks.remove(path_data))
                 else:
                     path_property[path_data] = 'skip'
     await library_scan()
@@ -41,7 +40,7 @@ async def library_scan(path: Path = library_dir()):
                 if path_property.get(str_path(path)) == 'skip':
                     path_property.pop(str_path(path), None)
                 elif is_music_file(str_path(path)):
-                    asyncio.create_task(Library.create(str_path(path)))
+                    asyncio.create_task(LibraryTasks.create(str_path(path)))
 
 async def watch_change():
     logs.info("Event watcher initiated.")
@@ -51,8 +50,8 @@ async def watch_change():
                 strpath = str_path(event_path)
                 if is_music_file(strpath):
                     if event_type == Change.added:
-                        tg.create_task(Library.create(strpath))
+                        tg.create_task(LibraryTasks.create(strpath))
                     elif event_type == Change.deleted:
-                        tg.create_task(Library.remove(strpath))
+                        tg.create_task(LibraryTasks.remove(strpath))
                     elif event_type == Change.modified:
-                        tg.create_task(Library.update(strpath))
+                        tg.create_task(LibraryTasks.update(strpath))
