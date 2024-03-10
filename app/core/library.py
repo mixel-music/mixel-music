@@ -25,6 +25,12 @@ class LibraryTasks:
             track_tags.get('musicbrainz_albumid'),
             track_tags.get('year'),
         )
+        if track_tags.get('album') == 'Unknown Album':
+            album_hash = get_hash_str(
+                album_hash,
+                track_tags.get('imagehash'),
+                track_tags.get('date')
+            )
         artist_hash = get_hash_str(track_tags.get('artist'))
         track_tags.update({
             'albumhash': album_hash,
@@ -204,7 +210,7 @@ class LibraryTasks:
         try:
             async with session() as conn:
                 artist_list = await conn.execute(
-                    select(Artists).order_by(Artists.artist.asc()).limit(num)
+                    select(Artists.__table__).order_by(Artists.artist.asc()).limit(num)
                 )
                 artist_list = artist_list.mappings().all()
             return [dict(artist) for artist in artist_list] if artist_list else []
@@ -244,7 +250,7 @@ class LibraryStore:
     async def insert_album(conn: AsyncSession, hash: str, tags: dict) -> None:
         async with prevent_block:
             is_exist = await conn.execute(
-                select(Albums).where(Albums.albumhash == hash)
+                select(Albums.__table__).where(Albums.albumhash == hash)
             )
             is_exist = is_exist.scalars().first()
 
@@ -267,7 +273,6 @@ class LibraryStore:
                 except OperationalError as err:
                     logs.error("Failed to insert album, %s", err)
                     raise err
-
             else:
                 try:
                     old_value = await conn.execute(

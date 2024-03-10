@@ -32,7 +32,7 @@ logs = logging.getLogger('mixel-music')
 uvicorn_logger.setLevel(logging.DEBUG)
 uvicorn_access_logger.setLevel(logging.DEBUG)
 fastapi_logger.setLevel(logging.DEBUG)
-sqlalchemy_logger.setLevel(logging.INFO)
+sqlalchemy_logger.setLevel(logging.WARN)
 logs.setLevel(logging.DEBUG)
 
 uvicorn_logger.propagate = False

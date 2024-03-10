@@ -64,6 +64,7 @@ class ExtractTags:
         self.tags_dict['title'] = self.tags_dict.get('title', get_filename(self.path)[1] if get_filename(self.path)[1] else 'Unknown Title')
         self.tags_dict['tracknumber'] = max(sanitize_num(self.tags_dict.get('track', 0)), sanitize_num(self.tags_dict.pop('tracknumber', 0)))
         self.tags_dict['tracktotals'] = max(sanitize_num(self.tags_dict.get('tracktotal', 0)), sanitize_num(self.tags_dict.pop('totaltracks', 0)))
+        self.tags_dict['albumartist'] = self.tags_dict.get('artist') if not self.tags_dict.get('albumartist') else self.tags_dict.get('albumartist')
 
         date_result, date_raw = None, self.tags_dict.get('date', '0')
         year_result, year_raw = None, self.tags_dict.get('year', '0')
