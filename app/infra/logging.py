@@ -26,20 +26,24 @@ write_handler = RichHandler(
 uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
 fastapi_logger = logging.getLogger("fastapi")
+sqlalchemy_logger = logging.getLogger("sqlalchemy.engine")
 logs = logging.getLogger('mixel-music')
 
 uvicorn_logger.setLevel(logging.DEBUG)
 uvicorn_access_logger.setLevel(logging.DEBUG)
 fastapi_logger.setLevel(logging.DEBUG)
+sqlalchemy_logger.setLevel(logging.INFO)
 logs.setLevel(logging.DEBUG)
 
 uvicorn_logger.propagate = False
 uvicorn_access_logger.propagate = False
 fastapi_logger.propagate = False
+sqlalchemy_logger.propagate = False
 logs.propagate = False
 
 uvicorn_logger.addHandler(print_handler)
 uvicorn_access_logger.addHandler(print_handler)
 fastapi_logger.addHandler(print_handler)
+sqlalchemy_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
 logs.addHandler(write_handler)

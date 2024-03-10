@@ -1,13 +1,13 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
-from tools.convert_values import *
 
 router = APIRouter()
 
 @router.get("/albums")
-async def albums_list_api(num: int = 35) -> list:
-    limit = sanitize_num(num)
-    albums = await Library.get_albums(num=limit)
+async def albums_list_api(num: int = Query(35, alias='num', gt=0, le=100)) -> list:
+    albums_list = await Library.get_albums(num=num)
+
+    if not albums_list:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-    if not albums: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return albums
+    return albums_list

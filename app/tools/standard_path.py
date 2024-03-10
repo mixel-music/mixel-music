@@ -1,6 +1,6 @@
 from tinytag import TinyTag
 from filetype import guess
-from pathlib import Path, PurePath
+from pathlib import Path
 
 root = (Path.cwd().resolve()).parent
 

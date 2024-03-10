@@ -13,6 +13,9 @@
       <span class="navbar-link">
         <router-link to="/tracks">Tracks</router-link>
       </span>
+      <span class="navbar-link">
+        <router-link to="/artists">Artists</router-link>
+      </span>
     </div>
     <div class="navbar-center">
       

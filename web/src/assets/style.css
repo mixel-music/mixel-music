@@ -194,9 +194,17 @@ input[type='text']:focus {
   width: 100%;
   aspect-ratio: 1/1;
   border-radius: var(--element-radius);
+  cursor: pointer;
+  display: block;
+}
+
+.card-image-content {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--element-radius);
+  cursor: pointer;
+  display: block;
   background-color: var(--dark-color-2);
   border: 1px solid var(--dark-border);
-  cursor: pointer;
 }
 
 .card-content {

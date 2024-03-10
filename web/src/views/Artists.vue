@@ -1,13 +1,12 @@
 <template>
   <div class="card-grid">
-    <div v-for="(track, index) in fullCardList" :key="track.hash" class="card">
-      <div v-if="track.title">
+    <div v-for="(artist, index) in fullCardList" :key="artist.artisthash" class="card">
+      <div v-if="artist.artist">
         <div class="card-image-content">
-          <img :src="`http://localhost:2843/api/images/${ track.hash }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.hash);">
+
         </div>
         <div class="card-content">
-          <span class="text-title">{{ track.title }}</span>
-          <span class="text-description">{{ track.artist }}</span>
+          <span class="text-title">{{ artist.artist }}</span>
         </div>
       </div>
       <div v-else class="card-placeholder">
@@ -38,7 +37,7 @@ export default {
 
   methods: {
     FetchMusicList() {
-      axios.get('http://localhost:2843/api/tracks')
+      axios.get('http://localhost:2843/api/artists')
         .then(response => {
           this.info = response.data;
         })

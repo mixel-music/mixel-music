@@ -1,6 +1,6 @@
 from watchfiles import Change, awatch
 from core.library import *
-from core.models import Tracks
+from core.models import *
 from infra.session import *
 from tools.standard_path import *
 import asyncio
@@ -13,9 +13,10 @@ async def find_changes():
 
     If a file doesn't exist or the size differs, it is removed from the database; otherwise, it is excluded from the library scan.
     """
-    track_info = await db.fetch_all(
-        select(Tracks.path, Tracks.size)
-    )
+    async with session() as conn:
+        track_info = await conn.execute(select(Tracks.path, Tracks.size))
+        track_info = track_info.fetchall()
+
     if track_info:
         async with asyncio.TaskGroup() as tg:
             for path_data, size_data in track_info:

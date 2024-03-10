@@ -12,7 +12,7 @@ async def images_api(hash: str, size: int | str = 'orig'):
     if image_path:
         return FileResponse(image_path)
     else:
-        image_path = await Library.images(hash, size)
+        image_path = await Library.get_images(hash, size)
         if image_path: return FileResponse(image_path)
         
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
