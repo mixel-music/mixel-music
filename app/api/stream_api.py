@@ -5,7 +5,7 @@ from tools.convert_values import *
 router = APIRouter()
 
 @router.get("/stream/{hash}")
-async def stream_api(hash: str, range: str = Header(None)) -> Response:
+async def stream_api(hash: str, range: str = Header(None)):
     stream_path = await hash_to_track(hash)
     if not stream_path: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 

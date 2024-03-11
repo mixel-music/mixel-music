@@ -91,7 +91,7 @@ class LibraryTasks:
 
 
     @staticmethod
-    async def stream(path: str, range) -> tuple[any, str]:
+    async def stream(path: str, range):
         track_info = await LibraryTasks.get_tracks(path)
         if not track_info: return
 
@@ -127,7 +127,7 @@ class LibraryTasks:
         if size == 'orig':
             for orig_image in images_dir().glob(f"{hash}_orig*"):
                 if orig_image.is_file(): return orig_image
-        elif int(size) in IMAGE_SIZES:
+        elif sanitize_num(size) in IMAGE_SIZES:
             thumb_image = images_dir() / f"{hash}_{size}.{IMAGE_SUFFIX}"
             return thumb_image if thumb_image.is_file() else None
         else:
@@ -136,7 +136,7 @@ class LibraryTasks:
 
 
     @staticmethod
-    async def get_tracks(path: str = None, num: int = 35) -> list[dict] | dict:
+    async def get_tracks(path: str = None, num: int = None) -> list[dict] | dict:
         if not path:
             try:
                 async with session() as conn:
@@ -151,7 +151,7 @@ class LibraryTasks:
                             Tracks.artisthash,
                         )
                         .order_by(Tracks.title.asc())
-                        .limit(500)
+                        .limit(num)
                     )
                     track_list = track_list.mappings().all()
                     return [dict(track) for track in track_list] if track_list else []
@@ -175,7 +175,7 @@ class LibraryTasks:
 
 
     @staticmethod
-    async def get_albums(hash: str = None, num: int = 35):
+    async def get_albums(hash: str = None, num: int = None):
         if not hash:
             try:
                 async with session() as conn:
@@ -190,7 +190,7 @@ class LibraryTasks:
                             Albums.disctotals,
                         )
                         .order_by(Albums.album.asc())
-                        .limit(500)
+                        .limit(num)
                     )
                     album_list = album_list.mappings().all()
                 return [dict(album) for album in album_list] if album_list else []
@@ -201,28 +201,32 @@ class LibraryTasks:
         else:
             try:
                 async with session() as conn:
-                    album_data = await conn.execute(
+                    album_result = await conn.execute(
                         select(Albums.__table__).where(Albums.albumhash == hash)
                     )
-                    album_data = [album_data.mappings().first()]
-                    track_data = await conn.execute(
-                        select(
-                            Tracks.title,
-                            Tracks.artist,
-                            Tracks.hash,
-                            Tracks.artisthash,
-                            Tracks.tracknumber,
-                        )
-                        .where(Tracks.albumhash == hash)
-                        .order_by(Tracks.tracknumber.asc())
-                    )
-                    track_data = track_data.mappings().all()
-                    track_data = [dict(track) for track in track_data]
+                    album_data = album_result.mappings().first()
 
-                    if album_data and track_data:
-                        return album_data + [track_data]
+                    if album_data:
+                        album_data = dict(album_data)
+
+                        track_result = await conn.execute(
+                            select(
+                                Tracks.title,
+                                Tracks.artist,
+                                Tracks.hash,
+                                Tracks.artisthash,
+                                Tracks.tracknumber,
+                            )
+                            .where(Tracks.albumhash == hash)
+                            .order_by(Tracks.tracknumber.asc())
+                        )
+                        track_data = track_result.mappings().all()
+                        track_data = [dict(track) for track in track_data]
+
+                        album_data['tracks'] = track_data
+                        return album_data
                     else:
-                        return []
+                        return {}
                 
             except OperationalError as err:
                 logs.error("Failed to load the album, %s", err)
@@ -231,11 +235,11 @@ class LibraryTasks:
 
 
     @staticmethod
-    async def get_artists(hash: str = None, num: int = 35) -> list[dict] | dict:
+    async def get_artists(hash: str = None, num: int = None) -> list[dict] | dict:
         try:
             async with session() as conn:
                 artist_list = await conn.execute(
-                    select(Artists.__table__).order_by(Artists.artist.asc()).limit(500)
+                    select(Artists.__table__).order_by(Artists.artist.asc()).limit(num)
                 )
                 artist_list = artist_list.mappings().all()
             return [dict(artist) for artist in artist_list] if artist_list else []
@@ -247,7 +251,7 @@ class LibraryTasks:
 
 
     @staticmethod
-    async def get_playlist(hash: str = None, num: int = 35) -> list[dict] | dict:
+    async def get_playlist(hash: str = None, num: int = None) -> list[dict] | dict:
         pass
 
 

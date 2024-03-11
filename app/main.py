@@ -2,7 +2,6 @@ from api import albums_api, artists_api, images_api, stream_api, tracks_api
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-
 from core.watcher import *
 from infra.logging import *
 from infra.session import *
@@ -22,7 +21,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     debug=True,
     title="mixel-music",
-    version="0.1.10a",
+    version="0.1.11a",
     lifespan=lifespan,
 )
 app.add_middleware(

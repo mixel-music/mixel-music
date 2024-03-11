@@ -3,7 +3,7 @@
     <div v-for="(track, index) in fullCardList" :key="track.hash" class="card">
       <div v-if="track.title">
         <div class="card-image-content">
-          <img :src="`http://localhost:2843/api/images/${ track.hash }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.hash);">
+          <img v-lazy="`http://localhost:2843/api/images/${ track.hash }?size=300`" class="card-image" :alt="track.album" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.hash);">
         </div>
         <div class="card-content">
           <span class="text-title">{{ track.title }}</span>

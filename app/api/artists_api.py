@@ -4,11 +4,11 @@ from core.library import *
 router = APIRouter()
 
 @router.get("/artists")
-async def artists_list_api(num: int = Query(35, alias='num', gt=1, le=100)) -> list[dict]:
+async def artists_list_api(num: int = Query(56, alias='num', gt=1, le=144)):
     try:
         artists_list = await LibraryTasks.get_artists(num=num)
-    except Exception as err:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=err)
+    except:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if not artists_list:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

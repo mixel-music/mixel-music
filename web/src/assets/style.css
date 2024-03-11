@@ -11,7 +11,7 @@
   
   --layout-padding: 21px;
   --element-padding: 16px;
-  --element-radius: 6px;
+  --element-radius: 0.4em;
 }
 
 * {

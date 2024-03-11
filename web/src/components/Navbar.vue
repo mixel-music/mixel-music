@@ -4,7 +4,7 @@
       <span class="navbar-link" @click="$router.back()">
         <IconamoonArrowLeft2 class="navbar-icon" />
       </span>
-      <span class="navbar-link" @click="$router.foward()">
+      <span class="navbar-link" @click="$router.forward()">
         <IconamoonArrowRight2 class="navbar-icon" />
       </span>
       <span class="navbar-link">
