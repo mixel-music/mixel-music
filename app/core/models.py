@@ -58,7 +58,6 @@ class Tracks(Base):
     musicbrainz_trackid = Column(String, nullable=False)
 
 
-
 class Albums(Base):
     __tablename__ = 'albums'
     albumhash = Column(String, primary_key=True, nullable=False)
@@ -75,13 +74,11 @@ class Albums(Base):
     musicbrainz_albumid = Column(String, nullable=False)
 
 
-
 class Artists(Base):
     __tablename__ = 'artists'
     artisthash = Column(String, primary_key=True, nullable=False)
     artist = Column(String, nullable=False)
     imagehash = Column(Integer, nullable=False)
-
 
 
 class Users(Base):

@@ -22,7 +22,6 @@ class ExtractTags:
         self.suffix = get_filename(path)[2]
 
 
-
     async def extract_tinytag(self, rows: list) -> dict:
         try:
             self.get_tags = TinyTag.get(self.real_path)
@@ -30,7 +29,6 @@ class ExtractTags:
         except Exception as error:
             logs.error("Failed to extract tags using TinyTags, %s", error)
             return self.tags_dict
-
 
 
     async def extract_tags(self, rows: list) -> dict:
@@ -98,7 +96,6 @@ class ExtractTags:
 
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
         return self.tags_dict
-
 
 
     async def __extract_image(self) -> bin:

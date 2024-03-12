@@ -50,7 +50,7 @@ export default {
 
   computed: {
     fullCardList() {
-      const totalItems = 7;
+      const totalItems = 5;
       const emptyItemsToAdd = totalItems - this.info.length;
       const emptyItems = Array.from({ length: emptyItemsToAdd }, () => ({}));
       return [...this.info, ...emptyItems];

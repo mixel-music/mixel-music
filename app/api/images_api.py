@@ -5,7 +5,7 @@ from core.library import *
 router = APIRouter()
 
 @router.get("/images/{hash}")
-async def images_api(hash: str, size: int | str = 'orig'):
+async def image_api(hash: str, size: int | str = 'orig'):
     image_hash = await hash_to_image(hash)
     
     image_path = await LibraryTasks.get_images(image_hash, size)

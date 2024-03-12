@@ -71,4 +71,4 @@ def database_url() -> str:
     return str_path('config', 'database.db', rel=False)
 
 def create_directory(path: Path):
-    if not path.exists(): path.mkdir()
+    path.mkdir(exist_ok=True)

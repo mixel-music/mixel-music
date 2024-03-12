@@ -54,7 +54,6 @@ class LibraryTasks:
             await conn.commit()
 
 
-
     @staticmethod
     async def update(path: str) -> None:
         async with session() as conn:
@@ -66,7 +65,6 @@ class LibraryTasks:
                 await LibraryTasks.remove(path)
                 await LibraryTasks.create(path, result.created_date)
             await conn.commit()
-
 
 
     @staticmethod
@@ -87,7 +85,6 @@ class LibraryTasks:
 
                 await LibraryStore.delete_track(conn, path)
             await conn.commit()
-
 
 
     @staticmethod
@@ -119,7 +116,6 @@ class LibraryTasks:
                 'Content-Type': track_mime
             }
             return data, headers
-        
 
 
     @staticmethod
@@ -132,7 +128,6 @@ class LibraryTasks:
             return thumb_image if thumb_image.is_file() else None
         else:
             return None
-        
 
 
     @staticmethod
@@ -171,7 +166,6 @@ class LibraryTasks:
             except OperationalError as err:
                 logs.error("Failed to load the track, %s", err)
                 raise err
-
 
 
     @staticmethod
@@ -233,7 +227,6 @@ class LibraryTasks:
                 raise err
 
 
-
     @staticmethod
     async def get_artists(hash: str = None, num: int = None) -> list[dict] | dict:
         try:
@@ -249,11 +242,9 @@ class LibraryTasks:
             raise err
 
 
-
     @staticmethod
     async def get_playlist(hash: str = None, num: int = None) -> list[dict] | dict:
         pass
-
 
 
 class LibraryStore:
@@ -266,7 +257,6 @@ class LibraryStore:
         except OperationalError as err:
             logs.error("Failed to insert track, %s", err)
             raise err
-        
 
         
     @staticmethod
@@ -276,7 +266,6 @@ class LibraryStore:
         except OperationalError as err:
             logs.error("Failed to delete track, %s", err)
             raise err
-
 
 
     @staticmethod
@@ -334,7 +323,6 @@ class LibraryStore:
                         logs.error("Failed to update album, %s", err)
                         raise err
 
-
     
     @staticmethod
     async def delete_album(conn: AsyncSession, path: str) -> None:
@@ -346,7 +334,6 @@ class LibraryStore:
         except OperationalError as err:
             logs.error("Failed to delete album, %s", err)
             raise err
-
 
 
     @staticmethod
@@ -367,7 +354,6 @@ class LibraryStore:
                     )
                 except Exception as error:
                     logs.error("Failed to insert artist, %s", error)
-
 
 
     @staticmethod

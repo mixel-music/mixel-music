@@ -41,9 +41,18 @@ fastapi_logger.propagate = False
 sqlalchemy_logger.propagate = False
 logs.propagate = False
 
-uvicorn_logger.addHandler(print_handler)
-uvicorn_access_logger.addHandler(print_handler)
-fastapi_logger.addHandler(print_handler)
-sqlalchemy_logger.addHandler(print_handler)
-logs.addHandler(print_handler)
-logs.addHandler(write_handler)
+def logging() -> None:
+    uvicorn_logger.addHandler(print_handler)
+    uvicorn_access_logger.addHandler(print_handler)
+    fastapi_logger.addHandler(print_handler)
+    sqlalchemy_logger.addHandler(print_handler)
+    logs.addHandler(print_handler)
+    logs.addHandler(write_handler)
+
+def stop_logging() -> None:
+    uvicorn_logger.removeHandler(print_handler)
+    uvicorn_access_logger.removeHandler(print_handler)
+    fastapi_logger.removeHandler(print_handler)
+    sqlalchemy_logger.removeHandler(print_handler)
+    logs.removeHandler(print_handler)
+    logs.removeHandler(write_handler)

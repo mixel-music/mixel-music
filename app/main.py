@@ -11,17 +11,19 @@ import asyncio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logging()
     await connect_database()
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())
 
     yield
     await disconnect_database()
+    stop_logging()
 
 app = FastAPI(
     debug=True,
     title="mixel-music",
-    version="0.1.11a",
+    version="0.1.12a",
     lifespan=lifespan,
 )
 app.add_middleware(
