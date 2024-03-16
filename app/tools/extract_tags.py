@@ -1,26 +1,25 @@
 from mutagen import File, MutagenError
-from mutagen.id3 import ID3, APIC
-from mutagen.mp3 import MP3
-from mutagen.mp4 import MP4, MP4Cover
-from mutagen.flac import FLAC, Picture
 from mutagen.aiff import AIFF
 from mutagen.asf import ASF
+from mutagen.flac import FLAC
+from mutagen.id3 import ID3, APIC
+from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4
 from mutagen.wave import WAVE
 from tinytag import TinyTag
-
-from infra.logging import *
-from tools.convert_values import *
-from tools.process_image import *
-from tools.standard_path import *
 import asyncio
 
-class ExtractTags:
+from infra.loggings import *
+from tools.convert_value import *
+from tools.cover_images import *
+from tools.path_handler import *
+
+class TagsManager:
     def __init__(self, path: str):
         self.path = path
         self.real_path = get_path(path)
         self.tags_dict = {}
         self.suffix = get_filename(path)[2]
-
 
     async def extract_tinytag(self, rows: list) -> dict:
         try:
@@ -89,14 +88,13 @@ class ExtractTags:
         # issue: tight coupling
         image_data = await self.__extract_image()
         if image_data:
-            self.tags_dict['imagehash'] = hashlib.md5(image_data).hexdigest().upper()
-            asyncio.create_task(process_image(image_data))
+            self.tags_dict['imagehash'] = hashlib.sha1(image_data).hexdigest()
+            asyncio.create_task(create_thumbnail(image_data))
         else:
             self.tags_dict['imagehash'] = ''
 
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
         return self.tags_dict
-
 
     async def __extract_image(self) -> bin:
         if self.suffix == '.mp3':

@@ -1,29 +1,30 @@
-from api import albums_api, artists_api, images_api, stream_api, tracks_api
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from core.watcher import *
-from infra.logging import *
-from infra.session import *
-from tools.standard_path import *
-import uvicorn
 import asyncio
+import uvicorn
+
+from api import albums, artists, images, stream, tracks
+from core.events import *
+from infra.config import *
+from infra.database import *
+from infra.loggings import *
+from tools.path_handler import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logging()
+    create_directory()
     await connect_database()
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())
 
     yield
     await disconnect_database()
-    stop_logging()
 
 app = FastAPI(
-    debug=True,
-    title="mixel-music",
-    version="0.1.12a",
+    debug=conf.FASTAPI_DEBUG,
+    title=conf.APP_TITLE,
+    version=conf.VERSION,
     lifespan=lifespan,
 )
 app.add_middleware(
@@ -34,18 +35,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(albums_api.router, prefix="/api")
-app.include_router(artists_api.router, prefix="/api")
-app.include_router(images_api.router, prefix="/api")
-app.include_router(stream_api.router, prefix="/api")
-app.include_router(tracks_api.router, prefix="/api")
+app.include_router(albums.router, prefix="/api")
+app.include_router(artists.router, prefix="/api")
+app.include_router(images.router, prefix="/api")
+app.include_router(stream.router, prefix="/api")
+app.include_router(tracks.router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host="127.0.0.1",
-        port=2843,
-        log_level="debug",
+        host=conf.APP_HOST,
+        port=conf.APP_PORT,
+        log_level=conf.LOG_LEVEL,
         log_config=None,
-        reload=True,
+        reload=conf.FASTAPI_DEBUG,
     )

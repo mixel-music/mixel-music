@@ -1,15 +1,11 @@
+from infra.config import *
 from PIL import Image
-from tools.standard_path import *
 import hashlib
 import io
 
-IMAGE_QUALITY = 100
-IMAGE_SUFFIX = 'webp'
-IMAGE_SIZES = [128, 300, 500]
-
-async def process_image(image_data: bin) -> None:
-    image_path = images_dir()
-    image_hash = hashlib.md5(image_data).hexdigest().upper()
+async def create_thumbnail(image_data: bin) -> None:
+    image_path = conf.IMAGES_DIR
+    image_hash = hashlib.sha1(image_data).hexdigest().upper()
     original_image = Image.open(io.BytesIO(image_data))
     suffix = original_image.format.lower()
 
@@ -18,15 +14,15 @@ async def process_image(image_data: bin) -> None:
     # if not original_image_path.exists():
     #     original_image.save(original_image_path.as_posix(), suffix)
         
-    create_list = list(IMAGE_SIZES)
+    create_list = list(conf.IMG_SIZES)
     for file in image_path.iterdir():
-        for size in IMAGE_SIZES:
-            if file.is_file() and file.name.endswith(f'{image_hash}_{size}.{IMAGE_SUFFIX}'):
+        for size in conf.IMG_SIZES:
+            if file.is_file() and file.name.endswith(f'{image_hash}_{size}.{conf.IMG_TYPES}'):
                 create_list.remove(size)
 
     if create_list:
         for size in create_list:
             thumb_image = original_image.copy()
             thumb_image.thumbnail([size, size], Image.Resampling.LANCZOS)
-            thumb_image_name = (image_path / f"{image_hash}_{size}.{IMAGE_SUFFIX}").as_posix()
-            thumb_image.save(thumb_image_name, "webp", quality=IMAGE_QUALITY)
+            thumb_image_name = (image_path / f"{image_hash}_{size}.{conf.IMG_TYPES}").as_posix()
+            thumb_image.save(thumb_image_name, "webp", quality=conf.IMG_QUAL)

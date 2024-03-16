@@ -1,6 +1,6 @@
+from pathlib import Path
 from tinytag import TinyTag
 from filetype import guess
-from pathlib import Path
 
 root = (Path.cwd().resolve()).parent
 
@@ -52,23 +52,11 @@ def is_music_file(path: str) -> bool:
         try: return True if str(guess(get_path(path)).mime).startswith(['audio', 'video']) else False
         except: return False
 
-def config_dir() -> Path:
-    create_directory(get_path('config'))
-    return get_path('config')
-
-def images_dir() -> Path:
-    create_directory(get_path('config', 'images'))
-    return get_path('config', 'images')
-
-def library_dir() -> Path:
-    create_directory(get_path('library'))
-    return get_path('library')
-
-def log_path() -> Path:
-    return get_path('config', '.log')
-
-def database_url() -> str:
-    return str_path('config', 'database.db', rel=False)
-
-def create_directory(path: Path):
-    path.mkdir(exist_ok=True)
+def create_directory() -> None:
+    library = get_path('library')
+    config = get_path('config')
+    images = get_path('config', 'images')
+    
+    library.mkdir(exist_ok=True)
+    config.mkdir(exist_ok=True)
+    images.mkdir(exist_ok=True)

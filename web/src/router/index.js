@@ -30,7 +30,7 @@ const router = createRouter({
     {
       path: '/albums/:albumhash',
       name: 'Album',
-      component: () => import ('../views/Albums.vue'),
+      component: () => import ('../views/Album.vue'),
     },
 
     {

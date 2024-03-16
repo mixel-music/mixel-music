@@ -1,9 +1,12 @@
 <br>
 <div align="center">
+  <a href="requirements.txt"><img src="https://img.shields.io/badge/Python | 3.11+-3776AB?style=flat-square&logo=python&logoColor=white" align="right"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/mixel-music/mixel-music?style=flat-square" align="right"></a>
+  <br><br>
   <img src=".github/header.svg">
 </div>
 
-## mixel-music <img src="https://img.shields.io/badge/Python | 3.11+-3776AB?style=flat-square&logo=python&logoColor=white" align="right"> <img src="https://img.shields.io/github/license/mixel-music/mixel-music?style=flat-square" align="right">
+## mixel-music
 An open-source, self-hosted music streaming app, developed with Python and Vue.js, provides fast performance, simple UI, and wide device support for a consistent music experience across platforms.
 
 - Since this project is part of my learning process, there may be many areas that need improvement. I have little experience doing backend development. Also, this is my first time using JavaScript and Vue.js.

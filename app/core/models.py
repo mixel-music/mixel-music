@@ -5,6 +5,7 @@ Base = declarative_base()
 
 class Tracks(Base):
     __tablename__ = 'tracks'
+
     hash = Column(String, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
     subtitle = Column(String, nullable=False)
@@ -19,7 +20,6 @@ class Tracks(Base):
     conductor = Column(String, nullable=False)
     director = Column(String, nullable=False)
     lyricist = Column(String, nullable=False)
-
     bitrate = Column(Integer, nullable=False)
     channels = Column(Integer, nullable=False)
     duration = Column(REAL, nullable=False)
@@ -31,7 +31,6 @@ class Tracks(Base):
     created_date = Column(DateTime, nullable=False)
     updated_date = Column(DateTime, nullable=False)
     imagehash = Column(String, nullable=False)
-
     date = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
     originaldate = Column(String, nullable=False)
@@ -43,7 +42,6 @@ class Tracks(Base):
     compilation = Column(Boolean, nullable=False)
     lyrics = Column(String, nullable=False)
     comment = Column(String, nullable=False)
-
     barcode = Column(String, nullable=False)
     catalognumber = Column(String, nullable=False)
     copyright = Column(String, nullable=False)
@@ -60,6 +58,7 @@ class Tracks(Base):
 
 class Albums(Base):
     __tablename__ = 'albums'
+
     albumhash = Column(String, primary_key=True, nullable=False)
     album = Column(String, nullable=False)
     albumartist = Column(String, nullable=False)
@@ -76,6 +75,7 @@ class Albums(Base):
 
 class Artists(Base):
     __tablename__ = 'artists'
+
     artisthash = Column(String, primary_key=True, nullable=False)
     artist = Column(String, nullable=False)
     imagehash = Column(Integer, nullable=False)
@@ -83,6 +83,7 @@ class Artists(Base):
 
 class Users(Base):
     __tablename__ = 'users'
+    
     username = Column(String, primary_key=True, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, nullable=False)

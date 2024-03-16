@@ -1,20 +1,25 @@
-from core.models import Tracks
-from infra.session import *
 import hashlib
+from core.models import *
+from core.schema import *
+from infra.database import *
+from infra.loggings import *
+from tools.path_handler import *
 
 def list_join(value: list) -> str:
     return ', '.join(str(v) for v in value) if isinstance(value, list) else str(value)
 
 def get_hash_str(*args) -> str:
     try:
-        return hashlib.md5(''.join(str(arg) for arg in args).encode()).hexdigest().upper()
+        return hashlib.sha1(''.join(str(arg) for arg in args).encode()).hexdigest()
     except ValueError:
         return ''
 
 def sanitize_num(num: int) -> int:
     if isinstance(num, tuple): num = num[0]
-    try: return int(num)
-    except ValueError: return 0
+    try:
+        return int(num)
+    except ValueError:
+        return 0
 
 def album_values(old: dict, tags: dict) -> dict:
     return {
@@ -33,7 +38,8 @@ async def hash_to_image(hash: str) -> str:
                 select(Tracks.imagehash).where(Tracks.hash == hash)
             )
             row = result.scalars().first()
-    except:
+    except Exception as e:
+        logs.error("Failed to get image path from hash, %s", e)
         return ''
 
     return row if row else ''
@@ -45,7 +51,8 @@ async def hash_to_track(hash: str) -> str:
                 select(Tracks.path).where(Tracks.hash == hash)
             )
             row = result.scalars().first()
-    except:
+    except Exception as e:
+        logs.error("Failed to get track path from hash, %s", e)
         return ''
         
     return row if row else ''

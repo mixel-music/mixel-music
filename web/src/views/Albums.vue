@@ -2,9 +2,11 @@
   <div class="card-grid">
     <div v-for="(album, index) in fullCardList" :key="album.albumhash" class="card">
       <div v-if="album.album">
-        <div class="card-image-content">
-          <img v-lazy="`http://localhost:2843/api/images/${ album.imagehash }?size=300`" class="card-image">
-        </div>
+        <router-link @click="`/albums/${ album.albumhash }`">
+          <div class="card-image-content">
+            <img v-lazy="`http://localhost:2843/api/images/${ album.imagehash }?size=300`" class="card-image">
+          </div>
+        </router-link>
         <div class="card-content">
           <span class="text-title">{{ album.album }}</span>
           <span class="text-description">{{ album.albumartist }}</span>
