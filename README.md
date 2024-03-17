@@ -19,5 +19,5 @@ An open-source, self-hosted music streaming app, developed with Python and Vue.j
 
 ## Screenshots
 <div align="center">
-  <img src=".github/albums.png" width="900">
+  <img src=".github/mixel-music.png" width="900">
 </div>
