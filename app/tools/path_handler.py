@@ -54,8 +54,8 @@ def is_music_file(path: str) -> bool:
 
 def create_directory() -> None:
     library = get_path('library')
-    config = get_path('config')
-    images = get_path('config', 'images')
+    config = get_path('data')
+    images = get_path('data', 'images')
     
     library.mkdir(exist_ok=True)
     config.mkdir(exist_ok=True)

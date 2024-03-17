@@ -1,9 +1,8 @@
 from watchfiles import Change, awatch
 import asyncio
 
-from core.handler import *
+from core.library import *
 from core.models import *
-from core.schema import *
 from infra.database import *
 from tools.path_handler import *
 

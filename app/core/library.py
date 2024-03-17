@@ -3,21 +3,20 @@ import aiofiles
 import asyncio
 
 from core.models import *
-from core.schema import *
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
-from infra.repository import *
 from tools.convert_value import *
 from tools.cover_images import *
 from tools.extract_tags import *
 from tools.path_handler import *
 
 semaphore_lib = asyncio.Semaphore(5)
+prevent_block = asyncio.Semaphore(1)
 
 class Library:
     @staticmethod
-    async def create(path: str, date: datetime = datetime.datetime.now()) -> None:
+    async def create(path: str, date: datetime = datetime.now()) -> None:
         real_path = get_path(path)
         tags_table = [column.name for column in Tracks.__table__.columns]
         track_tags = await TagsManager(path).extract_tags(tags_table)
@@ -41,7 +40,7 @@ class Library:
             'albumhash': album_hash,
             'artisthash': get_hash_str(track_tags.get('artist')),
             'created_date': date,
-            'updated_date': datetime.datetime.now(),
+            'updated_date': datetime.now(),
             'directory': str_path(real_path.parent),
             'size': real_path.stat().st_size,
             'hash': get_hash_str(path),
@@ -94,7 +93,7 @@ class Library:
     @staticmethod
     async def get_stream(hash: str, range):
         path = await hash_to_track(hash)
-        track_info = await Library.get_tracks(path)
+        track_info = await Library.get_tracks(hash)
         if not track_info: return
 
         track_mime = track_info['mime']
@@ -137,17 +136,10 @@ class Library:
 
     @staticmethod
     async def get_tracks(hash: str = None, num: int = None):
-        path = await hash_to_track(hash)
-        if not path:
+        if not hash:
             try:
                 async with session() as conn:
-                    track_list = await conn.execute(
-                        select(
-                            Tracks.__table__
-                        )
-                        .order_by(Tracks.title.asc())
-                        .limit(num)
-                    )
+                    track_list = await conn.execute(select(Tracks.__table__).order_by(Tracks.title.asc()).limit(num))
                     track_list = track_list.mappings().all()
                     return [dict(track) for track in track_list] if track_list else []
 
@@ -156,6 +148,7 @@ class Library:
                 raise e
         else:
             try:
+                path = await hash_to_track(hash)
                 async with session() as conn:
                     result = await conn.execute(
                         select(Tracks.__table__).where(Tracks.path == path)
@@ -174,11 +167,7 @@ class Library:
             try:
                 async with session() as conn:
                     album_list = await conn.execute(
-                        select(
-                            Albums.__table__
-                        )
-                        .order_by(Albums.album.asc())
-                        .limit(num)
+                        select(Albums.__table__).order_by(Albums.album.asc()).limit(num)
                     )
                     album_list = album_list.mappings().all()
                 return [dict(album) for album in album_list] if album_list else []
@@ -239,3 +228,125 @@ class Library:
     @staticmethod
     async def get_playlists(hash: str = None, num: int = None):
         pass
+
+
+
+class Repository:
+    @staticmethod
+    async def insert_track(conn: AsyncSession, tags: dict) -> None:
+        try:
+            await conn.execute(
+                insert(Tracks).values(**tags)
+            )
+        except OperationalError as e:
+            logs.error("Failed to insert track, %s", e)
+            raise e
+
+
+    @staticmethod
+    async def delete_track(conn: AsyncSession, path: str) -> None:
+        try:
+            await conn.execute(delete(Tracks).where(Tracks.path == path))
+        except OperationalError as e:
+            logs.error("Failed to delete track, %s", e)
+            raise e
+
+
+    @staticmethod
+    async def insert_album(conn: AsyncSession, hash: str, tags: dict) -> None:
+        async with prevent_block:
+            is_exist = await conn.execute(
+                select(Albums.__table__).where(Albums.albumhash == hash)
+            )
+            is_exist = is_exist.scalars().first()
+
+            if not is_exist:
+                try:
+                    await conn.execute(insert(Albums).values(
+                        albumhash=hash,
+                        album=tags.get('album'),
+                        albumartist=tags.get('albumartist'),
+                        imagehash=tags.get('imagehash'),
+                        date=tags.get('date'),
+                        year=tags.get('year'),
+                        durationtotals=tags.get('duration'),
+                        tracktotals=tags.get('tracktotals'),
+                        disctotals=tags.get('disctotals'),
+                        sizetotals=tags.get('size'),
+                        musicbrainz_albumartistid=tags.get('musicbrainz_albumartistid'),
+                        musicbrainz_albumid=tags.get('musicbrainz_albumid'),
+                    ))
+                except OperationalError as e:
+                    logs.error("Failed to insert album, %s", e)
+                    raise e
+            else:
+                try:
+                    old_value = await conn.execute(
+                        select(
+                            Albums.imagehash,
+                            Albums.durationtotals,
+                            Albums.tracktotals,
+                            Albums.disctotals,
+                            Albums.sizetotals,
+                            Albums.musicbrainz_albumartistid,
+                            Albums.musicbrainz_albumid,
+                        ).where(Albums.albumhash == hash)
+                    )
+                    old_value = old_value.mappings().first()
+                except OperationalError as e:
+                    logs.error("Failed to load the album info, %s", e)
+                    raise e
+
+                if old_value:
+                    new_value = album_values(old_value, tags)
+                    try:
+                        await conn.execute(
+                            update(Albums).where(Albums.albumhash == hash).values(**new_value)
+                        )
+                    except OperationalError as e:
+                        logs.error("Failed to update album, %s", e)
+                        raise e
+
+
+    @staticmethod
+    async def delete_album(conn: AsyncSession, path: str) -> None:
+        try:
+            subquery = select(Tracks.albumhash).where(Tracks.path == path).alias('subquery')
+            mainquery = delete(Albums.__table__).where(Albums.albumhash.in_(select(subquery.c.albumhash)))
+            await conn.execute(mainquery)
+            
+        except OperationalError as e:
+            logs.error("Failed to delete album, %s", e)
+            raise e
+
+
+    @staticmethod
+    async def insert_artist(conn: AsyncSession, hash: str, tags: dict) -> None:
+        async with prevent_block:
+            is_exist = await conn.execute(
+                select(Artists).where(Artists.artisthash == hash)
+            )
+            is_exist = is_exist.scalars().first()
+            if not is_exist:
+                try:
+                    await conn.execute(
+                        insert(Artists).values(
+                            artisthash=hash,
+                            artist=tags.get('artist'),
+                            imagehash='',
+                        )
+                    )
+                except Exception as e:
+                    logs.error("Failed to insert artist, %s", e)
+
+
+    @staticmethod
+    async def delete_artist(conn: AsyncSession, path: str) -> None:
+        try:
+            subquery = select(Tracks.artisthash).where(Tracks.path == path).alias('subquery')
+            mainquery = delete(Artists.__table__).where(Artists.artisthash.in_(select(subquery.c.artisthash)))
+            await conn.execute(mainquery)
+            
+        except OperationalError as e:
+            logs.error("Failed to delete artist, %s", e)
+            raise e

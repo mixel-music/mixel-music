@@ -28,12 +28,6 @@ const router = createRouter({
     },
 
     {
-      path: '/albums/:albumhash',
-      name: 'Album',
-      component: () => import ('../views/Album.vue'),
-    },
-
-    {
       path: '/artists',
       name: 'Artists',
       component: () => import('../views/Artists.vue'),

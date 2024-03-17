@@ -5,7 +5,7 @@ import asyncio
 import uvicorn
 
 from api import albums, artists, images, stream, tracks
-from core.events import *
+from core.watcher import *
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     await disconnect_database()
 
 app = FastAPI(
-    debug=conf.FASTAPI_DEBUG,
+    debug=conf.IS_DEBUG,
     title=conf.APP_TITLE,
     version=conf.VERSION,
     lifespan=lifespan,
@@ -48,5 +48,5 @@ if __name__ == "__main__":
         port=conf.APP_PORT,
         log_level=conf.LOG_LEVEL,
         log_config=None,
-        reload=conf.FASTAPI_DEBUG,
+        reload=conf.IS_DEBUG,
     )

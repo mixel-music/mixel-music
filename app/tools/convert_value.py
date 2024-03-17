@@ -1,6 +1,5 @@
 import hashlib
 from core.models import *
-from core.schema import *
 from infra.database import *
 from infra.loggings import *
 from tools.path_handler import *

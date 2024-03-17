@@ -1,11 +1,10 @@
 from fastapi import APIRouter, status, HTTPException, Query
-from core.handler import *
-from core.schema import *
+from core.library import *
 
 router = APIRouter()
 
-@router.get("/albums", response_model=AlbumsListResponse)
-async def get_album_list(num: int = Query(500, alias='num', gt=1, le=500)):
+@router.get("/albums")
+async def get_album_list(num: int = Query(500, alias='num', gt=0, le=500)):
     try:
         album_list = await Library.get_albums(num=num)
     except:
@@ -16,7 +15,7 @@ async def get_album_list(num: int = Query(500, alias='num', gt=1, le=500)):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-@router.get("/albums/{hash}", response_model=AlbumsResponse)
+@router.get("/albums/{hash}")
 async def get_album(hash: str):
     try:
         album_info = await Library.get_albums(hash)

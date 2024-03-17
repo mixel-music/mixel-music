@@ -102,13 +102,13 @@ input[type='text']:focus {
 /* content */
 
 .content {
-  padding: 0 17%;
+  padding: 0 20%;
   width: -webkit-fill-available;
   margin-bottom: 180px;
 }
 
 .content-header {
-  margin: 140px 0 35px 0;
+  margin: 72px 0 21px 0;
 }
 
 .content-title {
@@ -119,10 +119,10 @@ input[type='text']:focus {
 
 .navbar {
   position: sticky;
-  height: 100px;
+  height: 90px;
   width: 100%;
   top: 0;
-  padding: 0 17%;
+  padding: 0 12%;
   width: -webkit-fill-available;
   display: flex;
   align-items: center;
@@ -137,7 +137,7 @@ input[type='text']:focus {
   padding: var(--layout-padding) 0;
   text-wrap: nowrap;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   cursor: pointer;
 }
 
@@ -182,13 +182,14 @@ input[type='text']:focus {
   font-weight: bold;
   display: block;
   overflow: hidden;
+  font-size: 95%;
   text-overflow: ellipsis;
   cursor: pointer;
 }
 
 .text-description {
   color: var(--dark-text-2);
-  font-size: small;
+  font-size: 80%;
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -197,13 +198,14 @@ input[type='text']:focus {
 
 .card-grid {
   display: grid;
-  grid-gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-gap: 21px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   overflow-x: hidden;
 }
 
 .card {
   white-space: nowrap;
+  margin-bottom: 18px;
 }
 
 .card-placeholder {
@@ -227,7 +229,7 @@ input[type='text']:focus {
   cursor: pointer;
   display: block;
   background-color: var(--dark-color-2);
-  border: 1px solid var(--dark-border);
+  /* border: 1px solid var(--dark-border); */
 }
 
 .card-content {
@@ -242,11 +244,13 @@ input[type='text']:focus {
   width: -webkit-fill-available;
   background-color: var(--dark-color-2);
   bottom: 0;
-  padding: 0 17%;
+  padding: 0 12%;
   justify-content: space-between;
   align-items: center;
   user-select: none;
   height: 90px;
+  background-color: rgb(25, 25, 25, 0.8);
+  backdrop-filter: blur(32px);
 }
 
 .player-left {
@@ -256,8 +260,8 @@ input[type='text']:focus {
 }
 
 .player-left img {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   border-radius: var(--element-radius);
   object-fit: scale-down;
   background-color: var(--dark-color-2);
@@ -306,7 +310,7 @@ input[type='text']:focus {
 }
 
 .player-button-primary {
-  font-size: 28px;
+  font-size: 24px;
   margin: 0 10px;
 }
 

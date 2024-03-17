@@ -1,11 +1,11 @@
 <template>
   <Navbar />
   <section class="content">
-    <!-- <div class="content-header">
+    <div class="content-header">
       <span class="content-title">
         {{ $route.name }}
       </span>
-    </div> -->
+    </div>
     <RouterView v-slot="{ Component }">
       <component :is="Component" @SelectTrack="HandleSelectTrack" />
     </RouterView>

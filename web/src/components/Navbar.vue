@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <span class="navbar-link">
+      <!-- <span class="navbar-link">
         <img src="/src/assets/logo.svg" width="32px">
-      </span>
+      </span> -->
       <span class="navbar-link">
         <router-link to="/albums">Albums</router-link>
       </span>
@@ -13,7 +13,7 @@
       <span class="navbar-link">
         <router-link to="/artists">Artists</router-link>
       </span>
-      <input type="text" id="navbar-input" name="Search" placeholder="Search">
+      <!-- <input type="text" id="navbar-input" name="Search" placeholder="Search"> -->
     </div>
     <div class="navbar-center">
       
@@ -25,10 +25,18 @@
       <span class="navbar-link navbar-explore" @click="$router.forward()">
         <IconamoonArrowRight2 class="navbar-icon" />
       </span>
+    </div>
+    <!-- <div class="navbar-right">
+      <span class="navbar-link navbar-explore" @click="$router.back()">
+        <IconamoonArrowLeft2 class="navbar-icon" />
+      </span>
+      <span class="navbar-link navbar-explore" @click="$router.forward()">
+        <IconamoonArrowRight2 class="navbar-icon" />
+      </span>
       <span class="navbar-link">
         <IconamoonProfileCircle class="navbar-user" />
       </span>
-    </div>
+    </div> -->
   </nav>
 </template>
 
