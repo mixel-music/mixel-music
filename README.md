@@ -1,4 +1,3 @@
-<br>
 <div align="center">
   <a href="requirements.txt"><img src="https://img.shields.io/badge/Python | 3.11+-3776AB?style=flat-square&logo=python&logoColor=white" align="right"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/mixel-music/mixel-music?style=flat-square" align="right"></a>
