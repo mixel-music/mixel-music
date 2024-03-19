@@ -13,6 +13,7 @@ def get_hash_str(*args) -> str:
     except ValueError:
         return ''
 
+# TODO: use pydantic
 def sanitize_num(num: int) -> int:
     if isinstance(num, tuple): num = num[0]
     try:

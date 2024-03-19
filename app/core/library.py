@@ -91,7 +91,7 @@ class Library:
 
 
     @staticmethod
-    async def get_stream(hash: str, range):
+    async def stream(hash: str, range):
         path = await hash_to_track(hash)
         track_info = await Library.get_tracks(hash)
         if not track_info: return
@@ -127,8 +127,8 @@ class Library:
         if size == 'orig':
             for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
                 if orig_image.is_file(): return orig_image
-        elif sanitize_num(size) in conf.IMG_SIZES:
-            thumb_image = conf.IMAGES_DIR / f"{hash}_{size}.{conf.IMG_TYPES}"
+        elif sanitize_num(size) in conf.IMG_SIZE:
+            thumb_image = conf.IMAGES_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
             return thumb_image if thumb_image.is_file() else None
         else:
             return None

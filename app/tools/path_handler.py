@@ -51,12 +51,3 @@ def is_music_file(path: str) -> bool:
     else:
         try: return True if str(guess(get_path(path)).mime).startswith(['audio', 'video']) else False
         except: return False
-
-def create_directory() -> None:
-    library = get_path('library')
-    config = get_path('data')
-    images = get_path('data', 'images')
-    
-    library.mkdir(exist_ok=True)
-    config.mkdir(exist_ok=True)
-    images.mkdir(exist_ok=True)

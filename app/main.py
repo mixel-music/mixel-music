@@ -13,7 +13,10 @@ from tools.path_handler import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_directory()
+    conf.DATA_DIR.mkdir(exist_ok=True)
+    conf.IMAGES_DIR.mkdir(exist_ok=True)
+    conf.LIBRARY_DIR.mkdir(exist_ok=True)
+    
     await connect_database()
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())
@@ -22,8 +25,8 @@ async def lifespan(app: FastAPI):
     await disconnect_database()
 
 app = FastAPI(
-    debug=conf.IS_DEBUG,
-    title=conf.APP_TITLE,
+    debug=conf.DEBUG,
+    title=conf.TITLE,
     version=conf.VERSION,
     lifespan=lifespan,
 )
@@ -44,9 +47,9 @@ app.include_router(tracks.router, prefix="/api")
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host=conf.APP_HOST,
-        port=conf.APP_PORT,
+        host=conf.HOST,
+        port=conf.PORT,
         log_level=conf.LOG_LEVEL,
         log_config=None,
-        reload=conf.IS_DEBUG,
+        reload=conf.DEBUG,
     )

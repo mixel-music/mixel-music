@@ -7,7 +7,7 @@ router = APIRouter()
 @router.get("/stream/{hash}")
 async def api_stream(hash: str, range: str = Header(None)):
     try:
-        stream_data, headers = await Library.get_stream(hash, range)
+        stream_data, headers = await Library.stream(hash, range)
         if stream_data:
             return Response(stream_data, status_code=status.HTTP_206_PARTIAL_CONTENT, headers=headers)
         else:

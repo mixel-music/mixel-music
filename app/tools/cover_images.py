@@ -14,15 +14,15 @@ async def create_thumbnail(image_data: bin) -> None:
     # if not original_image_path.exists():
     #     original_image.save(original_image_path.as_posix(), suffix)
         
-    create_list = list(conf.IMG_SIZES)
+    create_list = list(conf.IMG_SIZE)
     for file in image_path.iterdir():
-        for size in conf.IMG_SIZES:
-            if file.is_file() and file.name.endswith(f'{image_hash}_{size}.{conf.IMG_TYPES}'):
+        for size in conf.IMG_SIZE:
+            if file.is_file() and file.name.endswith(f'{image_hash}_{size}.{conf.IMG_TYPE}'):
                 create_list.remove(size)
 
     if create_list:
         for size in create_list:
             thumb_image = original_image.copy()
             thumb_image.thumbnail([size, size], Image.Resampling.LANCZOS)
-            thumb_image_name = (image_path / f"{image_hash}_{size}.{conf.IMG_TYPES}").as_posix()
+            thumb_image_name = (image_path / f"{image_hash}_{size}.{conf.IMG_TYPE}").as_posix()
             thumb_image.save(thumb_image_name, "webp", quality=conf.IMG_QUAL)

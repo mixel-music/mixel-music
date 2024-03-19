@@ -16,7 +16,7 @@ print_handler = RichHandler(
 )
 write_console = Console(
     file = open(
-        conf.LOG_FILE_PATH,
+        conf.LOG_PATH,
         "a",
         encoding='utf-8'
     ),
@@ -31,12 +31,12 @@ uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
 fastapi_logger = logging.getLogger("fastapi")
 sqlalchemy_logger = logging.getLogger("sqlalchemy.engine")
-logs = logging.getLogger(conf.APP_TITLE)
+logs = logging.getLogger(conf.TITLE)
 
 uvicorn_logger.setLevel(conf.LOG_LEVEL)
 uvicorn_access_logger.setLevel(conf.LOG_LEVEL)
 fastapi_logger.setLevel(conf.LOG_LEVEL)
-sqlalchemy_logger.setLevel(conf.SQLALCHEMY_LEVEL)
+sqlalchemy_logger.setLevel(conf.SQL_LEVEL)
 logs.setLevel(conf.LOG_LEVEL)
 
 uvicorn_logger.propagate = False
