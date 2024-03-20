@@ -3,6 +3,7 @@ import aiofiles
 import asyncio
 
 from core.models import *
+from core.schema import *
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
@@ -28,6 +29,7 @@ class Library:
             track_tags.get('musicbrainz_albumid'),
             track_tags.get('year'),
         )
+
         if track_tags.get('album') == 'Unknown Album':
             album_hash = get_hash_str(
                 album_hash,
@@ -50,7 +52,9 @@ class Library:
 
         async with session() as conn:
             async with semaphore_lib:
+                logs.debug("insert track: %s", track_tags.get('title', 'unexcepted'))
                 await Repository.insert_track(conn, track_tags)
+
                 async with asyncio.TaskGroup() as tg:
                     tg.create_task(Repository.insert_album(conn, album_hash, track_tags))
                     tg.create_task(Repository.insert_artist(conn, artist_hash, track_tags))
@@ -108,7 +112,8 @@ class Library:
         else:
             track_start = 0
             track_end = track_start + track_chunk
-        
+
+        logs.debug("streaming (%s), %s %s", track_info['title'], track_start, track_end)
         track_end = min(track_end, track_size - 1)
         async with aiofiles.open(real_path, mode="rb") as track_file:
             await track_file.seek(track_start)
@@ -136,16 +141,22 @@ class Library:
 
     @staticmethod
     async def get_tracks(hash: str = None, num: int = None):
+        trk_list = []
         if not hash:
             try:
                 async with session() as conn:
                     track_list = await conn.execute(select(Tracks.__table__).order_by(Tracks.title.asc()).limit(num))
                     track_list = track_list.mappings().all()
-                    return [dict(track) for track in track_list] if track_list else []
 
-            except OperationalError as e:
-                logs.error("Failed to load tracks, %s", e)
-                raise e
+                for trk in track_list:
+                    trk_dict = TrackListSchema(**trk).model_dump()
+                    trk_list.append(trk_dict)
+
+                return trk_list
+
+            except OperationalError as err:
+                logs.error("Failed to load tracks, %s", err)
+                raise err
         else:
             try:
                 path = await hash_to_track(hash)
@@ -156,13 +167,14 @@ class Library:
                     track_data = result.mappings().first()
                     return dict(track_data) if track_data else {}
 
-            except OperationalError as e:
-                logs.error("Failed to load the track, %s", e)
-                raise e
+            except OperationalError as err:
+                logs.error("Failed to load the track, %s", err)
+                raise err
 
 
     @staticmethod
     async def get_albums(hash: str = None, num: int = None):
+        alb_list = []
         if not hash:
             try:
                 async with session() as conn:
@@ -170,11 +182,16 @@ class Library:
                         select(Albums.__table__).order_by(Albums.album.asc()).limit(num)
                     )
                     album_list = album_list.mappings().all()
-                return [dict(album) for album in album_list] if album_list else []
+
+                for alb in album_list:
+                    alb_dict = AlbumListSchema(**alb).model_dump()
+                    alb_list.append(alb_dict)
+
+                return alb_list
             
-            except OperationalError as e:
-                logs.error("Failed to load albums, %s", e)
-                raise e
+            except OperationalError as err:
+                logs.error("Failed to load albums, %s", err)
+                raise err
         else:
             try:
                 async with session() as conn:
@@ -205,24 +222,30 @@ class Library:
                     else:
                         return {}
                 
-            except OperationalError as e:
-                logs.error("Failed to load the album, %s", e)
-                raise e
+            except OperationalError as err:
+                logs.error("Failed to load the album, %s", err)
+                raise err
 
 
     @staticmethod
     async def get_artists(hash: str = None, num: int = None):
+        art_list = []
         try:
             async with session() as conn:
                 artist_list = await conn.execute(
                     select(Artists.__table__).order_by(Artists.artist.asc()).limit(num)
                 )
                 artist_list = artist_list.mappings().all()
-            return [dict(artist) for artist in artist_list] if artist_list else []
+
+                for art in artist_list:
+                    art_dict = ArtistListSchema(**art).model_dump()
+                    art_list.append(art_dict)
+
+                return art_list
         
-        except OperationalError as e:
-            logs.error("Failed to load artists, %s", e)
-            raise e
+        except OperationalError as err:
+            logs.error("Failed to load artists, %s", err)
+            raise err
 
 
     @staticmethod
@@ -238,18 +261,18 @@ class Repository:
             await conn.execute(
                 insert(Tracks).values(**tags)
             )
-        except OperationalError as e:
-            logs.error("Failed to insert track, %s", e)
-            raise e
+        except OperationalError as err:
+            logs.error("Failed to insert track, %s", err)
+            raise err
 
 
     @staticmethod
     async def delete_track(conn: AsyncSession, path: str) -> None:
         try:
             await conn.execute(delete(Tracks).where(Tracks.path == path))
-        except OperationalError as e:
-            logs.error("Failed to delete track, %s", e)
-            raise e
+        except OperationalError as err:
+            logs.error("Failed to delete track, %s", err)
+            raise err
 
 
     @staticmethod
@@ -276,9 +299,9 @@ class Repository:
                         musicbrainz_albumartistid=tags.get('musicbrainz_albumartistid'),
                         musicbrainz_albumid=tags.get('musicbrainz_albumid'),
                     ))
-                except OperationalError as e:
-                    logs.error("Failed to insert album, %s", e)
-                    raise e
+                except OperationalError as err:
+                    logs.error("Failed to insert album, %s", err)
+                    raise err
             else:
                 try:
                     old_value = await conn.execute(
@@ -293,9 +316,9 @@ class Repository:
                         ).where(Albums.albumhash == hash)
                     )
                     old_value = old_value.mappings().first()
-                except OperationalError as e:
-                    logs.error("Failed to load the album info, %s", e)
-                    raise e
+                except OperationalError as err:
+                    logs.error("Failed to load the album info, %s", err)
+                    raise err
 
                 if old_value:
                     new_value = album_values(old_value, tags)
@@ -303,9 +326,9 @@ class Repository:
                         await conn.execute(
                             update(Albums).where(Albums.albumhash == hash).values(**new_value)
                         )
-                    except OperationalError as e:
-                        logs.error("Failed to update album, %s", e)
-                        raise e
+                    except OperationalError as err:
+                        logs.error("Failed to update album, %s", err)
+                        raise err
 
 
     @staticmethod
@@ -315,9 +338,9 @@ class Repository:
             mainquery = delete(Albums.__table__).where(Albums.albumhash.in_(select(subquery.c.albumhash)))
             await conn.execute(mainquery)
             
-        except OperationalError as e:
-            logs.error("Failed to delete album, %s", e)
-            raise e
+        except OperationalError as err:
+            logs.error("Failed to delete album, %s", err)
+            raise err
 
 
     @staticmethod
@@ -336,8 +359,9 @@ class Repository:
                             imagehash='',
                         )
                     )
-                except Exception as e:
-                    logs.error("Failed to insert artist, %s", e)
+                except Exception as err:
+                    logs.error("Failed to insert artist, %s", err)
+                    raise err
 
 
     @staticmethod
@@ -347,6 +371,6 @@ class Repository:
             mainquery = delete(Artists.__table__).where(Artists.artisthash.in_(select(subquery.c.artisthash)))
             await conn.execute(mainquery)
             
-        except OperationalError as e:
-            logs.error("Failed to delete artist, %s", e)
-            raise e
+        except OperationalError as err:
+            logs.error("Failed to delete artist, %s", err)
+            raise err

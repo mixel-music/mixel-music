@@ -5,7 +5,7 @@ import io
 
 async def create_thumbnail(image_data: bin) -> None:
     image_path = conf.IMAGES_DIR
-    image_hash = hashlib.sha1(image_data).hexdigest().upper()
+    image_hash = hashlib.sha1(image_data).hexdigest()
     original_image = Image.open(io.BytesIO(image_data))
     suffix = original_image.format.lower()
 

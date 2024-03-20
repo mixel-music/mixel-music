@@ -38,8 +38,8 @@ async def hash_to_image(hash: str) -> str:
                 select(Tracks.imagehash).where(Tracks.hash == hash)
             )
             row = result.scalars().first()
-    except Exception as e:
-        logs.error("Failed to get image path from hash, %s", e)
+    except Exception as err:
+        logs.error("Failed to get image path from hash, %s", err)
         return ''
 
     return row if row else ''
@@ -51,8 +51,8 @@ async def hash_to_track(hash: str) -> str:
                 select(Tracks.path).where(Tracks.hash == hash)
             )
             row = result.scalars().first()
-    except Exception as e:
-        logs.error("Failed to get track path from hash, %s", e)
+    except Exception as err:
+        logs.error("Failed to get track path from hash, %s", err)
         return ''
         
     return row if row else ''

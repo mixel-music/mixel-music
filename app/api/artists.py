@@ -1,9 +1,10 @@
 from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
+from core.schema import *
 
 router = APIRouter()
 
-@router.get("/artists")
+@router.get("/artists", response_model=list[ArtistListSchema])
 async def get_artist_list(num: int = Query(500, alias='num', gt=1, le=500)):
     try:
         artist_list = await Library.get_artists(num=num)

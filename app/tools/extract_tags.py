@@ -21,7 +21,8 @@ class TagsManager:
         self.tags_dict = {}
         self.suffix = get_filename(path)[2]
 
-    async def extract_tinytag(self, rows: list) -> dict:
+
+    async def extract_tinytag(self, rows: list):
         try:
             self.get_tags = TinyTag.get(self.real_path)
             return self.get_tags if self.get_tags else self.tags_dict
@@ -30,7 +31,7 @@ class TagsManager:
             return self.tags_dict
 
 
-    async def extract_tags(self, rows: list) -> dict:
+    async def extract_tags(self, rows: list):
         try:
             self.get_tags = File(self.real_path, easy=True)
             if not self.get_tags: return self.tags_dict
@@ -96,7 +97,8 @@ class TagsManager:
         self.tags_dict = {key: self.tags_dict.get(key, '') for key in rows}
         return self.tags_dict
 
-    async def __extract_image(self) -> bin:
+
+    async def __extract_image(self):
         if self.suffix == '.mp3':
             try:
                 mp3_image = MP3(self.real_path)

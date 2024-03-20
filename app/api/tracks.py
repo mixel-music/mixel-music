@@ -1,17 +1,22 @@
 from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
+from core.schema import *
 
 router = APIRouter()
 
-@router.get("/tracks")
+@router.get("/tracks", response_model=list[TrackListSchema])
 async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
     try:
         track_list = await Library.get_tracks(num=num)
-        return track_list
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    except:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-@router.get("/tracks/{hash}")
+    if track_list:
+        return track_list
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+@router.get("/tracks/{hash}", response_model=TrackSchema)
 async def get_track(hash: str):
     try:
         track_info = await Library.get_tracks(hash)

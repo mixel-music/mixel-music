@@ -10,7 +10,7 @@ class Config(BaseSettings):
     SQL_LEVEL: int = logging.WARN
     HOST: str = '127.0.0.1'
     PORT: int = 2843
-    VERSION: str = '0.2.3a'
+    VERSION: str = '0.2.5a'
     SQL_ECHO: bool = True
     IMG_QUAL: int = 100
     IMG_TYPE: str = 'webp'
