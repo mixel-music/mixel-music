@@ -34,9 +34,8 @@ const router = createRouter({
     },
 
     {
-      path: '/artists/:artisthash',
-      name: 'Artist',
-      component: () => import('../views/Artists.vue'),
+      path: '/:pathMatch(.*)*',
+      redirect: '/',
     },
   ]
 })
