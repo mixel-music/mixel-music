@@ -7,10 +7,10 @@ from core.schema import *
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
+from tools.convert_image import *
 from tools.convert_value import *
-from tools.cover_images import *
-from tools.extract_tags import *
 from tools.path_handler import *
+from tools.tags_handler import *
 
 semaphore_lib = asyncio.Semaphore(5)
 prevent_block = asyncio.Semaphore(1)
@@ -20,7 +20,7 @@ class Library:
     async def create(path: str, date: datetime = datetime.now()) -> None:
         real_path = get_path(path)
         tags_table = [column.name for column in Tracks.__table__.columns]
-        track_tags = await TagsManager(path).extract_tags(tags_table)
+        track_tags = await TagsHandler(path).extract_tags(tags_table)
         if not track_tags: return
 
         album_hash = get_hash_str(
@@ -52,7 +52,7 @@ class Library:
 
         async with session() as conn:
             async with semaphore_lib:
-                logs.debug("insert track: %s", track_tags.get('title', 'unexcepted'))
+                logs.debug("Inserting \"%s\"", track_tags.get('title'))
                 await Repository.insert_track(conn, track_tags)
 
                 async with asyncio.TaskGroup() as tg:
@@ -113,7 +113,7 @@ class Library:
             track_start = 0
             track_end = track_start + track_chunk
 
-        logs.debug("streaming (%s), %s %s", track_info['title'], track_start, track_end)
+        logs.debug("Streaming \"%s\" (%s-%s)", track_info['title'], track_start, track_end)
         track_end = min(track_end, track_size - 1)
         async with aiofiles.open(real_path, mode="rb") as track_file:
             await track_file.seek(track_start)
@@ -168,7 +168,7 @@ class Library:
                     return dict(track_data) if track_data else {}
 
             except OperationalError as err:
-                logs.error("Failed to load the track, %s", err)
+                logs.error("Failed to load track, %s", err)
                 raise err
 
 
@@ -223,7 +223,7 @@ class Library:
                         return {}
                 
             except OperationalError as err:
-                logs.error("Failed to load the album, %s", err)
+                logs.error("Failed to load album, %s", err)
                 raise err
 
 
@@ -317,7 +317,7 @@ class Repository:
                     )
                     old_value = old_value.mappings().first()
                 except OperationalError as err:
-                    logs.error("Failed to load the album info, %s", err)
+                    logs.error("Failed to load album, %s", err)
                     raise err
 
                 if old_value:

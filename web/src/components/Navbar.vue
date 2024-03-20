@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <!-- <span class="navbar-link">
-        <img src="/src/assets/logo.svg" width="32px">
-      </span> -->
+      <span class="navbar-link">
+        <img src="/src/assets/logo.svg" width="42.8px">
+      </span>
       <span class="navbar-link">
         <router-link to="/albums">Albums</router-link>
       </span>
@@ -13,12 +13,12 @@
       <span class="navbar-link">
         <router-link to="/artists">Artists</router-link>
       </span>
-      <!-- <input type="text" id="navbar-input" name="Search" placeholder="Search"> -->
     </div>
     <div class="navbar-center">
       
     </div>
     <div class="navbar-right">
+      <input type="text" id="navbar-input" name="Search" placeholder="Search">
       <span class="navbar-link navbar-explore" @click="$router.back()">
         <IconamoonArrowLeft2 class="navbar-icon" />
       </span>

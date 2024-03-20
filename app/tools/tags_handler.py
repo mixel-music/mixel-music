@@ -10,11 +10,11 @@ from tinytag import TinyTag
 import asyncio
 
 from infra.loggings import *
+from tools.convert_image import *
 from tools.convert_value import *
-from tools.cover_images import *
 from tools.path_handler import *
 
-class TagsManager:
+class TagsHandler:
     def __init__(self, path: str):
         self.path = path
         self.real_path = get_path(path)
@@ -90,7 +90,7 @@ class TagsManager:
         image_data = await self.__extract_image()
         if image_data:
             self.tags_dict['imagehash'] = hashlib.sha1(image_data).hexdigest()
-            asyncio.create_task(create_thumbnail(image_data))
+            asyncio.create_task(convert_image(image_data))
         else:
             self.tags_dict['imagehash'] = ''
 

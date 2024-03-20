@@ -6,6 +6,7 @@
 
   --dark-navbar: rgb(26, 27, 27, 0.85);
   --dark-player: rgb(26, 27, 27, 0.9);
+  --dark-navbar-item: rgb(32, 33, 33, 0.7);
   --dark-player-length: rgb(47, 48, 48);
   --dark-player-now: rgb(215, 215, 215);
 
@@ -67,20 +68,23 @@ button:hover {
 input[type='text'] {
   width: 300px;
   height: -webkit-fill-available;
-  padding: 6px;
+  padding: 11px;
   margin: 0;
-  border: none;
+  border: 1px solid var(--dark-item-border);
   border-radius: var(--app-radius);
-  background-color: transparent;
+  background-color: var(--dark-navbar-item);
   color: var(--dark-text-color-2);
-  font-size: 18px;
+  font-family: var(--app-font-family);
+  font-size: 16px;
   font-weight: 500;
+  transition: all 0.1s ease;
+  backdrop-filter: blur(32px);
 }
 
 input[type='text']:focus {
   outline: none;
   color: var(--dark-text-color-1);
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
 }
 
 #app {
@@ -123,7 +127,7 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 21px;
   padding: var(--app-layout-padding) 0;
   text-wrap: nowrap;
   cursor: pointer;
@@ -145,19 +149,25 @@ input[type='text']:focus {
 
 .navbar-right {
   display: flex;
+  align-items: center;
   padding: var(--app-layout-padding) 0;
+  gap: 12px;
 }
 
 .navbar-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .navbar-explore {
   align-items: center;
   justify-content: center;
   flex-direction: row-reverse;
-  width: 36px;
-  height: 36px;
+  margin: 0;
+  padding: 11px;
+  border: 1px solid var(--dark-item-border);
+  border-radius: 50%;
+  background-color: var(--dark-navbar-item);
+  backdrop-filter: blur(32px);
 }
 
 .text-title {
