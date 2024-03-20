@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/tracks', 
+      redirect: '/albums', 
     },
 
     {
@@ -16,15 +16,15 @@ const router = createRouter({
     },
 
     {
-      path: '/tracks/:hash',
-      name: 'Track',
-      component: Tracks,
-    },
-
-    {
       path: '/albums',
       name: 'Albums',
       component: () => import('../views/Albums.vue'),
+    },
+
+    {
+      path: '/albums/:hash',
+      name: 'Album',
+      component: () => import('../views/Album.vue'),
     },
 
     {

@@ -1,12 +1,17 @@
 <template>
+  <Title />
   <div class="card-grid">
     <div v-for="(album, index) in fullCardList" :key="album.albumhash" class="card">
       <div v-if="album.album">
         <div class="card-image-content">
-          <img v-lazy="`http://localhost:2843/api/v1/images/${ album.imagehash }?size=300`" class="card-image">
+          <router-link :to="`/albums/${ album.albumhash }`">
+            <img v-lazy="`http://localhost:2843/api/v1/images/${ album.imagehash }?size=300`" class="card-image">
+          </router-link>
         </div>
         <div class="card-content">
-          <span class="text-title">{{ album.album }}</span>
+          <router-link :to="`/albums/${ album.albumhash }`">
+            <span class="text-title">{{ album.album }}</span>
+          </router-link>
           <span class="text-description">{{ album.albumartist }}</span>
         </div>
       </div>
@@ -19,10 +24,12 @@
 
 <script>
 import axios from 'axios';
+import Title from '../components/Title.vue';
 import IconamoonPlayCircle from '~icons/iconamoon/play-circle';
 
 export default {
   components: {
+    Title,
     IconamoonPlayCircle,
   },
 

@@ -147,6 +147,10 @@ input[type='text']:focus {
   transition: 0.2s ease;
 }
 
+#navbar-logo {
+  font-size: 0;
+}
+
 .navbar-right {
   display: flex;
   align-items: center;

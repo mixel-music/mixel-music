@@ -1,4 +1,5 @@
 <template>
+  <Title />
   <div class="card-grid">
     <div v-for="(artist, index) in fullCardList" :key="artist.artisthash" class="card">
       <div v-if="artist.artist">
@@ -18,10 +19,12 @@
 
 <script>
 import axios from 'axios';
+import Title from '../components/Title.vue';
 import IconamoonPlayCircle from '~icons/iconamoon/play-circle';
 
 export default {
   components: {
+    Title,
     IconamoonPlayCircle,
   },
 

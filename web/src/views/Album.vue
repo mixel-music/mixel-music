@@ -1,14 +1,20 @@
+<script setup>
+defineProps({
+  hash: String
+})
+</script>
+
 <template>
   <Title />
   <div class="card-grid">
-    <div v-for="(track, index) in fullCardList" :key="track.hash" class="card">
-      <div v-if="track.title">
-        <div class="card-image-content" @click="this.$emit('SelectTrack', track.title, track.album, track.artist, track.hash);">
-          <img v-lazy="`http://localhost:2843/api/v1/images/${ track.hash }?size=300`" class="card-image" :alt="track.album">
+    <div v-for="(album, index) in fullCardList" :key="album.albumhash" class="card">
+      <div v-if="album.album">
+        <div class="card-image-content">
+          <img v-lazy="`http://localhost:2843/api/v1/images/${ album.imagehash }?size=300`" class="card-image">
         </div>
         <div class="card-content">
-          <span class="text-title">{{ track.title }}</span>
-          <span class="text-description">{{ track.artist }}</span>
+          <span class="text-title">{{ album.album }}</span>
+          <span class="text-description">{{ album.albumartist }}</span>
         </div>
       </div>
       <div v-else class="card-placeholder">
@@ -17,7 +23,7 @@
     </div>
   </div>
 </template>
-
+  
 <script>
 import axios from 'axios';
 import Title from '../components/Title.vue';
@@ -35,13 +41,9 @@ export default {
     };
   },
 
-  created() {
-    this.FetchMusicList();
-  },
-
   methods: {
     FetchMusicList() {
-      axios.get('http://localhost:2843/api/v1/tracks')
+      axios.get('http://localhost:2843/api/v1/albums')
         .then(response => {
           this.info = response.data;
         })

@@ -1,8 +1,10 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <span class="navbar-link">
-        <img src="/src/assets/logo.svg" width="42.8px">
+      <span class="navbar-link" id="navbar-logo">
+        <router-link to="/">
+          <img src="/src/assets/logo.svg" width="42.8px">
+        </router-link>
       </span>
       <span class="navbar-link">
         <router-link to="/albums">Albums</router-link>
