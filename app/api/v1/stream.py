@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header, status, Response, HTTPException
 from core.library import *
 from infra.loggings import *
 
-router = APIRouter()
+router = APIRouter(prefix='/api/v1')
 
 @router.get("/stream/{hash}")
 async def api_stream(hash: str, range: str = Header(None)):

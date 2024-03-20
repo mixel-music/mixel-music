@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from core.library import *
 from tools.convert_value import *
 
-router = APIRouter()
+router = APIRouter(prefix='/api/v1')
 
 @router.get("/images/{hash}")
 async def get_image(hash: str, size: int | str = 'orig'):

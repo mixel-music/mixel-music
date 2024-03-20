@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import asyncio
 import uvicorn
 
-from api import albums, artists, images, stream, tracks
+from api.v1 import albums, artists, images, stream, tracks
 from core.watcher import *
 from infra.config import *
 from infra.database import *
@@ -38,11 +38,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(albums.router, prefix="/api")
-app.include_router(artists.router, prefix="/api")
-app.include_router(images.router, prefix="/api")
-app.include_router(stream.router, prefix="/api")
-app.include_router(tracks.router, prefix="/api")
+app.include_router(albums.router)
+app.include_router(artists.router)
+app.include_router(images.router)
+app.include_router(stream.router)
+app.include_router(tracks.router)
 
 if __name__ == "__main__":
     uvicorn.run(

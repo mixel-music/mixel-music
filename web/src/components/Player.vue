@@ -168,8 +168,8 @@ export default {
       this.Title = title;
       this.Album = album;
       this.Artist = artist;
-      this.Music.src = `http://localhost:2843/api/stream/${path}`;
-      this.path = `http://localhost:2843/api/images/${path}`;
+      this.Music.src = `http://localhost:2843/api/v1/stream/${path}`;
+      this.path = `http://localhost:2843/api/v1/images/${path}`;
 
       if (this.Music.paused) {
         this.Music.play();

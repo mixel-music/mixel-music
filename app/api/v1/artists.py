@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
 from core.schema import *
 
-router = APIRouter()
+router = APIRouter(prefix='/api/v1')
 
 @router.get("/artists", response_model=list[ArtistListSchema])
 async def get_artist_list(num: int = Query(500, alias='num', gt=1, le=500)):

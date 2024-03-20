@@ -3,7 +3,7 @@
     <div v-for="(album, index) in fullCardList" :key="album.albumhash" class="card">
       <div v-if="album.album">
         <div class="card-image-content">
-          <img v-lazy="`http://localhost:2843/api/images/${ album.imagehash }?size=300`" class="card-image">
+          <img v-lazy="`http://localhost:2843/api/v1/images/${ album.imagehash }?size=300`" class="card-image">
         </div>
         <div class="card-content">
           <span class="text-title">{{ album.album }}</span>
@@ -38,7 +38,7 @@ export default {
 
   methods: {
     FetchMusicList() {
-      axios.get('http://localhost:2843/api/albums')
+      axios.get('http://localhost:2843/api/v1/albums')
         .then(response => {
           this.info = response.data;
         })

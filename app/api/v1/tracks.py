@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
 from core.schema import *
 
-router = APIRouter()
+router = APIRouter(prefix='/api/v1')
 
 @router.get("/tracks", response_model=list[TrackListSchema])
 async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
