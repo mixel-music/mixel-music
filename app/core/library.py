@@ -128,11 +128,11 @@ class Library:
 
 
     @staticmethod
-    async def get_images(hash: str, size: int | str) -> Path:
-        if size == 'orig':
-            for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
-                if orig_image.is_file(): return orig_image
-        elif sanitize_num(size) in conf.IMG_SIZE:
+    async def get_images(hash: str, size: int) -> Path:
+        # if size == 'orig':
+        #     for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
+        #         if orig_image.is_file(): return orig_image
+        if sanitize_num(size) in conf.IMG_SIZE:
             thumb_image = conf.IMAGES_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
             return thumb_image if thumb_image.is_file() else None
         else:

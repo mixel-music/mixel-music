@@ -6,6 +6,7 @@ from core.models import *
 from infra.database import *
 from tools.path_handler import *
 
+logs = logging.getLogger(conf.TITLE)
 path_property = {}
 
 async def find_changes():

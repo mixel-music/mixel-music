@@ -4,15 +4,16 @@ from contextlib import asynccontextmanager
 import asyncio
 import uvicorn
 
-from api.v1 import albums, artists, images, stream, tracks
+from api import albums, artists, images, stream, tracks
 from core.watcher import *
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
-from tools.path_handler import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    init_logger()
+    
     conf.DATA_DIR.mkdir(exist_ok=True)
     conf.IMAGES_DIR.mkdir(exist_ok=True)
     conf.LIBRARY_DIR.mkdir(exist_ok=True)
