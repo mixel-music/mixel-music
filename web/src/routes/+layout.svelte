@@ -1,11 +1,13 @@
 <script>
 	import './style.css';
+	import Player from '$lib/components/Player.svelte'
 </script>
 
 <div id="app">
 	<section class="content">
 		<slot />
 	</section>
+	<Player />
 </div>
 
 <style>
