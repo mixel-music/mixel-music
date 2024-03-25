@@ -76,17 +76,17 @@
         <div class="player-volume-ctl">
           <div class="player-volume-ctl__now"></div>
         </div>
-        <button class="player-area-btn" title="Previous">
+        <button class="player-side-btn" title="Volume">
           <IconamoonVolumeUp />
         </button>
       </div>
-      <button class="player-area-btn" title="Previous">
+      <button class="player-side-btn" title="Repeat">
         <IconamoonPlaylistRepeatList />
       </button>
-      <button class="player-area-btn" title="Previous">
+      <button class="player-side-btn" title="Shuffle">
         <IconamoonPlaylistShuffle />
       </button>
-      <button class="player-area-btn" title="Previous">
+      <button class="player-side-btn" title="Playlist">
         <IconamoonPlaylist />
       </button>
     </div>
@@ -175,6 +175,19 @@
 .player-area-3 {
   display: flex;
   align-items: center;
+}
+
+.player-side-btn {
+  display: flex;
+  padding: 12px;
+  border: none;
+  background-color: transparent;
+  color: var(--color-dark-text-1);
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  align-items: center;
+  justify-content: center;
 }
 
 .player-seek {
