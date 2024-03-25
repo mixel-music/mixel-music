@@ -9,6 +9,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
+		"@iconify-json/iconamoon": "^1.1.4",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-static": "^3.0.1",
@@ -18,6 +19,7 @@
 		"svelte-check": "^3.6.0",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
+		"unplugin-icons": "^0.18.5",
 		"vite": "^5.0.3"
 	},
 	"type": "module"

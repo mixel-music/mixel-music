@@ -61,10 +61,10 @@ a {
   cursor: pointer;
 }
 
-button:hover {
+/* button:hover {
   color: var(--color-dark-focus);
   transition: all 0.1s ease;
-}
+} */
 
 input[type='text'] {
   width: 300px;
@@ -220,130 +220,7 @@ input[type='text']:focus {
   padding-top: var(--app-padding-s);
 }
 
-.player {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  bottom: 0;
-  width: -webkit-fill-available;
-  height: 96px;
-  padding: 0 16px;
-  background-color: var(--color-dark-trk);
-  backdrop-filter: blur(32px);
-}
-
-.player-content {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-
-.player-left {
-  display: flex;
-  align-items: center;
-  height: -webkit-fill-available;
-}
-
-.player-left img {
-  width: 58px;
-  height: 58px;
-  object-fit: scale-down;
-  margin-right: var(--app-padding-s);
-  background-color: var(--color-dark-bg-2);
-  box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-  border-radius: var(--app-radius);
-  cursor: pointer;
-}
-
-.player-left-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  line-height: 130%;
-}
-
-.player-left-text .text-description {
-  cursor: auto;
-}
-
-.player-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, 0);
-  /* height: -webkit-fill-available; */
-}
-
-.player-button {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: none;
-  background-color: transparent;
-  color: var(--color-dark-text-1);
-  font-size: 20px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.player-button:focus {
-  outline: none;
-}
-
-.player-button-primary {
-  font-size: 24px;
-  margin: 0 10px;
-}
-
-.player-range {
-  padding-bottom: 12px;
-  cursor: pointer;
-}
-
-.player-range-length {
-  width: 100%;
-  height: 3px;
-  background-color: var(--color-dark-trk-len);
-  border-radius: var(--app-radius);
-}
-
-.player-range-now {
-  width: 0;
-  height: 3px;
-  background-color: var(--color-dark-trk-now);
-  border-radius: var(--app-radius);
-}
-
-.player-right {
-  display: flex;
-  align-items: center;
-}
-
-.player-length {
-  position: fixed;
-  left: 0;
-  bottom: 82px;
-  width: 100%;
-  padding: 0;
-}
-
-.player-volume {
-  display: flex;
-  align-items: center;
-}
-
-.player-range-volume {
-  width: 100px;
-  height: 4px;
-  margin-right: 10px;
-  background-color: var(--color-dark-trk-len);
-  border-radius: var(--app-radius);
-}
-
-.button-disabled {
+.btn-disabled {
   color: var(--color-dark-disabled);
 }
 
