@@ -1,4 +1,3 @@
-__pycache__
 .DS_Store
 .env
 .env.*
@@ -6,12 +5,18 @@ __pycache__
 .svelte-kit
 .vscode
 
-build
+task
+music
 data
 library
-node_modules
-package
 test
 venv
+mixel-music.db
+mixel-music.txt
+
+__pycache__
+build
+node_modules
+package
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*

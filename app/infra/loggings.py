@@ -1,8 +1,10 @@
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
+from rich.progress import track
 from infra.config import *
 import logging
+import time
 
 def init_logger():
     install(word_wrap=True)
@@ -24,5 +26,7 @@ def init_logger():
 
         logger.addHandler(debug_rich_handler)
         logger.propagate = False
+
+    return console
 
 logs = logging.getLogger(conf.TITLE)

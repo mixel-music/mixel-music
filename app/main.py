@@ -12,11 +12,11 @@ from infra.loggings import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_logger()
+    console = init_logger()
     
-    conf.DATA_DIR.mkdir(exist_ok=True)
-    conf.IMAGES_DIR.mkdir(exist_ok=True)
-    conf.LIBRARY_DIR.mkdir(exist_ok=True)
+    conf.TASK_DIR.mkdir(exist_ok=True)
+    conf.IMAGE_DIR.mkdir(exist_ok=True)
+    conf.MUSIC_DIR.mkdir(exist_ok=True)
     
     await connect_database()
     asyncio.create_task(find_changes())
@@ -24,6 +24,7 @@ async def lifespan(app: FastAPI):
 
     yield
     await disconnect_database()
+    console.save_text(conf.LOG_PATH)
 
 app = FastAPI(
     debug=conf.DEBUG,
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         "main:app",
         host=conf.HOST,
         port=conf.PORT,
+        reload=conf.DEBUG,
         log_level=conf.LOG_LEVEL,
         log_config=None,
-        reload=conf.DEBUG,
     )
