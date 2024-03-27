@@ -4,9 +4,9 @@ import asyncio
 from core.library import *
 from core.models import *
 from infra.database import *
+from infra.loggings import *
 from tools.path_handler import *
 
-logs = logging.getLogger(conf.TITLE)
 path_property = {}
 
 async def find_changes():
@@ -31,7 +31,7 @@ async def find_changes():
                     path_property[path_data] = 'skip'
     await library_scan()
 
-async def library_scan(path: Path = conf.LIBRARY_DIR):
+async def library_scan(path: Path = conf.MUSIC_DIR):
     queue = [path]
     while queue:
         current_path = queue.pop(0)
@@ -47,7 +47,7 @@ async def library_scan(path: Path = conf.LIBRARY_DIR):
 
 async def watch_change():
     logs.info("Event watcher initiated.")
-    async for event_handler in awatch(conf.LIBRARY_DIR, recursive=True, force_polling=True):
+    async for event_handler in awatch(conf.MUSIC_DIR, recursive=True, force_polling=True):
         async with asyncio.TaskGroup() as tg:
             for event_type, event_path in event_handler:
                 strpath = str_path(event_path)

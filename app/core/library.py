@@ -133,7 +133,7 @@ class Library:
         #     for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
         #         if orig_image.is_file(): return orig_image
         if sanitize_num(size) in conf.IMG_SIZE:
-            thumb_image = conf.IMAGES_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
+            thumb_image = conf.IMG_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
             return thumb_image if thumb_image.is_file() else None
         else:
             return None

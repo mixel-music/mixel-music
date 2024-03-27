@@ -4,7 +4,7 @@ import hashlib
 import io
 
 async def convert_image(image_data) -> None:
-    image_path = conf.IMAGES_DIR
+    image_path = conf.IMG_DIR
     image_hash = hashlib.sha1(image_data).hexdigest()
     original_image = Image.open(io.BytesIO(image_data))
     suffix = original_image.format.lower()

@@ -14,8 +14,6 @@ from tools.convert_image import *
 from tools.convert_value import *
 from tools.path_handler import *
 
-logs = logging.getLogger(conf.TITLE)
-
 class TagsHandler:
     def __init__(self, path: str):
         self.path = path

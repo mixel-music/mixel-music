@@ -1,9 +1,8 @@
 import hashlib
 from core.models import *
 from infra.database import *
+from infra.loggings import *
 from tools.path_handler import *
-
-logs = logging.getLogger(conf.TITLE)
 
 def list_join(value: list) -> str:
     return ', '.join(str(v) for v in value) if isinstance(value, list) else str(value)

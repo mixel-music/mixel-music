@@ -12,10 +12,8 @@ from infra.loggings import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    console = init_logger()
-    
-    conf.TASK_DIR.mkdir(exist_ok=True)
-    conf.IMAGE_DIR.mkdir(exist_ok=True)
+    conf.IMG_DIR.mkdir(exist_ok=True)
+    conf.DATA_DIR.mkdir(exist_ok=True)
     conf.MUSIC_DIR.mkdir(exist_ok=True)
     
     await connect_database()
@@ -24,7 +22,6 @@ async def lifespan(app: FastAPI):
 
     yield
     await disconnect_database()
-    console.save_text(conf.LOG_PATH)
 
 app = FastAPI(
     debug=conf.DEBUG,
