@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import {
+    onMount,
+    onDestroy,
+  }
+  from "svelte";
+  import { hash, title, album, artist, imagehash } from '$lib/stores';
 
   import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
   import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
@@ -15,45 +20,105 @@
   import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
   import IconamoonPlaylist from '~icons/iconamoon/playlist';
 
-  let MusicHandler: HTMLAudioElement = new Audio();
-  let IsPlaying: boolean = false;
-  let IsRepeat: boolean = false; 
-  let TrackInfo: string = '';
-  let TrackLength: number = 0;
-  let TrackCurrent: number = 0;
-  let VolumeValue: number = 0;
 
-  function SelectTrack(title: string, album: string, artist: string, path: string) {
-    let TrackTitle: string = title;
-    let TrackAlbum: string = album;
-    let TrackArtist: string = artist;
-    let TrackPath: string = path;
-    MusicHandler.src = path;
+  
+  /* slider */
 
-    if (MusicHandler.paused) {
-      MusicHandler.play();
-      IsPlaying = true;
-      document.title = title + ' - mixel-music';
-    }
+  let isDragging: boolean = false;
+  let isDraggingLength: boolean = false;
+  let isDraggingVolume: boolean = false;
+
+  function handleSeek(
+      event: MouseEvent,
+      range: string,
+      callback: (value: number) => void
+    ): void
+  {
+    const ctl: HTMLElement = document.querySelector(range);
+    const ctlWidth: number = ctl.clientWidth;
+    const newValue: number = event.clientX - ctl.getBoundingClientRect().left;
+    callback(newValue / ctlWidth);
   }
+
+  function lengthSeek(event: MouseEvent): void {
+    handleSeek(event, '.player-length-ctl', (value: number) => {
+      console.log("test");
+    });
+  }
+
+  function volumeSeek(event: MouseEvent): void {
+    handleSeek(event, '.player-volume-ctl', (value: number) => {
+      console.log("volume");
+    });
+  }
+
+  function seekEvent(event: MouseEvent, type: 'length' | 'volume'): void {
+    isDragging = true;
+    isDraggingLength = type === 'length';
+    isDraggingVolume = type === 'volume';
+    const handleMove: (event: MouseEvent) => void = type === 'length' ? lengthSeek : volumeSeek;
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', seekEventStop)
+  }
+
+  function seekEventStop(): void {
+    isDragging = false;
+    isDraggingLength = false;
+    isDraggingVolume = false;
+    document.removeEventListener('mousemove', lengthSeek);
+    document.removeEventListener('mousemove', volumeSeek);
+    document.removeEventListener('mouseup', seekEventStop);
+  }
+
+
+
+  /* player */
+
+  let handlePlay = new Audio();
+  let isPlaying = false;
+  let imagepath = '';
+  let duration = 0;
+
+  $: if ($hash) {
+    handlePlay.src = `http://localhost:2843/api/stream/${$hash}`;
+    imagepath = `http://localhost:2843/api/images/${$imagehash}`;
+
+    handlePlay.addEventListener('loadedmetadata', () => {
+      duration = handlePlay.duration;
+    });
+  }
+
+  onMount(() => {
+    return () => {
+      handlePlay.removeEventListener('loadedmetadata', () => {
+        duration = handlePlay.duration;
+      });
+    };
+  });
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="player">
-  <div class="player-seek">
-    <div class="player-seek-ctl">
-      <div class="player-seek-ctl__now"></div>
+  <div
+    class="player-length"
+    on:mousedown="{
+      event => seekEvent(event, 'length')
+    }"
+  >
+    <div class="player-length-ctl">
+      <div class="player-length-ctl__now"></div>
     </div>
   </div>
   <div class="player-area">
     <div class="player-area-1">
       <img
-        src="http://localhost:2843/api/images/a2211d43e8149d87a7642dd48c36eb7426d4a9fb?size=128"
+        src="{imagepath}"
         class="player-area-1-img"
         alt="Front Cover">
       <div class="player-area-1-trk">
-        <span class="text-title">Test</span>
-        <span class="text-description">Description</span>
-        <span class="text-description">Length</span>
+        <span class="text-title">{$title ? $title : ''}</span>
+        <span class="text-description">{$artist ? $artist : ''}</span>
+        <span class="text-description">{duration}</span>
       </div>
     </div>
     <div class="player-area-2">
@@ -61,7 +126,7 @@
         <IconamoonPlayerStartFill />
       </button>
       <button class="player-area-btn btn-primary">
-        {#if IsPlaying}
+        {#if isPlaying}
           <IconamoonPlayerPauseFill />
         {:else}
           <IconamoonPlayerPlayFill />
@@ -72,7 +137,12 @@
       </button>
     </div>
     <div class="player-area-3">
-      <div class="player-volume">
+      <div
+        class="player-volume"
+        on:mousedown="{
+          event => seekEvent(event, 'volume')
+        }"
+      >
         <div class="player-volume-ctl">
           <div class="player-volume-ctl__now"></div>
         </div>
@@ -190,7 +260,7 @@
   justify-content: center;
 }
 
-.player-seek {
+.player-length {
   height: 3px;
   background-color: var(--color-dark-trk-len);
   border-radius: var(--app-radius);
@@ -200,12 +270,12 @@
   width: 100%;
 }
 
-.player-seek-ctl {
+.player-length-ctl {
   padding-bottom: 12px;
   cursor: pointer;
 }
 
-.player-seek-ctl__now {
+.player-length-ctl__now {
   width: 500px;
   height: 3px;
   background-color: var(--color-dark-trk-now);

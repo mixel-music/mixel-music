@@ -1,7 +1,22 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { hash, title, album, artist, imagehash } from '$lib/stores';
 
-  interface TrackItemsModel {
+  function selectTrack(
+    tHash: string,
+    tTitle: string,
+    tAlbum: string,
+    tArtist: string,
+    tImageHash: string,
+  ): void {
+    hash.set(tHash);
+    title.set(tTitle);
+    album.set(tAlbum);
+    artist.set(tArtist);
+    imagehash.set(tImageHash);
+  }
+
+  interface trackItemModel {
     hash: string;
     title: string;
     album: string;
@@ -9,18 +24,18 @@
     imagehash: string;
   }
 
-  let TrackItems: TrackItemsModel[] = [];
+  let trackItem: trackItemModel[] = [];
 
   onMount(async () => {
-    const TracksFetch = await fetch('http://localhost:2843/api/tracks');
-    const Tracks = await TracksFetch.json();
+    const trackFetch = await fetch('http://localhost:2843/api/tracks');
+    const track = await trackFetch.json();
 
-    TrackItems = Tracks.map((item: any) => ({
-      hash: item.hash,
-      title: item.title,
-      album: item.album,
-      artist: item.artist,
-      imagehash: item.imagehash,
+    trackItem = track.map((tag: any) => ({
+      hash: tag.hash,
+      title: tag.title,
+      album: tag.album,
+      artist: tag.artist,
+      imagehash: tag.imagehash,
     }));
   });
 </script>
@@ -29,21 +44,32 @@
   <title>Tracks • mixel-music</title>
 </svelte:head>
 
-{#if TrackItems.length > 0}
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+{#if trackItem.length > 0}
   <div class="card-grid">
-    {#each TrackItems as item (item.hash)}
+    {#each trackItem as tag (tag.hash)}
       <div class="card">
-        <div class="card-image-content">
+        <div
+          class="card-image-content"
+          on:click={() => selectTrack(
+            tag.hash,
+            tag.title,
+            tag.album,
+            tag.artist, 
+            tag.imagehash
+          )}
+        >
           <img
             loading="lazy"
-            src={`http://localhost:2843/api/images/${item.imagehash}?size=300`}
-            alt="{item.title}"
+            src={`http://localhost:2843/api/images/${tag.imagehash}?size=300`}
+            alt="{tag.title}"
             class="card-image"
           />
         </div>
         <div class="card-content">
-          <span class="text-title">{ item.title }</span>
-          <span class="text-description">{ item.artist }</span>
+          <span class="text-title">{ tag.title }</span>
+          <span class="text-description">{ tag.artist }</span>
         </div>
       </div>
     {/each}

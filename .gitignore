@@ -5,18 +5,14 @@
 .svelte-kit
 .vscode
 
-task
-music
-data
-library
-test
-venv
-mixel-music.db
-mixel-music.txt
-
 __pycache__
 build
 node_modules
 package
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+data
+music
+test
+venv

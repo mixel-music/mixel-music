@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import './style.css';
 	import Player from '$lib/components/Player.svelte'
 </script>
