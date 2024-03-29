@@ -20,7 +20,6 @@
   import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
   import IconamoonPlaylist from '~icons/iconamoon/playlist';
 
-
   
   /* slider */
 
@@ -71,22 +70,56 @@
   }
 
 
-
   /* player */
 
-  let handlePlay = new Audio();
-  let isPlaying = false;
-  let imagepath = '';
-  let duration = 0;
+  let handlePlay: HTMLAudioElement = new Audio();
+  let isPlaying: boolean = false;
+  let imagepath: string = '';
 
-  $: if ($hash) {
+  let duration: string | number = '';
+  let length : string | number = ''
+  let lengthWidth: number = 0;
+  let volumeWidth: number = 0;
+
+  function toggleTrack(): void {
+    if (isPlaying) {
+      isPlaying = false;
+    }
+    else if (!isPlaying && duration) {
+      isPlaying = true;
+    }
+  }
+
+  $: if (handlePlay) {
     handlePlay.src = `http://localhost:2843/api/stream/${$hash}`;
     imagepath = `http://localhost:2843/api/images/${$imagehash}`;
 
     handlePlay.addEventListener('loadedmetadata', () => {
-      duration = handlePlay.duration;
+      duration = formatTime(handlePlay.duration);
+      isPlaying = true;
     });
   }
+
+  $: if (isPlaying) {
+    handlePlay.play();
+  } else {
+    handlePlay.pause();
+  }
+
+  /* tools */
+
+  function formatTime(time: number): string {
+    const min = Math.floor(time / 60);
+    const sec = Math.floor(time % 60);
+
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+  }
+
+  handlePlay.addEventListener('timeupdate', () => {
+    length = formatTime(handlePlay.currentTime);
+    lengthWidth = (handlePlay.currentTime / handlePlay.duration) * 100;
+    volumeWidth = Math.floor(handlePlay.volume * 100);
+  });
 
   onMount(() => {
     return () => {
@@ -95,6 +128,16 @@
       });
     };
   });
+
+  onDestroy(() => {
+    return () => {
+      handlePlay.removeEventListener('timeupdate', updateLength);
+    }
+  })
+
+  function updateLength() {
+    length = formatTime(handlePlay.currentTime);
+  }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -106,7 +149,11 @@
     }"
   >
     <div class="player-length-ctl">
-      <div class="player-length-ctl__now"></div>
+      <div
+        class="player-length-ctl__now"
+        style="width: {lengthWidth}%;"
+      >
+      </div>
     </div>
   </div>
   <div class="player-area">
@@ -118,14 +165,17 @@
       <div class="player-area-1-trk">
         <span class="text-title">{$title ? $title : ''}</span>
         <span class="text-description">{$artist ? $artist : ''}</span>
-        <span class="text-description">{duration}</span>
+        <span class="text-description">{length} / {duration}</span>
       </div>
     </div>
     <div class="player-area-2">
       <button class="player-area-btn" title="Previous">
         <IconamoonPlayerStartFill />
       </button>
-      <button class="player-area-btn btn-primary">
+      <button
+        class="player-area-btn btn-primary"
+        on:click="{toggleTrack}"
+      >
         {#if isPlaying}
           <IconamoonPlayerPauseFill />
         {:else}
@@ -144,7 +194,11 @@
         }"
       >
         <div class="player-volume-ctl">
-          <div class="player-volume-ctl__now"></div>
+          <div
+            class="player-volume-ctl__now"
+            style="width: {volumeWidth}%;"
+          >
+          </div>
         </div>
         <button class="player-side-btn" title="Volume">
           <IconamoonVolumeUp />
@@ -276,7 +330,7 @@
 }
 
 .player-length-ctl__now {
-  width: 500px;
+  width: 0;
   height: 3px;
   background-color: var(--color-dark-trk-now);
   border-radius: var(--app-radius);
