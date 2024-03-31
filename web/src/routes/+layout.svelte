@@ -1,9 +1,12 @@
 <script lang="ts">
 	import './style.css';
-	import Player from '$lib/components/Player.svelte'
+	import Navbar from '$lib/components/Navbar.svelte';
+	import Player from '$lib/components/Player.svelte';
+	
 </script>
 
 <div id="app">
+	<Navbar />
 	<section class="content">
 		<slot />
 	</section>

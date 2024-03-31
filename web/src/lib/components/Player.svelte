@@ -1,10 +1,7 @@
 <script lang="ts">
-  import {
-    onMount,
-    onDestroy,
-  }
-  from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { hash, title, album, artist, imagehash } from '$lib/stores';
+
 
   import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
   import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
@@ -20,162 +17,210 @@
   import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
   import IconamoonPlaylist from '~icons/iconamoon/playlist';
 
-  
-  /* slider */
 
-  let isDragging: boolean = false;
+  let audioItem: HTMLAudioElement = new Audio();
+  let imagepath: string = "";
+  
+  let isPlaying: boolean = false;
   let isDraggingLength: boolean = false;
   let isDraggingVolume: boolean = false;
 
-  function handleSeek(
-      event: MouseEvent,
-      range: string,
-      callback: (value: number) => void
-    ): void
-  {
-    const ctl: HTMLElement = document.querySelector(range);
-    const ctlWidth: number = ctl.clientWidth;
-    const newValue: number = event.clientX - ctl.getBoundingClientRect().left;
-    callback(newValue / ctlWidth);
+  let durationTime: number = 0;
+  let currentTime: number = 0;
+  
+  let durationString: string = formatTime(0);
+  let currentString: string = formatTime(0);
+  
+  let currentBar: number = 0;
+  let volumeBar: number = 100;
+
+
+  $: if ($hash) {
+    loadAudio();
   }
+
+  
+  function handlePlay(): void {
+    if (audioItem.src) {
+      if (audioItem.paused) {
+        audioItem.play();
+        isPlaying = true;
+      }
+      else {
+        audioItem.pause();
+        isPlaying = false;
+      }
+    }
+  }
+
+
+  function loadAudio() {
+    audioItem.src = (`http://localhost:2843/api/stream/${$hash}`);
+    imagepath = `http://localhost:2843/api/images/${$imagehash}`;
+    audioItem.volume = volumeBar / 100;
+
+    audioItem.addEventListener("loadedmetadata", () => {
+      durationTime = audioItem.duration;
+      durationString = formatTime(audioItem.duration);
+      currentString = formatTime(audioItem.currentTime);
+
+      audioItem.play();
+      isPlaying = true;
+      setMediaControls();
+    });
+
+    audioItem.addEventListener("timeupdate", () => {
+      if (!isDraggingLength) {
+        currentTime = audioItem.currentTime;
+        currentString = formatTime(currentTime);
+        currentBar = (currentTime / durationTime) * 100;
+      }
+    });
+
+    // audioItem.addEventListener("error", () => {
+    //   console.error("Failed to load track");
+    // });
+  }
+
+
+  function setMediaControls(): void {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: $title,
+        album: $album,
+        artist: $artist,
+        artwork: [
+          {
+            src: imagepath + "?size=300",
+          }  
+        ],
+      });
+
+      navigator.mediaSession.setActionHandler("play", () => { handlePlay(); });
+      navigator.mediaSession.setActionHandler("pause", () => { handlePlay(); });
+      navigator.mediaSession.setActionHandler("seekbackward", () => { audioItem.currentTime -= 10; });
+      navigator.mediaSession.setActionHandler("seekforward", () => { audioItem.currentTime += 10; });
+      navigator.mediaSession.setActionHandler("previoustrack", () => { console.log("test") });
+      navigator.mediaSession.setActionHandler("nexttrack", () => { console.log("test") });
+    }
+  }
+
+
+  function handleSeek(event: MouseEvent, callback: (value: number) => void): void {
+    event.preventDefault(); // Prevent text selection during drag
+    const ctl = event.target as HTMLElement;
+    if (ctl) {
+      const ctlWidth = ctl.clientWidth;
+      const ctlRect = ctl.getBoundingClientRect();
+      const newValue = Math.max(0, Math.min(event.clientX - ctlRect.left, ctlWidth));
+      const newValueCalc = newValue / ctlWidth;
+      callback(newValueCalc);
+    }
+  }
+
 
   function lengthSeek(event: MouseEvent): void {
-    handleSeek(event, '.player-length-ctl', (value: number) => {
-      console.log("test");
+    handleSeek(event, (value) => {
+      if (audioItem) {
+        currentTime = value * durationTime;
+        currentString = formatTime(currentTime);
+        currentBar = value * 100;
+        if (!isDraggingLength) {
+          audioItem.currentTime = currentTime;
+        }
+      }
     });
   }
+
 
   function volumeSeek(event: MouseEvent): void {
-    handleSeek(event, '.player-volume-ctl', (value: number) => {
-      console.log("volume");
+    handleSeek(event, (value) => {
+      volumeBar = value * 100;
+      if (audioItem) {
+        audioItem.volume = value;
+      }
     });
   }
 
-  function seekEvent(event: MouseEvent, type: 'length' | 'volume'): void {
-    isDragging = true;
-    isDraggingLength = type === 'length';
-    isDraggingVolume = type === 'volume';
-    const handleMove: (event: MouseEvent) => void = type === 'length' ? lengthSeek : volumeSeek;
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('mouseup', seekEventStop)
-  }
 
-  function seekEventStop(): void {
-    isDragging = false;
-    isDraggingLength = false;
-    isDraggingVolume = false;
-    document.removeEventListener('mousemove', lengthSeek);
-    document.removeEventListener('mousemove', volumeSeek);
-    document.removeEventListener('mouseup', seekEventStop);
-  }
-
-
-  /* player */
-
-  let handlePlay: HTMLAudioElement = new Audio();
-  let isPlaying: boolean = false;
-  let imagepath: string = '';
-
-  let duration: string | number = '';
-  let length : string | number = ''
-  let lengthWidth: number = 0;
-  let volumeWidth: number = 0;
-
-  function toggleTrack(): void {
-    if (isPlaying) {
-      isPlaying = false;
+  function handleDragStart(event: MouseEvent, type: "length" | "volume"): void {
+    event.preventDefault(); // Prevent text selection during drag
+    if (type === "length") {
+      isDraggingLength = true;
+    } else {
+      isDraggingVolume = true;
     }
-    else if (!isPlaying && duration) {
-      isPlaying = true;
-    }
+    const handleMove = type === "length" ? lengthSeek : volumeSeek;
+    const handleEnd = () => {
+      if (type === "length") {
+        isDraggingLength = false;
+        if (audioItem) {
+          audioItem.currentTime = currentTime; // Update the current time only for length drag
+        }
+      } else {
+        isDraggingVolume = false;
+      }
+      document.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mouseup", handleEnd);
+    };
+    document.addEventListener("mousemove", handleMove);
+    document.addEventListener("mouseup", handleEnd);
+    handleMove(event);
   }
 
-  $: if (handlePlay) {
-    handlePlay.src = `http://localhost:2843/api/stream/${$hash}`;
-    imagepath = `http://localhost:2843/api/images/${$imagehash}`;
 
-    handlePlay.addEventListener('loadedmetadata', () => {
-      duration = formatTime(handlePlay.duration);
-      isPlaying = true;
-    });
+  function handleDragEnd(): void {
+    
   }
 
-  $: if (isPlaying) {
-    handlePlay.play();
-  } else {
-    handlePlay.pause();
-  }
-
-  /* tools */
 
   function formatTime(time: number): string {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time % 60);
-
-    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    return `${min}:${sec < 10 ? "0" : ""}${sec}`;
   }
 
-  handlePlay.addEventListener('timeupdate', () => {
-    length = formatTime(handlePlay.currentTime);
-    lengthWidth = (handlePlay.currentTime / handlePlay.duration) * 100;
-    volumeWidth = Math.floor(handlePlay.volume * 100);
-  });
-
-  onMount(() => {
-    return () => {
-      handlePlay.removeEventListener('loadedmetadata', () => {
-        duration = handlePlay.duration;
-      });
-    };
-  });
 
   onDestroy(() => {
-    return () => {
-      handlePlay.removeEventListener('timeupdate', updateLength);
+    if (audioItem) {
+      audioItem.src = '';
     }
-  })
-
-  function updateLength() {
-    length = formatTime(handlePlay.currentTime);
-  }
+  });
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="player">
   <div
+    tabindex=0
+    role="slider"
+    aria-label="Length"
+    aria-valuenow={currentTime}
+
     class="player-length"
-    on:mousedown="{
-      event => seekEvent(event, 'length')
-    }"
+    on:click={(event) => lengthSeek(event)}
+    on:mousedown={(event) => handleDragStart(event, "length")}
+    on:mouseup={handleDragEnd}
   >
     <div class="player-length-ctl">
-      <div
-        class="player-length-ctl__now"
-        style="width: {lengthWidth}%;"
-      >
-      </div>
+      <div class="player-length-ctl__now" style="width: {currentBar}%;" />
     </div>
   </div>
   <div class="player-area">
     <div class="player-area-1">
-      <img
-        src="{imagepath}"
-        class="player-area-1-img"
-        alt="Front Cover">
-      <div class="player-area-1-trk">
-        <span class="text-title">{$title ? $title : ''}</span>
-        <span class="text-description">{$artist ? $artist : ''}</span>
-        <span class="text-description">{length} / {duration}</span>
-      </div>
+      {#if $hash}
+        <img src="{imagepath}?size=128" class="player-area-1-img" alt="Front Cover" />
+        <div class="player-area-1-trk">
+          <span class="text-title">{$title ? $title : ""}</span>
+          <span class="text-description">{$artist ? $artist : ""}</span>
+          <span class="text-description">{currentString} / {durationString}</span>
+        </div>
+      {/if}
     </div>
     <div class="player-area-2">
       <button class="player-area-btn" title="Previous">
         <IconamoonPlayerStartFill />
       </button>
-      <button
-        class="player-area-btn btn-primary"
-        on:click="{toggleTrack}"
-      >
+      <button class="player-area-btn btn-primary" on:click={handlePlay}>
         {#if isPlaying}
           <IconamoonPlayerPauseFill />
         {:else}
@@ -189,19 +234,18 @@
     <div class="player-area-3">
       <div
         class="player-volume"
-        on:mousedown="{
-          event => seekEvent(event, 'volume')
-        }"
       >
         <div class="player-volume-ctl">
-          <div
-            class="player-volume-ctl__now"
-            style="width: {volumeWidth}%;"
-          >
-          </div>
+          <div class="player-volume-ctl__now" style="" />
         </div>
         <button class="player-side-btn" title="Volume">
-          <IconamoonVolumeUp />
+          {#if volumeBar === 0}
+            <IconamoonVolumeOff />
+          {:else if volumeBar < 50}
+            <IconamoonVolumeDown />
+          {:else}
+            <IconamoonVolumeUp />
+          {/if}
         </button>
       </div>
       <button class="player-side-btn" title="Repeat">
@@ -224,30 +268,31 @@
   justify-content: space-between;
   position: fixed;
   bottom: 0;
-  width: -webkit-fill-available;
+  width: 100%;
   height: 96px;
-  padding: 0 16px;
   background-color: var(--color-dark-trk);
   backdrop-filter: blur(32px);
+  user-select: none;
 }
 
 .player-area {
   width: 100%;
   display: flex;
+  padding: 0 16px;
   justify-content: space-between;
 }
 
 .player-area-1 {
   display: flex;
   align-items: center;
-  height: -webkit-fill-available;
+  gap: var(--app-padding-s);
+  height: 56px;
 }
 
 .player-area-1-img {
-  width: 58px;
-  height: 58px;
+  width: 56px;
+  height: 56px;
   object-fit: scale-down;
-  margin-right: var(--app-padding-s);
   background-color: var(--color-dark-bg-2);
   box-shadow: 0 0 0 1px var(--color-dark-border) inset;
   border-radius: var(--app-radius);
@@ -266,7 +311,7 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 0);
-  height: 58px;
+  height: 56px;
 }
 
 .player-area-btn {
