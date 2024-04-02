@@ -13,7 +13,7 @@ export let title: string;
 
 <style>
 .content-header {
-  margin: 72px 0 21px 0;
+  margin: 64px 0 21px 0;
 }
 
 .content-title {
