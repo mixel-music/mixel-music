@@ -2,7 +2,6 @@
   import { onMount, onDestroy } from "svelte";
   import { hash, title, album, artist, imagehash } from '$lib/stores';
 
-
   import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
   import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
   import IconamoonPlayerStartFill from '~icons/iconamoon/player-start-fill';
@@ -17,42 +16,30 @@
   import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
   import IconamoonPlaylist from '~icons/iconamoon/playlist';
 
-
   let audioItem: HTMLAudioElement = new Audio();
   let imagepath: string = "";
-  
   let isPlaying: boolean = false;
   let isDraggingLength: boolean = false;
   let isDraggingVolume: boolean = false;
-
   let durationTime: number = 0;
   let currentTime: number = 0;
-  
   let durationString: string = formatTime(0);
   let currentString: string = formatTime(0);
-  
   let currentBar: number = 0;
   let volumeBar: number = 100;
 
+  $: $hash, loadAudio();
 
-  $: if ($hash) {
-    loadAudio();
-  }
-
-  
   function handlePlay(): void {
-    if (audioItem.src) {
-      if (audioItem.paused) {
-        audioItem.play();
-        isPlaying = true;
-      }
-      else {
-        audioItem.pause();
-        isPlaying = false;
-      }
+    if (audioItem.paused) {
+      audioItem.play();
+      isPlaying = true;
+    }
+    else {
+      audioItem.pause();
+      isPlaying = false;
     }
   }
-
 
   function loadAudio() {
     audioItem.src = (`http://localhost:2843/api/stream/${$hash}`);
@@ -82,7 +69,6 @@
     // });
   }
 
-
   function setMediaControls(): void {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -105,10 +91,10 @@
     }
   }
 
-
   function handleSeek(event: MouseEvent, callback: (value: number) => void): void {
-    event.preventDefault(); // Prevent text selection during drag
-    const ctl = event.target as HTMLElement;
+    event.preventDefault();
+
+    const ctl = document.querySelector('.player-length-ctl')
     if (ctl) {
       const ctlWidth = ctl.clientWidth;
       const ctlRect = ctl.getBoundingClientRect();
@@ -117,7 +103,6 @@
       callback(newValueCalc);
     }
   }
-
 
   function lengthSeek(event: MouseEvent): void {
     handleSeek(event, (value) => {
@@ -132,7 +117,6 @@
     });
   }
 
-
   function volumeSeek(event: MouseEvent): void {
     handleSeek(event, (value) => {
       volumeBar = value * 100;
@@ -142,9 +126,8 @@
     });
   }
 
-
   function handleDragStart(event: MouseEvent, type: "length" | "volume"): void {
-    event.preventDefault(); // Prevent text selection during drag
+    event.preventDefault();
     if (type === "length") {
       isDraggingLength = true;
     } else {
@@ -155,7 +138,7 @@
       if (type === "length") {
         isDraggingLength = false;
         if (audioItem) {
-          audioItem.currentTime = currentTime; // Update the current time only for length drag
+          audioItem.currentTime = currentTime;
         }
       } else {
         isDraggingVolume = false;
@@ -168,18 +151,15 @@
     handleMove(event);
   }
 
-
   function handleDragEnd(): void {
     
   }
-
 
   function formatTime(time: number): string {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time % 60);
     return `${min}:${sec < 10 ? "0" : ""}${sec}`;
   }
-
 
   onDestroy(() => {
     if (audioItem) {
@@ -194,7 +174,6 @@
     tabindex=0
     role="slider"
     aria-label="Length"
-    aria-valuenow={currentTime}
 
     class="player-length"
     on:click={(event) => lengthSeek(event)}
@@ -220,13 +199,19 @@
       <button class="player-area-btn" title="Previous">
         <IconamoonPlayerStartFill />
       </button>
-      <button class="player-area-btn btn-primary" on:click={handlePlay}>
-        {#if isPlaying}
-          <IconamoonPlayerPauseFill />
-        {:else}
+      {#if $hash}
+        <button class="player-area-btn btn-primary" on:click={handlePlay}>
+          {#if isPlaying}
+            <IconamoonPlayerPauseFill />
+          {:else}
+            <IconamoonPlayerPlayFill />
+          {/if}
+        </button>
+      {:else}
+        <button class="player-area-btn btn-primary">
           <IconamoonPlayerPlayFill />
-        {/if}
-      </button>
+        </button>
+      {/if}
       <button class="player-area-btn" title="Next">
         <IconamoonPlayerEndFill />
       </button>

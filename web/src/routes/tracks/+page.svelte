@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { hash, title, album, artist, imagehash } from '$lib/stores';
+  import Header from '$lib/components/Header.svelte'
 
   interface trackItemModel {
     hash: string;
@@ -30,14 +31,15 @@
   <title>Tracks • mixel-music</title>
 </svelte:head>
 
+<Header title="Tracks" />
+
 {#if trackItem.length > 0}
   <div class="card-grid">
     {#each trackItem as tag (tag.hash)}
       <div class="card">
-        <a
+        <div
           role="button"
           tabindex=0
-          href=""
 
           class="card-image-content"
           on:click={() => (
@@ -54,7 +56,7 @@
             alt="{tag.title}"
             class="card-image"
           >
-        </a>
+          </div>
         <div class="card-content">
           <span class="text-title">{ tag.title }</span>
           <span class="text-description">{ tag.artist }</span>

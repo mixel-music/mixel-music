@@ -92,16 +92,6 @@ input[type='text']:focus {
   transition: all 0.1s ease;
 }
 
-.content-header {
-  margin: 72px 0 21px 0;
-}
-
-.content-title {
-  font-size: 64px;
-  font-weight: bolder;
-  letter-spacing: -1px;
-}
-
 .text-title {
   display: block;
   font-size: 95%;
