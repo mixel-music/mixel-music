@@ -187,7 +187,10 @@
         <img src="{imagepath}?size=128" class="player-area-1-img" alt="Front Cover" />
         <div class="player-area-1-trk">
           <span class="text-title">{$title ? $title : ""}</span>
-          <span class="text-description">{$artist ? $artist : ""}</span>
+          <span class="text-description">
+            {$artist ? $artist : ""}
+            - {$album ? $album : ""}
+          </span>
           <span class="text-description">{currentString} / {durationString}</span>
         </div>
       {/if}

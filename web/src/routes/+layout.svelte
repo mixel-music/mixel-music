@@ -23,7 +23,7 @@
 
 	.content {
   	width: -webkit-fill-available;
-  	padding: 0 19%;
+  	padding: 0 18%;
   	margin-bottom: 180px;
 	}
 </style>

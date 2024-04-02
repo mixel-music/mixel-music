@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=".github/al.png">
+  <img src=".github/albums.png">
 </div>
 
 # mixel-music <img src="web/static/favicon.ico" width="36" align="right">
@@ -12,6 +12,7 @@
 * Since this project is part of my learning process, there may be many areas that need improvement.  
   * This is my first time using JavaScript / TypeScript and Svelte. Also, I have little experience doing backend development using Python.
 * As I'm focusing on preparing for the CSAT this year, more time will be dedicated to my studies. Therefore, the application's completion might face delays until at least the end of the year.
+<br>
 
 <!-- 
 ## Features
