@@ -6,11 +6,9 @@
   import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
   import IconamoonPlayerStartFill from '~icons/iconamoon/player-start-fill';
   import IconamoonPlayerEndFill from '~icons/iconamoon/player-end-fill';
-
   import IconamoonVolumeUp from '~icons/iconamoon/volume-up';
   import IconamoonVolumeDown from '~icons/iconamoon/volume-down';
   import IconamoonVolumeOff from '~icons/iconamoon/volume-off';
-
   import IconamoonPlaylistRepeatList from '~icons/iconamoon/playlist-repeat-list';
   import IconamoonPlaylistRepeatSong from '~icons/iconamoon/playlist-repeat-song';
   import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
@@ -39,6 +37,10 @@
       audioItem.pause();
       isPlaying = false;
     }
+  }
+
+  function previousPlay(): void {
+    audioItem.currentTime = 0;
   }
 
   function loadAudio() {
@@ -86,15 +88,15 @@
       navigator.mediaSession.setActionHandler("pause", () => { handlePlay(); });
       navigator.mediaSession.setActionHandler("seekbackward", () => { audioItem.currentTime -= 10; });
       navigator.mediaSession.setActionHandler("seekforward", () => { audioItem.currentTime += 10; });
-      navigator.mediaSession.setActionHandler("previoustrack", () => { console.log("test") });
+      navigator.mediaSession.setActionHandler("previoustrack", () => { previousPlay(); });
       navigator.mediaSession.setActionHandler("nexttrack", () => { console.log("test") });
     }
   }
 
-  function handleSeek(event: MouseEvent, callback: (value: number) => void): void {
+  function handleSeek(event: MouseEvent, eventClass: string, callback: (value: number) => void): void {
     event.preventDefault();
 
-    const ctl = document.querySelector('.player-length-ctl')
+    const ctl = document.querySelector(eventClass);
     if (ctl) {
       const ctlWidth = ctl.clientWidth;
       const ctlRect = ctl.getBoundingClientRect();
@@ -105,7 +107,7 @@
   }
 
   function lengthSeek(event: MouseEvent): void {
-    handleSeek(event, (value) => {
+    handleSeek(event, '.player-length-ctl', (value) => {
       if (audioItem) {
         currentTime = value * durationTime;
         currentString = formatTime(currentTime);
@@ -118,7 +120,7 @@
   }
 
   function volumeSeek(event: MouseEvent): void {
-    handleSeek(event, (value) => {
+    handleSeek(event, '.player-volume-ctl', (value) => {
       volumeBar = value * 100;
       if (audioItem) {
         audioItem.volume = value;
@@ -151,10 +153,6 @@
     handleMove(event);
   }
 
-  function handleDragEnd(): void {
-    
-  }
-
   function formatTime(time: number): string {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time % 60);
@@ -178,7 +176,6 @@
     class="player-length"
     on:click={(event) => lengthSeek(event)}
     on:mousedown={(event) => handleDragStart(event, "length")}
-    on:mouseup={handleDragEnd}
   >
     <div class="player-length-ctl">
       <div class="player-length-ctl__now" style="width: {currentBar}%;" />
@@ -196,11 +193,18 @@
       {/if}
     </div>
     <div class="player-area-2">
-      <button class="player-area-btn" title="Previous">
+      <button
+        class="player-area-btn"
+        title="Previous"
+        on:click={previousPlay}
+      >
         <IconamoonPlayerStartFill />
       </button>
       {#if $hash}
-        <button class="player-area-btn btn-primary" on:click={handlePlay}>
+        <button
+          class="player-area-btn btn-primary"
+          on:click={handlePlay}
+        >
           {#if isPlaying}
             <IconamoonPlayerPauseFill />
           {:else}
@@ -218,10 +222,16 @@
     </div>
     <div class="player-area-3">
       <div
+        tabindex=0
+        role="slider"
+        aria-label="Length"
+    
         class="player-volume"
+        on:click={(event) => volumeSeek(event)}
+        on:mousedown={(event) => handleDragStart(event, "volume")}
       >
         <div class="player-volume-ctl">
-          <div class="player-volume-ctl__now" style="" />
+          <div class="player-volume-ctl__now" style="width: {volumeBar}%;" />
         </div>
         <button class="player-side-btn" title="Volume">
           {#if volumeBar === 0}
