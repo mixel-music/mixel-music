@@ -159,6 +159,20 @@
     return `${min}:${sec < 10 ? "0" : ""}${sec}`;
   }
 
+  function muteVolume(): void {
+    if (audioItem.volume === 0) {
+      audioItem.volume = 1;
+      audioItem.muted = false;
+      volumeBar = 100;
+    }
+    else if (!audioItem.muted) {
+      audioItem.muted = true;
+    }
+    else {
+      audioItem.muted = false;
+    }
+  }
+
   onDestroy(() => {
     if (audioItem) {
       audioItem.src = '';
@@ -171,35 +185,43 @@
   <div
     tabindex=0
     role="slider"
-    aria-label="Length"
-
     class="player-length"
     on:click={(event) => lengthSeek(event)}
     on:mousedown={(event) => handleDragStart(event, "length")}
   >
     <div class="player-length-ctl">
-      <div class="player-length-ctl__now" style="width: {currentBar}%;" />
+      <div
+        class="player-length-ctl__now"
+        style="width: {currentBar}%;"
+      />
     </div>
   </div>
   <div class="player-area">
     <div class="player-area-1">
       {#if $hash}
-        <img src="{imagepath}?size=128" class="player-area-1-img" alt="Front Cover" />
+        <img
+          src="{imagepath}?size=128"
+          class="player-area-1-img"
+          alt="Front Cover"
+        />
         <div class="player-area-1-trk">
-          <span class="text-title">{$title ? $title : ""}</span>
-          <span class="text-description">
-            {$artist ? $artist : ""}
-            - {$album ? $album : ""}
+          <span class="text-title">
+            {$title ? $title : ""}
           </span>
-          <span class="text-description">{currentString} / {durationString}</span>
+          <span class="text-description">
+            {$artist ? $artist : ""} - {$album ? $album : ""}
+          </span>
+          <span class="text-description">
+            {currentString} / {durationString}
+          </span>
         </div>
       {/if}
     </div>
     <div class="player-area-2">
       <button
         class="player-area-btn"
-        title="Previous"
         on:click={previousPlay}
+        title="Previous"
       >
         <IconamoonPlayerStartFill />
       </button>
@@ -224,27 +246,34 @@
       </button>
     </div>
     <div class="player-area-3">
-      <div
-        tabindex=0
-        role="slider"
-        aria-label="Length"
-    
-        class="player-volume"
-        on:click={(event) => volumeSeek(event)}
-        on:mousedown={(event) => handleDragStart(event, "volume")}
-      >
-        <div class="player-volume-ctl">
-          <div class="player-volume-ctl__now" style="width: {volumeBar}%;" />
-        </div>
-        <button class="player-side-btn" title="Volume">
-          {#if volumeBar === 0}
-            <IconamoonVolumeOff />
-          {:else if volumeBar < 50}
-            <IconamoonVolumeDown />
-          {:else}
-            <IconamoonVolumeUp />
-          {/if}
-        </button>
+      <div class="player-volume">
+        {#key muteVolume}
+          <div
+            tabindex=0
+            role="slider"
+            class="player-volume-ctl"
+            on:click={(event) => volumeSeek(event)}
+            on:mousedown={(event) => handleDragStart(event, "volume")}  
+          >
+            <div
+              class="player-volume-ctl__now"
+              style="width: {audioItem.muted ? 0 : volumeBar}%;"
+            />
+          </div>
+          <button
+            class="player-side-btn"
+            title="Volume"
+            on:click={muteVolume}
+          >
+            {#if volumeBar === 0 || audioItem.muted}
+              <IconamoonVolumeOff />
+            {:else if volumeBar < 50}
+              <IconamoonVolumeDown />
+            {:else}
+              <IconamoonVolumeUp />
+            {/if}
+          </button>
+        {/key}
       </div>
       <button class="player-side-btn" title="Repeat">
         <IconamoonPlaylistRepeatList />

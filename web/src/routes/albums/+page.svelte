@@ -1,38 +1,19 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import Header from '$lib/components/Header.svelte'
+  import type { PageData } from './$types';
 
-  interface albumItemModel {
-    albumhash: string;
-    album: string;
-    albumartist: string;
-    imagehash: string;
-  }
-
-  let albumItem: albumItemModel[] = [];
-
-  onMount(async () => {
-    const albumFetch = await fetch('http://localhost:2843/api/albums');
-    const album = await albumFetch.json();
-
-    albumItem = album.map((tag: any) => ({
-      albumhash: tag.albumhash,
-      album: tag.album,
-      albumartist: tag.albumartist,
-      imagehash: tag.imagehash,
-    }));
-  });
+  export let data: PageData;
 </script>
 
 <svelte:head>
   <title>Albums • mixel-music</title>
 </svelte:head>
 
-<Header title="Albums" />
+<Header title={data.title} />
 
-{#if albumItem.length > 0}
+{#if data.albumItem.length > 0}
   <div class="card-grid">
-    {#each albumItem as tag (tag.albumhash)}
+    {#each data.albumItem as tag (tag.albumhash)}
       <div class="card">
         <div
           role="button"

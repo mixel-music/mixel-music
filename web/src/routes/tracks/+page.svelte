@@ -1,41 +1,20 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { hash, title, album, artist, imagehash } from '$lib/stores';
   import Header from '$lib/components/Header.svelte'
+  import type { PageData } from './$types';
 
-  interface trackItemModel {
-    hash: string;
-    title: string;
-    album: string;
-    artist: string;
-    imagehash: string;
-  }
-
-  let trackItem: trackItemModel[] = [];
-
-  onMount(async () => {
-    const trackFetch = await fetch('http://localhost:2843/api/tracks');
-    const track = await trackFetch.json();
-
-    trackItem = track.map((tag: any) => ({
-      hash: tag.hash,
-      title: tag.title,
-      album: tag.album,
-      artist: tag.artist,
-      imagehash: tag.imagehash,
-    }));
-  });
+  export let data: PageData;
 </script>
 
 <svelte:head>
   <title>Tracks • mixel-music</title>
 </svelte:head>
 
-<Header title="Tracks" />
+<Header title={data.title} />
 
-{#if trackItem.length > 0}
+{#if data.trackItem.length > 0}
   <div class="card-grid">
-    {#each trackItem as tag (tag.hash)}
+    {#each data.trackItem as tag (tag.hash)}
       <div class="card">
         <div
           role="button"
@@ -69,7 +48,3 @@
 
   </div>
 {/if}
-
-<style>
-
-</style>

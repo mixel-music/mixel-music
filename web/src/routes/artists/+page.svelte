@@ -1,34 +1,19 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import Header from '$lib/components/Header.svelte'
+  import type { PageData } from './$types';
 
-  interface artistItemModel {
-    artisthash: string;
-    artist: string;
-  }
-
-  let artistItem: artistItemModel[] = [];
-
-  onMount(async () => {
-    const artistFetch = await fetch('http://localhost:2843/api/artists');
-    const artist = await artistFetch.json();
-
-    artistItem = artist.map((tag: any) => ({
-      artisthash: tag.artisthash,
-      artist: tag.artist,
-    }));
-  });
+  export let data: PageData;
 </script>
 
 <svelte:head>
   <title>Artists • mixel-music</title>
 </svelte:head>
 
-<Header title="Artists" />
+<Header title={data.title} />
 
-{#if artistItem.length > 0}
+{#if data.artistItem.length > 0}
   <div class="card-grid">
-    {#each artistItem as tag (tag.artisthash)}
+    {#each data.artistItem as tag (tag.artisthash)}
       <div class="card">
         <div
           role="button"
