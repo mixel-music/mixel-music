@@ -14,7 +14,7 @@ itsdangerous==2.1.2
 markdown-it-py==3.0.0
 mdurl==0.1.2
 mutagen==1.47.0
-pillow==10.2.0
+pillow==10.3.0
 pydantic==2.6.2
 pydantic-settings==2.2.1
 pydantic_core==2.16.3
