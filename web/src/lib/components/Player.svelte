@@ -70,6 +70,12 @@
         currentString = formatTime(currentTime);
         currentBar = (currentTime / durationTime) * 100;
       }
+
+      if (audioItem.currentTime === audioItem.duration) {
+        isPlaying = false;
+        audioItem.pause();
+        setMediaControls();
+      }
     });
 
     // audioItem.addEventListener("error", () => {

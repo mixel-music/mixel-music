@@ -8,7 +8,7 @@
 <img src=".github/albums-f0.2.7a.png" width="850">
 
 * Since this project is part of my learning process, there may be many areas that need improvement.  
-  * This is my first time using JavaScript / TypeScript and Svelte. Also, I have little experience doing backend development using Python.
+  * This is my first time using JavaScript, TypeScript and Svelte. Also, I have little experience doing backend development using Python.
 * As I'm focusing on preparing for the CSAT this year, more time will be dedicated to my studies. Therefore, the application's completion might face delays until at least the end of the year.
 
 <!--
