@@ -13,18 +13,24 @@
   import IconamoonPlaylistRepeatSong from '~icons/iconamoon/playlist-repeat-song';
   import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
   import IconamoonPlaylist from '~icons/iconamoon/playlist';
+  import Page from "../../routes/+page.svelte";
 
   let audioItem: HTMLAudioElement = new Audio();
   let imagepath: string = "";
+
+  let durationTime: number = 0;
+  let currentTime: number = 0;
+
+  let durationString: string = formatTime(0);
+  let currentString: string = formatTime(0);
+
+  let currentBar: number = 0;
+  let volumeBar: number = 100;
+
   let isPlaying: boolean = false;
   let isDraggingLength: boolean = false;
   let isDraggingVolume: boolean = false;
-  let durationTime: number = 0;
-  let currentTime: number = 0;
-  let durationString: string = formatTime(0);
-  let currentString: string = formatTime(0);
-  let currentBar: number = 0;
-  let volumeBar: number = 100;
+  let isRepeatTrack: number = 0;
 
   $: $hash, loadAudio();
 
@@ -173,6 +179,21 @@
     }
   }
 
+  function repeatTrack(): void {
+    if (isRepeatTrack === 0) {
+      isRepeatTrack = 1;
+      audioItem.loop = true;
+    }
+    else if (isRepeatTrack === 1) {
+      isRepeatTrack = 2;
+      audioItem.loop = true;
+    }
+    else {
+      isRepeatTrack = 0;
+      audioItem.loop = false;
+    }
+  }
+
   onDestroy(() => {
     if (audioItem) {
       audioItem.src = '';
@@ -275,8 +296,18 @@
           </button>
         {/key}
       </div>
-      <button class="player-side-btn" title="Repeat">
-        <IconamoonPlaylistRepeatList />
+      <button
+        class="player-side-btn { isRepeatTrack == 0 ? 'player-btn__disabled' : ''}"
+        title={isRepeatTrack == 2 ? 'Repeat one' : 'Repeat'}
+        on:click={repeatTrack}
+      >
+        {#if isRepeatTrack === 1}
+          <IconamoonPlaylistRepeatList />
+        {:else if isRepeatTrack === 2}
+          <IconamoonPlaylistRepeatSong />
+        {:else}
+          <IconamoonPlaylistRepeatList />
+        {/if}
       </button>
       <button class="player-side-btn" title="Shuffle">
         <IconamoonPlaylistShuffle />
@@ -428,5 +459,9 @@
   height: 3px;
   background-color: var(--color-dark-trk-now);
   border-radius: var(--app-radius);
+}
+
+.player-btn__disabled {
+  color: var(--color-dark-disabled);
 }
 </style>

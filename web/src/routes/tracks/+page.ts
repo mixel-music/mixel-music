@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 
-export const load = (async () => {
+export const load: PageLoad = async ({ fetch }) => {
   interface trackItemModel {
     hash: string;
     title: string;
@@ -26,4 +26,4 @@ export const load = (async () => {
     trackItem,
     title: 'Tracks',
   };
-}) satisfies PageLoad;
+};

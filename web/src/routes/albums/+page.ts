@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 
-export const load = (async () => {
+export const load: PageLoad = async ({ fetch }) => {
   interface albumItemModel {
     albumhash: string;
     album: string;
@@ -24,4 +24,4 @@ export const load = (async () => {
     albumItem,
     title: 'Albums',
   };
-}) satisfies PageLoad;
+};

@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 
-export const load = (async () => {
+export const load: PageLoad = async ({ fetch }) => {
   interface artistItemModel {
     artisthash: string;
     artist: string;
@@ -20,4 +20,4 @@ export const load = (async () => {
     artistItem,
     title: 'Artists',
   };
-}) satisfies PageLoad;
+};
