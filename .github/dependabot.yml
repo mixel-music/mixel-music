@@ -3,9 +3,15 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    assignees: "bunubbv"
+    labels:
+      - "dependencies"
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    assignees: "bunubbv"
+    labels:
+      - "dependencies"
