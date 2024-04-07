@@ -1,13 +1,15 @@
 <script lang="ts">
 	import './style.css';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Player from '$lib/components/Player.svelte';
 	
 </script>
 
 <div id="app">
-	<Navbar />
+	<Sidebar />
 	<section class="content">
+		<Navbar />
 		<slot />
 	</section>
 	<Player />
@@ -15,15 +17,18 @@
 
 <style>
 	#app {
-		display: flex;
-		flex-direction: column;
 		width: 100%;
+		display: flex;
 		min-height: 100dvh;
+		flex-direction: column;
+		box-sizing: border-box;
 	}
 
 	.content {
-  	width: -webkit-fill-available;
-  	padding: 0 18%;
-  	margin-bottom: 180px;
+  	max-width: 100%;
+  	padding: 3%;
+		padding-top: 0;
+		margin-left: 250px;
+    margin-bottom: 96px;
 	}
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   import { hash, title, album, artist, imagehash } from '$lib/stores';
 
   import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
@@ -20,10 +20,8 @@
 
   let durationTime: number = 0;
   let currentTime: number = 0;
-
   let durationString: string = formatTime(0);
   let currentString: string = formatTime(0);
-
   let currentBar: number = 0;
   let volumeBar: number = 100;
 
@@ -209,20 +207,53 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="player">
-  <div
-    tabindex=0
-    role="slider"
-    class="player-length"
-    on:click={(event) => lengthSeek(event)}
-    on:mousedown={(event) => handleDragStart(event, "length")}
-  >
-    <div class="player-length-ctl">
-      <div
-        class="player-length-ctl__now"
-        style="width: {currentBar}%;"
-      />
+
+  <div class="player-center">
+    <div class="player-center-ctl">
+      <button
+        class="player-center-btn"
+        on:click={previousPlay}
+        title="Previous"
+      >
+        <IconamoonPlayerStartFill />
+      </button>
+      {#if $hash}
+        <button
+          class="player-center-btn btn__primary"
+          on:click={handlePlay}
+        >
+          {#if isPlaying}
+            <IconamoonPlayerPauseFill />
+          {:else}
+            <IconamoonPlayerPlayFill />
+          {/if}
+        </button>
+      {:else}
+        <button class="player-center-btn btn__primary">
+          <IconamoonPlayerPlayFill />
+        </button>
+      {/if}
+      <button class="player-center-btn" title="Next">
+        <IconamoonPlayerEndFill />
+      </button>
     </div>
+    <div
+      tabindex=0
+      role="slider"
+      class="player-length"
+      on:click={(event) => lengthSeek(event)}
+      on:mousedown={(event) => handleDragStart(event, "length")}
+    >
+      <div class="player-length-ctl">
+        <div
+          class="player-length-ctl__now"
+          style="width: {currentBar}%;"
+        />
+      </div>
+    </div>
+
   </div>
+
   <div class="player-area">
     <div class="player-area-1">
       {#if $hash}
@@ -244,35 +275,8 @@
         </div>
       {/if}
     </div>
+
     <div class="player-area-2">
-      <button
-        class="player-area-btn"
-        on:click={previousPlay}
-        title="Previous"
-      >
-        <IconamoonPlayerStartFill />
-      </button>
-      {#if $hash}
-        <button
-          class="player-area-btn btn-primary"
-          on:click={handlePlay}
-        >
-          {#if isPlaying}
-            <IconamoonPlayerPauseFill />
-          {:else}
-            <IconamoonPlayerPlayFill />
-          {/if}
-        </button>
-      {:else}
-        <button class="player-area-btn btn-primary">
-          <IconamoonPlayerPlayFill />
-        </button>
-      {/if}
-      <button class="player-area-btn" title="Next">
-        <IconamoonPlayerEndFill />
-      </button>
-    </div>
-    <div class="player-area-3">
       <div class="player-volume">
         {#key muteVolume}
           <div
@@ -303,7 +307,7 @@
         {/key}
       </div>
       <button
-        class="player-side-btn { isRepeatTrack == 0 ? 'player-btn__disabled' : ''}"
+        class="player-side-btn { isRepeatTrack == 0 ? 'btn__disabled' : ''}"
         title={isRepeatTrack == 2 ? 'Repeat one' : 'Repeat'}
         on:click={repeatTrack}
       >
@@ -323,6 +327,7 @@
       </button>
     </div>
   </div>
+
 </div>
 
 <style>
@@ -332,11 +337,51 @@
   justify-content: space-between;
   position: fixed;
   bottom: 0;
+  z-index: 2;
   width: 100%;
   height: 96px;
   background-color: var(--color-dark-trk);
-  backdrop-filter: blur(32px);
+  backdrop-filter: blur(64px);
   user-select: none;
+  border-top: 1px solid var(--color-dark-border);
+  box-shadow: 0 0 0 1px var(--color-dark-border) inset;
+}
+
+.player-center {
+  display: flex;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0);
+  justify-content: center;
+  flex-direction: column;
+  height: 96px;
+}
+
+.player-center-ctl {
+  display: flex;
+  justify-content: center;
+}
+
+.player-center-btn {
+  display: flex;
+  padding: 0 12px;
+  border: none;
+  background-color: transparent;
+  color: var(--color-dark-text-1);
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-center-btn:focus {
+  outline: none;
+}
+
+.player-center-btn:hover {
+  color: var(--color-dark-focus);
+  transition: all 0.1s ease;
 }
 
 .player-area {
@@ -350,7 +395,6 @@
   display: flex;
   align-items: center;
   gap: var(--app-padding-s);
-  height: 56px;
 }
 
 .player-area-1-img {
@@ -372,41 +416,6 @@
 
 .player-area-2 {
   display: flex;
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, 0);
-  height: 56px;
-}
-
-.player-area-btn {
-  display: flex;
-  padding: 12px;
-  border: none;
-  background-color: transparent;
-  color: var(--color-dark-text-1);
-  font-size: 20px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  align-items: center;
-  justify-content: center;
-}
-
-.player-area-btn:focus {
-  outline: none;
-}
-
-.player-area-btn:hover {
-  color: var(--color-dark-focus);
-  transition: all 0.1s ease;
-}
-
-.btn-primary {
-  font-size: 28px;
-  margin: 0 10px;
-}
-
-.player-area-3 {
-  display: flex;
   align-items: center;
 }
 
@@ -424,18 +433,16 @@
 }
 
 .player-length {
-  height: 3px;
-  background-color: var(--color-dark-trk-len);
-  border-radius: var(--app-radius);
-  position: fixed;
-  left: 0;
-  bottom: 93px;
   width: 100%;
+  height: 3px;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: var(--app-radius);
 }
 
 .player-length-ctl {
-  padding-bottom: 12px;
-  cursor: pointer;
+  width: 600px;
+  background-color: var(--color-dark-trk-len);
 }
 
 .player-length-ctl__now {
@@ -448,26 +455,30 @@
 .player-volume {
   display: flex;
   align-items: center;
+  border-radius: var(--app-radius);
 }
 
 .player-volume-ctl {
-  width: 100px;
-  height: 3px;
+  width: 128px;
   cursor: pointer;
-  padding: 12px;
+  padding: 6px;
   background-color: var(--color-dark-trk-len);
   border-radius: var(--app-radius);
   background-clip: content-box;
 }
 
 .player-volume-ctl__now {
-  width: 30px;
   height: 3px;
   background-color: var(--color-dark-trk-now);
   border-radius: var(--app-radius);
 }
 
-.player-btn__disabled {
+.btn__primary {
+  font-size: 28px;
+  margin: 0 10px;
+}
+
+.btn__disabled {
   color: var(--color-dark-disabled);
 }
 </style>
