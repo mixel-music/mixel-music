@@ -13,11 +13,11 @@ export let title: string;
 
 <style>
 .content-header {
-  margin: 24px 0 21px 0;
+  margin: 21px 0;
 }
 
 .content-title {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bolder;
   letter-spacing: -1px;
   line-height: 1;

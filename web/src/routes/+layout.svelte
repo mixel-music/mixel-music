@@ -3,7 +3,6 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Player from '$lib/components/Player.svelte';
-	
 </script>
 
 <div id="app">
@@ -26,7 +25,7 @@
 
 	.content {
   	max-width: 100%;
-  	padding: 3%;
+  	padding: 64px;
 		padding-top: 0;
 		margin-left: 250px;
     margin-bottom: 96px;

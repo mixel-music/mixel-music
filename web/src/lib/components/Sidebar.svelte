@@ -15,7 +15,6 @@ import logo from '$lib/images/mixel-music.svg';
     </a>
   </div>
   <ul class="sidebar-list">
-    <!-- <input type="text"> -->
     <li>
       <a href="/albums">
         <span class="sidebar-icon">
@@ -43,14 +42,6 @@ import logo from '$lib/images/mixel-music.svg';
     <li>
       <a href="#">
         <span class="sidebar-icon">
-          <IconamoonPlaylist />
-        </span>
-        Playlists
-      </a>
-    </li>
-    <li>
-      <a href="#">
-        <span class="sidebar-icon">
           <IconamoonHeadphone />
         </span>
         Mixes
@@ -68,38 +59,40 @@ import logo from '$lib/images/mixel-music.svg';
   left: 0;
   z-index: 0;
   min-height: 100%;
-  padding: 32px 16px;
+  padding: 21px;
   border-right: 1px solid var(--color-dark-border);
 }
 
 .sidebar-logo {
   display: flex;
+  font-size: 0;
   align-items: center;
-  margin-bottom: 55.2px; /* 133.2 - 78px */
 }
 
 .sidebar-list {
   list-style: none;
+  margin-top: 42px;
 }
 
 .sidebar-list li {
   display: flex;
-  margin: 12px 0;
-  font-size: 18px;
-  font-weight: 600;
+  margin: 16px 0;
+  font-weight: 500;
 }
 
 .sidebar-list a {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
 
 .sidebar-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   font-size: 21px;
   display: flex;
+  color: var(--color-dark-text-2);
   align-items: center;
   justify-content: center;
 }

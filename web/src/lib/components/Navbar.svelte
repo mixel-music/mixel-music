@@ -23,11 +23,9 @@ import IconamoonArrowRight2 from '~icons/iconamoon/arrow-right-2';
     </div>
 
     <div class="navbar-area-2">
-      
     </div>
 
     <div class="navbar-area-3">
-
     </div>
   </div>
 </nav>
@@ -39,14 +37,14 @@ import IconamoonArrowRight2 from '~icons/iconamoon/arrow-right-2';
   justify-content: space-between;
   position: sticky;
   top: 0;
-  user-select: none;
+  padding: 21px 0;
   max-width: 100%;
+  user-select: none;
 }
 
 .navbar-area {
   width: 100%;
   display: flex;
-  padding: 32px 0;
   align-items: center;
   justify-content: space-between;
 }
@@ -54,10 +52,15 @@ import IconamoonArrowRight2 from '~icons/iconamoon/arrow-right-2';
 .navbar-area-1 {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  text-wrap: nowrap;
+  gap: 12px;
   cursor: pointer;
+}
+
+.navbar-area-3 {
+  display: flex;
+  align-items: center;
+  padding: var(--app-padding-l) 0;
+  gap: 12px;
 }
 
 .navbar-link {
@@ -74,26 +77,16 @@ import IconamoonArrowRight2 from '~icons/iconamoon/arrow-right-2';
   transition: 0.2s ease;
 }
 
-.navbar-area-3 {
-  display: flex;
-  align-items: center;
-  padding: var(--app-padding-l) 0;
-  gap: 12px;
-}
-
-.navbar-icon {
-  font-size: 16px;
-}
-
 .navbar-explore {
   align-items: center;
   justify-content: center;
   flex-direction: row-reverse;
   margin: 0;
-  padding: 11px;
+  padding: 12px;
+  width: 42px;
+  height: 42px;
+  background-color: var(--color-dark-bg-2);
   border: 1px solid var(--color-dark-border);
   border-radius: 50%;
-  background-color: var(--color-dark-nav-itm);
-  backdrop-filter: blur(32px);
 }
 </style>

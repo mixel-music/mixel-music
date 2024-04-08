@@ -20,16 +20,15 @@
   --color-dark-bg-1: rgb(18, 18, 18);
 	--color-dark-bg-2: rgb(21, 21, 21);
 	--color-dark-bg-3: rgb(24, 24, 24);
+	--color-dark-bg-trk: rgb(21, 21, 21, 0.95);
+  --color-dark-bg-nav: rgb(18, 18, 18, 0.95);
 
-	--color-dark-nav: rgb(21, 21, 21, 0.95);
-	--color-dark-nav-itm: rgb(32, 32, 32, 0.95);
-
-	--color-dark-trk: rgb(21, 21, 21, 0.95);
-	--color-dark-trk-len: rgb(86, 86, 86);
-	--color-dark-trk-now: rgb(215, 215, 215);
-	
 	--color-dark-text-1: rgb(215, 215, 215);
   --color-dark-text-2: rgb(166, 166, 166);
+  
+	--color-dark-nav-itm: rgb(32, 32, 32, 0.95);
+	--color-dark-trk-len: rgb(86, 86, 86);
+	--color-dark-trk-now: rgb(215, 215, 215);
 
 	--color-dark-disabled: rgb(86, 86, 86);
 	--color-dark-border: rgb(32, 32, 32);
@@ -113,7 +112,7 @@ input[type='text']:focus {
 .card-grid {
   display: grid;
   grid-gap: 23px;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   overflow-x: hidden;
 }
 

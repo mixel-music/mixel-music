@@ -340,7 +340,7 @@
   z-index: 2;
   width: 100%;
   height: 96px;
-  background-color: var(--color-dark-trk);
+  background-color: var(--color-dark-bg-trk);
   backdrop-filter: blur(64px);
   user-select: none;
   border-top: 1px solid var(--color-dark-border);
@@ -387,7 +387,7 @@
 .player-area {
   width: 100%;
   display: flex;
-  padding: 0 16px;
+  padding: 0 21px;
   justify-content: space-between;
 }
 
