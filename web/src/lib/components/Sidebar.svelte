@@ -1,11 +1,6 @@
 <script lang="ts">
-import IconamoonPlaylist from '~icons/iconamoon/playlist';
-import IconamoonMusicAlbum from '~icons/iconamoon/music-album';
-import IconamoonMusic2 from '~icons/iconamoon/music-2';
-import IconamoonMusicArtist from '~icons/iconamoon/music-artist';
-import IconamoonHeadphone from '~icons/iconamoon/headphone';
-import IconamoonSignPlus from '~icons/iconamoon/sign-plus';
-import logo from '$lib/images/mixel-music.svg';
+  import Icon from '@iconify/svelte';
+  import logo from '$lib/images/mixel-music.svg';
 </script>
 
 <div class="sidebar">
@@ -18,7 +13,7 @@ import logo from '$lib/images/mixel-music.svg';
     <li>
       <a href="/albums">
         <span class="sidebar-icon">
-          <IconamoonMusicAlbum />
+          <Icon icon="iconoir:compact-disc" width="24" height="24"></Icon>
         </span>
         Albums
       </a>
@@ -26,7 +21,7 @@ import logo from '$lib/images/mixel-music.svg';
     <li>
       <a href="/tracks">
         <span class="sidebar-icon">
-          <IconamoonMusic2 />
+          <Icon icon="iconoir:music-double-note" width="24" height="24"></Icon>
         </span>
         Tracks
       </a>
@@ -34,7 +29,7 @@ import logo from '$lib/images/mixel-music.svg';
     <li>
       <a href="/artists">
         <span class="sidebar-icon">
-          <IconamoonMusicArtist />
+          <Icon icon="iconoir:microphone" width="24" height="24"></Icon>
         </span>
         Artists
       </a>
@@ -42,7 +37,7 @@ import logo from '$lib/images/mixel-music.svg';
     <li>
       <a href="#">
         <span class="sidebar-icon">
-          <IconamoonHeadphone />
+          <Icon icon="iconoir:headset" width="24" height="24"></Icon>
         </span>
         Mixes
       </a>
@@ -52,48 +47,51 @@ import logo from '$lib/images/mixel-music.svg';
 
 <style>
 .sidebar {
-  width: 250px;
-  background-color: var(--color-dark-bg-2);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 0;
-  min-height: 100%;
-  padding: 21px;
+  
+  width: 250px;
+  height: 100%;
+
+  padding-left: 21px;
+  padding-right: 21px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+
+  background-color: var(--color-dark-bg-2);
   border-right: 1px solid var(--color-dark-border);
 }
 
 .sidebar-logo {
   display: flex;
-  font-size: 0;
   align-items: center;
+  font-size: 0;
 }
 
 .sidebar-list {
   list-style: none;
-  margin-top: 42px;
-}
 
-.sidebar-list li {
-  display: flex;
-  margin: 16px 0;
-  font-weight: 500;
-}
+  & .sidebar-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 19px;
+    display: flex;
+    color: var(--color-dark-text-2);
+    align-items: center;
+    justify-content: center;
+  }
 
-.sidebar-list a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
+  & li {
+    display: flex;
+    margin: 16px 0;
+  }
 
-.sidebar-icon {
-  width: 32px;
-  height: 32px;
-  font-size: 21px;
-  display: flex;
-  color: var(--color-dark-text-2);
-  align-items: center;
-  justify-content: center;
+  & a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
 }
 </style>

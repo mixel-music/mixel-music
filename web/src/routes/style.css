@@ -3,7 +3,7 @@
   --app-padding-l: 21px;
   --app-margin-s: 16px;
   --app-margin-l: 21px;
-	--app-radius: 0.5em;
+	--app-radius: 0.4em;
 
 	--app-font-family:
   Pretendard Variable,
@@ -43,10 +43,17 @@
   padding: 0;
 }
 
+*:focus {
+  outline: 1px dotted gray;
+  border-radius: var(--app-radius);
+}
+
 html {
   font-family: var(--app-font-family);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -111,14 +118,14 @@ input[type='text']:focus {
 
 .card-grid {
   display: grid;
-  grid-gap: 23px;
+  grid-gap: 21px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   overflow-x: hidden;
 }
 
 .card {
   white-space: nowrap;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .card-placeholder {
@@ -151,20 +158,4 @@ input[type='text']:focus {
 
 .btn-disabled {
   color: var(--color-dark-disabled);
-}
-
-*::-webkit-scrollbar{
-  position: fixed;
-  width: 0px; /* 3px */
-  background-color: transparent;
-}
-
-*::-webkit-scrollbar-thumb{
-  border: 3px solid var(--color-dark-border);
-  background-color: transparent;
-  border-radius: var(--app-radius);
-}
-
-*::-webkit-scrollbar-track{
-  background-color: transparent;
 }

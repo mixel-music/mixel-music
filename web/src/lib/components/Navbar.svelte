@@ -1,6 +1,5 @@
 <script lang="ts">
-import IconamoonArrowLeft2 from '~icons/iconamoon/arrow-left-2';
-import IconamoonArrowRight2 from '~icons/iconamoon/arrow-right-2';
+  import Icon from '@iconify/svelte';
 </script>
 
 <nav class="navbar">
@@ -11,14 +10,14 @@ import IconamoonArrowRight2 from '~icons/iconamoon/arrow-right-2';
         class="navbar-link navbar-explore"
         on:click={() => history.back()}
       >
-        <IconamoonArrowLeft2 class="navbar-icon" />
+        <Icon icon="iconoir:nav-arrow-left"></Icon>
       </button>
       <button
         type="button"
         class="navbar-link navbar-explore"
         on:click={() => history.forward()}
       >
-        <IconamoonArrowRight2 class="navbar-icon" />
+        <Icon icon="iconoir:nav-arrow-right"></Icon>
       </button>
     </div>
 

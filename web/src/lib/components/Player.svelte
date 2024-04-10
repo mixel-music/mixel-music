@@ -1,18 +1,8 @@
 <script lang="ts">
+  import Icon from '@iconify/svelte';
   import { onDestroy } from "svelte";
   import { hash, title, album, artist, imagehash } from '$lib/stores';
 
-  import IconamoonPlayerPauseFill from '~icons/iconamoon/player-pause-fill';
-  import IconamoonPlayerPlayFill from '~icons/iconamoon/player-play-fill';
-  import IconamoonPlayerStartFill from '~icons/iconamoon/player-start-fill';
-  import IconamoonPlayerEndFill from '~icons/iconamoon/player-end-fill';
-  import IconamoonVolumeUp from '~icons/iconamoon/volume-up';
-  import IconamoonVolumeDown from '~icons/iconamoon/volume-down';
-  import IconamoonVolumeOff from '~icons/iconamoon/volume-off';
-  import IconamoonPlaylistRepeatList from '~icons/iconamoon/playlist-repeat-list';
-  import IconamoonPlaylistRepeatSong from '~icons/iconamoon/playlist-repeat-song';
-  import IconamoonPlaylistShuffle from '~icons/iconamoon/playlist-shuffle';
-  import IconamoonPlaylist from '~icons/iconamoon/playlist';
   import Page from "../../routes/+page.svelte";
 
   let audioItem: HTMLAudioElement = new Audio();
@@ -215,7 +205,7 @@
         on:click={previousPlay}
         title="Previous"
       >
-        <IconamoonPlayerStartFill />
+        <Icon icon="iconoir:skip-prev-solid" width="24" height="24"></Icon>
       </button>
       {#if $hash}
         <button
@@ -223,18 +213,18 @@
           on:click={handlePlay}
         >
           {#if isPlaying}
-            <IconamoonPlayerPauseFill />
+            <Icon icon="iconoir:pause-solid" width="29" height="29"></Icon>
           {:else}
-            <IconamoonPlayerPlayFill />
+            <Icon icon="iconoir:play-solid" width="29" height="29"></Icon>
           {/if}
         </button>
       {:else}
         <button class="player-center-btn btn__primary">
-          <IconamoonPlayerPlayFill />
+          <Icon icon="iconoir:play-solid" width="29" height="29"></Icon>
         </button>
       {/if}
       <button class="player-center-btn" title="Next">
-        <IconamoonPlayerEndFill />
+        <Icon icon="iconoir:skip-next-solid" width="24" height="24"></Icon>
       </button>
     </div>
     <div
@@ -297,11 +287,11 @@
             on:click={muteVolume}
           >
             {#if volumeBar === 0 || audioItem.muted}
-              <IconamoonVolumeOff />
+              <Icon icon="iconoir:sound-off" width="22" height="22"></Icon>
             {:else if volumeBar < 50}
-              <IconamoonVolumeDown />
+              <Icon icon="iconoir:sound-low" width="22" height="22"></Icon>
             {:else}
-              <IconamoonVolumeUp />
+              <Icon icon="iconoir:sound-high" width="22" height="22"></Icon>
             {/if}
           </button>
         {/key}
@@ -312,18 +302,18 @@
         on:click={repeatTrack}
       >
         {#if isRepeatTrack === 1}
-          <IconamoonPlaylistRepeatList />
+          <Icon icon="iconoir:repeat" width="22" height="22"></Icon>
         {:else if isRepeatTrack === 2}
-          <IconamoonPlaylistRepeatSong />
+          <Icon icon="iconoir:repeat-once" width="22" height="22"></Icon>
         {:else}
-          <IconamoonPlaylistRepeatList />
+          <Icon icon="iconoir:repeat" width="22" height="22"></Icon>
         {/if}
       </button>
       <button class="player-side-btn" title="Shuffle">
-        <IconamoonPlaylistShuffle />
+        <Icon icon="iconoir:shuffle" width="22" height="22"></Icon>
       </button>
       <button class="player-side-btn" title="Playlist">
-        <IconamoonPlaylist />
+        <Icon icon="iconoir:playlist" width="22" height="22"></Icon>
       </button>
     </div>
   </div>
@@ -348,40 +338,32 @@
 }
 
 .player-center {
-  display: flex;
   position: fixed;
   left: 50%;
   transform: translate(-50%, 0);
-  justify-content: center;
-  flex-direction: column;
-  height: 96px;
 }
 
 .player-center-ctl {
   display: flex;
   justify-content: center;
+  padding: 4px 8px;
 }
 
 .player-center-btn {
   display: flex;
-  padding: 0 12px;
+  padding: 0 16px;
   border: none;
   background-color: transparent;
   color: var(--color-dark-text-1);
-  font-size: 20px;
   cursor: pointer;
   transition: 0.2s ease;
   align-items: center;
   justify-content: center;
 }
 
-.player-center-btn:focus {
-  outline: none;
-}
-
 .player-center-btn:hover {
   color: var(--color-dark-focus);
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .player-area {
@@ -425,7 +407,6 @@
   border: none;
   background-color: transparent;
   color: var(--color-dark-text-1);
-  font-size: 18px;
   cursor: pointer;
   transition: 0.2s ease;
   align-items: center;
@@ -433,16 +414,18 @@
 }
 
 .player-length {
-  width: 100%;
-  height: 3px;
   cursor: pointer;
-  padding: 12px;
-  border-radius: var(--app-radius);
+  padding: 8px;
 }
 
 .player-length-ctl {
-  width: 600px;
+  width: 550px;
   background-color: var(--color-dark-trk-len);
+  border-radius: var(--app-radius);
+}
+
+.player-length:focus {
+  outline: none;
 }
 
 .player-length-ctl__now {
@@ -455,27 +438,25 @@
 .player-volume {
   display: flex;
   align-items: center;
-  border-radius: var(--app-radius);
+  cursor: pointer;
 }
 
 .player-volume-ctl {
-  width: 128px;
-  cursor: pointer;
-  padding: 6px;
+  width: 110px;
+  padding: 6px 12px;
   background-color: var(--color-dark-trk-len);
   border-radius: var(--app-radius);
   background-clip: content-box;
+}
+
+.player-volume-ctl:focus {
+  outline: none;
 }
 
 .player-volume-ctl__now {
   height: 3px;
   background-color: var(--color-dark-trk-now);
   border-radius: var(--app-radius);
-}
-
-.btn__primary {
-  font-size: 28px;
-  margin: 0 10px;
 }
 
 .btn__disabled {
