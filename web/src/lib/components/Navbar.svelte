@@ -25,6 +25,19 @@
     </div>
 
     <div class="navbar-area-3">
+      <input type="search">
+      <button
+        type="button"
+        class="navbar-link navbar-explore"
+      >
+        <Icon icon="iconoir:refresh" width="24" height="24"></Icon>
+      </button>
+      <button
+        type="button"
+        class="navbar-link navbar-explore"
+      >
+        <Icon icon="iconoir:user" width="24" height="24"></Icon>
+      </button>
     </div>
   </div>
 </nav>
@@ -56,9 +69,9 @@
 }
 
 .navbar-area-3 {
+  width: 400px;
   display: flex;
   align-items: center;
-  padding: var(--app-padding-l) 0;
   gap: 12px;
 }
 
@@ -87,5 +100,19 @@
   background-color: var(--color-dark-bg-2);
   border: 1px solid var(--color-dark-border);
   border-radius: 50%;
+}
+
+input[type='search'] {
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  background-color: var(--color-dark-bg-2);
+  border: 1px solid var(--color-dark-border);
+  border-radius: var(--app-radius);
+  color: var(--color-dark-text-1);
+  font-family: var(--app-font-family);
+  font-size: 17px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(32px);
 }
 </style>
