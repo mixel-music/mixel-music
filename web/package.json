@@ -1,6 +1,6 @@
 {
 	"name": "mixel-music",
-	"version": "0.2.8a",
+	"version": "0.2.9a",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",

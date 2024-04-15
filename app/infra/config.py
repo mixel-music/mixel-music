@@ -21,7 +21,7 @@ class Config(BaseSettings):
 
     DEBUG: bool = True
     DB_ECHO: bool = False
-    VERSION: str = '0.2.8a'
+    VERSION: str = '0.2.9a'
     LOG_LEVEL: int = logging.DEBUG
 
 conf = Config()
