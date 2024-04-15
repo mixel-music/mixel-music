@@ -4,15 +4,15 @@
 .output
 .svelte-kit
 .vscode
+.venv
 
-__pycache__
 build
-node_modules
 package
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+node_modules
+__pycache__
 
 data
 music
 test
-venv

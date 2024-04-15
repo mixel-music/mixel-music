@@ -36,7 +36,7 @@
   justify-content: space-between;
   position: sticky;
   top: 0;
-  padding: 21px 0;
+  padding: 24px 0;
   max-width: 100%;
   user-select: none;
 }

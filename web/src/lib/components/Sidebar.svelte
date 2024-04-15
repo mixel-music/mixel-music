@@ -4,11 +4,21 @@
 </script>
 
 <div class="sidebar">
-  <div class="sidebar-logo">
+  <!-- <div class="sidebar-logo">
     <a href="/">
       <img src={logo} alt="mixel-music" width="42px">
     </a>
-  </div>
+  </div> -->
+  <ul class="sidebar-list">
+    <li>
+      <a href="/">
+        <span class="sidebar-icon">
+          <Icon icon="iconoir:home" width="24" height="24"></Icon>
+        </span>
+        Home
+      </a>
+    </li>
+  </ul>
   <ul class="sidebar-list">
     <li>
       <a href="/albums">
@@ -19,19 +29,19 @@
       </a>
     </li>
     <li>
-      <a href="/tracks">
-        <span class="sidebar-icon">
-          <Icon icon="iconoir:music-double-note" width="24" height="24"></Icon>
-        </span>
-        Tracks
-      </a>
-    </li>
-    <li>
       <a href="/artists">
         <span class="sidebar-icon">
           <Icon icon="iconoir:microphone" width="24" height="24"></Icon>
         </span>
         Artists
+      </a>
+    </li>
+    <li>
+      <a href="/tracks">
+        <span class="sidebar-icon">
+          <Icon icon="iconoir:music-double-note" width="24" height="24"></Icon>
+        </span>
+        Tracks
       </a>
     </li>
     <li>
@@ -85,7 +95,7 @@
 
   & li {
     display: flex;
-    margin: 16px 0;
+    margin-bottom: 16px;
   }
 
   & a {
