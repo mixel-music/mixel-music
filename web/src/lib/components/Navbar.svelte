@@ -25,7 +25,7 @@
     </div>
 
     <div class="navbar-area-3">
-      <input type="search">
+      <input type="search" name="search" placeholder="Search">
       <button
         type="button"
         class="navbar-link navbar-explore"
@@ -100,19 +100,5 @@
   background-color: var(--color-dark-bg-2);
   border: 1px solid var(--color-dark-border);
   border-radius: 50%;
-}
-
-input[type='search'] {
-  width: 100%;
-  height: 100%;
-  padding: 12px;
-  background-color: var(--color-dark-bg-2);
-  border: 1px solid var(--color-dark-border);
-  border-radius: var(--app-radius);
-  color: var(--color-dark-text-1);
-  font-family: var(--app-font-family);
-  font-size: 17px;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(32px);
 }
 </style>

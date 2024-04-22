@@ -3,8 +3,6 @@
   import { onDestroy } from "svelte";
   import { hash, title, album, artist, imagehash } from '$lib/stores';
 
-  import Page from "../../routes/+page.svelte";
-
   let audioItem: HTMLAudioElement = new Audio();
   let imagepath: string = "";
 

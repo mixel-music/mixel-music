@@ -23,7 +23,7 @@
     </li>
     <li>
       <a href="/">
-        Setting
+        My Mix
       </a>
     </li>
   </ul>
@@ -93,7 +93,7 @@
 }
 
 a:focus {
-  outline-offset: 4px;
+  outline-offset: 8px;
 }
 
 .sidebar-logo {
