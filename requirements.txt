@@ -10,7 +10,7 @@ filetype==1.2.0
 greenlet==3.0.3
 h11==0.14.0
 idna==3.7
-itsdangerous==2.1.2
+itsdangerous==2.2.0
 markdown-it-py==3.0.0
 mdurl==0.1.2
 mutagen==1.47.0
