@@ -81,7 +81,6 @@ input[type='search'] {
   border-radius: var(--app-radius);
   color: var(--color-dark-text-1);
   font-family: var(--app-font-family);
-  font-size: 17px;
   transition: all 0.2s ease;
   backdrop-filter: blur(32px);
 }
