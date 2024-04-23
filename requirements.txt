@@ -4,7 +4,7 @@ annotated-types==0.6.0
 anyio==4.3.0
 click==8.1.7
 colorama==0.4.6
-fastapi==0.110.0
+fastapi==0.110.2
 fastapi-sessions==0.3.2
 filetype==1.2.0
 greenlet==3.0.3
