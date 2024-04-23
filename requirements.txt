@@ -17,7 +17,7 @@ mutagen==1.47.0
 pillow==10.3.0
 pydantic==2.7.0
 pydantic-settings==2.2.1
-pydantic_core==2.18.1
+pydantic_core==2.18.2
 Pygments==2.17.2
 python-dotenv==1.0.1
 rich==13.7.1
