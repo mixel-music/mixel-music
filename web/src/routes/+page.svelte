@@ -1,6 +1,6 @@
 <script lang="ts">
   import { hash, title, album, artist, imagehash } from '$lib/stores';
-  import Header from '$lib/components/elements/tab-header.svelte'
+  import TabHeader from '$lib/components/elements/tab-header.svelte'
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -10,7 +10,7 @@
   <title>Home • mixel-music</title>
 </svelte:head>
 
-<Header title={data.title} />
+<TabHeader title={data.title} />
 
 {#if data.trackItem.length > 0}
   <div class="card-grid">

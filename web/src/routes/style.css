@@ -1,11 +1,13 @@
 :root {
-	--app-padding-s: 16px;
+  all: unset;
+
+  --app-padding-s: 16px;
   --app-padding-l: 21px;
   --app-margin-s: 16px;
   --app-margin-l: 21px;
-	--app-radius: 0.4em;
+  --app-radius: 0.4em;
 
-	--app-font-family:
+  --app-font-family:
   Pretendard Variable,
   Pretendard,
   -apple-system,
@@ -18,21 +20,21 @@
   sans-serif;
 
   --color-dark-bg-1: rgb(18, 18, 18);
-	--color-dark-bg-2: rgb(21, 21, 21);
-	--color-dark-bg-3: rgb(24, 24, 24);
-	--color-dark-bg-trk: rgb(21, 21, 21, 0.95);
+  --color-dark-bg-2: rgb(21, 21, 21);
+  --color-dark-bg-3: rgb(24, 24, 24);
+  --color-dark-bg-trk: rgb(21, 21, 21, 0.95);
   --color-dark-bg-nav: rgb(18, 18, 18, 0.95);
 
-	--color-dark-text-1: rgb(215, 215, 215);
+  --color-dark-text-1: rgb(215, 215, 215);
   --color-dark-text-2: rgb(166, 166, 166);
   
-	--color-dark-nav-itm: rgb(32, 32, 32, 0.95);
-	--color-dark-trk-len: rgb(86, 86, 86);
-	--color-dark-trk-now: rgb(215, 215, 215);
+  --color-dark-nav-itm: rgb(32, 32, 32, 0.95);
+  --color-dark-trk-len: rgb(86, 86, 86);
+  --color-dark-trk-now: rgb(215, 215, 215);
 
-	--color-dark-disabled: rgb(86, 86, 86);
-	--color-dark-border: rgb(32, 32, 32);
-	--color-dark-focus: rgb(155, 155, 155);
+  --color-dark-disabled: rgb(86, 86, 86);
+  --color-dark-border: rgb(32, 32, 32);
+  --color-dark-focus: rgb(155, 155, 155);
 }
 
 * {
@@ -52,6 +54,7 @@ html {
   font-family: var(--app-font-family);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
 }
@@ -72,69 +75,14 @@ a {
   cursor: pointer;
 }
 
-/* button:hover {
-  color: var(--color-dark-focus);
-  transition: all 0.1s ease;
-} */
-
-.text-title {
-  display: block;
-  font-size: 95%;
-  font-weight: 600;
-  text-overflow: ellipsis;
-  overflow: hidden;
+button {
   cursor: pointer;
 }
 
-.text-description {
-  display: block;
-  color: var(--color-dark-text-2);
-  font-size: 80%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.card-grid {
-  display: grid;
-  grid-gap: 21px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  overflow-x: hidden;
-}
-
-.card {
-  white-space: nowrap;
-  margin-bottom: 16px;
-}
-
-.card-placeholder {
-  display: flex;
-  white-space: nowrap;
-  flex-direction: column;
-}
-
-.card-image {
-  display: block;
-  width: 100%;
-  object-fit: scale-down;
-  aspect-ratio: 1/1;
-  border-radius: var(--app-radius);
-  cursor: pointer;
-}
-
-.card-image-content {
-  display: block;
-  background-color: var(--color-dark-bg-2);
-  box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-  border-radius: var(--app-radius);
-  aspect-ratio: 1/1;
-  cursor: pointer;
+button:disabled {
+  color: var(--color-dark-disabled);
 }
 
 .card-content {
   padding-top: var(--app-padding-s);
-}
-
-.btn-disabled {
-  color: var(--color-dark-disabled);
 }

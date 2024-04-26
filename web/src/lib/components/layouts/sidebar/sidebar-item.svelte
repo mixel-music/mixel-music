@@ -9,24 +9,16 @@
 <li>
   <a href={link}>
     {#if icon}
-      <span class="sidebar-icon">
+      <span>
         <Icon icon={icon} width="24" height="24" />
       </span>
     {/if}
+
     {title}
   </a>
 </li>
 
 <style>
-  .sidebar-icon {
-    width: 36px;
-    min-height: 36px;
-    display: flex;
-    color: var(--color-dark-text-2);
-    align-items: center;
-    justify-content: center;
-  }
-
   li {
     display: flex;
     margin-bottom: 16px;
@@ -38,9 +30,18 @@
     align-items: center;
     min-height: 36px;
     width: 100%;
+
+    & span {
+      width: 36px;
+      min-height: 36px;
+      display: flex;
+      color: var(--color-dark-text-2);
+      align-items: center;
+      justify-content: center;
+    }
   }
 
-  a:focus {
+  a:hover, a:active, a:focus {
     outline-offset: 8px;
   }
 </style>

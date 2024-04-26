@@ -1,50 +1,43 @@
 <script lang="ts">
-  import { hash, title, album, artist, imagehash } from '$lib/stores';
-  import Header from '$lib/components/elements/tab-header.svelte'
   import type { PageData } from './$types';
+  import { hash, title, album, artist, imagehash } from '$lib/stores';
+  import CardGridGroup from '$lib/components/elements/card-grid-group.svelte';
+  import CardGrid from '$lib/components/elements/card-grid.svelte';
+  import ContentTitle from '$lib/components/elements/content-title.svelte';
+  import ContentText from '$lib/components/elements/content-text.svelte';
 
   export let data: PageData;
+
+  function SetTrack(tag: any): void {
+    hash.set(tag.hash),
+    title.set(tag.title),
+    album.set(tag.album),
+    artist.set(tag.artist), 
+    imagehash.set(tag.imagehash)
+  }
 </script>
 
 <svelte:head>
   <title>Tracks • mixel-music</title>
 </svelte:head>
 
-<Header title={data.title} />
-
 {#if data.trackItem.length > 0}
-  <div class="card-grid">
+  <CardGridGroup title={ data.title }>
+
     {#each data.trackItem as tag (tag.hash)}
-      <div class="card">
-        <div
-          role="button"
-          tabindex=0
+      <CardGrid
+        on:click={() => SetTrack(tag) }
+        src={ `http://localhost:2843/api/images/${tag.imagehash}?size=300` }
+        alt={ tag.title }
+      >
 
-          class="card-image-content"
-          on:click={() => (
-            hash.set(tag.hash),
-            title.set(tag.title),
-            album.set(tag.album),
-            artist.set(tag.artist), 
-            imagehash.set(tag.imagehash)
-          )}
-        >
-          <img
-            loading="lazy"
-            src={`http://localhost:2843/api/images/${tag.imagehash}?size=300`}
-            alt="{tag.title}"
-            class="card-image"
-          >
-          </div>
         <div class="card-content">
-          <span class="text-title">{ tag.title }</span>
-          <span class="text-description">{ tag.artist }</span>
+          <ContentTitle title="{ tag.title }" />
+          <ContentText text="{ tag.artist }" />
         </div>
-      </div>
-    {/each}
-  </div>
-{:else}
-  <div class="card-placeholder">
 
-  </div>
+      </CardGrid>
+    {/each}
+
+  </CardGridGroup>
 {/if}

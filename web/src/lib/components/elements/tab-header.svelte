@@ -1,14 +1,14 @@
 <script lang="ts">
-  export let title: string;
+  export let title: string | undefined;
 </script>
 
+{#if title}
 <div>
   <span>
-    {#if title}
-      {title}
-    {/if}
+    {title}
   </span>
 </div>
+{/if}
 
 <style>
   div {
