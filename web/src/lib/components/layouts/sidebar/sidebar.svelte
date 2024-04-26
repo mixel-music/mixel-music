@@ -38,17 +38,17 @@
 </div>
 
 <style>
-div {
-  position: fixed;
-  width: 250px;
-  height: 100%;
+  div {
+    position: fixed;
+    width: 250px;
+    height: 100%;
 
-  top: 0;
-  left: 0;
-  z-index: 0;
+    top: 0;
+    left: 0;
+    z-index: 0;
 
-  padding: 24px 21px;
-  background-color: var(--color-dark-bg-2);
-  border-right: 1px solid var(--color-dark-border);
-}
+    padding: 24px 21px;
+    background-color: var(--color-dark-bg-2);
+    border-right: 1px solid var(--color-dark-border);
+  }
 </style>

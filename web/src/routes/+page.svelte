@@ -1,6 +1,6 @@
 <script lang="ts">
   import { hash, title, album, artist, imagehash } from '$lib/stores';
-  import Header from '$lib/components/layouts/title.svelte'
+  import Header from '$lib/components/elements/tab-header.svelte'
   import type { PageData } from './$types';
 
   export let data: PageData;

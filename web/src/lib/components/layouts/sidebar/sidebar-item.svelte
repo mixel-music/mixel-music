@@ -10,7 +10,7 @@
   <a href={link}>
     {#if icon}
       <span class="sidebar-icon">
-        <Icon icon={icon} width="24" height="24"></Icon>
+        <Icon icon={icon} width="24" height="24" />
       </span>
     {/if}
     {title}
