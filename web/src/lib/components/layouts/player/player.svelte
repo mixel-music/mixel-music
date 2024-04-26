@@ -225,6 +225,7 @@
         <Icon icon="iconoir:skip-next-solid" width="24" height="24"></Icon>
       </button>
     </div>
+    <!-- svelte-ignore a11y-role-has-required-aria-props -->
     <div
       tabindex=0
       role="slider"
@@ -267,6 +268,7 @@
     <div class="player-area-2">
       <div class="player-volume">
         {#key muteVolume}
+          <!-- svelte-ignore a11y-role-has-required-aria-props -->
           <div
             tabindex=0
             role="slider"

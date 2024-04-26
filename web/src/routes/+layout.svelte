@@ -1,8 +1,8 @@
 <script lang="ts">
 	import './style.css';
-	import Sidebar from '$lib/components/Sidebar.svelte';
-	import Navbar from '$lib/components/Navbar.svelte';
-	import Player from '$lib/components/Player.svelte';
+	import Sidebar from '$lib/components/layouts/sidebar/sidebar.svelte';
+	import Navbar from '$lib/components/layouts/navbar/navbar.svelte';
+	import Player from '$lib/components/layouts/player/player.svelte';
 </script>
 
 <div id="app">
