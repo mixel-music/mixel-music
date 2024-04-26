@@ -22,7 +22,7 @@
         alt="{tag.album}"
       >
 
-        <div class="card-content">
+        <div>
           <ContentTitle title={ tag.album } />
           <ContentText text={ tag.albumartist } />
         </div>
@@ -32,3 +32,9 @@
 
   </CardGridGroup>
 {/if}
+
+<style>
+  div {
+    padding-top: var(--app-padding-s);
+  }
+</style>

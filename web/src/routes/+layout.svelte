@@ -1,6 +1,5 @@
 <script lang="ts">
 	import './style.css';
-
 	import Sidebar from '$lib/components/layouts/sidebar/sidebar.svelte';
 	import Navbar from '$lib/components/layouts/navbar/navbar.svelte';
 	import Player from '$lib/components/layouts/player/player.svelte';
@@ -9,7 +8,7 @@
 <div id="app">
 	<Sidebar />
 
-	<section class="content">
+	<section>
 		<Navbar />
 		<slot />
 	</section>
@@ -26,11 +25,10 @@
 		box-sizing: border-box;
 	}
 
-	.content {
+	section {
   	max-width: 100%;
   	padding: 64px;
 		padding-top: 0;
-		/* padding-top: 0; */
 		margin-left: 250px;
     margin-bottom: 96px;
 	}

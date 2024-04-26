@@ -31,7 +31,7 @@
         alt={ tag.title }
       >
 
-        <div class="card-content">
+        <div>
           <ContentTitle title="{ tag.title }" />
           <ContentText text="{ tag.artist }" />
         </div>
@@ -41,3 +41,9 @@
 
   </CardGridGroup>
 {/if}
+
+<style>
+  div {
+    padding-top: var(--app-padding-s);
+  }
+</style>

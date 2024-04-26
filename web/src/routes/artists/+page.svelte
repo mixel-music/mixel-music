@@ -17,7 +17,7 @@
     {#each data.artistItem as tag (tag.artisthash)}
       <CardGrid>
 
-        <div class="card-content">
+        <div>
           <ContentTitle title={ tag.artist } />
         </div>
 
@@ -26,3 +26,9 @@
 
   </CardGridGroup>
 {/if}
+
+<style>
+  div {
+    padding-top: var(--app-padding-s);
+  }
+</style>

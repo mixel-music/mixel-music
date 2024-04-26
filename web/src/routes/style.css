@@ -82,7 +82,3 @@ button {
 button:disabled {
   color: var(--color-dark-disabled);
 }
-
-.card-content {
-  padding-top: var(--app-padding-s);
-}
