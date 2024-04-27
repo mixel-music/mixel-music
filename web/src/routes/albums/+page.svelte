@@ -1,36 +1,37 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import CardGridGroup from '$lib/components/elements/card-grid-group.svelte';
-  import CardGrid from '$lib/components/elements/card-grid.svelte';
-  import ContentTitle from '$lib/components/elements/content-title.svelte';
-  import ContentText from '$lib/components/elements/content-text.svelte';
+
+  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
+  import CardItem from '$lib/components/elements/card-item.svelte';
+  import ContentHead from '$lib/components/elements/content-head.svelte';
+  import ContentBody from '$lib/components/elements/content-body.svelte';
 
   export let data: PageData;
 </script>
 
 <svelte:head>
-  <title>Albums • mixel-music</title>
+  <title>{ data.title } • mixel-music</title>
 </svelte:head>
 
-{#if data.albumItem.length > 0}
-  <CardGridGroup title={data.title}>
+{#if data.albumListItem.length > 0}
+  <CardItemGroup title={ data.title }>
 
-    {#each data.albumItem as tag (tag.albumhash)}
-      <CardGrid
-        link="/albums/{tag.albumhash}"
-        src={`http://localhost:2843/api/images/${tag.imagehash}?size=300`}
-        alt="{tag.album}"
+    {#each data.albumListItem as album (album.albumhash)}
+      <CardItem
+        link="/albums/{ album.albumhash }"
+        src={`http://localhost:2843/api/images/${ album.imagehash }?size=300`}
+        alt="{ album.album }"
       >
 
         <div>
-          <ContentTitle title={ tag.album } />
-          <ContentText text={ tag.albumartist } />
+          <ContentHead head={ album.album } />
+          <ContentBody body={ album.albumartist } />
         </div>
 
-      </CardGrid>
+      </CardItem>
     {/each}
 
-  </CardGridGroup>
+  </CardItemGroup>
 {/if}
 
 <style>

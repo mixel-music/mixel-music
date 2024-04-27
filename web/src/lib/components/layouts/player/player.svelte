@@ -2,8 +2,8 @@
   import Icon from '@iconify/svelte';
   import { onDestroy } from "svelte";
   import { hash, title, album, artist, imagehash } from '$lib/stores';
-  import ContentTitle from '$lib/components/elements/content-title.svelte';
-  import ContentText from '$lib/components/elements/content-text.svelte';
+  import ContentHead from '$lib/components/elements/content-head.svelte';
+  import ContentBody from '$lib/components/elements/content-body.svelte';
 
   let audioItem: HTMLAudioElement = new Audio();
   let imagepath: string = "";
@@ -254,9 +254,9 @@
           alt="Front Cover"
         />
         <div class="player-area-1-trk">
-          <ContentTitle title='{$title ? $title : ""}' />
-          <ContentText text='{$artist ? $artist : ""} - {$album ? $album : ""}' />
-          <ContentText text='{ currentString } / { durationString }' />
+          <ContentHead head='{$title ? $title : ""}' />
+          <ContentBody body='{$artist ? $artist : ""} - {$album ? $album : ""}' />
+          <ContentBody body='{ currentString } / { durationString }' />
         </div>
       {/if}
     </div>

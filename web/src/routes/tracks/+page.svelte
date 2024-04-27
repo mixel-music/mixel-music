@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { hash, title, album, artist, imagehash } from '$lib/stores';
-  import CardGridGroup from '$lib/components/elements/card-grid-group.svelte';
-  import CardGrid from '$lib/components/elements/card-grid.svelte';
-  import ContentTitle from '$lib/components/elements/content-title.svelte';
-  import ContentText from '$lib/components/elements/content-text.svelte';
+
+  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
+  import CardItem from '$lib/components/elements/card-item.svelte';
+  import ContentHead from '$lib/components/elements/content-head.svelte';
+  import ContentBody from '$lib/components/elements/content-body.svelte';
 
   export let data: PageData;
 
@@ -18,28 +19,27 @@
 </script>
 
 <svelte:head>
-  <title>Tracks • mixel-music</title>
+  <title>{ data.title } • mixel-music</title>
 </svelte:head>
 
-{#if data.trackItem.length > 0}
-  <CardGridGroup title={ data.title }>
+{#if data.trackListItem.length > 0}
+  <CardItemGroup title={ data.title }>
 
-    {#each data.trackItem as tag (tag.hash)}
-      <CardGrid
-        on:click={() => SetTrack(tag) }
-        src={ `http://localhost:2843/api/images/${tag.imagehash}?size=300` }
-        alt={ tag.title }
+    {#each data.trackListItem as track (track.hash)}
+      <CardItem
+        on:click={() => SetTrack(track) }
+        src={ `http://localhost:2843/api/images/${ track.imagehash }?size=300` }
+        alt={ track.title }
       >
-
         <div>
-          <ContentTitle title="{ tag.title }" />
-          <ContentText text="{ tag.artist }" />
+          <ContentHead head="{ track.title }" />
+          <ContentBody body="{ track.artist }" />
         </div>
 
-      </CardGrid>
+      </CardItem>
     {/each}
 
-  </CardGridGroup>
+  </CardItemGroup>
 {/if}
 
 <style>

@@ -1,23 +1,14 @@
 import type { PageLoad } from './$types';
+import type { artistListModel } from '$lib/model';
 
 export const load: PageLoad = async ({ fetch }) => {
-  interface artistItemModel {
-    artisthash: string;
-    artist: string;
-  }
+  let artistListItem: artistListModel[] = [];
 
-  let artistItem: artistItemModel[] = [];
-
-  const artistFetch = await fetch('http://localhost:2843/api/artists');
-  const artist = await artistFetch.json();
-
-  artistItem = artist.map((tag: any) => ({
-    artisthash: tag.artisthash,
-    artist: tag.artist,
-  }));
+  const getArtistList = await fetch('http://localhost:2843/api/artists');
+  artistListItem = await getArtistList.json();
 
   return {
-    artistItem,
+    artistListItem,
     title: 'Artists',
   };
 };

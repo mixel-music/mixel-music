@@ -65,7 +65,7 @@ class Albums(Base):
     album: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
     imagehash: str = Column(String(40), nullable=False)
-    date: int = Column(Integer, nullable=False)
+    date: str = Column(String, nullable=False)
     year: int = Column(Integer, nullable=False)
     durationtotals: float = Column(REAL, nullable=False)
     tracktotals: int = Column(Integer, nullable=False)

@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let title: string;
+  export let head: string;
 </script>
 
 <span>
-  { title }
+  { head }
 </span>
 
 <style>

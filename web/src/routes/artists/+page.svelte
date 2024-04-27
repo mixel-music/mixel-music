@@ -1,30 +1,31 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import CardGridGroup from '$lib/components/elements/card-grid-group.svelte';
-  import CardGrid from '$lib/components/elements/card-grid.svelte';
-  import ContentTitle from '$lib/components/elements/content-title.svelte';
+
+  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
+  import CardItem from '$lib/components/elements/card-item.svelte';
+  import ContentHead from '$lib/components/elements/content-head.svelte';
 
   export let data: PageData;
 </script>
 
 <svelte:head>
-  <title>Artists • mixel-music</title>
+  <title>{ data.title } • mixel-music</title>
 </svelte:head>
 
-{#if data.artistItem.length > 0}
-  <CardGridGroup title={ data.title }>
+{#if data.artistListItem.length > 0}
+  <CardItemGroup title={ data.title }>
 
-    {#each data.artistItem as tag (tag.artisthash)}
-      <CardGrid>
+    {#each data.artistListItem as artist (artist.artisthash)}
+      <CardItem>
 
         <div>
-          <ContentTitle title={ tag.artist } />
+          <ContentHead head={ artist.artist } />
         </div>
 
-      </CardGrid>
+      </CardItem>
     {/each}
 
-  </CardGridGroup>
+  </CardItemGroup>
 {/if}
 
 <style>

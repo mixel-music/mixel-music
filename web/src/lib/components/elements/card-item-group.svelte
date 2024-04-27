@@ -1,10 +1,10 @@
 <script lang="ts">
-  import TabHeader from "./tab-header.svelte";
+  import PageHead from "./page-head.svelte";
 
   export let title: string | undefined = undefined;
 </script>
 
-<TabHeader title={title} />
+<PageHead title={title} />
 
 <div>
   <slot />

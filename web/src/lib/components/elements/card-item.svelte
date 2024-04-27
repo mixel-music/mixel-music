@@ -7,10 +7,7 @@
 
 <div>
   {#if src}
-    <a
-      href={link}
-      on:click
-    >
+    <a href={link} on:click>
       <img
         loading={lazy ? "lazy" : undefined}
         src={src}
@@ -20,10 +17,8 @@
     <slot />
 
   {:else}
-    <a
-      href={link}
-      on:click
-    >
+    <a href={link} on:click>
+      
     </a>
     <slot />
 
@@ -37,7 +32,8 @@
   }
 
   a {
-    display: block;
+    width: auto;
+    display: flex;
     background-color: var(--color-dark-bg-2);
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
     border-radius: var(--app-radius);
