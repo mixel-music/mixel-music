@@ -22,7 +22,7 @@
       title='Artists'
       icon='iconoir:microphone'
       />
-      
+
     <SidebarItem
       href='/tracks'
       title='Tracks'
@@ -30,7 +30,7 @@
     />
   </SidebarSection>
   
-  <SidebarSection title='PlayLists'>
+  <SidebarSection title='Playlists'>
     <SidebarItem
       href=''
       title='Create Playlist'
