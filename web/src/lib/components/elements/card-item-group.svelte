@@ -4,7 +4,7 @@
   export let title: string | undefined = undefined;
 </script>
 
-<PageHead title={title} />
+<PageHead {title} />
 
 <div>
   <slot />

@@ -5,12 +5,9 @@
   export let title: string = '';
 </script>
 
-<button
-  type="button"
-  on:click
->
+<button type="button" on:click>
   {#if icon}
-    <Icon icon={icon} />
+    <Icon {icon} />
   {/if}
 
   {#if title}

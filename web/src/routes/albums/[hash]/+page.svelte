@@ -4,7 +4,7 @@
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/content-head.svelte';
 
-  export let data: PageData["albumItem"];
+  export let data: PageData;
 </script>
 
 <style>

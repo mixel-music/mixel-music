@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let body: string;
+  export let body: string | undefined = undefined;
 </script>
 
 <span>
-  { body }
+  {body}
 </span>
 
 <style>

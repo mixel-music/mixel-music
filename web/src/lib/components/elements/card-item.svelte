@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let lazy: boolean = true;
+  export let lazy: boolean = false;
   export let link: string | undefined = undefined;
   export let alt: string | undefined = undefined;
   export let src: string | undefined = undefined;
@@ -9,9 +9,8 @@
   {#if src}
     <a href={link} on:click>
       <img
-        loading={lazy ? "lazy" : undefined}
-        src={src}
-        alt={alt}
+        loading={lazy ? 'lazy' : null}
+        {src} {alt}
       >
     </a>
     <slot />

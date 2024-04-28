@@ -3,7 +3,7 @@
 </script>
 
 <span>
-  { head }
+  {head}
 </span>
 
 <style>

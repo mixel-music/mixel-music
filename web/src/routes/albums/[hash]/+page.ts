@@ -1,9 +1,9 @@
 import type { PageLoad } from './$types';
-import type { albumModel } from '$lib/model';
+import type { Album } from '$lib/interface';
 
 export const load: PageLoad = async ({ fetch, params }) => {
   const albumHash: string = params.hash;
-  let albumItem: albumModel[] = [];
+  let albumItem: Album[] = [];
 
   const getAlbum = await fetch(`http://localhost:2843/api/albums/${ albumHash }`);
   albumItem = await getAlbum.json();
@@ -12,21 +12,3 @@ export const load: PageLoad = async ({ fetch, params }) => {
     albumItem,
   }
 }
-
-// export const load: PageLoad = async ({ fetch, params }) => {
-//   const albumHash = params.hash
-
-//   interface albumItemModel {
-//     [key: string]: any;
-//   }
-
-//   let albumItem: albumItemModel[] = [];
-
-//   const albumFetch = await fetch(`http://localhost:2843/api/albums/${ albumHash }`);
-//   const album = await albumFetch.json();
-
-//   return {
-//     album: album,
-//     title: 'Albums',
-//   };
-// };

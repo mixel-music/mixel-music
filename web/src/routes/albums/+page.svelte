@@ -21,6 +21,7 @@
         link="/albums/{ album.albumhash }"
         src={`http://localhost:2843/api/images/${ album.imagehash }?size=300`}
         alt="{ album.album }"
+        lazy
       >
 
         <div>
