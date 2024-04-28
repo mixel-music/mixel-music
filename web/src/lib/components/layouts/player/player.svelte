@@ -203,7 +203,8 @@
 
 <div class="player">
   <div class="player-center">
-    <div class="player-center-ctl">
+
+    <div class="player-button">
 
       <PlayerButton
         title='Previous'
@@ -245,11 +246,11 @@
       {#if $hash}
         <img
           src="{imagepath}?size=128"
-          class="player-area-1-img"
+          class="player-cover"
           alt="Front Cover"
         />
 
-        <div class="player-area-1-trk">
+        <div class="player-track">
           <ContentHead head='{$title ? $title : ""}' />
           <ContentBody body='{$artist ? $artist : ""} - {$album ? $album : ""}' />
           <ContentBody body='{ currentString } / { durationString }' />
@@ -327,18 +328,6 @@
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
   }
 
-  .player-center {
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, 0);
-  }
-
-  .player-center-ctl {
-    display: flex;
-    justify-content: center;
-    padding: 4px 8px;
-  }
-
   .player-area {
     width: 100%;
     display: flex;
@@ -352,7 +341,12 @@
     gap: var(--app-padding-s);
   }
 
-  .player-area-1-img {
+  .player-area-2 {
+    display: flex;
+    align-items: center;
+  }
+
+  .player-cover {
     width: 56px;
     height: 56px;
     object-fit: scale-down;
@@ -362,16 +356,23 @@
     cursor: pointer;
   }
 
-  .player-area-1-trk {
+  .player-track {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     line-height: 120%;
   }
 
-  .player-area-2 {
+  .player-center {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .player-button {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
   }
 
   .player-volume {

@@ -19,7 +19,7 @@
 >
   {#if icon}
     <Icon
-      icon={icon}
+      {icon}
       width={primary_button ? '29' : '24'}
       height={primary_button ? '29' : '24'}
     />

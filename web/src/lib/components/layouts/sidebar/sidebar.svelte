@@ -5,34 +5,36 @@
 
 <div>
   <SidebarSection>
-      <SidebarItem link="/" title="Home" />
-      <SidebarItem link="/" title="Search" />
-      <SidebarItem link="/" title="My Mix" />
+      <SidebarItem href='/' title='Home' />
+      <SidebarItem href='/' title='Search' />
+      <SidebarItem href='/' title='My Mix' />
   </SidebarSection>
 
-  <SidebarSection title="Library">
+  <SidebarSection title='Library'>
     <SidebarItem
-      link="/albums"
-      title="Albums"
-      icon="iconoir:compact-disc"
+      href='/albums'
+      title='Albums'
+      icon='iconoir:compact-disc'
     />
+
     <SidebarItem
-      link="/artists"
-      title="Artists"
-      icon="iconoir:microphone"
+      href='/artists'
+      title='Artists'
+      icon='iconoir:microphone'
       />
+      
     <SidebarItem
-      link="/tracks"
-      title="Tracks"
-      icon="iconoir:music-double-note"
+      href='/tracks'
+      title='Tracks'
+      icon='iconoir:music-double-note'
     />
   </SidebarSection>
   
-  <SidebarSection title="PlayLists">
+  <SidebarSection title='PlayLists'>
     <SidebarItem
-      link=""
-      title="Create Playlist"
-      icon="iconoir:plus"
+      href=''
+      title='Create Playlist'
+      icon='iconoir:plus'
     />
   </SidebarSection>
 </div>

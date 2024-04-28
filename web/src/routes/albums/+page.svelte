@@ -18,10 +18,10 @@
 
     {#each data.albumListItem as album (album.albumhash)}
       <CardItem
-        link="/albums/{ album.albumhash }"
+        href="/albums/{ album.albumhash }"
         src={`http://localhost:2843/api/images/${ album.imagehash }?size=300`}
         alt="{ album.album }"
-        lazy
+        lazyload
       >
 
         <div>

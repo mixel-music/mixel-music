@@ -2,7 +2,7 @@
   export let title: string | undefined = undefined;
 </script>
 
-<ul title={title}>
+<ul {title}>
   <slot />
 </ul>
 

@@ -1,36 +1,38 @@
 <script lang="ts">
-  export let lazy: boolean = false;
-  export let link: string | undefined = undefined;
+  export let lazyload: boolean = false;
+  export let href: string | undefined = undefined;
   export let alt: string | undefined = undefined;
   export let src: string | undefined = undefined;
 </script>
 
-<div>
+<div class="card-item">
   {#if src}
-    <a href={link} on:click>
-      <img
-        loading={lazy ? 'lazy' : null}
-        {src} {alt}
-      >
-    </a>
+    <div class="card-body">
+      <a {href} on:click>
+        <img
+          loading={lazyload ? 'lazy' : null}
+          {src} {alt}
+        >
+      </a>
+    </div>
     <slot />
 
   {:else}
-    <a href={link} on:click>
-      
-    </a>
+    <div class="card-body">
+
+    </div>
     <slot />
 
   {/if}
 </div>
 
 <style>
-  div {
+  .card-item {
     white-space: nowrap;
     margin-bottom: 16px;
   }
 
-  a {
+  .card-body {
     width: auto;
     display: flex;
     background-color: var(--color-dark-bg-2);

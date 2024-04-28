@@ -1,16 +1,16 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
 
-  export let link: string;
+  export let href: string;
   export let icon: string | undefined = undefined;
   export let title: string;
 </script>
 
 <li>
-  <a href={link}>
+  <a {href}>
     {#if icon}
       <span>
-        <Icon icon={icon} width="24" height="24" />
+        <Icon {icon} width="24" height="24" />
       </span>
     {/if}
 

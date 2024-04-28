@@ -30,7 +30,7 @@
         on:click={() => SetTrack(track) }
         src={ `http://localhost:2843/api/images/${ track.imagehash }?size=300` }
         alt={ track.title }
-        lazy
+        lazyload
       >
         <div>
           <ContentHead head="{ track.title }" />
