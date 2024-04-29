@@ -1,6 +1,4 @@
 :root {
-  all: unset;
-
   --app-padding-s: 16px;
   --app-padding-l: 21px;
   --app-margin-s: 16px;
@@ -41,8 +39,8 @@
   user-select: none;
   -webkit-user-drag: none;
   box-sizing: border-box;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
 *:focus {
