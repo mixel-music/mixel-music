@@ -33,8 +33,4 @@
       border-radius: var(--app-radius);
     }
   }
-
-  .slider-ctl:focus {
-    outline: none;
-  }
 </style>

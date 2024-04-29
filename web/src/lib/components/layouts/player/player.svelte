@@ -112,7 +112,7 @@
 
   function lengthSeek(event: MouseEvent): void {
     handleSeek(event, '.length-ctl', (value) => {
-      if (audioItem) {
+      if (audioItem && $hash) {
         currentTime = value * durationTime;
         currentString = formatTime(currentTime);
         currentBar = value * 100;
@@ -127,6 +127,7 @@
     handleSeek(event, '.volume-ctl', (value) => {
       volumeBar = value * 100;
       if (audioItem) {
+        audioItem.muted = false;
         audioItem.volume = value;
       }
     });
@@ -235,7 +236,7 @@
       value={currentBar}
       unique='length-ctl'
       on:click={(event) => lengthSeek(event)}
-      on:mousedown={(event => handleDragStart(event, 'length'))}  
+      on:mousedown={(event => handleDragStart(event, 'length'))}
     />
 
   </div>
@@ -323,7 +324,6 @@
     height: 96px;
     background-color: var(--color-dark-bg-trk);
     backdrop-filter: blur(64px);
-    user-select: none;
     border-top: 1px solid var(--color-dark-border);
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
   }
@@ -360,7 +360,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    line-height: 120%;
+    line-height: 115%;
   }
 
   .player-center {
@@ -372,11 +372,15 @@
   .player-button {
     display: flex;
     justify-content: center;
-    padding: 4px 8px;
+    padding: 0 6px;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    gap: 24px;
   }
 
   .player-volume {
     display: flex;
     align-items: center;
+    gap: 4px;
   }
 </style>

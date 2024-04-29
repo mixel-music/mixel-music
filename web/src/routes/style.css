@@ -54,7 +54,6 @@ html {
   font-family: var(--app-font-family);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
 }

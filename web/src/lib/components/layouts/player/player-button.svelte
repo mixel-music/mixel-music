@@ -13,15 +13,17 @@
 <button
   {title}
   on:click
-  style:padding={control_button ? '0 16px' : ''}
+  style:padding={control_button ? '3px' : ''}
+  style:width={control_button ? '32px' : ''}
+  style:height={control_button ? '32px' : ''}
   style:color={turn_off ? 'var(--color-dark-disabled)' : null}
   {disabled}
 >
   {#if icon}
     <Icon
       {icon}
-      width={primary_button ? '29' : '24'}
-      height={primary_button ? '29' : '24'}
+      width={primary_button ? '29' : '23'}
+      height={primary_button ? '29' : '23'}
     />
   {/if}
 
