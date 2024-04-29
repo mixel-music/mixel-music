@@ -10,5 +10,6 @@ export const load: PageLoad = async ({ fetch, params }) => {
 
   return {
     albumItem,
+    title: albumItem.album,
   }
 }
