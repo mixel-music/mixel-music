@@ -170,39 +170,19 @@ class Library:
             except OperationalError as err:
                 logs.error("Failed to load track, %s", err)
                 raise err
-
+            
 
     @staticmethod
     async def get_albums(hash: str = None, num: int = None):
-        alb_list = []
-        if not hash:
-            try:
-                async with session() as conn:
-                    album_list = await conn.execute(
-                        select(Albums.__table__).order_by(Albums.album.asc()).limit(num)
-                    )
-                    album_list = album_list.mappings().all()
-
-                for alb in album_list:
-                    alb_dict = AlbumListSchema(**alb).model_dump()
-                    alb_list.append(alb_dict)
-
-                return alb_list
-            
-            except OperationalError as err:
-                logs.error("Failed to load albums, %s", err)
-                raise err
-        else:
-            try:
-                async with session() as conn:
+        try:
+            async with session() as conn:
+                if hash:
                     album_result = await conn.execute(
                         select(Albums.__table__).where(Albums.albumhash == hash)
                     )
                     album_data = album_result.mappings().first()
-
                     if album_data:
                         album_data = dict(album_data)
-
                         track_result = await conn.execute(
                             select(
                                 Tracks.title,
@@ -214,18 +194,19 @@ class Library:
                             .where(Tracks.albumhash == hash)
                             .order_by(Tracks.tracknumber.asc())
                         )
-                        track_data = track_result.mappings().all()
-                        track_data = [dict(track) for track in track_data]
-
-                        album_data['tracks'] = track_data
+                        album_data['tracks'] = [dict(track) for track in track_result.mappings().all()]
                         return album_data
                     else:
                         return {}
-                
-            except OperationalError as err:
-                logs.error("Failed to load album, %s", err)
-                raise err
-
+                else:
+                    album_list = await conn.execute(
+                        select(Albums.__table__).order_by(Albums.album.asc()).limit(num)
+                    )
+                    return [dict(album) for album in album_list.mappings().all()]
+        except OperationalError as err:
+            logs.error("Failed to load albums, %s", err)
+            raise err
+    
 
     @staticmethod
     async def get_artists(hash: str = None, num: int = None):

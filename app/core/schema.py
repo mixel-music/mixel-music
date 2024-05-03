@@ -34,7 +34,7 @@ class TrackListSchema(BaseModel):
         from_attributes = True
 
 class AlbumSchema(sql_schema(Albums)):
-    pass
+    tracks: list = None
 
 class AlbumListSchema(BaseModel):
     albumhash: str = None
