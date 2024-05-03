@@ -4,26 +4,26 @@
   export let title: string | undefined = undefined;
   export let icon: string | undefined = undefined;
   export let disabled: boolean = false;
-  export let turn_off: boolean = false;
-  export let control_button: boolean = false;
-  export let primary_button: boolean = false;
+  export let TurnOff: boolean = false;
+  export let ControlButton: boolean = false;
+  export let PrimaryButton: boolean = false;
   export let text: string = '';
 </script>
 
 <button
   {title}
   on:click
-  style:padding={control_button ? '3px' : ''}
-  style:width={control_button ? '32px' : ''}
-  style:height={control_button ? '32px' : ''}
-  style:color={turn_off ? 'var(--color-dark-disabled)' : null}
+  style:padding={ControlButton ? '3px' : ''}
+  style:width={ControlButton ? '32px' : ''}
+  style:height={ControlButton ? '32px' : ''}
+  style:color={TurnOff ? 'var(--color-dark-disabled)' : null}
   {disabled}
 >
   {#if icon}
     <Icon
       {icon}
-      width={primary_button ? '29' : '23'}
-      height={primary_button ? '29' : '23'}
+      width={PrimaryButton ? '29' : '23'}
+      height={PrimaryButton ? '29' : '23'}
     />
   {/if}
 

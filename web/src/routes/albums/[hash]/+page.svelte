@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
-  import CoverBorder from '$lib/components/elements/cover-border.svelte';
+  import CoverBorder from '$lib/components/albums/cover-border.svelte';
   import ContentHead from '$lib/components/elements/content-head.svelte';
   import ContentBody from '$lib/components/elements/content-body.svelte';
   import PageHead from '$lib/components/elements/page-head.svelte';

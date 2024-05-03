@@ -1,6 +1,13 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { hash, title, album, artist, imagehash } from '$lib/stores';
+
+  import {
+    trackHash,
+    trackTitle,
+    trackAlbum,
+    trackArtist,
+    trackImages,
+  } from '$lib/stores/track';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
@@ -10,11 +17,11 @@
   export let data: PageData;
 
   function SetTrack(tag: any): void {
-    hash.set(tag.hash),
-    title.set(tag.title),
-    album.set(tag.album),
-    artist.set(tag.artist), 
-    imagehash.set(tag.imagehash)
+    trackHash.set(tag.hash),
+    trackTitle.set(tag.title),
+    trackAlbum.set(tag.album),
+    trackArtist.set(tag.artist), 
+    trackImages.set(tag.imagehash)
   }
 </script>
 

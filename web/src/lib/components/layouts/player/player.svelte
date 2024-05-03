@@ -1,242 +1,239 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { hash, title, album, artist, imagehash } from '$lib/stores';
+
+  import {
+    getCoverUrl,
+    getFormattedTime,
+  } from "$lib/tools";
+
+  import {
+    trackHash,
+    trackTitle,
+    trackAlbum,
+    trackArtist,
+    trackImages,
+  } from '$lib/stores/track';
 
   import ContentHead from '$lib/components/elements/content-head.svelte';
   import ContentBody from '$lib/components/elements/content-body.svelte';
   import PlayerButton from './player-button.svelte';
   import PlayerSlider from './player-slider.svelte';
 
-  let audioItem: HTMLAudioElement = new Audio();
-  let imagepath: string = "";
-  let durationTime: number = 0;
-  let currentTime: number = 0;
-  let durationString: string = formatTime(0);
-  let currentString: string = formatTime(0);
-  let currentBar: number = 0;
+  let musicItem: HTMLAudioElement = new Audio();
+  let coverPath: string = getCoverUrl('');
+  let current: number = 0;
+  let length: number = 0;
+
+  let lengthBar: number = 0;
   let volumeBar: number = 100;
-  let isPlaying: boolean = false;
-  let isDraggingLength: boolean = false;
-  let isDraggingVolume: boolean = false;
-  let isRepeatTrack: number = 0;
+  let isPlay: boolean = false;
+  let isDrag: boolean = false;
+  let isLoop: number = 0;
 
-  $: $title, loadAudio();
+  $: $trackHash, StreamMusic(), SetMusicInfo();
+  $: musicItem.volume, volumeBar = musicItem.volume * 100;
 
-  function handlePlay(): void {
-    if ($hash !== undefined) {
-      if (audioItem.paused) {
-        audioItem.play();
-        isPlaying = true;
-      }
-      else {
-        audioItem.pause();
-        isPlaying = false;
+  function StreamMusic(): void {
+    if ($trackHash !== undefined) {
+      musicItem.src = (`http://localhost:2843/api/stream/${ $trackHash }`);
+      coverPath = getCoverUrl($trackImages);
+      
+      musicItem.addEventListener("loadedmetadata", () => {
+        length = musicItem.duration;
+        musicItem.play();
+        isPlay = true;
+      });
+
+      musicItem.addEventListener("timeupdate", () => {
+        current = musicItem.currentTime;
+        if (!isDrag) lengthBar = (current / length) * 100;
+
+        if (musicItem.currentTime == musicItem.duration) {
+          musicItem.pause();
+          isPlay = false;
+        }
+      });
+    }
+  }
+
+  function ToggleMusic(): void {
+    if ($trackHash) {
+      if (musicItem.paused) {
+        musicItem.play();
+        isPlay = true;
+      } else {
+        musicItem.pause();
+        isPlay = false;
       }
     }
   }
 
-  function previousPlay(): void {
-    audioItem.currentTime = 0;
+  function PlayPrev(): void {
+    musicItem.currentTime = 0;
   }
 
-  function loadAudio() {
-    if ($hash !== undefined) {
-      audioItem.src = (`http://localhost:2843/api/stream/${$hash}`);
-      imagepath = `http://localhost:2843/api/images/${$imagehash}`;
-      audioItem.volume = volumeBar / 100;
-
-      audioItem.addEventListener("loadedmetadata", () => {
-        durationTime = audioItem.duration;
-        durationString = formatTime(audioItem.duration);
-        currentString = formatTime(audioItem.currentTime);
-
-        audioItem.play();
-        isPlaying = true;
-        setMediaControls();
-      });
-
-      audioItem.addEventListener("timeupdate", () => {
-        if (!isDraggingLength) {
-          currentTime = audioItem.currentTime;
-          currentString = formatTime(currentTime);
-          currentBar = (currentTime / durationTime) * 100;
-        }
-
-        if (audioItem.currentTime === audioItem.duration) {
-          isPlaying = false;
-          audioItem.pause();
-          setMediaControls();
-        }
-      });
-    }
-
-    // audioItem.addEventListener("error", () => {
-    //   console.error("Failed to load track");
-    // });
+  function PlayNext(): void {
+    console.debug("PlayNext Called");
   }
 
-  function setMediaControls(): void {
+  function SetMusicInfo(): void {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: $title,
-        album: $album,
-        artist: $artist,
+        title: $trackTitle,
+        album: $trackAlbum,
+        artist: $trackArtist,
         artwork: [
           {
-            src: imagepath + "?size=300",
-          }  
+            src: getCoverUrl($trackImages, 128),
+          }
         ],
       });
 
-      navigator.mediaSession.setActionHandler("play", () => { handlePlay(); });
-      navigator.mediaSession.setActionHandler("pause", () => { handlePlay(); });
-      navigator.mediaSession.setActionHandler("seekbackward", () => { audioItem.currentTime -= 10; });
-      navigator.mediaSession.setActionHandler("seekforward", () => { audioItem.currentTime += 10; });
-      navigator.mediaSession.setActionHandler("previoustrack", () => { previousPlay(); });
-      navigator.mediaSession.setActionHandler("nexttrack", () => { console.log("test") });
+      navigator.mediaSession.setActionHandler("play", () => { ToggleMusic(); });
+      navigator.mediaSession.setActionHandler("pause", () => { ToggleMusic(); });
+      navigator.mediaSession.setActionHandler("seekbackward", () => { musicItem.currentTime -= 10; });
+      navigator.mediaSession.setActionHandler("seekforward", () => { musicItem.currentTime += 10; });
+      navigator.mediaSession.setActionHandler("previoustrack", () => { PlayPrev(); });
+      navigator.mediaSession.setActionHandler("nexttrack", () => { PlayNext(); });
     }
   }
 
-  function handleSeek(event: MouseEvent, eventClass: string, callback: (value: number) => void): void {
-    event.preventDefault();
+  function SeekHandler(
+    event: MouseEvent,
+    type: string,
+    callback: (value: number) => void
+  ): void {
 
-    const ctl = document.querySelector(eventClass);
+    event.preventDefault();
+    const ctl = document.querySelector(type);
+    
     if (ctl) {
       const ctlWidth = ctl.clientWidth;
-      const ctlRect = ctl.getBoundingClientRect();
-      const newValue = Math.max(0, Math.min(event.clientX - ctlRect.left, ctlWidth));
-      const newValueCalc = newValue / ctlWidth;
-      callback(newValueCalc);
+      const ctlBound = ctl.getBoundingClientRect();
+      const newValue = Math.max(0, Math.min(event.clientX - ctlBound.left, ctlWidth));
+
+      callback(newValue / ctlWidth);
     }
   }
 
-  function lengthSeek(event: MouseEvent): void {
-    handleSeek(event, '.length-ctl', (value) => {
-      if (audioItem && $hash) {
-        currentTime = value * durationTime;
-        currentString = formatTime(currentTime);
-        currentBar = value * 100;
-        if (!isDraggingLength) {
-          audioItem.currentTime = currentTime;
-        }
-      }
-    });
-  }
-
-  function volumeSeek(event: MouseEvent): void {
-    handleSeek(event, '.volume-ctl', (value) => {
-      volumeBar = value * 100;
-      if (audioItem) {
-        audioItem.muted = false;
-        audioItem.volume = value;
-      }
-    });
-  }
-
-  function handleDragStart(event: MouseEvent, type: 'length' | 'volume'): void {
+  function DragHandler(
+    event: MouseEvent,
+    type: 'length' | 'volume'
+  ): void {
+    
+    isDrag = true;
     event.preventDefault();
-    if (type === "length") {
-      isDraggingLength = true;
-    } else {
-      isDraggingVolume = true;
-    }
+    
+    const MoveHandler = type === 'length' ? SeekLength : SeekVolume;
+    const PostHandler = () => {
+      document.removeEventListener("mousemove", MoveHandler);
+      document.removeEventListener("mouseup", PostHandler);
 
-    const handleMove = type === "length" ? lengthSeek : volumeSeek;
-    const handleEnd = () => {
-      if (type === "length") {
-        isDraggingLength = false;
-        if (audioItem) {
-          audioItem.currentTime = currentTime;
-        }
-      } else {
-        isDraggingVolume = false;
+      if (type === 'length' && musicItem) {
+        musicItem.currentTime = current;
       }
-      document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mouseup", handleEnd);
+
+      isDrag = false;
     };
 
-    document.addEventListener("mousemove", handleMove);
-    document.addEventListener("mouseup", handleEnd);
-    handleMove(event);
+    document.addEventListener("mousemove", MoveHandler);
+    document.addEventListener("mouseup", PostHandler);
+    MoveHandler(event);
   }
 
-  function formatTime(time: number): string {
-    const min = Math.floor(time / 60);
-    const sec = Math.floor(time % 60);
-    return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+  function SeekLength(event: MouseEvent): void {
+    SeekHandler(event, '.length-ctl', (value) => {
+      if (musicItem && $trackHash) {
+        current = value * length;
+        lengthBar = value * 100;
+
+        if (!isDrag) {
+          musicItem.currentTime = current;
+        }
+      }
+    });
   }
 
-  function muteVolume(): void {
-    if (audioItem.volume === 0) {
-      audioItem.volume = 1;
-      audioItem.muted = false;
-      volumeBar = 100;
+  function SeekVolume(event: MouseEvent): void {
+    SeekHandler(event, '.volume-ctl', (value) => {
+      if (musicItem) {
+        musicItem.muted = false;
+        musicItem.volume = value;
+      }
+    });
+  }
+
+  function MuteMusic(): void {
+    if (musicItem.volume === 0) {
+      musicItem.volume = 1;
+      musicItem.muted = false;
     }
-    else if (!audioItem.muted) {
-      audioItem.muted = true;
+    else if (!musicItem.muted) {
+      musicItem.muted = true;
     }
     else {
-      audioItem.muted = false;
+      musicItem.muted = false;
     }
   }
 
-  function repeatTrack(): void {
-    if (isRepeatTrack === 0) {
-      isRepeatTrack = 1;
-      audioItem.loop = true;
+  function LoopMusic(): void {
+    if (isLoop === 0) {
+      isLoop = 1;
+      musicItem.loop = true;
     }
-    else if (isRepeatTrack === 1) {
-      isRepeatTrack = 2;
-      audioItem.loop = true;
+    else if (isLoop === 1) {
+      isLoop = 2;
+      musicItem.loop = true;
     }
     else {
-      isRepeatTrack = 0;
-      audioItem.loop = false;
+      isLoop = 0;
+      musicItem.loop = false;
     }
   }
 
   onDestroy(() => {
-    if (audioItem) {
-      audioItem.src = '';
+    if (musicItem) {
+      musicItem.src = '';
     }
   });
 </script>
 
 <div class="player">
   <div class="player-center">
-
     <div class="player-button">
 
-      <PlayerButton
-        title='Previous'
-        on:click={previousPlay}
-        icon='iconoir:skip-prev-solid'
-        control_button
-      />
+      {#key isPlay}
+        <PlayerButton
+          title='Previous'
+          on:click={ PlayPrev }
+          icon='iconoir:skip-prev-solid'
+          ControlButton
+        />
 
-      <PlayerButton
-        title={isPlaying ? 'Pause' : 'Play'}
-        on:click={handlePlay}
-        icon={isPlaying ? 'iconoir:pause-solid' : 'iconoir:play-solid'}
-        control_button
-        primary_button
-      />
+        <PlayerButton
+          title={ isPlay ? 'Pause' : 'Play' }
+          on:click={ ToggleMusic }
+          icon={ isPlay ? 'iconoir:pause-solid' : 'iconoir:play-solid' }
+          ControlButton
+          PrimaryButton
+        />
 
-      <PlayerButton
-        title='Next'
-        on:click={undefined}
-        icon='iconoir:skip-next-solid'
-        control_button
-      />
+        <PlayerButton
+          title='Next'
+          on:click={ PlayNext }
+          icon='iconoir:skip-next-solid'
+          ControlButton
+        />
+      {/key}
 
     </div>
 
     <PlayerSlider
       width='550px'
-      value={currentBar}
+      value={ lengthBar }
       unique='length-ctl'
-      on:click={(event) => lengthSeek(event)}
-      on:mousedown={(event => handleDragStart(event, 'length'))}
+      on:click={(event) => SeekLength(event)}
+      on:mousedown={(event => DragHandler(event, 'length'))}
     />
 
   </div>
@@ -244,17 +241,17 @@
   <div class="player-area">
     <div class="player-area-1">
 
-      {#if $hash}
+      {#if $trackHash}
         <img
-          src="{imagepath}?size=128"
+          src="{ coverPath }?size=128"
           class="player-cover"
           alt="Front Cover"
         />
 
         <div class="player-track">
-          <ContentHead head='{$title ? $title : ""}' />
-          <ContentBody body='{$artist ? $artist : ""} - {$album ? $album : ""}' />
-          <ContentBody body='{ currentString } / { durationString }' />
+          <ContentHead head='{ $trackTitle ? $trackTitle : "" }' />
+          <ContentBody body='{ $trackArtist } - { $trackAlbum }' />
+          <ContentBody body='{ getFormattedTime(current) } / { getFormattedTime(length) }' />
         </div>
       {/if}
 
@@ -263,21 +260,21 @@
     <div class="player-area-2">
       <div class="player-volume">
 
-        {#key muteVolume}
+        {#key MuteMusic}
           <PlayerSlider
             width='110px'
             unique='volume-ctl'
-            value={audioItem.muted ? 0 : volumeBar}
-            on:click={(event) => volumeSeek(event)}
-            on:mousedown={(event) => handleDragStart(event, "volume")}  
+            value={ musicItem.muted ? 0 : volumeBar }
+            on:click={(event) => SeekVolume(event)}
+            on:mousedown={(event) => DragHandler(event, "volume")}  
           />
 
           <PlayerButton
             title="Volume"
-            on:click={muteVolume}
-            turn_off={volumeBar === 0 || audioItem.muted ? true : false}
+            on:click={ MuteMusic }
+            TurnOff={ volumeBar === 0 || musicItem.muted ? true : false }
             icon={
-              volumeBar === 0 || audioItem.muted ? 'iconoir:sound-off' :
+              volumeBar === 0 || musicItem.muted ? 'iconoir:sound-off' :
                 volumeBar < 50 ? 'iconoir:sound-low' : 'iconoir-sound-high'
             }
           />
@@ -287,20 +284,20 @@
 
       <PlayerButton
         title={
-          isRepeatTrack == 2 ? 'Repeat one' : 'Repeat'
+          isLoop == 2 ? 'Repeat one' : 'Repeat'
         }
         icon={
-          isRepeatTrack === 1 ? 'iconoir:repeat' :
-            isRepeatTrack === 2 ? 'iconoir-repeat-once' : 'iconoir-repeat'
+          isLoop === 1 ? 'iconoir:repeat' :
+            isLoop === 2 ? 'iconoir-repeat-once' : 'iconoir-repeat'
         }
-        turn_off={isRepeatTrack !== 0 ? false : true}
-        on:click={repeatTrack}
+        TurnOff={ !isLoop }
+        on:click={ LoopMusic }
       />
 
       <PlayerButton
         title='Shuffle'
         icon='iconoir:shuffle'
-        turn_off
+        TurnOff
       />
 
       <PlayerButton
