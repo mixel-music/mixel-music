@@ -1,25 +1,25 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import { getCoverUrl } from '$lib/tools';
 
-  import CoverBorder from '$lib/components/albums/cover-border.svelte';
-  import ContentHead from '$lib/components/elements/content-head.svelte';
-  import ContentBody from '$lib/components/elements/content-body.svelte';
-  import PageHead from '$lib/components/elements/page-head.svelte';
+  import AlbumCover from '$lib/components/albums/album-cover.svelte';
+  import AlbumTitle from '$lib/components/albums/album-header.svelte';
 
   export let data: PageData;
 </script>
 
-<CoverBorder
-  src={ `http://localhost:2843/api/images/${ data.albumItem.imagehash }?size=500` }
-  alt={ data.title }
+<AlbumCover
+  src={ getCoverUrl(data.albumItem.imagehash, 500) }
+  alt={ data.albumItem.album }
   width=256
   height=256
 />
 
-<PageHead title={ data.title } inline />
+<AlbumTitle title={ data.albumItem.album } />
 
-<ContentBody body={ data.albumItem.albumartist } />
-<ContentBody body={ ` ${ data.albumItem.tracktotals } Tracks` } />
+{ data.albumItem.albumartist }
+
+{ data.albumItem.tracktotals } Tracks
 
 <style>
 

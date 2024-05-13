@@ -1,5 +1,4 @@
 <script lang="ts">
-  export let lazyload: boolean = false;
   export let alt: string | undefined = undefined;
   export let src: string | undefined = undefined;
   export let width: string | number | undefined = undefined;
@@ -8,8 +7,10 @@
 
 <div>
   <img
-    loading={lazyload ? 'lazy' : null}
-    {src} {width} {height} {alt}
+    {src}
+    {alt}
+    {width}
+    {height}
     on:click
     on:mousedown
     on:mouseleave
