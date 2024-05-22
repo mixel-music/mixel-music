@@ -19,7 +19,6 @@
 
 <style>
   div {
-    width: fit-content;
     display: inline-flex;
     background-color: var(--color-dark-bg-2);
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
@@ -28,7 +27,6 @@
   }
 
   img {
-    width: 100%;
     display: block;
     object-fit: scale-down;
     aspect-ratio: 1/1;

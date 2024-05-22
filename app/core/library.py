@@ -13,7 +13,7 @@ from tools.path_handler import *
 from tools.tags_handler import *
 
 semaphore_lib = asyncio.Semaphore(5)
-prevent_block = asyncio.Semaphore(1)
+database_lock = asyncio.Semaphore(1)
 
 class Library:
     @staticmethod
@@ -64,7 +64,7 @@ class Library:
     @staticmethod
     async def update(path: str) -> None:
         async with session() as conn:
-            async with prevent_block:
+            async with database_lock:
                 result = await conn.execute(
                     select(Tracks.created_date).where(Tracks.path == path)
                 )
@@ -77,7 +77,7 @@ class Library:
     @staticmethod
     async def remove(path: str) -> None:
         async with session() as conn:
-            async with prevent_block:
+            async with database_lock:
                 album_hash = select(Tracks.albumhash).where(Tracks.path == path).alias('subquery')
                 album_data = select(func.count()).select_from(Tracks).where(Tracks.albumhash.in_(select(album_hash.c.albumhash)))
                 album_exist = await conn.execute(album_data)
@@ -258,7 +258,7 @@ class Repository:
 
     @staticmethod
     async def insert_album(conn: AsyncSession, hash: str, tags: dict) -> None:
-        async with prevent_block:
+        async with database_lock:
             is_exist = await conn.execute(
                 select(Albums.__table__).where(Albums.albumhash == hash)
             )
@@ -326,7 +326,7 @@ class Repository:
 
     @staticmethod
     async def insert_artist(conn: AsyncSession, hash: str, tags: dict) -> None:
-        async with prevent_block:
+        async with database_lock:
             is_exist = await conn.execute(
                 select(Artists).where(Artists.artisthash == hash)
             )

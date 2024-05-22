@@ -3,29 +3,42 @@
   export let albumartist: string;
   export let year: number | undefined;
   export let totalTracks: number;
-  export let totalLength: number;
+  export let totalLength: number | string;
 </script>
 
-<span class="album-name">
-  {album}
-</span>
+<div class="album-header">
+  <span class="album-name">
+    {album}
+  </span>
 
-<span class="album-info">
-  {albumartist} • {year ? `${ year } •` : ''} {totalTracks} • {totalLength}
-</span>
+  <span class="album-info">
+    {albumartist} • {year ? `${ year } •` : ''}
+    {#if totalTracks === 1 || totalTracks === 0}
+      {totalTracks} Track
+    {:else}
+      {totalTracks} Tracks
+    {/if}
+      •
+    {totalLength}
+  </span>
+</div>
 
 <style>
+  .album-header {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
   .album-name {
-    display: inline-block;
-    font-size: 52px;
+    font-size: 48px;
     font-weight: 700;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
   .album-info {
-    display: inline-block;
-    font-size: 95%;
+    /* font-size: 97%; */
     color: var(--color-dark-text-2);
   }
 </style>
