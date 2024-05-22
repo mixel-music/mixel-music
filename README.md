@@ -4,11 +4,11 @@
 
 **mixel-music** is an open-source, self-hosted music streaming application developed with Python and Svelte. It offers fast performance, a simple yet attractive UI, and broad device compatibility, ensuring a consistent music experience across various platforms.
 
-<img src=".github/albums-0.2.11a.png" width="850">
+* This is my first time using JavaScript, TypeScript and Svelte. Also, I have little experience doing backend development using Python.
+  * There may be many areas that need improvement. Feedback is always welcome.
+* **As I'm focusing on preparing for the CSAT(Korean SAT) this year, more time will be dedicated to my studies. Therefore, the application's completion might face delays until at least the end of the year.**
 
-* Since this project is part of my learning process, there may be many areas that need improvement.  
-  * This is my first time using JavaScript, TypeScript and Svelte. Also, I have little experience doing backend development using Python.
-* As I'm focusing on preparing for the CSAT this year, more time will be dedicated to my studies. Therefore, the application's completion might face delays until at least the end of the year.
+<img src=".github/albums-0.2.11a.png" width="850">
 
 <!--
 ## Features
