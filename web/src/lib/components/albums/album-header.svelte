@@ -28,17 +28,19 @@
     display: inline-flex;
     flex-direction: column;
     justify-content: flex-end;
+    width: -webkit-fill-available;
   }
 
   .album-name {
-    font-size: 48px;
-    font-weight: 700;
+    font-size: clamp(1rem, 2vw, 3rem);
+    font-weight: 800;
     text-overflow: ellipsis;
+    text-wrap: nowrap;
     overflow: hidden;
   }
 
   .album-info {
-    /* font-size: 97%; */
+    font-size: 95%;
     color: var(--color-dark-text-2);
   }
 </style>

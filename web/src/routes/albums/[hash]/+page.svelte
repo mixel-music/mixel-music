@@ -6,6 +6,11 @@
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
 
+  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
+  import CardItem from '$lib/components/elements/card-item.svelte';
+  import ContentHead from '$lib/components/elements/content-head.svelte';
+  import ContentBody from '$lib/components/elements/content-body.svelte';
+
   export let data: PageData;
 </script>
 
@@ -27,6 +32,13 @@
 </div>
 
 <div>
+
+{#each data.albumItem.tracks as album}
+    <div>
+      <ContentHead head={ album.title } />
+      <ContentBody body={ album.artist } />
+    </div>
+{/each}
 
 </div>
 

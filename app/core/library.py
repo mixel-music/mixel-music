@@ -61,6 +61,18 @@ class Library:
             await conn.commit()
 
 
+    # @staticmethod
+    # async def update(path: str) -> None:
+    #     async with session() as conn:
+    #         async with database_lock:
+    #             result = await conn.execute(
+    #                 select(Tracks.created_date).where(Tracks.path == path)
+    #             )
+    #             result = result.scalar().first()
+    #             await Library.remove(path)
+    #             await Library.create(path, result.created_date)
+    #         await conn.commit()
+
     @staticmethod
     async def update(path: str) -> None:
         async with session() as conn:
@@ -68,31 +80,52 @@ class Library:
                 result = await conn.execute(
                     select(Tracks.created_date).where(Tracks.path == path)
                 )
-                result = result.scalar().first()
+                created_date = result.scalar()
+            if created_date:
                 await Library.remove(path)
-                await Library.create(path, result.created_date)
+                await Library.create(path, created_date)
             await conn.commit()
 
 
+    # @staticmethod
+    # async def remove(path: str) -> None:
+    #     async with session() as conn:
+    #         async with database_lock:
+    #             album_hash = select(Tracks.albumhash).where(Tracks.path == path).alias('subquery')
+    #             album_data = select(func.count()).select_from(Tracks).where(Tracks.albumhash.in_(select(album_hash.c.albumhash)))
+    #             album_exist = await conn.execute(album_data)
+    #             album_count = album_exist.scalar()
+    #             if album_count == 1: await Repository.delete_album(conn, path)
+
+    #             artist_hash = select(Tracks.artisthash).where(Tracks.path == path).alias('subquery')
+    #             artist_data = select(func.count()).select_from(Tracks).where(Tracks.artisthash.in_(select(artist_hash.c.artisthash)))
+    #             artist_exist = await conn.execute(artist_data)
+    #             artist_count = artist_exist.scalar()
+    #             if artist_count == 1: await Repository.delete_artist(conn, path)
+
+    #             await Repository.delete_track(conn, path)
+    #         await conn.commit()
+            
     @staticmethod
     async def remove(path: str) -> None:
         async with session() as conn:
             async with database_lock:
-                album_hash = select(Tracks.albumhash).where(Tracks.path == path).alias('subquery')
-                album_data = select(func.count()).select_from(Tracks).where(Tracks.albumhash.in_(select(album_hash.c.albumhash)))
-                album_exist = await conn.execute(album_data)
-                album_count = album_exist.scalar()
-                if album_count == 1: await Repository.delete_album(conn, path)
+                album_hash = select(Tracks.albumhash).where(Tracks.path == path).scalar_subquery()
+                album_count = await conn.scalar(
+                    select(func.count()).select_from(Tracks).where(Tracks.albumhash == album_hash)
+                )
+                if album_count == 1:
+                    await Repository.delete_album(conn, path)
 
-                artist_hash = select(Tracks.artisthash).where(Tracks.path == path).alias('subquery')
-                artist_data = select(func.count()).select_from(Tracks).where(Tracks.artisthash.in_(select(artist_hash.c.artisthash)))
-                artist_exist = await conn.execute(artist_data)
-                artist_count = artist_exist.scalar()
-                if artist_count == 1: await Repository.delete_artist(conn, path)
+                artist_hash = select(Tracks.artisthash).where(Tracks.path == path).scalar_subquery()
+                artist_count = await conn.scalar(
+                    select(func.count()).select_from(Tracks).where(Tracks.artisthash == artist_hash)
+                )
+                if artist_count == 1:
+                    await Repository.delete_artist(conn, path)
 
                 await Repository.delete_track(conn, path)
             await conn.commit()
-
 
     @staticmethod
     async def stream(hash: str, range):
