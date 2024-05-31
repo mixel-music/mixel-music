@@ -27,4 +27,4 @@ starlette==0.36.3
 tinytag==1.10.1
 typing_extensions==4.10.0
 uvicorn==0.28.0
-watchfiles==0.21.0
+watchfiles==0.22.0
