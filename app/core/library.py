@@ -221,6 +221,7 @@ class Library:
                                 Tracks.title,
                                 Tracks.artist,
                                 Tracks.hash,
+                                Tracks.duration,
                                 Tracks.artisthash,
                                 Tracks.tracknumber,
                             )

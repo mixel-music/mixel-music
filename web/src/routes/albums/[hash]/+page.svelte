@@ -5,11 +5,12 @@
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
-
-  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
-  import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/content-head.svelte';
   import ContentBody from '$lib/components/elements/content-body.svelte';
+
+  import TableBody from '$lib/components/elements/table-body.svelte';
+  import TableBodyRow from '$lib/components/elements/table-body-row.svelte';
+  import TableCell from '$lib/components/elements/table-cell.svelte';
 
   export let data: PageData;
 </script>
@@ -31,21 +32,61 @@
   />
 </div>
 
-<div>
+<div class="album-content">
 
-{#each data.albumItem.tracks as album}
-    <div>
-      <ContentHead head={ album.title } />
-      <ContentBody body={ album.artist } />
-    </div>
-{/each}
+<TableBody>
+
+  <TableBodyRow>
+
+  {#each data.albumItem.tracks as album}
+    <TableCell text={ album.tracknumber } />
+  {/each}
+
+  </TableBodyRow>
+
+  <TableBodyRow title>
+
+  {#each data.albumItem.tracks as album}
+    <TableCell text={ album.title } />
+  {/each}
+
+  </TableBodyRow>
+
+  <TableBodyRow>
+
+  {#each data.albumItem.tracks as album}
+    <TableCell text={ album.artist } />
+  {/each}
+
+  </TableBodyRow>
+
+  <TableBodyRow>
+
+  {#each data.albumItem.tracks as album}
+    <TableCell text={ getFormattedTime(album.duration) } />
+  {/each}
+
+  </TableBodyRow>
+
+</TableBody>
 
 </div>
+
+<!--{#each data.albumItem.tracks as album}
+<div>
+  <ContentHead head={ album.title } />
+  <ContentBody body={ album.artist } />
+</div>
+{/each}-->
 
 <style>
   .album-container {
     display: flex;
     width: 70%;
     gap: 24px;
+  }
+
+  .album-content {
+    padding-top: var(--app-padding-l);
   }
 </style>
