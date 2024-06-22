@@ -12,6 +12,95 @@ from tools.convert_value import *
 from tools.path_handler import *
 from tools.tags_handler import *
 
+class Track:
+    def __init__(self, path: str):
+        self.path = path
+        self.real_path = get_path(self.path)
+
+    async def lookup(self):
+        try:
+            async with session() as conn:
+                result = await conn.execute(
+                    select(Tracks.__table__).where(Tracks.path == self.path)
+                )
+                track_data = result.mappings().first()
+                return dict(track_data) if track_data else {}
+
+        except OperationalError as err:
+            logs.error("Failed to load track, %s", err)
+            raise err
+
+    async def stream(self):
+        track_info = await self.lookup(self.path)
+        if not track_info: return
+
+        track_mime = track_info['mime']
+        track_size = track_info['size']
+        track_chunk = int(track_size * 0.25)
+        real_path = get_path(self.path)
+
+        if range:
+            track_range = range.replace("bytes=", "").split("-")
+            track_start = int(track_range[0])
+            track_end = int(track_range[1]) if track_range[1] else track_start + track_chunk
+        else:
+            track_start = 0
+            track_end = track_start + track_chunk
+
+        logs.debug("Streaming \"%s\" (%s-%s)", track_info['title'], track_start, track_end)
+        track_end = min(track_end, track_size - 1)
+        async with aiofiles.open(real_path, mode="rb") as track_file:
+            await track_file.seek(track_start)
+            data = await track_file.read(track_end - track_start + 1)
+            headers = {
+                'Content-Range': f'bytes {track_start}-{track_end}/{track_size}',
+                'Accept-Ranges': 'bytes',
+                'Content-Length': str(track_end - track_start + 1),
+                'Content-Type': track_mime
+            }
+            return data, headers
+
+    async def insert(self):
+        pass
+
+    async def remove(self):
+        pass
+
+
+class Album:
+    def __init__(self, hash: str):
+        self.hash = get_hash_str(hash)
+
+    async def lookup(self):
+        pass
+
+    async def insert(self, range):
+        pass
+
+    async def update(self):
+        pass
+
+    async def remove(self):
+        pass
+
+
+class Artist:
+    def __init__(self, hash: str):
+        self.hash = get_hash_str(hash)
+
+    async def lookup(self):
+        pass
+
+    async def insert(self):
+        pass
+
+    async def update(self):
+        pass
+
+    async def remove(self):
+        pass
+
+
 semaphore_lib = asyncio.Semaphore(5)
 database_lock = asyncio.Semaphore(1)
 
