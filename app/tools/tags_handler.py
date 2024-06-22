@@ -90,7 +90,7 @@ class TagsHandler:
         image_data = await self.__extract_image()
         if image_data:
             self.tags_dict['imagehash'] = hashlib.sha1(image_data).hexdigest()
-            asyncio.create_task(convert_image(image_data))
+            asyncio.gather(asyncio.to_thread(convert_image(image_data)))
         else:
             self.tags_dict['imagehash'] = ''
 

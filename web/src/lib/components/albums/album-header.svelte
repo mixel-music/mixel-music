@@ -34,9 +34,7 @@
   .album-name {
     font-size: clamp(1rem, 2vw, 3rem);
     font-weight: 800;
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
-    overflow: hidden;
+    text-wrap: balance;
   }
 
   .album-info {

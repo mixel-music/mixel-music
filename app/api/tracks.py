@@ -19,11 +19,17 @@ async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
 @router.get("/tracks/{hash}", response_model=TrackSchema)
 async def get_track(hash: str):
     try:
-        track_info = await Library.get_tracks(hash)
+        path = await hash_to_track(hash)
+        track = Track(path)
+        # track_info = await Library.get_tracks(hash)
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    if track_info:
+    # if track_info:
+    #     return track_info
+    
+    if track:
+        track_info = await track.lookup()
         return track_info
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
