@@ -3,7 +3,7 @@
 <a href="requirements.txt"><img src="https://img.shields.io/badge/Python-3.11+-211951?style=flat-square&labelColor=211951"></a>
 
 > [!NOTE]
-> **As I’m focusing on preparing for the CSAT (Korean SAT) in November 2024, I will need to dedicate more time to my studies. Therefore, the application’s completion might face delays until at least the end of the year.**
+> **As I’m focusing on preparing for the CSAT (Korean SAT) in November 2024, I will need to dedicate more time to my studies. Therefore, the development may be delayed until then.**
 
 **mixel-music** is an open-source, self-hosted music streaming application developed with Python and Svelte. It offers fast performance, a simple yet attractive UI, and broad device compatibility, ensuring a consistent music experience across various platforms.
 
