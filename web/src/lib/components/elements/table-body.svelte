@@ -2,13 +2,14 @@
 
 </script>
 
-<div>
+<table>
   <slot />
-</div>
+</table>
 
 <style>
-  div {
-    display: flex;
+  table {
+    width: 100%;
     font-size: 95%;
+    border-collapse: collapse;
   }
 </style>

@@ -1,23 +1,11 @@
 <script lang="ts">
-  export let title: boolean;
+
 </script>
 
-{#if title}
-<div class="bold">
+<tr on:click>
   <slot />
-</div>
-{:else}
-<div class="normal">
-  <slot />
-</div>
-{/if}
+</tr>
 
 <style>
-  .bold {
-    font-weight: 600;
-  }
 
-  .normal {
-
-  }
 </style>
