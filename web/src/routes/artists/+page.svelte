@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
-  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
-  import CardItem from '$lib/components/elements/card-item.svelte';
-  import ContentHead from '$lib/components/elements/content-head.svelte';
+  import TableBody from '$lib/components/elements/table-body.svelte';
+  import TableCell from '$lib/components/elements/table-data.svelte';
+  import TableRow from '$lib/components/elements/table-row.svelte';
 
   export let data: PageData;
 </script>
@@ -12,7 +12,7 @@
   <title>{ data.title } • mixel-music</title>
 </svelte:head>
 
-{#if data.artistListItem.length > 0}
+<!-- {#if data.artistListItem.length > 0}
   <CardItemGroup title={ data.title }>
 
     {#each data.artistListItem as artist (artist.artisthash)}
@@ -26,10 +26,24 @@
     {/each}
 
   </CardItemGroup>
-{/if}
+{/if} -->
+
+<div class="artist-content">
+
+  <TableBody>
+  
+    {#each data.artistListItem as artist (artist.artisthash)}
+      <TableRow>
+        <TableCell bold text={ artist.artist } />
+      </TableRow>
+    {/each}
+  
+  </TableBody>
+  
+  </div>
 
 <style>
-  div {
-    padding-top: var(--app-padding-s);
+  .artist-content {
+    padding-top: var(--app-padding-l);
   }
 </style>

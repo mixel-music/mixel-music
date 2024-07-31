@@ -3,7 +3,6 @@ import aiofiles
 import asyncio
 
 from core.models import *
-from core.schema import *
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
@@ -182,8 +181,7 @@ class Library:
                     track_list = track_list.mappings().all()
 
                 for trk in track_list:
-                    trk_dict = TrackListSchema(**trk).model_dump()
-                    trk_list.append(trk_dict)
+                    trk_list.append(trk)
 
                 return trk_list
 
@@ -253,8 +251,7 @@ class Library:
                 artist_list = artist_list.mappings().all()
 
                 for art in artist_list:
-                    art_dict = ArtistListSchema(**art).model_dump()
-                    art_list.append(art_dict)
+                    art_list.append(art)
 
                 return art_list
         

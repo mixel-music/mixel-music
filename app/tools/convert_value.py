@@ -19,6 +19,12 @@ def sanitize_num(num: int) -> int:
         return int(num)
     except ValueError:
         return 0
+    
+def sanitize_float(str: str) -> float:
+    try:
+        return float(str)
+    except ValueError:
+        return 0.0
 
 def album_values(old: dict, tags: dict) -> dict:
     return {

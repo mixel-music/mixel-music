@@ -13,8 +13,8 @@
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
   import TableBody from '$lib/components/elements/table-body.svelte';
-  import TableBodyRow from '$lib/components/elements/table-body-row.svelte';
-  import TableCell from '$lib/components/elements/table-cell.svelte';
+  import TableCell from '$lib/components/elements/table-data.svelte';
+  import TableRow from '$lib/components/elements/table-row.svelte';
 
   export let data: PageData;
 
@@ -50,7 +50,7 @@
 
   {#each data.albumItem.tracks as album}
 
-    <TableBodyRow
+    <TableRow
       on:click={() => SetTrack(album)}
     >
 
@@ -59,7 +59,7 @@
       <TableCell right text={ album.artist } />
       <TableCell right text={ getFormattedTime(album.duration) } />
 
-    </TableBodyRow>
+    </TableRow>
 
   {/each}
 
@@ -71,6 +71,8 @@
   .album-container {
     display: flex;
     width: 70%;
+    margin: 0 auto;
+    margin-top: 2em;
     gap: 24px;
   }
 

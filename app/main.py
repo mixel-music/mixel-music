@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     conf.IMG_DIR.mkdir(exist_ok=True)
     conf.DATA_DIR.mkdir(exist_ok=True)
     conf.MUSIC_DIR.mkdir(exist_ok=True)
-    
+
     await connect_database()
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())

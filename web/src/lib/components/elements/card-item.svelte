@@ -44,7 +44,7 @@
   img {
     width: 100%;
     display: block;
-    object-fit: scale-down;
+    object-fit: cover;
     aspect-ratio: 1/1;
     border-radius: var(--app-radius);
   }

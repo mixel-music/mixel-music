@@ -1,10 +1,9 @@
 from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
-from core.schema import *
 
 router = APIRouter(prefix='/api')
 
-@router.get("/tracks", response_model=list[TrackListSchema])
+@router.get("/tracks")
 async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
     try:
         track_list = await Library.get_tracks(num=num)
@@ -16,7 +15,7 @@ async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-@router.get("/tracks/{hash}", response_model=TrackSchema)
+@router.get("/tracks/{hash}")
 async def get_track(hash: str):
     try:
         track_info = await Library.get_tracks(hash)
