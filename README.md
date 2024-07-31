@@ -8,8 +8,8 @@
   * There may be many areas that need improvement. Feedback is always welcome.
 * **As I'm focusing on preparing for the CSAT(Korean SAT) this year, more time will be dedicated to my studies. Therefore, the application's completion might face delays until at least the end of the year.**
 
-<img src=".github/albums" width="850">
-<img src=".github/album" width="850">
+<img src=".github/albums.png" width="850">
+<img src=".github/album.png" width="850">
 
 <!--
 ## Features
