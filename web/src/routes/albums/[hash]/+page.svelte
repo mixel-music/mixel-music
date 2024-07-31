@@ -31,8 +31,8 @@
   <AlbumCover
     src={ getCoverUrl(data.albumItem.imagehash, 500) }
     alt={ data.albumItem.album }
-    width=256
-    height=256
+    width=230
+    height=230
   />
 
   <AlbumTitle
