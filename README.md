@@ -11,6 +11,7 @@
   * There may be many areas that need improvement. Feedback is always welcome.
 
 <img src=".github/albums-1600x836.png" width="850">
+<img src="https://raw.githubusercontent.com/mixel-main/mixel-music/4e5389d50fc58bac78013acb7f6bb51232047a5d/.github/album.png" width="850">
 
 <!--
 ## Features
