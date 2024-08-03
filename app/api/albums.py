@@ -4,7 +4,7 @@ from core.library import *
 router = APIRouter(prefix='/api')
 
 @router.get("/albums")
-async def get_album_list(num: int = Query(500, alias='num', gt=0, le=500)):
+async def get_album_list(num: int = Query(40, alias='num', gt=0, le=128)) -> dict | list[dict]:
     try:
         album_list = await Library.get_albums(num=num)
     except:
@@ -16,7 +16,7 @@ async def get_album_list(num: int = Query(500, alias='num', gt=0, le=500)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
 @router.get("/albums/{hash}")
-async def get_album(hash: str):
+async def get_album(hash: str) -> dict | list[dict]:
     try:
         album_info = await Library.get_albums(hash)
     except:

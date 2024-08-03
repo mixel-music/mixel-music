@@ -1,11 +1,9 @@
 from infra.config import *
 from PIL import Image
-import hashlib
 import io
 
-async def convert_image(image_data) -> None:
+async def convert_image(image_data: bin, albumhash: str) -> None:
     image_path = conf.IMG_DIR
-    image_hash = hashlib.sha1(image_data).hexdigest()
     original_image = Image.open(io.BytesIO(image_data))
     suffix = original_image.format.lower()
 
@@ -17,12 +15,12 @@ async def convert_image(image_data) -> None:
     create_list = list(conf.IMG_SIZE)
     for file in image_path.iterdir():
         for size in conf.IMG_SIZE:
-            if file.is_file() and file.name.endswith(f'{image_hash}_{size}.{conf.IMG_TYPE}'):
+            if file.is_file() and file.name.endswith(f'{albumhash}_{size}.{conf.IMG_TYPE}'):
                 create_list.remove(size)
 
     if create_list:
         for size in create_list:
             thumb_image = original_image.copy()
             thumb_image.thumbnail([size, size], Image.Resampling.LANCZOS)
-            thumb_image_name = (image_path / f"{image_hash}_{size}.{conf.IMG_TYPE}").as_posix()
+            thumb_image_name = (image_path / f"{albumhash}_{size}.{conf.IMG_TYPE}").as_posix()
             thumb_image.save(thumb_image_name, "webp", quality=conf.IMG_QUAL)

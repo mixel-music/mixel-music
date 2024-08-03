@@ -1,3 +1,4 @@
+# infra/logging.py
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
@@ -14,18 +15,14 @@ print_handler = RichHandler(
     console=print_console,
     rich_tracebacks=True
 )
-write_console = Console(
-    file = open(
-        conf.LOG_PATH,
-        "a",
-        encoding='utf-8'
-    ),
-    record=True,
+
+file_handler = logging.FileHandler(
+    conf.LOG_PATH,
+    mode='a',
+    encoding='utf-8'
 )
-write_handler = RichHandler(
-    console=write_console,
-    rich_tracebacks=True
-)
+file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
 
 uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
@@ -46,4 +43,7 @@ uvicorn_logger.addHandler(print_handler)
 uvicorn_access_logger.addHandler(print_handler)
 fastapi_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
-logs.addHandler(write_handler)
+logs.addHandler(file_handler)
+
+def get_file_handler():
+    return file_handler

@@ -8,20 +8,20 @@ class Config(BaseSettings):
     PORT: int = 2843
 
     DB_URL: str = "sqlite+aiosqlite:///" \
-        + str_path('data', 'database.db', rel=False)
+        + str_path('config', 'database.db', rel=False)
     I18N_DIR: Path = get_path('i18n')
-    DATA_DIR: Path = get_path('data')
-    LOG_PATH: Path = get_path('data', '.log')
-    MUSIC_DIR: Path = get_path('music')
+    DATA_DIR: Path = get_path('config')
+    LOG_PATH: Path = get_path('config', '.log')
+    MUSIC_DIR: Path = get_path('assets')
 
-    IMG_DIR: Path = get_path('data', 'images')
+    IMG_DIR: Path = get_path('config', 'images')
     IMG_SIZE: list[int] = [128, 300, 500]
     IMG_TYPE: str = 'webp'
     IMG_QUAL: int = 100
 
     DEBUG: bool = True
     DB_ECHO: bool = False
-    VERSION: str = '0.2.11a'
+    VERSION: str = '0.3.0'
     LOG_LEVEL: int = logging.DEBUG
 
 conf = Config()

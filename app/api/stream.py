@@ -4,9 +4,9 @@ from core.library import *
 router = APIRouter(prefix='/api')
 
 @router.get("/stream/{hash}")
-async def api_stream(hash: str, range: str = Header(None)):
+async def api_stream(hash: str, range: str = Header(None)) -> Response:
     try:
-        stream_data, headers = await Library.stream(hash, range)
+        stream_data, headers = await Library.streaming(hash, range)
         if stream_data:
             return Response(stream_data, status_code=status.HTTP_206_PARTIAL_CONTENT, headers=headers)
         else:
