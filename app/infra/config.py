@@ -8,7 +8,7 @@ class Config(BaseSettings):
     PORT: int = 2843
 
     DB_URL: str = "sqlite+aiosqlite:///" \
-        + str_path('config', 'database.db', rel=False)
+        + str_path('config', 'mixel-music.db', rel=False)
     I18N_DIR: Path = get_path('i18n')
     DATA_DIR: Path = get_path('config')
     LOG_PATH: Path = get_path('config', '.log')
