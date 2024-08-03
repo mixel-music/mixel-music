@@ -6,7 +6,7 @@
     trackTitle,
     trackAlbum,
     trackArtist,
-    trackImages,
+    albumHash
   } from '$lib/stores/track';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
@@ -20,8 +20,8 @@
     trackHash.set(tag.hash),
     trackTitle.set(tag.title),
     trackAlbum.set(tag.album),
-    trackArtist.set(tag.artist), 
-    trackImages.set(tag.imagehash)
+    trackArtist.set(tag.artist),
+    albumHash.set(tag.albumhash)
   }
 </script>
 
@@ -35,7 +35,7 @@
     {#each data.trackListItem as track (track.hash)}
       <CardItem
         on:click={() => SetTrack(track) }
-        src={ `http://localhost:2843/api/images/${ track.imagehash }?size=300` }
+        src={ `http://localhost:2843/api/artwork/${ track.albumhash }?size=300` }
         alt={ track.title }
         lazyload
       >

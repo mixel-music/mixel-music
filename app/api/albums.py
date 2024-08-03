@@ -1,14 +1,16 @@
 from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
-from core.schema import *
+from infra.loggings import *
 
-router = APIRouter(prefix='/api')
+router = APIRouter(prefix = '/api')
 
-@router.get("/albums", response_model=list[AlbumListSchema])
-async def get_album_list(num: int = Query(500, alias='num', gt=0, le=500)):
+@router.get("/albums")
+async def get_albums(p: int = Query(1, ge=1), num: int = Query(40, ge=1)) -> dict | list[dict]:
     try:
         album_list = await Library.get_albums(num=num)
-    except:
+
+    except Exception as error:
+        logs.error(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     if album_list:
@@ -16,11 +18,13 @@ async def get_album_list(num: int = Query(500, alias='num', gt=0, le=500)):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-@router.get("/albums/{hash}", response_model=AlbumSchema)
-async def get_album(hash: str):
+@router.get("/albums/{hash}")
+async def get_album(hash: str) -> dict | list[dict]:
     try:
         album_info = await Library.get_albums(hash)
-    except:
+
+    except Exception as error:
+        logs.error(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     if album_info:

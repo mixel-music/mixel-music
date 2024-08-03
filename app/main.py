@@ -1,34 +1,45 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-import asyncio
 import uvicorn
+import asyncio
 
-from api import albums, artists, images, stream, tracks
-from core.watcher import *
+from api import albums, artists, artwork, stream, tracks
+from core.watcher import find_changes, watch_change
 from infra.config import *
 from infra.database import *
 from infra.loggings import *
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    conf.IMG_DIR.mkdir(exist_ok=True)
-    conf.DATA_DIR.mkdir(exist_ok=True)
-    conf.MUSIC_DIR.mkdir(exist_ok=True)
-    
+async def init(app: FastAPI):
+    create_dir(conf)
+    log = log_file_handler()
     await connect_database()
+    
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())
 
-    yield
-    await disconnect_database()
+    try:
+        yield
+    finally:
+        await disconnect_database()
+        log.close()
+
+        # Cancel all remaining tasks
+        tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+        [task.cancel() for task in tasks]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for result in results:
+            if isinstance(result, Exception) and not isinstance(result, asyncio.CancelledError):
+                logs.error(f"Error During Shutdown, {result}")
 
 app = FastAPI(
     debug=conf.DEBUG,
     title=conf.TITLE,
     version=conf.VERSION,
-    lifespan=lifespan,
+    lifespan=init,
 )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -39,7 +50,7 @@ app.add_middleware(
 
 app.include_router(albums.router)
 app.include_router(artists.router)
-app.include_router(images.router)
+app.include_router(artwork.router)
 app.include_router(stream.router)
 app.include_router(tracks.router)
 

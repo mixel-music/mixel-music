@@ -1,5 +1,4 @@
 from pathlib import Path
-from filetype import guess
 from tinytag import TinyTag
 
 root = (Path.cwd().resolve()).parent
@@ -49,5 +48,9 @@ def is_music_file(path: str) -> bool:
     if get_path(path).suffix in TinyTag.SUPPORTED_FILE_EXTENSIONS:
         return True
     else:
-        try: return True if str(guess(get_path(path)).mime).startswith(['audio', 'video']) else False
-        except: return False
+        return False
+    
+def create_dir(conf) -> None:
+    conf.IMG_DIR.mkdir(exist_ok=True)
+    conf.DATA_DIR.mkdir(exist_ok=True)
+    conf.MUSIC_DIR.mkdir(exist_ok=True)

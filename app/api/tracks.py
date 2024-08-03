@@ -1,14 +1,15 @@
 from fastapi import APIRouter, status, HTTPException, Query
 from core.library import *
-from core.schema import *
+from infra.loggings import *
 
-router = APIRouter(prefix='/api')
+router = APIRouter(prefix = '/api')
 
-@router.get("/tracks", response_model=list[TrackListSchema])
-async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
+@router.get("/tracks")
+async def get_track_list(p: int = Query(1, ge=1), num: int = Query(40, ge=1)) -> list | dict:
     try:
-        track_list = await Library.get_tracks(num=num)
-    except:
+        track_list = await Library.get_tracks(page = (p - 1) * num, num = num)
+    except Exception as error:
+        logs.error(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     if track_list:
@@ -16,11 +17,12 @@ async def get_track_list(num: int = Query(500, alias='num', gt=0, le=500)):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-@router.get("/tracks/{hash}", response_model=TrackSchema)
-async def get_track(hash: str):
+@router.get("/tracks/{hash}")
+async def get_track(hash: str) -> tuple[list[dict], dict]:
     try:
         track_info = await Library.get_tracks(hash)
-    except:
+    except Exception as error:
+        logs.error(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     if track_info:

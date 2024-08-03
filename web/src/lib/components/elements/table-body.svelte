@@ -2,13 +2,16 @@
 
 </script>
 
-<div>
+<table>
   <slot />
-</div>
+</table>
 
 <style>
-  div {
-    display: flex;
+  table {
+    margin: 0 auto;
+    margin-top: 2em;
+    width: 70%;
     font-size: 95%;
+    border-collapse: collapse;
   }
 </style>

@@ -13,6 +13,6 @@ vite.config.ts.timestamp-*
 node_modules
 __pycache__
 
-data
-music
+assets
+config
 test

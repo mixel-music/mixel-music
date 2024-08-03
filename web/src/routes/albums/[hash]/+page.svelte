@@ -1,26 +1,40 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getFormattedTime } from '$lib/tools';
-  import { getCoverUrl } from '$lib/tools';
+  import { getFormattedTime, getCoverUrl } from '$lib/tools';
+
+  import {
+    trackHash,
+    trackTitle,
+    trackAlbum,
+    trackArtist,
+
+    albumHash
+
+  } from '$lib/stores/track';
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
-  import ContentHead from '$lib/components/elements/content-head.svelte';
-  import ContentBody from '$lib/components/elements/content-body.svelte';
-
   import TableBody from '$lib/components/elements/table-body.svelte';
-  import TableBodyRow from '$lib/components/elements/table-body-row.svelte';
-  import TableCell from '$lib/components/elements/table-cell.svelte';
+  import TableCell from '$lib/components/elements/table-data.svelte';
+  import TableRow from '$lib/components/elements/table-row.svelte';
 
   export let data: PageData;
+
+  function SetTrack(tag: any): void {
+    trackHash.set(tag.hash),
+    trackTitle.set(tag.title),
+    trackAlbum.set(data.albumItem.album),
+    trackArtist.set(tag.artist)
+    albumHash.set(data.albumItem.albumhash)
+  }
 </script>
 
 <div class="album-container">
   <AlbumCover
-    src={ getCoverUrl(data.albumItem.imagehash, 500) }
+    src={ getCoverUrl(data.albumItem.albumhash, 500) }
     alt={ data.albumItem.album }
-    width=256
-    height=256
+    width=230
+    height=230
   />
 
   <AlbumTitle
@@ -36,53 +50,31 @@
 
 <TableBody>
 
-  <TableBodyRow>
-
   {#each data.albumItem.tracks as album}
-    <TableCell text={ album.tracknumber } />
+
+    <TableRow
+      on:click={() => SetTrack(album)}
+    >
+
+      <TableCell bold text={ album.track } />
+      <TableCell large text={ album.title } />
+      <TableCell right text={ album.artist } />
+      <TableCell right text={ getFormattedTime(album.duration) } />
+
+    </TableRow>
+
   {/each}
-
-  </TableBodyRow>
-
-  <TableBodyRow title>
-
-  {#each data.albumItem.tracks as album}
-    <TableCell text={ album.title } />
-  {/each}
-
-  </TableBodyRow>
-
-  <TableBodyRow>
-
-  {#each data.albumItem.tracks as album}
-    <TableCell text={ album.artist } />
-  {/each}
-
-  </TableBodyRow>
-
-  <TableBodyRow>
-
-  {#each data.albumItem.tracks as album}
-    <TableCell text={ getFormattedTime(album.duration) } />
-  {/each}
-
-  </TableBodyRow>
 
 </TableBody>
 
 </div>
 
-<!--{#each data.albumItem.tracks as album}
-<div>
-  <ContentHead head={ album.title } />
-  <ContentBody body={ album.artist } />
-</div>
-{/each}-->
-
 <style>
   .album-container {
     display: flex;
     width: 70%;
+    margin: 0 auto;
+    margin-top: 2em;
     gap: 24px;
   }
 

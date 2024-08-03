@@ -1,6 +1,6 @@
-function getCoverUrl(hash: string, size?: number): string {
+function getCoverUrl(hash: string | undefined, size?: number): string {
   let coverUrl: string =
-    `http://localhost:2843/api/images/${ hash }${ size ? `?size=${ size.toString() }` : '' }`;
+    `http://localhost:2843/api/artwork/${ hash }${ size ? `?size=${ size.toString() }` : '' }`;
 
   return coverUrl;
 }

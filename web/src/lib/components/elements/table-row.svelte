@@ -2,6 +2,10 @@
 
 </script>
 
+<tr on:click>
+  <slot />
+</tr>
+
 <style>
-  
+
 </style>

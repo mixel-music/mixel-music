@@ -5,17 +5,13 @@ interface Track {
   albumhash?: string;
   artist?: string;
   artisthash?: string;
-  imagehash?: string;
-  date?: string;
   year?: number;
-  musicbrainz_trackid?: string;
 }
 
 interface Album {
   albumhash: string;
   album: string;
   albumartist: string;
-  imagehash?: string;
   year?: number;
   tracktotals: number;
   disctotals: number;
@@ -24,7 +20,6 @@ interface Album {
 interface Artist {
   artisthash: string;
   artist: string;
-  imagehash?: string;
 }
 
 export type {

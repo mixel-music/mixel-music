@@ -11,7 +11,7 @@
     trackTitle,
     trackAlbum,
     trackArtist,
-    trackImages,
+    albumHash,
   } from '$lib/stores/track';
 
   import ContentHead from '$lib/components/elements/content-head.svelte';
@@ -36,7 +36,7 @@
   function StreamMusic(): void {
     if ($trackHash !== undefined) {
       musicItem.src = (`http://localhost:2843/api/stream/${ $trackHash }`);
-      coverPath = getCoverUrl($trackImages);
+      coverPath = getCoverUrl($trackHash);
       
       musicItem.addEventListener("loadedmetadata", () => {
         length = musicItem.duration;
@@ -84,7 +84,7 @@
         artist: $trackArtist,
         artwork: [
           {
-            src: getCoverUrl($trackImages, 128),
+            src: getCoverUrl($albumHash, 128),
           }
         ],
       });
@@ -243,7 +243,7 @@
 
       {#if $trackHash}
         <img
-          src="{ coverPath }?size=128"
+          src={ getCoverUrl($albumHash, 128) }
           class="player-cover"
           alt="Front Cover"
         />
