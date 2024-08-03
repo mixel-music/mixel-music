@@ -4,18 +4,18 @@ from contextlib import asynccontextmanager
 import uvicorn
 import asyncio
 
-from api import albums, artists, images, stream, tracks
+from api import albums, artists, artwork, stream, tracks
 from core.watcher import find_changes, watch_change
 from infra.config import *
 from infra.database import *
-from infra.logging import *
+from infra.loggings import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     mkdir(conf)
+    log = log_file_handler()
     await connect_database()
     
-    file_handler = get_file_handler()
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())
 
@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
         yield  # Yield control to the FastAPI application
     finally:
         await disconnect_database()
-        file_handler.close()
+        log.close()
 
         # Cancel all remaining tasks
         tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
@@ -50,7 +50,7 @@ app.add_middleware(
 
 app.include_router(albums.router)
 app.include_router(artists.router)
-app.include_router(images.router)
+app.include_router(artwork.router)
 app.include_router(stream.router)
 app.include_router(tracks.router)
 

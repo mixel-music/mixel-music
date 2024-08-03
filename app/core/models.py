@@ -32,20 +32,8 @@ class Tracks(Base):
     path: str = Column(String, nullable=False)
     created_date: DateTime = Column(DateTime, nullable=False)
     updated_date: DateTime = Column(DateTime, nullable=False)
-
-    # extra: str = Column(String, nullable=False)
     lyrics: str = Column(String, nullable=False)
-    # barcode: str = Column(String, nullable=False)
-    # copyright: str = Column(String, nullable=False)
     isrc: str = Column(String(12), nullable=False)
-    # label: str = Column(String, nullable=False)
-    # musicbrainz_albumartistid: str = Column(String, nullable=False)
-    # musicbrainz_albumid: str = Column(String, nullable=False)
-    # musicbrainz_artistid: str = Column(String, nullable=False)
-    # musicbrainz_trackid: str = Column(String, nullable=False)
-    # conductor: str = Column(String, nullable=False)
-    # director: str = Column(String, nullable=False)
-    # lyricist: str = Column(String, nullable=False)
 
 
 class Albums(Base):
@@ -54,14 +42,12 @@ class Albums(Base):
     albumhash: str = Column(String(40), primary_key=True, nullable=False)
     album: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
-    imagehash: str = Column(String(40), nullable=False)
-    year: int = Column(Integer, nullable=False)
+    albumartisthash: str = Column(String, nullable=False)
+    year: int = Column(Integer)
     durationtotals: float = Column(REAL)
     tracktotals: int = Column(Integer)
     disctotals: int = Column(Integer)
     sizetotals: int = Column(Integer)
-    # musicbrainz_albumartistid: str = Column(String, nullable=False)
-    # musicbrainz_albumid: str = Column(String, nullable=False)
 
 
 class Artists(Base):
@@ -69,7 +55,6 @@ class Artists(Base):
 
     artisthash: str = Column(String(40), primary_key=True, nullable=False)
     artist: str = Column(String, nullable=False)
-    imagehash: str = Column(String(40), nullable=False)
 
 
 class Users(Base):

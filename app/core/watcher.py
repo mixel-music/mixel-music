@@ -5,7 +5,7 @@ import asyncio
 from core.library import *
 from core.models import Tracks
 from infra.database import *
-from infra.logging import *
+from infra.loggings import *
 from tools.path_handler import *
 
 async def find_changes() -> None:
@@ -31,6 +31,7 @@ async def find_changes() -> None:
 
         await asyncio.gather(*tasks)
     await library_scan(property = path_property)
+    await LibraryTask.perform_albums()
 
 
 async def library_scan(property: dict, path = None) -> None:

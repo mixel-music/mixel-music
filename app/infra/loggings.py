@@ -45,5 +45,5 @@ fastapi_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
 logs.addHandler(file_handler)
 
-def get_file_handler():
+def log_file_handler():
     return file_handler

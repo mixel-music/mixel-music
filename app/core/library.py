@@ -3,20 +3,20 @@ import asyncio
 
 from core.models import *
 from infra.config import *
+from infra.loggings import *
 from infra.database import *
-from infra.logging import *
-from tools.convert_image import *
 from tools.convert_value import *
 from tools.path_handler import *
+from tools.save_artwork import *
 from tools.tags_handler import *
 
 semaphore = asyncio.Semaphore(5)
 
 class Library:
     @staticmethod
-    async def streaming(hash: str, range) -> tuple[bytes, dict[str, any]] | None:
+    async def stream(hash: str, range) -> tuple[bytes, dict[str, any]] | None:
         path = await hash_to_track(hash)
-        track_info = await Library.get_tracks(hash)
+        track_info = await Library.get_tracks(hash = hash)
         if not track_info: return
 
         track_mime = track_info['mime']
@@ -51,7 +51,6 @@ class Library:
         # if size == 'orig':
         #     for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
         #         if orig_image.is_file(): return orig_image
-        hash = await hash_to_albumhash(hash)
         if sanitize_num(size) in conf.IMG_SIZE:
             thumb_image = conf.IMG_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
             return thumb_image if thumb_image.is_file() else None
@@ -60,15 +59,15 @@ class Library:
 
 
     @staticmethod
-    async def get_tracks(hash: str = None, num: int = None) -> tuple[list[dict], dict]:
+    async def get_tracks(page: int = None, num: int = None, hash: str = None) -> tuple[list[dict], dict]:
         if hash:
             return await Library._get_track(hash)
         else:
-            return await Library._get_tracks(num)
+            return await Library._get_tracks(page, num)
 
 
     @staticmethod
-    async def _get_tracks(num: int) -> list[dict]:
+    async def _get_tracks(page: int, num: int) -> list[dict]:
         try:
             async with session() as conn:
                 query = select(
@@ -80,7 +79,7 @@ class Library:
                     Tracks.albumartist,
                 ).order_by(
                     Tracks.title.asc()
-                ).limit(num)
+                ).offset(page).limit(num)
 
                 result = await conn.execute(query)
                 track_list = [dict(row) for row in result.mappings().all()]
@@ -179,15 +178,7 @@ class LibraryTask:
     def __init__(self, path: str) -> None:
         self.path = path
         self.real_path = get_path(path)
-
-
-    @staticmethod
-    async def create_cover(hash: str) -> None:
-        path = await hash_to_track(hash)
-        image = await extract_cover(path)
-        if image:
-            await convert_image(image, await hash_to_albumhash(hash))
-
+        
 
     async def create_track(self) -> None:
         tags = await extract_tags(self.path)
@@ -199,28 +190,96 @@ class LibraryTask:
                     await LibraryRepo.insert_track(conn, tags)
                     await conn.commit()
 
-                except Exception as e:
-                    logs.error("Failed to create track: %s", e)
+                except Exception as error:
+                    logs.error("Failed to create track: %s", error)
                     await conn.rollback()
-
-
-    async def create_album(self) -> None:
-        pass
 
 
     async def remove_track(self) -> None:
         pass
 
 
-    async def remove_album(self) -> None:
+    @staticmethod
+    async def create_artwork(hash: str) -> None:
+        try:
+            async with session() as conn:
+                query = select(Tracks.path).where(Tracks.albumhash == hash)
+                result = await conn.execute(query)
+
+                data = result.mappings().first()
+                if data: data = dict(data)
+
+                image = await extract_cover(data.get('path'))
+                if image:
+                    await convert_image(image, hash)
+                else:
+                    print("Failed")
+                    
+        except Exception as error:
+            logs.error('error %s', error)
+
+
+    @staticmethod
+    async def remove_artwork(hash: str) -> None:
         pass
 
 
-    async def update_track(self) -> None:
-        pass
+    @staticmethod
+    async def perform_albums() -> None:
+        async with session() as conn:
+            try:
+                query = select(
+                    Tracks.album,
+                    Tracks.albumartist,
+                    Tracks.tracktotal,
+                    Tracks.disctotal,
+                    Tracks.year,
+                    func.sum(Tracks.duration).label('totalduration'),
+                    func.sum(Tracks.size).label('totalsize')
+                ).group_by(Tracks.album, Tracks.albumartist, Tracks.tracktotal)
 
+                result = await conn.execute(query)
+                albums_data = result.all()
 
-    async def update_album(self) -> None:
+                for album_data in albums_data:
+                    album_str = f"{album_data.album}-{album_data.albumartist}-{album_data.tracktotal}-{album_data.year}"
+                    albumhash = get_hash_str(album_str)
+                    albumartist_hash = get_hash_str(album_data.albumartist)
+
+                    new_album = {
+                        'album': album_data.album,
+                        'albumartist': album_data.albumartist,
+                        'albumartisthash': albumartist_hash,
+                        'albumhash': albumhash,
+                        'durationtotals': album_data.totalduration,
+                        'sizetotals': album_data.totalsize,
+                        'tracktotals': album_data.tracktotal,
+                        'disctotals': album_data.disctotal,
+                    }
+
+                    update_query = (
+                        update(Tracks)
+                        .where(
+                            Tracks.album == album_data.album,
+                            Tracks.albumartist == album_data.albumartist,
+                            Tracks.tracktotal == album_data.tracktotal,
+                            Tracks.year == album_data.year
+                        )
+                        .values(albumhash=albumhash)
+                        .execution_options(synchronize_session="fetch")
+                    )
+
+                    await conn.execute(update_query)
+                    await LibraryRepo.insert_album(conn, new_album)
+
+                await conn.commit()
+
+            except:
+                await conn.rollback()
+
+    
+    @staticmethod
+    async def perform_artists() -> None:
         pass
 
 
@@ -232,14 +291,21 @@ class LibraryRepo:
                 insert(Tracks).values(**tags)
             )
             return True
-        except OperationalError as err:
-            logs.error("Failed to insert track, %s", err)
+        except OperationalError as error:
+            logs.error("Failed to insert track, %s", error)
             raise
 
 
     @staticmethod
     async def insert_album(conn: AsyncSession, tags: dict) -> bool:
-        pass
+        try:
+            await conn.execute(
+                insert(Albums).values(**tags)
+            )
+            return True
+        except OperationalError as error:
+            logs.error("Failed to insert album, %s", error)
+            raise
 
 
     @staticmethod
@@ -250,250 +316,3 @@ class LibraryRepo:
     @staticmethod
     async def remove_album(conn: AsyncSession, hash: str) -> bool:
         pass
-
-
-
-# class Library:
-#     @staticmethod
-#     async def create(path: str, date: datetime = datetime.now()) -> None:
-#         real_path = get_path(path)
-#         tags_table = [column.name for column in Tracks.__table__.columns]
-#         track_tags = await TagsHandler(path).extract_tags(tags_table)
-#         if not track_tags: return
-
-#         album_hash = get_hash_str(
-#             track_tags.get('album'),
-#             track_tags.get('albumartist'),
-#             track_tags.get('musicbrainz_albumid'),
-#             track_tags.get('year'),
-#         )
-
-#         if track_tags.get('album') == 'Unknown Album':
-#             album_hash = get_hash_str(
-#                 album_hash,
-#                 track_tags.get('imagehash'),
-#                 track_tags.get('date')
-#             )
-
-#         artist_hash = get_hash_str(track_tags.get('artist'))
-#         track_tags.update({
-#             'albumhash': album_hash,
-#             'artisthash': get_hash_str(track_tags.get('artist')),
-#             'created_date': date,
-#             'updated_date': datetime.now(),
-#             'directory': str_path(real_path.parent),
-#             'size': real_path.stat().st_size,
-#             'hash': get_hash_str(path),
-#             'path': path,
-#         })
-#         track_tags = dict(sorted(track_tags.items()))
-
-#         async with session() as conn:
-#             async with semaphore_lib:
-#                 logs.debug("Inserting \"%s\"", track_tags.get('title'))
-#                 await Repository.insert_track(conn, track_tags)
-
-#                 async with asyncio.TaskGroup() as tg:
-#                     tg.create_task(Repository.insert_album(conn, album_hash, track_tags))
-#                     tg.create_task(Repository.insert_artist(conn, artist_hash, track_tags))
-#             await conn.commit()
-
-
-#     # @staticmethod
-#     # async def update(path: str) -> None:
-#     #     async with session() as conn:
-#     #         async with database_lock:
-#     #             result = await conn.execute(
-#     #                 select(Tracks.created_date).where(Tracks.path == path)
-#     #             )
-#     #             result = result.scalar().first()
-#     #             await Library.remove(path)
-#     #             await Library.create(path, result.created_date)
-#     #         await conn.commit()
-
-#     @staticmethod
-#     async def update(path: str) -> None:
-#         async with session() as conn:
-#             async with database_lock:
-#                 result = await conn.execute(
-#                     select(Tracks.created_date).where(Tracks.path == path)
-#                 )
-#                 created_date = result.scalar()
-#             if created_date:
-#                 await Library.remove(path)
-#                 await Library.create(path, created_date)
-#             await conn.commit()
-
-
-#     # @staticmethod
-#     # async def remove(path: str) -> None:
-#     #     async with session() as conn:
-#     #         async with database_lock:
-#     #             album_hash = select(Tracks.albumhash).where(Tracks.path == path).alias('subquery')
-#     #             album_data = select(func.count()).select_from(Tracks).where(Tracks.albumhash.in_(select(album_hash.c.albumhash)))
-#     #             album_exist = await conn.execute(album_data)
-#     #             album_count = album_exist.scalar()
-#     #             if album_count == 1: await Repository.delete_album(conn, path)
-
-#     #             artist_hash = select(Tracks.artisthash).where(Tracks.path == path).alias('subquery')
-#     #             artist_data = select(func.count()).select_from(Tracks).where(Tracks.artisthash.in_(select(artist_hash.c.artisthash)))
-#     #             artist_exist = await conn.execute(artist_data)
-#     #             artist_count = artist_exist.scalar()
-#     #             if artist_count == 1: await Repository.delete_artist(conn, path)
-
-#     #             await Repository.delete_track(conn, path)
-#     #         await conn.commit()
-
-#     @staticmethod
-#     async def remove(path: str) -> None:
-#         async with session() as conn:
-#             async with database_lock:
-#                 album_hash = select(Tracks.albumhash).where(Tracks.path == path).scalar_subquery()
-#                 album_count = await conn.scalar(
-#                     select(func.count()).select_from(Tracks).where(Tracks.albumhash == album_hash)
-#                 )
-#                 if album_count == 1:
-#                     await Repository.delete_album(conn, path)
-
-#                 artist_hash = select(Tracks.artisthash).where(Tracks.path == path).scalar_subquery()
-#                 artist_count = await conn.scalar(
-#                     select(func.count()).select_from(Tracks).where(Tracks.artisthash == artist_hash)
-#                 )
-#                 if artist_count == 1:
-#                     await Repository.delete_artist(conn, path)
-
-#                 await Repository.delete_track(conn, path)
-#             await conn.commit()
-
-#     @staticmethod
-#     async def get_images(hash: str, size: int) -> Path:
-#         # if size == 'orig':
-#         #     for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
-#         #         if orig_image.is_file(): return orig_image
-#         if sanitize_num(size) in conf.IMG_SIZE:
-#             thumb_image = conf.IMG_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
-#             return thumb_image if thumb_image.is_file() else None
-#         else:
-#             return None
-
-
-# class Repository:
-#     @staticmethod
-#     async def insert_track(conn: AsyncSession, tags: dict) -> None:
-#         try:
-#             await conn.execute(
-#                 insert(Tracks).values(**tags)
-#             )
-#         except OperationalError as err:
-#             logs.error("Failed to insert track, %s", err)
-#             raise err
-
-
-#     @staticmethod
-#     async def delete_track(conn: AsyncSession, path: str) -> None:
-#         try:
-#             await conn.execute(delete(Tracks).where(Tracks.path == path))
-#         except OperationalError as err:
-#             logs.error("Failed to delete track, %s", err)
-#             raise err
-
-
-#     @staticmethod
-#     async def insert_album(conn: AsyncSession, hash: str, tags: dict) -> None:
-#         async with database_lock:
-#             is_exist = await conn.execute(
-#                 select(Albums.__table__).where(Albums.albumhash == hash)
-#             )
-#             is_exist = is_exist.scalars().first()
-
-#             if not is_exist:
-#                 try:
-#                     await conn.execute(insert(Albums).values(
-#                         albumhash=hash,
-#                         album=tags.get('album'),
-#                         albumartist=tags.get('albumartist'),
-#                         imagehash=tags.get('imagehash'),
-#                         date=tags.get('date'),
-#                         year=tags.get('year'),
-#                         durationtotals=tags.get('duration'),
-#                         tracktotals=tags.get('tracktotals'),
-#                         disctotals=tags.get('disctotals'),
-#                         sizetotals=tags.get('size'),
-#                         musicbrainz_albumartistid=tags.get('musicbrainz_albumartistid'),
-#                         musicbrainz_albumid=tags.get('musicbrainz_albumid'),
-#                     ))
-#                 except OperationalError as err:
-#                     logs.error("Failed to insert album, %s", err)
-#                     raise err
-#             else:
-#                 try:
-#                     old_value = await conn.execute(
-#                         select(
-#                             Albums.imagehash,
-#                             Albums.durationtotals,
-#                             Albums.tracktotals,
-#                             Albums.disctotals,
-#                             Albums.sizetotals,
-#                             Albums.musicbrainz_albumartistid,
-#                             Albums.musicbrainz_albumid,
-#                         ).where(Albums.albumhash == hash)
-#                     )
-#                     old_value = old_value.mappings().first()
-#                 except OperationalError as err:
-#                     logs.error("Failed to load album, %s", err)
-#                     raise err
-
-#                 if old_value:
-#                     new_value = album_values(old_value, tags)
-#                     try:
-#                         await conn.execute(
-#                             update(Albums).where(Albums.albumhash == hash).values(**new_value)
-#                         )
-#                     except OperationalError as err:
-#                         logs.error("Failed to update album, %s", err)
-#                         raise err
-
-
-#     @staticmethod
-#     async def delete_album(conn: AsyncSession, path: str) -> None:
-#         try:
-#             subquery = select(Tracks.albumhash).where(Tracks.path == path).alias('subquery')
-#             mainquery = delete(Albums.__table__).where(Albums.albumhash.in_(select(subquery.c.albumhash)))
-#             await conn.execute(mainquery)
-
-#         except OperationalError as err:
-#             logs.error("Failed to delete album, %s", err)
-#             raise err
-
-
-#     @staticmethod
-#     async def insert_artist(conn: AsyncSession, hash: str, tags: dict) -> None:
-#         async with database_lock:
-#             is_exist = await conn.execute(
-#                 select(Artists).where(Artists.artisthash == hash)
-#             )
-#             is_exist = is_exist.scalars().first()
-#             if not is_exist:
-#                 try:
-#                     await conn.execute(
-#                         insert(Artists).values(
-#                             artisthash=hash,
-#                             artist=tags.get('artist'),
-#                             imagehash='',
-#                         )
-#                     )
-#                 except Exception as err:
-#                     logs.error("Failed to insert artist, %s", err)
-#                     raise err
-
-
-#     @staticmethod
-#     async def delete_artist(conn: AsyncSession, path: str) -> None:
-#         try:
-#             subquery = select(Tracks.artisthash).where(Tracks.path == path).alias('subquery')
-#             mainquery = delete(Artists.__table__).where(Artists.artisthash.in_(select(subquery.c.artisthash)))
-#             await conn.execute(mainquery)
-
-#         except OperationalError as err:
-#             logs.error("Failed to delete artist, %s", err)
-#             raise err

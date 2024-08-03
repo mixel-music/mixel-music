@@ -1,9 +1,9 @@
 from tinytag import TinyTag
 from datetime import datetime
 
-from infra.logging import *
+from infra.loggings import *
 from tools.path_handler import get_path, get_filename
-from tools.convert_value import get_hash_str
+from tools.convert_value import get_hash_str, guess_mime
 
 async def extract_tags(path: str) -> dict:
     path = str_path(path)
@@ -17,7 +17,7 @@ async def extract_tags(path: str) -> dict:
             'artist': tags.artist or 'Unknown Artist',
             'artisthash': get_hash_str(tags.artist) if tags.artist else '',
             'album': tags.album or 'Unknown Album',
-            'albumhash': get_hash_str(tags.album) if tags.album else '',
+            'albumhash': '',
             'albumartist': tags.albumartist or '',
             'bitdepth': tags.bitdepth or 0,
             'bitrate': tags.bitrate or 0.0,
@@ -34,18 +34,15 @@ async def extract_tags(path: str) -> dict:
             'tracktotal': tags.track_total or 0,
             'year': tags.year or 'Unknown Year',
             'directory': get_filename(path)[1],
-            'mime': '',
+            'mime': guess_mime(path),
             'path': path,
             'created_date': datetime.now(),
             'updated_date': datetime.now(),
             'isrc': tags.extra.get('isrc', '') or '',
             'lyrics': '',
         }
-
         return track_dict
-    
-    except Exception as error:
-        logs.error(f"File format not supported: {real_path}, {error}")
+    except:
         return {}
     
 async def extract_cover(path: str) -> bin:

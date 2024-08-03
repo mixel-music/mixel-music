@@ -4,24 +4,24 @@ import logging
 
 class Config(BaseSettings):
     TITLE: str = 'mixel-music'
-    HOST: str = '127.0.0.1'
+    HOST: str = '0.0.0.0'
     PORT: int = 2843
 
     DB_URL: str = "sqlite+aiosqlite:///" \
         + str_path('config', 'mixel-music.db', rel=False)
     I18N_DIR: Path = get_path('i18n')
     DATA_DIR: Path = get_path('config')
-    LOG_PATH: Path = get_path('config', '.log')
+    LOG_PATH: Path = get_path('config', 'mixel-music.txt')
     MUSIC_DIR: Path = get_path('assets')
 
-    IMG_DIR: Path = get_path('config', 'images')
+    IMG_DIR: Path = get_path('config', 'artworks')
     IMG_SIZE: list[int] = [128, 300, 500]
-    IMG_TYPE: str = 'webp'
+    IMG_TYPE: str = 'webp' # png, jpeg, webp
     IMG_QUAL: int = 100
 
     DEBUG: bool = True
     DB_ECHO: bool = False
-    VERSION: str = '0.3.0'
+    VERSION: str = '0.3.1'
     LOG_LEVEL: int = logging.DEBUG
 
 conf = Config()

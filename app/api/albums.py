@@ -4,7 +4,7 @@ from core.library import *
 router = APIRouter(prefix='/api')
 
 @router.get("/albums")
-async def get_album_list(num: int = Query(40, alias='num', gt=0, le=128)) -> dict | list[dict]:
+async def get_albums(num: int = Query(40, alias='num', gt=0, le=128)) -> dict | list[dict]:
     try:
         album_list = await Library.get_albums(num=num)
     except:

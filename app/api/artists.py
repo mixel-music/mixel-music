@@ -4,7 +4,7 @@ from core.library import *
 router = APIRouter(prefix='/api')
 
 @router.get("/artists")
-async def get_artist_list(num: int = Query(40, alias='num', gt=1, le=128)) -> list:
+async def get_artists(num: int = Query(40, alias='num', gt=1, le=128)) -> list:
     try:
         artist_list = await Library.get_artists(num=num)
     except:
