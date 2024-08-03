@@ -59,14 +59,13 @@ async def library_scan(property: dict, path = None) -> None:
 
 async def watch_change() -> None:
     logs.info("Event watcher initiated.")
-    tasks = []
 
     async for event_handler in awatch(
         conf.MUSIC_DIR,
         recursive=True,
         force_polling=True,
     ):
-
+        tasks = []
         for event_type, event_path in event_handler:
             str_path_val = str_path(event_path)
 

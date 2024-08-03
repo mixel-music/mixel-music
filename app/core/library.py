@@ -203,7 +203,16 @@ class LibraryTask:
 
 
     async def remove_track(self) -> None:
-        pass
+        async with semaphore:
+            async with session() as conn:
+                try:
+                    logs.debug("Removing \"%s\"", self.path)
+                    await LibraryRepo.remove_track(conn, self.path)
+                    await conn.commit()
+
+                except Exception as error:
+                    logs.error("Failed to remove track: %s", error)
+                    await conn.rollback()
 
 
     @staticmethod
@@ -234,7 +243,7 @@ class LibraryTask:
     @staticmethod
     async def perform_albums() -> None:
         """
-        Create/Remove Album
+        Create / Remove Album
         """
 
         async with session() as conn:
@@ -289,6 +298,25 @@ class LibraryTask:
                 await conn.rollback()
 
     
+        # async with session() as conn:
+        #     try:
+        #         albums_query = select(Albums.albumhash)
+        #         result = await conn.execute(albums_query)
+        #         album_hash = {row.albumhash for row in result}
+
+        #         tracks_query = select(Tracks.albumhash).distinct()
+        #         result = await conn.execute(tracks_query)
+        #         track_hash = {row.albumhash for row in result}
+
+        #         find = album_hash - track_hash # 중복 없애고 set으로 차집합 연산
+        #         for albumhash in find:
+        #             logs.debug("Removing Album %s", albumhash)
+        #             await LibraryRepo.remove_album(conn, albumhash)
+
+        #     except Exception as error:
+        #         logs.error("Failed to fetch untracked albums, %s", error)
+
+    
     @staticmethod
     async def perform_artists() -> None:
         pass
@@ -302,6 +330,7 @@ class LibraryRepo:
                 insert(Tracks).values(**tags)
             )
             return True
+        
         except OperationalError as error:
             logs.error("Failed to insert track, %s", error)
             raise
@@ -314,16 +343,37 @@ class LibraryRepo:
                 insert(Albums).values(**tags)
             )
             return True
+        
         except OperationalError as error:
             logs.error("Failed to insert album, %s", error)
             raise
 
 
     @staticmethod
-    async def remove_track(conn: AsyncSession, hash: str) -> bool:
-        pass
+    async def remove_track(conn: AsyncSession, path: str) -> bool:
+        try:
+            await conn.execute(
+                delete(Tracks).where(
+                    Tracks.path == path,
+                )
+            )
+            return True
+        
+        except OperationalError as error:
+            logs.error("Failed to remove track, %s", error)
+            raise
 
 
     @staticmethod
     async def remove_album(conn: AsyncSession, hash: str) -> bool:
-        pass
+        try:
+            await conn.execute(
+                delete(Albums).where(
+                    Albums.albumhash == hash,
+                )
+            )
+            return True
+        
+        except OperationalError as error:
+            logs.error("Failed to remove album, %s", error)
+            raise
