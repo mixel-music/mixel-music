@@ -11,8 +11,8 @@ from infra.database import *
 from infra.loggings import *
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    mkdir(conf)
+async def init(app: FastAPI):
+    create_dir(conf)
     log = log_file_handler()
     await connect_database()
     
@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(watch_change())
 
     try:
-        yield  # Yield control to the FastAPI application
+        yield
     finally:
         await disconnect_database()
         log.close()
@@ -37,7 +37,7 @@ app = FastAPI(
     debug=conf.DEBUG,
     title=conf.TITLE,
     version=conf.VERSION,
-    lifespan=lifespan,
+    lifespan=init,
 )
 
 app.add_middleware(

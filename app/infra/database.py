@@ -7,7 +7,14 @@ from core.models import Base
 from infra.config import *
 
 engine = create_async_engine(conf.DB_URL, echo=conf.DB_ECHO)
-session = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
+
+session = sessionmaker(
+    class_=AsyncSession,
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
+
 metadata = Base.metadata
 
 async def connect_database() -> None:

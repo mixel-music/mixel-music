@@ -4,6 +4,7 @@ import logging
 
 class Config(BaseSettings):
     TITLE: str = 'mixel-music'
+    VERSION: str = '0.3.1'
     HOST: str = '0.0.0.0'
     PORT: int = 2843
 
@@ -19,9 +20,8 @@ class Config(BaseSettings):
     IMG_TYPE: str = 'webp' # png, jpeg, webp
     IMG_QUAL: int = 100
 
-    DEBUG: bool = True
-    DB_ECHO: bool = False
-    VERSION: str = '0.3.1'
     LOG_LEVEL: int = logging.DEBUG
+    DB_ECHO: bool = False
+    DEBUG: bool = True
 
 conf = Config()

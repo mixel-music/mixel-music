@@ -1,4 +1,3 @@
-# infra/logging.py
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
@@ -11,6 +10,7 @@ print_console = Console(
     record=True,
     soft_wrap=True,
 )
+
 print_handler = RichHandler(
     console=print_console,
     rich_tracebacks=True
@@ -21,6 +21,7 @@ file_handler = logging.FileHandler(
     mode='a',
     encoding='utf-8'
 )
+
 file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(file_formatter)
 
@@ -45,5 +46,5 @@ fastapi_logger.addHandler(print_handler)
 logs.addHandler(print_handler)
 logs.addHandler(file_handler)
 
-def log_file_handler():
+def log_file_handler() -> logging.FileHandler:
     return file_handler

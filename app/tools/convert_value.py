@@ -21,7 +21,7 @@ def get_hash_str(*args) -> str:
     except ValueError:
         return ''
 
-def sanitize_num(num: int) -> int:
+def sanitize_int(num: int) -> int:
     if isinstance(num, tuple): num = num[0]
     try:
         return int(num)
@@ -41,11 +41,12 @@ async def hash_to_albumhash(hash: str) -> str:
                 select(Tracks.albumhash).where(Tracks.hash == hash)
             )
             row = result.scalars().first()
-    except Exception as err:
-        logs.error("Failed to get image path from hash, %s", err)
-        return ''
+        
+        return row if row else ''
 
-    return row if row else ''
+    except Exception as error:
+        logs.error("Failed to get albumhash from trackhash, %s", error)
+        return ''
     
 async def hash_to_track(hash: str) -> str:
     try:
@@ -54,8 +55,9 @@ async def hash_to_track(hash: str) -> str:
                 select(Tracks.path).where(Tracks.hash == hash)
             )
             row = result.scalars().first()
-    except Exception as err:
-        logs.error("Failed to get track path from hash, %s", err)
+
+        return row if row else ''
+    
+    except Exception as error:
+        logs.error("Failed to get track path from hash, %s", error)
         return ''
-        
-    return row if row else ''

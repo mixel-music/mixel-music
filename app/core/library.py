@@ -16,6 +16,7 @@ class Library:
     @staticmethod
     async def stream(hash: str, range) -> tuple[bytes, dict[str, any]] | None:
         path = await hash_to_track(hash)
+
         track_info = await Library.get_tracks(hash = hash)
         if not track_info: return
 
@@ -47,13 +48,18 @@ class Library:
 
 
     @staticmethod
-    async def get_cover(hash: str, size: int) -> Path:
-        # if size == 'orig':
-        #     for orig_image in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
-        #         if orig_image.is_file(): return orig_image
-        if sanitize_num(size) in conf.IMG_SIZE:
-            thumb_image = conf.IMG_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
-            return thumb_image if thumb_image.is_file() else None
+    async def get_artwork(hash: str, size: int) -> Path:
+        """
+        hash: albumhash, size = 0: Original Artwork
+        """
+
+        if size == 0:
+            for orig_artwork in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
+                if orig_artwork.is_file(): return orig_artwork
+
+        if sanitize_int(size) in conf.IMG_SIZE:
+            artwork_thumb = conf.IMG_DIR / f"{hash}_{size}.{conf.IMG_TYPE}"
+            return artwork_thumb if artwork_thumb .is_file() else None
         else:
             return None
 
@@ -210,11 +216,11 @@ class LibraryTask:
                 data = result.mappings().first()
                 if data: data = dict(data)
 
-                image = await extract_cover(data.get('path'))
-                if image:
-                    await convert_image(image, hash)
+                artwork = await extract_artwork(data.get('path'))
+                if artwork:
+                    await save_artwork(artwork, hash)
                 else:
-                    print("Failed")
+                    logs.debug("Failed to extract artwork.")
                     
         except Exception as error:
             logs.error('error %s', error)
@@ -227,6 +233,10 @@ class LibraryTask:
 
     @staticmethod
     async def perform_albums() -> None:
+        """
+        Create/Remove Album
+        """
+
         async with session() as conn:
             try:
                 query = select(

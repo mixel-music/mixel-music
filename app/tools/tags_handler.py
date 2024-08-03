@@ -6,9 +6,8 @@ from tools.path_handler import get_path, get_filename
 from tools.convert_value import get_hash_str, guess_mime
 
 async def extract_tags(path: str) -> dict:
-    path = str_path(path)
-    real_path = get_path(path)
-
+    path, real_path = str_path(path), get_path(path)
+    
     try:
         tags = TinyTag.get(real_path)
         track_dict = {
@@ -45,9 +44,9 @@ async def extract_tags(path: str) -> dict:
     except:
         return {}
     
-async def extract_cover(path: str) -> bin:
+async def extract_artwork(path: str) -> bin:
     try:
-        cover = TinyTag.get(get_path(path), image=True)
-        return cover.get_image()
+        artwork = TinyTag.get(get_path(path), image=True)
+        return artwork.get_image()
     except:
         return None

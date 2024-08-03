@@ -50,7 +50,7 @@ def is_music_file(path: str) -> bool:
     else:
         return False
     
-def mkdir(conf) -> None:
+def create_dir(conf) -> None:
     conf.IMG_DIR.mkdir(exist_ok=True)
     conf.DATA_DIR.mkdir(exist_ok=True)
     conf.MUSIC_DIR.mkdir(exist_ok=True)
