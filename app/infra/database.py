@@ -1,4 +1,5 @@
 from sqlalchemy import text, func, select, insert, update, delete
+from sqlalchemy.dialects.sqlite import Insert
 from sqlalchemy.exc import OperationalError, SQLAlchemyError, DatabaseError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker

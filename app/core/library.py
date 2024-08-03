@@ -294,8 +294,8 @@ class LibraryTask:
 
                 await conn.commit()
 
-            except:
-                await conn.rollback()
+            except Exception as error:
+                logs.error("Error, %s", error)
 
     
         # async with session() as conn:
@@ -340,7 +340,7 @@ class LibraryRepo:
     async def insert_album(conn: AsyncSession, tags: dict) -> bool:
         try:
             await conn.execute(
-                insert(Albums).values(**tags)
+                Insert(Albums).values(**tags).on_conflict_do_nothing()
             )
             return True
         
