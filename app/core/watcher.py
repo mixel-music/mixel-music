@@ -81,3 +81,4 @@ async def watch_change() -> None:
                 #     tasks.append(instance.update_track()) TODO
 
         await asyncio.gather(*tasks)
+        await LibraryTask.perform_albums()
