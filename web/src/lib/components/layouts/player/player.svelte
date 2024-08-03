@@ -10,7 +10,8 @@
     trackHash,
     trackTitle,
     trackAlbum,
-    trackArtist
+    trackArtist,
+    albumHash,
   } from '$lib/stores/track';
 
   import ContentHead from '$lib/components/elements/content-head.svelte';
@@ -83,7 +84,7 @@
         artist: $trackArtist,
         artwork: [
           {
-            src: getCoverUrl($trackHash, 128),
+            src: getCoverUrl($albumHash, 128),
           }
         ],
       });
@@ -242,7 +243,7 @@
 
       {#if $trackHash}
         <img
-          src="{ coverPath }?size=128"
+          src={ getCoverUrl($albumHash, 128) }
           class="player-cover"
           alt="Front Cover"
         />

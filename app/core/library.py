@@ -127,13 +127,14 @@ class Library:
                     album_data = dict(album_data)
 
                     tracks_query = select(
+                        Tracks.hash,
                         Tracks.title,
                         Tracks.artist,
-                        Tracks.hash,
-                        Tracks.duration,
                         Tracks.artisthash,
-                        Tracks.tracknumber,
-                    ).where(Tracks.albumhash == hash).order_by(Tracks.tracknumber.asc())
+                        Tracks.duration,
+                        Tracks.albumhash,
+                        Tracks.track,
+                    ).where(Tracks.albumhash == hash).order_by(Tracks.track.asc())
                     tracks_result = await conn.execute(tracks_query)
                     album_data['tracks'] = [dict(track) for track in tracks_result.mappings().all()]
 

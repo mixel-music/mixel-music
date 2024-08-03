@@ -19,7 +19,8 @@ async def get_albums(num: int = Query(40, alias='num', gt=0, le=128)) -> dict | 
 async def get_album(hash: str) -> dict | list[dict]:
     try:
         album_info = await Library.get_albums(hash)
-    except:
+    except Exception as error:
+        print(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     if album_info:

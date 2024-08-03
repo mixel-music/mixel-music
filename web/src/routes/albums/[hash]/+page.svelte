@@ -7,7 +7,9 @@
     trackTitle,
     trackAlbum,
     trackArtist,
-    trackImages,
+
+    albumHash
+
   } from '$lib/stores/track';
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
@@ -22,14 +24,14 @@
     trackHash.set(tag.hash),
     trackTitle.set(tag.title),
     trackAlbum.set(data.albumItem.album),
-    trackArtist.set(tag.artist), 
-    trackImages.set(data.albumItem.imagehash)
+    trackArtist.set(tag.artist)
+    albumHash.set(data.albumItem.albumhash)
   }
 </script>
 
 <div class="album-container">
   <AlbumCover
-    src={ getCoverUrl(data.albumItem.imagehash, 500) }
+    src={ getCoverUrl(data.albumItem.albumhash, 500) }
     alt={ data.albumItem.album }
     width=230
     height=230
@@ -54,7 +56,7 @@
       on:click={() => SetTrack(album)}
     >
 
-      <TableCell bold text={ album.tracknumber } />
+      <TableCell bold text={ album.track } />
       <TableCell large text={ album.title } />
       <TableCell right text={ album.artist } />
       <TableCell right text={ getFormattedTime(album.duration) } />

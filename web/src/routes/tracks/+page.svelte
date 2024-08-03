@@ -5,7 +5,8 @@
     trackHash,
     trackTitle,
     trackAlbum,
-    trackArtist
+    trackArtist,
+    albumHash
   } from '$lib/stores/track';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
@@ -19,7 +20,8 @@
     trackHash.set(tag.hash),
     trackTitle.set(tag.title),
     trackAlbum.set(tag.album),
-    trackArtist.set(tag.artist)
+    trackArtist.set(tag.artist),
+    albumHash.set(tag.albumhash)
   }
 </script>
 
