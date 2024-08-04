@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import { getNextPageLink, getPrevPageLink } from '$lib/tools';
 
   import {
     trackHash,
@@ -13,6 +14,7 @@
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
+  import NavbarButton from '$lib/components/layouts/navbar/navbar-button.svelte';
 
   export let data: PageData;
 
@@ -48,10 +50,28 @@
     {/each}
 
   </CardItemGroup>
+
+  <div class="bottom-ctl">
+    <NavbarButton
+      icon="iconoir:nav-arrow-left"
+      href='{ getPrevPageLink(data.pageCount, data.itemCount) }'
+    />
+    <NavbarButton
+      icon='iconoir:nav-arrow-right'
+      href='{ getNextPageLink(data.pageCount, data.itemCount, data.totalCountItem.count) }'
+    />
+  </div>
+
 {/if}
 
 <style>
   div {
     padding-top: var(--app-padding-s);
+  }
+  
+  .bottom-ctl {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
   }
 </style>

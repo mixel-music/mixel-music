@@ -14,6 +14,45 @@ semaphore = asyncio.Semaphore(5)
 
 class Library:
     @staticmethod
+    async def get_track_count():
+        async with session() as conn:
+            try:
+                count = await conn.execute(select(func.count()).select_from(Tracks))
+                count = count.scalar_one()
+                return count
+
+            except Exception as error:
+                logs.error("Error, %s", error)
+                return 0
+
+
+    @staticmethod
+    async def get_album_count():
+        async with session() as conn:
+            try:
+                count = await conn.execute(select(func.count()).select_from(Albums))
+                count = count.scalar_one()
+                return count
+
+            except Exception as error:
+                logs.error("Error, %s", error)
+                return 0
+
+
+    @staticmethod
+    async def get_artist_count():
+        async with session() as conn:
+            try:
+                count = await conn.execute(select(func.count()).select_from(Artists))
+                count = count.scalar_one()
+                return count
+
+            except Exception as error:
+                logs.error("Error, %s", error)
+                return 0
+
+
+    @staticmethod
     async def streaming(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
         
         path = await hash_track_to_path(hash)

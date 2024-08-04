@@ -3,9 +3,10 @@
 
   export let icon: string | undefined = undefined;
   export let title: string = '';
+  export let href: string = '';
 </script>
 
-<button type="button" on:click>
+<a class="button" on:click {href} data-sveltekit-noscroll>
   {#if icon}
     <Icon {icon} />
   {/if}
@@ -13,10 +14,10 @@
   {#if title}
     {title}
   {/if}
-</button>
+</a>
 
 <style>
-  button {
+  .button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,7 +35,7 @@
     border-radius: 50%;
   }
 
-  button:hover {
+  .button:hover {
     color: var(--color-dark-text-1);
     transition: 0.2s ease;
   }
