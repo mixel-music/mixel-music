@@ -10,8 +10,8 @@
 * This is my first time using JavaScript, TypeScript and Svelte. Also, I have little experience doing backend development using Python.
   * There may be many areas that need improvement. Feedback is always welcome.
 
-<img src=".github/albums.png" width="850">
-<img src="https://raw.githubusercontent.com/mixel-main/mixel-music/4e5389d50fc58bac78013acb7f6bb51232047a5d/.github/album.png" width="850">
+<img src=".github/album-list.png" width="850">
+<img src=".github/album-info.png" width="850">
 
 <!--
 ## Features
