@@ -26,10 +26,10 @@
 	}
 
 	section {
-  	max-width: 100%;
-  	padding: 64px;
+		max-width: 100%;
+		padding: 64px;
 		padding-top: 0;
 		margin-left: 250px;
-    margin-bottom: 96px;
+		margin-bottom: 96px;
 	}
 </style>

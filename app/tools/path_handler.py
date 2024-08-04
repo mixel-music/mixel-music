@@ -17,6 +17,7 @@ def get_path(*args: str | Path, rel: bool = False) -> Path:
 
     return home
 
+
 def str_path(*args: str | Path, rel: bool = True) -> str:
     """
     Abstracts a path-like object or string path within the application and returns it as a string.
@@ -31,6 +32,7 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
 
     return home.as_posix()
 
+
 def get_filename(*args: str | Path) -> list[str]:
     home = root
     for arg in args: home = home / arg
@@ -44,12 +46,14 @@ def get_filename(*args: str | Path) -> list[str]:
 
     return [name, stem, suffix.lower()]
 
+
 def is_music_file(path: str) -> bool:
     if get_path(path).suffix in TinyTag.SUPPORTED_FILE_EXTENSIONS:
         return True
     else:
         return False
     
+
 def create_dir(conf) -> None:
     conf.IMG_DIR.mkdir(exist_ok=True)
     conf.DATA_DIR.mkdir(exist_ok=True)

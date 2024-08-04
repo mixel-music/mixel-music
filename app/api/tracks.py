@@ -4,28 +4,36 @@ from infra.loggings import *
 
 router = APIRouter(prefix = '/api')
 
-@router.get("/tracks")
-async def get_track_list(p: int = Query(1, ge=1), num: int = Query(40, ge=1)) -> list | dict:
+@router.get('/tracks')
+async def api_track_list(
+    page: int = Query(1, ge=1),
+    item: int = Query(40, ge=1),
+) -> dict | list[dict]:
+    
     try:
-        track_list = await Library.get_tracks(page = (p - 1) * num, num = num)
+        track_list = await Library.get_track_list(page, item)
+        if track_list:
+            return track_list
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
     except Exception as error:
         logs.error(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.get('/tracks/{hash}')
+async def api_track_info(
+    hash: str,
+) -> dict | list[dict]:
     
-    if track_list:
-        return track_list
-    else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    
-@router.get("/tracks/{hash}")
-async def get_track(hash: str) -> tuple[list[dict], dict]:
     try:
-        track_info = await Library.get_tracks(hash)
+        track_info = await Library.get_track_info(hash)
+        if track_info:
+            return track_info
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
     except Exception as error:
         logs.error(error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    if track_info:
-        return track_info
-    else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

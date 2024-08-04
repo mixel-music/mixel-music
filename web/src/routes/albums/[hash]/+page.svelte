@@ -7,9 +7,7 @@
     trackTitle,
     trackAlbum,
     trackArtist,
-
     albumHash
-
   } from '$lib/stores/track';
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';

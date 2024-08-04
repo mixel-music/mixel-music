@@ -32,7 +32,7 @@ async def find_changes() -> None:
         await asyncio.gather(*tasks)
 
     await library_scan(property = path_property)
-    await LibraryTask.perform_albums()
+    asyncio.create_task(LibraryScan.scan_all())
 
 
 async def library_scan(property: dict, path = None) -> None:
@@ -58,14 +58,16 @@ async def library_scan(property: dict, path = None) -> None:
 
 
 async def watch_change() -> None:
-    logs.info("Event watcher initiated.")
+    logs.info("Event watcher started.")
 
     async for event_handler in awatch(
         conf.MUSIC_DIR,
         recursive=True,
         force_polling=True,
     ):
+        
         tasks = []
+        
         for event_type, event_path in event_handler:
             str_path_val = str_path(event_path)
 
@@ -80,4 +82,4 @@ async def watch_change() -> None:
                 #     tasks.append(instance.update_track()) TODO
 
         await asyncio.gather(*tasks)
-        await LibraryTask.perform_albums()
+        asyncio.create_task(LibraryScan.scan_all())
