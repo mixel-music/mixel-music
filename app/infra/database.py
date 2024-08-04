@@ -8,6 +8,7 @@ from core.models import Base
 from infra.config import *
 
 engine = create_async_engine(conf.DB_URL, echo=conf.DB_ECHO)
+metadata = Base.metadata
 
 session = sessionmaker(
     class_=AsyncSession,
@@ -16,13 +17,12 @@ session = sessionmaker(
     bind=engine,
 )
 
-metadata = Base.metadata
-
 async def connect_database() -> None:
     async with engine.begin() as conn:
         await conn.execute(text("PRAGMA journal_mode=WAL;"))
         await conn.execute(text("PRAGMA busy_timeout = 5000"))
         await conn.run_sync(Base.metadata.create_all)
+
 
 async def disconnect_database() -> None:
     await engine.dispose()

@@ -14,9 +14,9 @@ semaphore = asyncio.Semaphore(5)
 
 class Library:
     @staticmethod
-    async def stream(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
+    async def streaming(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
         
-        path = await hash_to_track(hash)
+        path = await hash_track_to_path(hash)
         track_info = await Library.get_track_info(hash)
         if not track_info: return
 
@@ -102,7 +102,7 @@ class Library:
     @staticmethod
     async def _get_track_info(hash: str) -> dict:
         try:
-            path = await hash_to_track(hash)
+            path = await hash_track_to_path(hash)
             async with session() as conn:
                 db_query = (
                     select(Tracks.__table__)
@@ -280,14 +280,16 @@ class LibraryTask:
 
 
 class LibraryScan:
-    def __init__(self) -> None:
-        pass
+    @staticmethod
+    async def scan_all() -> None:
+        await LibraryScan.perform_albums()
+        await LibraryScan.perform_artists()
 
     
     @staticmethod
     async def perform_albums() -> None:
-        async with session() as conn:
-            try:
+        try:
+            async with session() as conn:
                 db_query = (
                     select(
                         Tracks.album,
@@ -309,10 +311,10 @@ class LibraryScan:
                 albums_data = db_result.all()
 
                 for alb in albums_data:
-                    albumhash = get_hash_str(
+                    albumhash = hash_str(
                         f'{alb.album}-{alb.albumartist}-{alb.tracktotal}-{alb.year}'
                     )
-                    albumartisthash = get_hash_str(alb.albumartist)
+                    albumartisthash = hash_str(alb.albumartist)
 
                     update_track = (
                         update(Tracks)
@@ -342,13 +344,8 @@ class LibraryScan:
 
                 await conn.commit()
 
-            except Exception as error:
-                logs.error("Failed to perform albums, %s", error)
-                await conn.rollback()
-
     
-        async with session() as conn:
-            try:
+            async with session() as conn:
                 albums_query = select(Albums.albumhash)
                 result = await conn.execute(albums_query)
                 album_hash = {row.albumhash for row in result}
@@ -365,14 +362,56 @@ class LibraryScan:
 
                 await conn.commit()
 
-            except Exception as error:
-                logs.error("Failed to fetch untracked albums, %s", error)
-                await conn.rollback()
+
+        except Exception as error:
+            logs.error("Failed to refresh album list, %s", error)
+            await conn.rollback()
 
 
     @staticmethod
     async def perform_artists() -> None:
-        pass
+        try:
+            async with session() as conn:
+                db_query = (
+                    select(
+                        Tracks.albumartist,
+                    )
+                    .order_by(Tracks.albumartist.asc())
+                )
+
+                db_result = await conn.execute(db_query)
+                artists_data = db_result.all()
+
+                for art in artists_data:
+                    artist_data = {
+                        'artist': art.albumartist,
+                        'artisthash': hash_str(art.albumartist)
+                    }
+                    await LibraryRepo.insert_artist(conn, artist_data)
+                    await conn.commit()
+
+
+            async with session() as conn:
+                artists_query = select(Artists.artisthash)
+                result = await conn.execute(artists_query)
+                artist_hash = {row.artisthash for row in result}
+
+                albums_query = select(Albums.albumartisthash).distinct()
+                result = await conn.execute(albums_query)
+                album_hash = {row.albumartisthash for row in result}
+
+                find = artist_hash - album_hash
+
+                for artisthash in find:
+                    logs.debug("Removing Artist %s", artisthash)
+                    await LibraryRepo.delete_artist(conn, artisthash)
+
+                await conn.commit()
+
+
+        except Exception as error:
+            logs.error("Failed to refresh artist list, %s", error)
+            await conn.rollback()
 
 
 
@@ -427,4 +466,31 @@ class LibraryRepo:
         
         except OperationalError as error:
             logs.error("LibraryRepo: Failed to delete album, %s", error)
+            raise
+
+
+    @staticmethod
+    async def insert_artist(conn: AsyncSession, tags: dict) -> bool:
+        try:
+            await conn.execute(
+                Insert(Artists).values(**tags)
+                .on_conflict_do_nothing()
+            )
+            return True
+        
+        except OperationalError as error:
+            logs.error("LibraryRepo: Failed to insert artist, %s", error)
+            raise
+
+
+    @staticmethod
+    async def delete_artist(conn: AsyncSession, hash: str) -> bool:
+        try:
+            await conn.execute(
+                delete(Artists).where(Artists.artisthash == hash)
+            )
+            return True
+        
+        except OperationalError as error:
+            logs.error("LibraryRepo: Failed to delete artist, %s", error)
             raise

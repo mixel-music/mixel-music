@@ -32,7 +32,7 @@ async def find_changes() -> None:
         await asyncio.gather(*tasks)
 
     await library_scan(property = path_property)
-    await LibraryScan.perform_albums()
+    asyncio.create_task(LibraryScan.scan_all())
 
 
 async def library_scan(property: dict, path = None) -> None:
@@ -82,4 +82,4 @@ async def watch_change() -> None:
                 #     tasks.append(instance.update_track()) TODO
 
         await asyncio.gather(*tasks)
-        await LibraryScan.perform_albums()
+        asyncio.create_task(LibraryScan.scan_all())

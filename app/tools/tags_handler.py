@@ -3,7 +3,7 @@ from datetime import datetime
 
 from infra.loggings import *
 from tools.path_handler import get_path, get_filename
-from tools.convert_value import get_hash_str, guess_mime
+from tools.convert_value import hash_str, get_mime
 
 async def extract_tags(path: str) -> dict:
     path, real_path = str_path(path), get_path(path)
@@ -11,10 +11,10 @@ async def extract_tags(path: str) -> dict:
     try:
         tags = TinyTag.get(real_path)
         track_dict = {
-            'hash': get_hash_str(path),
+            'hash': hash_str(path),
             'title': tags.title or get_filename(path)[0] or 'Unknown Title',
             'artist': tags.artist or 'Unknown Artist',
-            'artisthash': get_hash_str(tags.artist) if tags.artist else '',
+            'artisthash': hash_str(tags.artist) if tags.artist else '',
             'album': tags.album or 'Unknown Album',
             'albumhash': '',
             'albumartist': tags.albumartist or '',
@@ -33,7 +33,7 @@ async def extract_tags(path: str) -> dict:
             'tracktotal': tags.track_total or 0,
             'year': tags.year or 'Unknown Year',
             'directory': get_filename(path)[1],
-            'mime': guess_mime(path),
+            'mime': get_mime(path),
             'path': path,
             'created_date': datetime.now(),
             'updated_date': datetime.now(),
@@ -43,7 +43,8 @@ async def extract_tags(path: str) -> dict:
         return track_dict
     except:
         return {}
-    
+
+
 async def extract_artwork(path: str) -> bin:
     try:
         artwork = TinyTag.get(get_path(path), image=True)

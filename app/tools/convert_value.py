@@ -5,7 +5,7 @@ from infra.database import *
 from infra.loggings import *
 from tools.path_handler import *
 
-def guess_mime(path: str) -> list[str]:
+def get_mime(path: str) -> list[str]:
     try:
         type = mimetypes.guess_type(get_path(path), strict=True)
         if type:
@@ -15,26 +15,15 @@ def guess_mime(path: str) -> list[str]:
     except:
         return 'application/octet-stream'
 
-def get_hash_str(*args) -> str:
+
+def hash_str(*args) -> str:
     try:
         return hashlib.sha1(''.join(str(arg) for arg in args).encode()).hexdigest()
     except ValueError:
         return ''
 
-def sanitize_int(num: int) -> int:
-    if isinstance(num, tuple): num = num[0]
-    try:
-        return int(num)
-    except ValueError:
-        return 0
-    
-def sanitize_float(str: str) -> float:
-    try:
-        return float(str)
-    except ValueError:
-        return 0.0
 
-async def hash_to_albumhash(hash: str) -> str:
+async def hash_track_to_album(hash: str) -> str:
     try:
         async with session() as conn:
             result = await conn.execute(
@@ -45,10 +34,11 @@ async def hash_to_albumhash(hash: str) -> str:
         return row if row else ''
 
     except Exception as error:
-        logs.error("Failed to get albumhash from trackhash, %s", error)
+        logs.error("Failed to get albumhash, %s", error)
         return ''
     
-async def hash_to_track(hash: str) -> str:
+    
+async def hash_track_to_path(hash: str) -> str:
     try:
         async with session() as conn:
             result = await conn.execute(
@@ -59,5 +49,5 @@ async def hash_to_track(hash: str) -> str:
         return row if row else ''
     
     except Exception as error:
-        logs.error("Failed to get track path from hash, %s", error)
+        logs.error("Failed to get track's path, %s", error)
         return ''
