@@ -294,15 +294,23 @@ class LibraryTask:
     async def create_artwork(hash: str) -> None:
         try:
             async with session() as conn:
-                query = select(Tracks.path).where(Tracks.albumhash == hash)
-                result = await conn.execute(query)
+                query = (
+                    select(
+                        Tracks.path,
+                        Tracks.album,
+                    )
+                    .where(or_(Tracks.albumhash == hash, Tracks.hash == hash))
+                )
 
+                result = await conn.execute(query)
                 data = result.mappings().first()
                 if data: data = dict(data)
 
                 artwork = await extract_artwork(data.get('path'))
-                if artwork:
+                if artwork and data.get('album') != 'Unknown Album':
                     await save_artwork(artwork, hash)
+                elif artwork:
+                    await save_artwork(artwork, hash_str(data.get('path')))
                 else:
                     logs.debug("Failed to extract artwork.")
                     
@@ -327,9 +335,11 @@ class LibraryScan:
     async def perform_albums() -> None:
         try:
             async with session() as conn:
+                # Query to handle albums excluding Unknown Album
                 db_query = (
                     select(
                         Tracks.album,
+                        Tracks.artist, # For Unknown Album
                         Tracks.albumartist,
                         Tracks.tracktotal,
                         Tracks.disctotal,
@@ -337,6 +347,7 @@ class LibraryScan:
                         func.sum(Tracks.duration).label('totalduration'),
                         func.sum(Tracks.size).label('totalsize'),
                     )
+                    .where(Tracks.album != 'Unknown Album')
                     .group_by(
                         Tracks.album,
                         Tracks.albumartist,
@@ -379,26 +390,78 @@ class LibraryScan:
                     await conn.execute(update_track)
                     await LibraryRepo.insert_album(conn, album_data)
 
+                # Handle Unknown Album entries separately
+                unknown_query = (
+                    select(
+                        Tracks.album,
+                        Tracks.artist,
+                        Tracks.tracktotal,
+                        Tracks.disctotal,
+                        Tracks.year,
+                        func.sum(Tracks.duration).label('totalduration'),
+                        func.sum(Tracks.size).label('totalsize'),
+                    )
+                    .where(Tracks.album == 'Unknown Album')
+                    .group_by(
+                        Tracks.album,
+                        Tracks.artist,
+                        Tracks.tracktotal,
+                    )
+                )
+
+                unknown_result = await conn.execute(unknown_query)
+                unknown_albums_data = unknown_result.all()
+
+                for alb in unknown_albums_data:
+                    albumhash = hash_str(
+                        f'{alb.album}-{alb.artist}-{alb.tracktotal}-{alb.year}'
+                    )
+                    albumartisthash = hash_str(alb.artist)
+
+                    update_track = (
+                        update(Tracks)
+                        .where(
+                            Tracks.album == alb.album,
+                            Tracks.artist == alb.artist,
+                            Tracks.tracktotal == alb.tracktotal,
+                        )
+                        .values(albumhash=albumhash)
+                        .execution_options(synchronize_session='fetch')
+                    )
+
+                    album_data = {
+                        'album': alb.album,
+                        'albumartist': alb.artist,
+                        'albumartisthash': albumartisthash,
+                        'albumhash': albumhash,
+                        'durationtotals': alb.totalduration,
+                        'sizetotals': alb.totalsize,
+                        'tracktotals': alb.tracktotal,
+                        'disctotals': alb.disctotal,
+                        'year': alb.year,
+                    }
+
+                    await conn.execute(update_track)
+                    await LibraryRepo.insert_album(conn, album_data)
+
                 await conn.commit()
 
-    
-            async with session() as conn:
-                albums_query = select(Albums.albumhash)
-                result = await conn.execute(albums_query)
-                album_hash = {row.albumhash for row in result}
+                async with session() as conn:
+                    albums_query = select(Albums.albumhash)
+                    result = await conn.execute(albums_query)
+                    album_hash = {row.albumhash for row in result}
 
-                tracks_query = select(Tracks.albumhash).distinct()
-                result = await conn.execute(tracks_query)
-                track_hash = {row.albumhash for row in result}
+                    tracks_query = select(Tracks.albumhash).distinct()
+                    result = await conn.execute(tracks_query)
+                    track_hash = {row.albumhash for row in result}
 
-                find = album_hash - track_hash # 중복 없애고 set으로 차집합 연산
+                    find = album_hash - track_hash # 중복 없애고 set으로 차집합 연산
 
-                for albumhash in find:
-                    logs.debug("Removing Album %s", albumhash)
-                    await LibraryRepo.delete_album(conn, albumhash)
+                    for albumhash in find:
+                        logs.debug("Removing Album %s", albumhash)
+                        await LibraryRepo.delete_album(conn, albumhash)
 
-                await conn.commit()
-
+                    await conn.commit()
 
         except Exception as error:
             logs.error("Failed to refresh album list, %s", error)

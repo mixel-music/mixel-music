@@ -243,7 +243,7 @@
 
       {#if $trackHash}
         <img
-          src={ getCoverUrl($albumHash, 128) }
+          src={ $trackAlbum == 'Unknown Album' ? getCoverUrl($trackHash, 128) : getCoverUrl($albumHash, 128) }
           class="player-cover"
           alt="Front Cover"
         />

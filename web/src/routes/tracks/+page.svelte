@@ -37,7 +37,7 @@
     {#each data.trackListItem as track (track.hash)}
       <CardItem
         on:click={() => SetTrack(track) }
-        src={ `http://localhost:2843/api/artwork/${ track.albumhash }?size=300` }
+        src={ `http://localhost:2843/api/artwork/${ track.album == 'Unknown Album' ? track.hash : track.albumhash }?size=300` }
         alt={ track.title }
         lazyload
       >
@@ -68,7 +68,7 @@
   div {
     padding-top: var(--app-padding-s);
   }
-  
+
   .bottom-ctl {
     display: flex;
     justify-content: flex-end;
