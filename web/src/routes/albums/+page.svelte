@@ -3,8 +3,8 @@
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
-  import ContentHead from '$lib/components/elements/content-head.svelte';
-  import ContentBody from '$lib/components/elements/content-body.svelte';
+  import ContentHead from '$lib/components/elements/text-title.svelte';
+  import ContentBody from '$lib/components/elements/text-sub.svelte';
 
   export let data: PageData;
 </script>
@@ -25,7 +25,9 @@
       >
 
         <div>
-          <ContentHead head={ album.album } />
+          <a href="/albums/{ album.albumhash }">
+            <ContentHead head={ album.album } />
+          </a>
           <ContentBody body={ album.albumartist } />
         </div>
 

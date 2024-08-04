@@ -63,7 +63,7 @@ class Library:
 
     @staticmethod
     async def get_track_list(page: int, item: int) -> list[dict]:
-        return await Library._get_track_list(page - 1, item)
+        return await Library._get_track_list(item * (page - 1), item)
 
 
     @staticmethod
@@ -121,7 +121,7 @@ class Library:
 
     @staticmethod
     async def get_album_list(page: int, item: int) -> list[dict]:
-        return await Library._get_album_list(page - 1, item)
+        return await Library._get_album_list(item * (page - 1), item)
 
 
     @staticmethod
@@ -167,8 +167,6 @@ class Library:
                             Tracks.duration,
                             Tracks.track,
                             Tracks.hash,
-                            Tracks.albumhash,
-                            Tracks.artisthash,
                         )
                         .order_by(Tracks.track.asc())
                         .where(Tracks.albumhash == hash)
@@ -189,7 +187,7 @@ class Library:
 
     @staticmethod
     async def get_artist_list(page: int, item: int) -> list[dict]:
-        return await Library._get_artist_list(page - 1, item)
+        return await Library._get_artist_list(item * (page - 1), item)
 
 
     @staticmethod

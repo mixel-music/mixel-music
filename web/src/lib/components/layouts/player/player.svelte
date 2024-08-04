@@ -14,8 +14,8 @@
     albumHash,
   } from '$lib/stores/track';
 
-  import ContentHead from '$lib/components/elements/content-head.svelte';
-  import ContentBody from '$lib/components/elements/content-body.svelte';
+  import ContentHead from '$lib/components/elements/text-title.svelte';
+  import ContentBody from '$lib/components/elements/text-sub.svelte';
   import PlayerButton from './player-button.svelte';
   import PlayerSlider from './player-slider.svelte';
 
