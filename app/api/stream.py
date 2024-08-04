@@ -4,12 +4,20 @@ from infra.loggings import *
 
 router = APIRouter(prefix = '/api')
 
-@router.get("/stream/{hash}")
-async def api_stream(hash: str, range: str = Header(None)) -> Response:
+@router.get('/stream/{hash}')
+async def api_stream(
+    hash: str,
+    range: str = Header(None)
+) -> Response:
+
     try:
-        stream_data, headers = await Library.stream(hash, range)
-        if stream_data:
-            return Response(stream_data, status_code=status.HTTP_206_PARTIAL_CONTENT, headers=headers)
+        stream_content, stream_headers = await Library.stream(hash, range)
+        if stream_content:
+            return Response(
+                stream_content,
+                headers=stream_headers,
+                status_code=status.HTTP_206_PARTIAL_CONTENT
+            )
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         

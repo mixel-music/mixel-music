@@ -48,7 +48,7 @@
         current = musicItem.currentTime;
         if (!isDrag) lengthBar = (current / length) * 100;
 
-        if (musicItem.currentTime == musicItem.duration) {
+        if (musicItem.currentTime >= musicItem.duration) {
           musicItem.pause();
           isPlay = false;
         }

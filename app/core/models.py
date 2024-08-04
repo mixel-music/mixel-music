@@ -42,12 +42,12 @@ class Albums(Base):
     albumhash: str = Column(String(40), primary_key=True, nullable=False)
     album: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
-    albumartisthash: str = Column(String, nullable=False)
-    year: int = Column(Integer)
-    durationtotals: float = Column(REAL)
-    tracktotals: int = Column(Integer)
-    disctotals: int = Column(Integer)
-    sizetotals: int = Column(Integer)
+    albumartisthash: str = Column(String(40), nullable=False)
+    year: str = Column(String, nullable=False)
+    durationtotals: float = Column(REAL, nullable=False)
+    tracktotals: int = Column(Integer, nullable=False)
+    disctotals: int = Column(Integer, nullable=False)
+    sizetotals: int = Column(Integer, nullable=False)
 
 
 class Artists(Base):
