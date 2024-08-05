@@ -75,8 +75,4 @@
     margin-top: 2em;
     gap: 24px;
   }
-
-  .album-content {
-    padding-top: var(--app-padding-l);
-  }
 </style>
