@@ -56,10 +56,10 @@
       on:click={() => SetTrack(album)}
     >
 
-      <TableCell bold text={ album.track } />
+      <TableCell sub text={ album.track } />
       <TableCell large text={ album.title } />
       <TableCell right text={ album.artist } />
-      <TableCell right text={ getFormattedTime(album.duration) } />
+      <TableCell sub right text={ getFormattedTime(album.duration) } />
 
     </TableRow>
 
