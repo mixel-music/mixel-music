@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getFormattedTime, getCoverUrl } from '$lib/tools';
+  import { getFormattedTime, getCoverUrl, convertFileSize } from '$lib/tools';
 
   import {
     trackHash,
@@ -41,6 +41,8 @@
     year={ data.albumItem.year }
     totalTracks={ data.albumItem.tracktotals }
     totalLength={ getFormattedTime(data.albumItem.durationtotals) }
+    comment={ data.albumItem.tracks[0].comment }
+    size={ convertFileSize(data.albumItem.sizetotals) }
   />
 </div>
 

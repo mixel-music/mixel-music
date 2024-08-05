@@ -14,7 +14,7 @@ semaphore = asyncio.Semaphore(5)
 
 class Library:
     @staticmethod
-    async def get_track_count():
+    async def get_track_count() -> int:
         async with session() as conn:
             try:
                 count = await conn.execute(select(func.count()).select_from(Tracks))
@@ -27,7 +27,7 @@ class Library:
 
 
     @staticmethod
-    async def get_album_count():
+    async def get_album_count() -> int:
         async with session() as conn:
             try:
                 count = await conn.execute(select(func.count()).select_from(Albums))
@@ -40,7 +40,7 @@ class Library:
 
 
     @staticmethod
-    async def get_artist_count():
+    async def get_artist_count() -> int:
         async with session() as conn:
             try:
                 count = await conn.execute(select(func.count()).select_from(Artists))
@@ -119,7 +119,6 @@ class Library:
                         Tracks.title,
                         Tracks.album,
                         Tracks.artist,
-                        Tracks.albumartist,
                         Tracks.hash,
                         Tracks.albumhash,
                     )
@@ -206,6 +205,7 @@ class Library:
                             Tracks.duration,
                             Tracks.track,
                             Tracks.hash,
+                            Tracks.comment,
                         )
                         .order_by(Tracks.track.asc())
                         .where(Tracks.albumhash == hash)
