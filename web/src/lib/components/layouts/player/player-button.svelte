@@ -4,9 +4,9 @@
   export let title: string | undefined = undefined;
   export let icon: string | undefined = undefined;
   export let disabled: boolean = false;
-  export let TurnOff: boolean = false;
   export let ControlButton: boolean = false;
   export let PrimaryButton: boolean = false;
+  export let state: boolean = false;
   export let text: string = '';
 </script>
 
@@ -15,7 +15,7 @@
   on:click
   class:control-button={ControlButton}
   class:primary-button={PrimaryButton}
-  class:turn-off={TurnOff}
+  class:turn-off={state}
   {disabled}
   aria-disabled={disabled}
 >

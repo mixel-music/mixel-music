@@ -215,7 +215,6 @@
   <div class="player-area">
     <div class="player-area-1">
       {#if $trackHash}
-        <!-- 이미지 fallback 처리해야 함 -->
         <AlbumCover
           src={$trackAlbum === 'Unknown Album'
             ? getCoverUrl($trackHash, 128) : getCoverUrl($albumHash, 128)
@@ -227,7 +226,8 @@
 
         <div class="player-track">
           <ContentHead head='{$trackTitle ? $trackTitle : ""}' />
-          <ContentBody body='{$trackArtist} - {$trackAlbum}' /> <!-- 여기 링크 처리 필요한데 컴포넌트로 묶으면 안됨; -->
+          <ContentBody body='{$trackArtist} - {$trackAlbum}' />
+          <!-- 여기 링크 처리 필요한데 컴포넌트로 묶으면 안됨; -->
           <ContentBody body='{getFormattedTime(current)} / {getFormattedTime(length)}' />
         </div>
       {/if}
@@ -247,7 +247,7 @@
           <PlayerButton
             title="Volume"
             on:click={muteMusic}
-            TurnOff={volumeBar === 0 || musicItem.muted}
+            state={volumeBar === 0 || musicItem.muted}
             icon={volumeBar === 0 || musicItem.muted
               ? 'iconoir:sound-off' : volumeBar < 50
               ? 'iconoir:sound-low' : 'iconoir:sound-high'
@@ -262,14 +262,14 @@
           ? 'iconoir:repeat' : isLoop === 2
           ? 'iconoir:repeat-once' : 'iconoir:repeat'
         }
-        TurnOff={!isLoop}
+        state={!isLoop}
         on:click={loopMusic}
       />
 
       <PlayerButton
         title='Shuffle'
         icon='iconoir:shuffle'
-        TurnOff
+        state
       />
 
       <PlayerButton
@@ -291,7 +291,6 @@
     width: 100%;
     height: 96px;
     background-color: var(--color-dark-bg-trk);
-    /* border-top: 1px solid var(--color-dark-border); */
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
     backdrop-filter: blur(64px);
   }
@@ -313,16 +312,6 @@
     display: flex;
     align-items: center;
   }
-
-  /* .player-cover {
-    width: 56px;
-    height: 56px;
-    object-fit: scale-down;
-    background-color: var(--color-dark-bg-2);
-    box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-    border-radius: var(--app-radius);
-    cursor: pointer;
-  } */
 
   .player-track {
     display: flex;
