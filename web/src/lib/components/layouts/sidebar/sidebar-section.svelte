@@ -8,12 +8,13 @@
 
 <style>
   ul[title]::before {
-    content: attr(title);
     display: flex;
     margin-top: 36px;
     margin-bottom: 12px;
-    color: var(--color-dark-text-2);
+    
     font-size: smaller;
+    content: attr(title);
+    color: var(--color-dark-text-2);
   }
 
   ul {

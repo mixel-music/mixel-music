@@ -1,23 +1,14 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy } from 'svelte';
 
-  import {
-    getCoverUrl,
-    getFormattedTime,
-  } from "$lib/tools";
-
-  import {
-    trackHash,
-    trackTitle,
-    trackAlbum,
-    trackArtist,
-    albumHash,
-  } from '$lib/stores/track';
+  import { getCoverUrl, getFormattedTime } from '$lib/tools';
+  import { trackHash, trackTitle, trackAlbum, trackArtist, albumHash } from '$lib/stores/track';
 
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
   import PlayerButton from './player-button.svelte';
   import PlayerSlider from './player-slider.svelte';
+  import AlbumCover from '$lib/components/albums/album-cover.svelte';
 
   let musicItem: HTMLAudioElement = new Audio();
   let coverPath: string = getCoverUrl('');
@@ -30,33 +21,36 @@
   let isDrag: boolean = false;
   let isLoop: number = 0;
 
-  $: $trackHash, StreamMusic(), SetMusicInfo();
+  $: $trackHash, streamMusic(), setMusicInfo();
   $: musicItem.volume, volumeBar = musicItem.volume * 100;
 
-  function StreamMusic(): void {
+  function streamMusic(): void {
     if ($trackHash !== undefined) {
-      musicItem.src = (`http://localhost:2843/api/stream/${ $trackHash }`);
+      musicItem.src = `http://localhost:2843/api/stream/${$trackHash}`;
       coverPath = getCoverUrl($trackHash);
-      
-      musicItem.addEventListener("loadedmetadata", () => {
-        length = musicItem.duration;
-        musicItem.play();
-        isPlay = true;
-      });
 
-      musicItem.addEventListener("timeupdate", () => {
-        current = musicItem.currentTime;
-        if (!isDrag) lengthBar = (current / length) * 100;
-
-        if (musicItem.currentTime >= musicItem.duration) {
-          musicItem.pause();
-          isPlay = false;
-        }
-      });
+      musicItem.addEventListener("loadedmetadata", handleMetadataLoaded);
+      musicItem.addEventListener("timeupdate", handleTimeUpdate);
     }
   }
 
-  function ToggleMusic(): void {
+  function handleMetadataLoaded() {
+    length = musicItem.duration;
+    musicItem.play();
+    isPlay = true;
+  }
+
+  function handleTimeUpdate() {
+    current = musicItem.currentTime;
+    if (!isDrag) lengthBar = (current / length) * 100;
+
+    if (current >= musicItem.duration) {
+      musicItem.pause();
+      isPlay = false;
+    }
+  }
+
+  function toggleMusic(): void {
     if ($trackHash) {
       if (musicItem.paused) {
         musicItem.play();
@@ -68,42 +62,33 @@
     }
   }
 
-  function PlayPrev(): void {
+  function playPrev(): void {
     musicItem.currentTime = 0;
   }
 
-  function PlayNext(): void {
-    console.debug("PlayNext Called");
+  function playNext(): void {
+    console.debug("playNext()");
   }
 
-  function SetMusicInfo(): void {
+  function setMusicInfo(): void {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: $trackTitle,
         album: $trackAlbum,
         artist: $trackArtist,
-        artwork: [
-          {
-            src: getCoverUrl($albumHash, 128),
-          }
-        ],
+        artwork: [{ src: getCoverUrl($albumHash, 128) }],
       });
 
-      navigator.mediaSession.setActionHandler("play", () => { ToggleMusic(); });
-      navigator.mediaSession.setActionHandler("pause", () => { ToggleMusic(); });
-      navigator.mediaSession.setActionHandler("seekbackward", () => { musicItem.currentTime -= 10; });
-      navigator.mediaSession.setActionHandler("seekforward", () => { musicItem.currentTime += 10; });
-      navigator.mediaSession.setActionHandler("previoustrack", () => { PlayPrev(); });
-      navigator.mediaSession.setActionHandler("nexttrack", () => { PlayNext(); });
+      navigator.mediaSession.setActionHandler('play', toggleMusic);
+      navigator.mediaSession.setActionHandler('pause', toggleMusic);
+      navigator.mediaSession.setActionHandler('seekbackward', () => { musicItem.currentTime -= 10; });
+      navigator.mediaSession.setActionHandler('seekforward', () => { musicItem.currentTime += 10; });
+      navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+      navigator.mediaSession.setActionHandler('nexttrack', playNext);
     }
   }
 
-  function SeekHandler(
-    event: MouseEvent,
-    type: string,
-    callback: (value: number) => void
-  ): void {
-
+  function handleSeek(event: MouseEvent, type: string, callback: (value: number) => void): void {
     event.preventDefault();
     const ctl = document.querySelector(type);
     
@@ -116,33 +101,31 @@
     }
   }
 
-  function DragHandler(
-    event: MouseEvent,
-    type: 'length' | 'volume'
-  ): void {
-    
+  function handleDrag(event: MouseEvent, type: 'length' | 'volume'): void {
     isDrag = true;
     event.preventDefault();
-    
-    const MoveHandler = type === 'length' ? SeekLength : SeekVolume;
-    const PostHandler = () => {
-      document.removeEventListener("mousemove", MoveHandler);
-      document.removeEventListener("mouseup", PostHandler);
+
+    const moveHandler = type === 'length' ? seekLength : seekVolume;
+    const postHandler = () => {
+      document.removeEventListener("mousemove", moveHandler);
+      document.removeEventListener("mouseup", postHandler);
 
       if (type === 'length' && musicItem) {
-        musicItem.currentTime = current;
+        musicItem.currentTime = current - 0.1;
+        // 0.1을 붙여야 오른쪽 끝 드래그 > 재생 > 오른쪽 끝 드래그 시 이벤트 안 먹히는 문제 방지
+        // 왜 그런 건지는 잘 모르겠음. 여유가 없어서 그런가? 쨌든 나중에 고쳐야 함
       }
 
       isDrag = false;
     };
 
-    document.addEventListener("mousemove", MoveHandler);
-    document.addEventListener("mouseup", PostHandler);
-    MoveHandler(event);
+    document.addEventListener("mousemove", moveHandler);
+    document.addEventListener("mouseup", postHandler);
+    moveHandler(event);
   }
 
-  function SeekLength(event: MouseEvent): void {
-    SeekHandler(event, '.length-ctl', (value) => {
+  function seekLength(event: MouseEvent): void {
+    handleSeek(event, '.length-ctl', (value) => {
       if (musicItem && $trackHash) {
         current = value * length;
         lengthBar = value * 100;
@@ -154,8 +137,8 @@
     });
   }
 
-  function SeekVolume(event: MouseEvent): void {
-    SeekHandler(event, '.volume-ctl', (value) => {
+  function seekVolume(event: MouseEvent): void {
+    handleSeek(event, '.volume-ctl', (value) => {
       if (musicItem) {
         musicItem.muted = false;
         musicItem.volume = value;
@@ -163,29 +146,23 @@
     });
   }
 
-  function MuteMusic(): void {
+  function muteMusic(): void {
     if (musicItem.volume === 0) {
       musicItem.volume = 1;
       musicItem.muted = false;
-    }
-    else if (!musicItem.muted) {
-      musicItem.muted = true;
-    }
-    else {
-      musicItem.muted = false;
+    } else {
+      musicItem.muted = !musicItem.muted;
     }
   }
 
-  function LoopMusic(): void {
+  function loopMusic(): void {
     if (isLoop === 0) {
       isLoop = 1;
       musicItem.loop = true;
-    }
-    else if (isLoop === 1) {
+    } else if (isLoop === 1) {
       isLoop = 2;
       musicItem.loop = true;
-    }
-    else {
+    } else {
       isLoop = 0;
       musicItem.loop = false;
     }
@@ -201,97 +178,92 @@
 <div class="player">
   <div class="player-center">
     <div class="player-button">
-
       {#key isPlay}
         <PlayerButton
           title='Previous'
-          on:click={ PlayPrev }
+          on:click={playPrev}
           icon='iconoir:skip-prev-solid'
           ControlButton
         />
 
         <PlayerButton
-          title={ isPlay ? 'Pause' : 'Play' }
-          on:click={ ToggleMusic }
-          icon={ isPlay ? 'iconoir:pause-solid' : 'iconoir:play-solid' }
+          title={isPlay ? 'Pause' : 'Play'}
+          on:click={toggleMusic}
+          icon={isPlay ? 'iconoir:pause-solid' : 'iconoir:play-solid'}
           ControlButton
           PrimaryButton
         />
 
         <PlayerButton
           title='Next'
-          on:click={ PlayNext }
+          on:click={playNext}
           icon='iconoir:skip-next-solid'
           ControlButton
         />
       {/key}
-
     </div>
 
     <PlayerSlider
       width='550px'
-      value={ lengthBar }
+      value={lengthBar}
       unique='length-ctl'
-      on:click={(event) => SeekLength(event)}
-      on:mousedown={(event => DragHandler(event, 'length'))}
+      on:click={seekLength}
+      on:mousedown={(event) => handleDrag(event, 'length')}
     />
-
   </div>
 
   <div class="player-area">
     <div class="player-area-1">
-
       {#if $trackHash}
-        <img
-          src={ $trackAlbum == 'Unknown Album' ? getCoverUrl($trackHash, 128) : getCoverUrl($albumHash, 128) }
-          class="player-cover"
+        <!-- 이미지 fallback 처리해야 함 -->
+        <AlbumCover
+          src={$trackAlbum === 'Unknown Album'
+            ? getCoverUrl($trackHash, 128) : getCoverUrl($albumHash, 128)
+          }
+          width=56
+          height=56
           alt="Front Cover"
         />
 
         <div class="player-track">
-          <ContentHead head='{ $trackTitle ? $trackTitle : "" }' />
-          <ContentBody body='{ $trackArtist } - { $trackAlbum }' />
-          <ContentBody body='{ getFormattedTime(current) } / { getFormattedTime(length) }' />
+          <ContentHead head='{$trackTitle ? $trackTitle : ""}' />
+          <ContentBody body='{$trackArtist} - {$trackAlbum}' /> <!-- 여기 링크 처리 필요한데 컴포넌트로 묶으면 안됨; -->
+          <ContentBody body='{getFormattedTime(current)} / {getFormattedTime(length)}' />
         </div>
       {/if}
-
     </div>
 
     <div class="player-area-2">
       <div class="player-volume">
-
-        {#key MuteMusic}
+        {#key muteMusic}
           <PlayerSlider
             width='110px'
             unique='volume-ctl'
-            value={ musicItem.muted ? 0 : volumeBar }
-            on:click={(event) => SeekVolume(event)}
-            on:mousedown={(event) => DragHandler(event, "volume")}  
+            value={musicItem.muted ? 0 : volumeBar}
+            on:click={seekVolume}
+            on:mousedown={(event) => handleDrag(event, "volume")}
           />
 
           <PlayerButton
             title="Volume"
-            on:click={ MuteMusic }
-            TurnOff={ volumeBar === 0 || musicItem.muted ? true : false }
-            icon={
-              volumeBar === 0 || musicItem.muted ? 'iconoir:sound-off' :
-                volumeBar < 50 ? 'iconoir:sound-low' : 'iconoir-sound-high'
+            on:click={muteMusic}
+            TurnOff={volumeBar === 0 || musicItem.muted}
+            icon={volumeBar === 0 || musicItem.muted
+              ? 'iconoir:sound-off' : volumeBar < 50
+              ? 'iconoir:sound-low' : 'iconoir:sound-high'
             }
           />
         {/key}
-
       </div>
 
       <PlayerButton
-        title={
-          isLoop == 2 ? 'Repeat one' : 'Repeat'
+        title={isLoop === 2 ? 'Repeat one' : 'Repeat'}
+        icon={isLoop === 1
+          ? 'iconoir:repeat' : isLoop === 2
+          ? 'iconoir:repeat-once' : 'iconoir:repeat'
         }
-        icon={
-          isLoop === 1 ? 'iconoir:repeat' :
-            isLoop === 2 ? 'iconoir-repeat-once' : 'iconoir-repeat'
-        }
-        TurnOff={ !isLoop }
-        on:click={ LoopMusic }
+        TurnOff={!isLoop}
+        on:click={loopMusic}
       />
 
       <PlayerButton
@@ -304,7 +276,6 @@
         title='Playlist'
         icon='iconoir:playlist'
       />
-
     </div>
   </div>
 </div>
@@ -320,9 +291,9 @@
     width: 100%;
     height: 96px;
     background-color: var(--color-dark-bg-trk);
-    backdrop-filter: blur(64px);
-    border-top: 1px solid var(--color-dark-border);
+    /* border-top: 1px solid var(--color-dark-border); */
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
+    backdrop-filter: blur(64px);
   }
 
   .player-area {
@@ -343,7 +314,7 @@
     align-items: center;
   }
 
-  .player-cover {
+  /* .player-cover {
     width: 56px;
     height: 56px;
     object-fit: scale-down;
@@ -351,7 +322,7 @@
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
     border-radius: var(--app-radius);
     cursor: pointer;
-  }
+  } */
 
   .player-track {
     display: flex;

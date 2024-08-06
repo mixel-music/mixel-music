@@ -13,11 +13,11 @@
 <button
   {title}
   on:click
-  style:padding={ControlButton ? '3px' : ''}
-  style:width={ControlButton ? '32px' : ''}
-  style:height={ControlButton ? '32px' : ''}
-  style:color={TurnOff ? 'var(--color-dark-disabled)' : null}
+  class:control-button={ControlButton}
+  class:primary-button={PrimaryButton}
+  class:turn-off={TurnOff}
   {disabled}
+  aria-disabled={disabled}
 >
   {#if icon}
     <Icon
@@ -45,5 +45,15 @@
   button:hover {
     color: var(--color-dark-focus);
     transition: all 0.2s ease;
+  }
+
+  .control-button {
+    width: 32px;
+    height: 32px;
+    padding: 3px;
+  }
+
+  .turn-off {
+    color: var(--color-dark-disabled);
   }
 </style>
