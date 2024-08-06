@@ -2,13 +2,7 @@
   import type { PageData } from './$types';
   import { getFormattedTime, getCoverUrl, convertFileSize } from '$lib/tools';
 
-  import {
-    trackHash,
-    trackTitle,
-    trackAlbum,
-    trackArtist,
-    albumHash
-  } from '$lib/stores/track';
+  import { trackHash, trackTitle, trackAlbum, trackArtist, albumHash } from '$lib/stores/track';
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
@@ -47,26 +41,18 @@
 </div>
 
 <div class="album-content">
-
 <TableBody>
-
   {#each data.albumItem.tracks as album}
+    <TableRow on:click={() => SetTrack(album)}>
 
-    <TableRow
-      on:click={() => SetTrack(album)}
-    >
-
-      <TableCell sub text={ album.track } />
+      <TableCell sub text={ album.track !== 0 ? album.track : '-' } />
       <TableCell large text={ album.title } />
       <TableCell right text={ album.artist } />
       <TableCell sub right text={ getFormattedTime(album.duration) } />
 
     </TableRow>
-
   {/each}
-
 </TableBody>
-
 </div>
 
 <style>

@@ -24,8 +24,9 @@ function getPrevPageLink(page: number = 1, item: number = 40) {
   return `?page=${prevPage}&item=${item}`
 }
 
-function convertFileSize(size: number): string {
+function convertFileSize(size: number | string): string {
   const units = ['B', 'KB', 'MB', 'GB'];
+  size = parseInt(size, 10);
   let index = 0;
 
   while (size >= 1024 && index < units.length - 1) {
