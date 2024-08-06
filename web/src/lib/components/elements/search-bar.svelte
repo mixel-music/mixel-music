@@ -1,13 +1,13 @@
 <script lang="ts">
   export let placeholder: string = 'Search';
-  export let width: string = '100%';
   export let disabled: boolean = false;
+  export let width: string = '100%';
 </script>
 
 <input
-  type="search"
-  name="search"
-  style='width: {width}'
+  type='search'
+  name='search'
+  style:width={width}
   {placeholder}
   {disabled}
 >

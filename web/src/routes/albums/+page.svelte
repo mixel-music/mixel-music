@@ -9,46 +9,52 @@
   import NavbarButton from '$lib/components/layouts/navbar/navbar-button.svelte';
 
   export let data: PageData;
+
+  const ARTWORK_BASE_URL = 'http://localhost:2843/api/artwork';
+  const IMAGE_SIZE = 300;
 </script>
 
 <svelte:head>
-  <title>{ data.title } • mixel-music</title>
+  <title>{data.title} • mixel-music</title>
 </svelte:head>
 
 {#if data.albumListItem.length > 0}
-  <CardItemGroup title={ data.title }>
-
+  <CardItemGroup title={data.title}>
     {#each data.albumListItem as album (album.albumhash)}
       <CardItem
         href="/albums/{ album.albumhash }"
-        src={`http://localhost:2843/api/artwork/${ album.albumhash }?size=300`}
-        alt="{ album.album }"
+        src={`${ARTWORK_BASE_URL}/${album.albumhash}?size=${IMAGE_SIZE}`}
+        alt={album.album}
         lazyload
       >
-
         <div>
-          <a href="/albums/{ album.albumhash }">
-            <ContentHead head={ album.album } />
+          <a href='/albums/{album.albumhash}'>
+            <ContentHead head={album.album} />
           </a>
-          <ContentBody body={ album.albumartist } />
+          <a href='/artists'>
+            <ContentBody body={album.albumartist} />
+          </a>
         </div>
-
       </CardItem>
     {/each}
-
   </CardItemGroup>
 
   <div class="bottom-ctl">
     <NavbarButton
       icon="iconoir:nav-arrow-left"
-      href='{ getPrevPageLink(data.pageCount, data.itemCount) }'
+      href={getPrevPageLink(data.pageCount, data.itemCount)}
     />
     <NavbarButton
-      icon='iconoir:nav-arrow-right'
-      href='{ getNextPageLink(data.pageCount, data.itemCount, data.totalCountItem.count) }'
+      icon="iconoir:nav-arrow-right"
+      href={
+        getNextPageLink(
+          data.pageCount,
+          data.itemCount,
+          data.totalCountItem.count
+        )
+      }
     />
   </div>
-
 {/if}
 
 <style>

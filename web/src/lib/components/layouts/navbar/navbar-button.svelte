@@ -1,19 +1,20 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-
   export let icon: string | undefined = undefined;
   export let title: string = '';
   export let href: string = '';
 </script>
 
-<a class="button" on:click {href} data-sveltekit-noscroll>
+<a
+  {href}
+  on:click
+  class="button"
+  data-sveltekit-noscroll
+>
   {#if icon}
     <Icon {icon} />
   {/if}
-
-  {#if title}
-    {title}
-  {/if}
+  {title}
 </a>
 
 <style>

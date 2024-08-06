@@ -17,12 +17,8 @@
 
   <div>
     <SearchBar width="290px" />
-    <NavbarButton
-      icon="iconoir:refresh"
-    />
-    <NavbarButton
-      icon="iconoir:user"
-    />
+    <NavbarButton icon="iconoir:refresh" />
+    <NavbarButton icon="iconoir:user" />
   </div>
 </nav>
 
