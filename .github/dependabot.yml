@@ -1,14 +1,4 @@
 version: 2
-updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    assignees:
-      - "bunubbv"
-    labels:
-      - "dependencies"
-
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
