@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let text: string;
+  export let text: any;
   export let sub: boolean = false;
   export let right: boolean = false;
   export let large: boolean = false;

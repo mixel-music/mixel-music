@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getFormattedTime, getCoverUrl, convertFileSize } from '$lib/tools';
-
+  import { getArtwork, convertDateTime, convertFileSize } from '$lib/tools';
   import { trackHash, trackTitle, trackAlbum, trackArtist, albumHash } from '$lib/stores/track';
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
@@ -23,7 +22,7 @@
 
 <div class="album-container">
   <AlbumCover
-    src={ getCoverUrl(data.albumItem.albumhash, 500) }
+    src={ getArtwork(data.albumItem.albumhash, 500) }
     alt={ data.albumItem.album }
     width=230
     height=230
@@ -34,7 +33,7 @@
     albumartist={ data.albumItem.albumartist }
     year={ data.albumItem.year }
     totalTracks={ data.albumItem.tracktotals }
-    totalLength={ getFormattedTime(data.albumItem.durationtotals) }
+    totalLength={ convertDateTime(data.albumItem.durationtotals) }
     comment={ data.albumItem.tracks[0].comment }
     size={ convertFileSize(data.albumItem.sizetotals) }
   />
@@ -48,7 +47,7 @@
       <TableCell sub text={ album.track !== 0 ? album.track : '-' } />
       <TableCell large text={ album.title } />
       <TableCell right text={ album.artist } />
-      <TableCell sub right text={ getFormattedTime(album.duration) } />
+      <TableCell sub right text={ convertDateTime(album.duration) } />
 
     </TableRow>
   {/each}

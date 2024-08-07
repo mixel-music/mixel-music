@@ -1,8 +1,8 @@
 import type { PageLoad } from './$types';
-import type { Track } from '$lib/interface';
+import type { trackList } from '$lib/interface';
 
 export const load: PageLoad = async ({ fetch, url }) => {
-  let trackListItem: Track[] = [];
+  let trackListItem: trackList[] = [];
   let totalCountItem: any;
 
   const pageCount = parseInt(url.searchParams.get('page') ?? '1', 10);

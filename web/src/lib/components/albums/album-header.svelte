@@ -5,7 +5,7 @@
   export let totalTracks: number;
   export let totalLength: number | string;
   export let comment: string = '';
-  export let size: number;
+  export let size: string | number;
 </script>
 
 <div class="album-header">

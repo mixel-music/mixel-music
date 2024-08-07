@@ -1,8 +1,8 @@
 import type { PageLoad } from './$types';
-import type { Album } from '$lib/interface';
+import type { albumList } from '$lib/interface';
 
 export const load: PageLoad = async ({ fetch, url }) => {
-  let albumListItem: Album[] = [];
+  let albumListItem: albumList[] = [];
   let totalCountItem: any;
 
   const pageCount = parseInt(url.searchParams.get('page') ?? '1', 10);

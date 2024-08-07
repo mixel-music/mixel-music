@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
 
-  import { getCoverUrl, getFormattedTime } from '$lib/tools';
+  import { getArtwork, convertDateTime } from '$lib/tools';
   import { trackHash, trackTitle, trackAlbum, trackArtist, albumHash } from '$lib/stores/track';
 
   import ContentHead from '$lib/components/elements/text-title.svelte';
@@ -9,9 +9,10 @@
   import PlayerButton from './player-button.svelte';
   import PlayerSlider from './player-slider.svelte';
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
+  import { get } from 'svelte/store';
 
   let musicItem: HTMLAudioElement = new Audio();
-  let coverPath: string = getCoverUrl('');
+  let coverPath: string = getArtwork('', 128);
   let current: number = 0;
   let length: number = 0;
 
@@ -27,7 +28,7 @@
   function streamMusic(): void {
     if ($trackHash !== undefined) {
       musicItem.src = `http://localhost:2843/api/stream/${$trackHash}`;
-      coverPath = getCoverUrl($trackHash);
+      coverPath = getArtwork($trackHash, 128);
 
       musicItem.addEventListener("loadedmetadata", handleMetadataLoaded);
       musicItem.addEventListener("timeupdate", handleTimeUpdate);
@@ -76,7 +77,7 @@
         title: $trackTitle,
         album: $trackAlbum,
         artist: $trackArtist,
-        artwork: [{ src: getCoverUrl($albumHash, 128) }],
+        artwork: [{ src: getArtwork($albumHash, 128) }],
       });
 
       navigator.mediaSession.setActionHandler('play', toggleMusic);
@@ -217,7 +218,7 @@
       {#if $trackHash}
         <AlbumCover
           src={$trackAlbum === 'Unknown Album'
-            ? getCoverUrl($trackHash, 128) : getCoverUrl($albumHash, 128)
+            ? getArtwork($trackHash, 128) : getArtwork($albumHash, 128)
           }
           width=56
           height=56
@@ -228,7 +229,7 @@
           <ContentHead head='{$trackTitle ? $trackTitle : ""}' />
           <ContentBody body='{$trackArtist} - {$trackAlbum}' />
           <!-- 여기 링크 처리 필요한데 컴포넌트로 묶으면 안됨; -->
-          <ContentBody body='{getFormattedTime(current)} / {getFormattedTime(length)}' />
+          <ContentBody body='{convertDateTime(current)} / {convertDateTime(length)}' />
         </div>
       {/if}
     </div>
