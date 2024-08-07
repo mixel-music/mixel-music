@@ -1,3 +1,3 @@
-export enum AppConfig {
-  
+export enum config {
+
 }

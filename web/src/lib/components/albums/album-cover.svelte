@@ -2,7 +2,7 @@
   export let alt: string | undefined = undefined;
   export let src: string | undefined = undefined;
   export let width: string | number | undefined = undefined;
-  export const height: string | number | undefined = undefined;
+  export let height: string | number | undefined = undefined;
 
   let showArtwork = true;
 
@@ -11,7 +11,7 @@
   }
 </script>
 
-<div class:fallback={!showArtwork}>
+<div style='height: {height}px;'>
   {#if showArtwork}
     <img
       {src}
@@ -39,9 +39,5 @@
     object-fit: scale-down;
     aspect-ratio: 1/1;
     border-radius: var(--app-radius);
-  }
-
-  .fallback {
-    height: 230px;
   }
 </style>

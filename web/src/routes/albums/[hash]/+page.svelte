@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { getArtwork, convertDateTime, convertFileSize } from '$lib/tools';
-  import { trackHash, trackTitle, trackAlbum, trackArtist, albumHash } from '$lib/stores/track';
+  import { hash, title, album, artist, albumhash } from '$lib/stores/track';
 
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
@@ -12,11 +12,11 @@
   export let data: PageData;
 
   function SetTrack(tag: any): void {
-    trackHash.set(tag.hash),
-    trackTitle.set(tag.title),
-    trackAlbum.set(data.albumItem.album),
-    trackArtist.set(tag.artist)
-    albumHash.set(data.albumItem.albumhash)
+    hash.set(tag.hash),
+    title.set(tag.title),
+    album.set(data.albumItem.album),
+    artist.set(tag.artist)
+    albumhash.set(data.albumItem.albumhash)
   }
 </script>
 

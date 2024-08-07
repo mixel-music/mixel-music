@@ -16,8 +16,8 @@
   class:control-button={ControlButton}
   class:primary-button={PrimaryButton}
   class:turn-off={state}
-  {disabled}
   aria-disabled={disabled}
+  {disabled}
 >
   {#if icon}
     <Icon

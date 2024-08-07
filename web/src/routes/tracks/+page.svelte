@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { getNextPage, getPrevPage } from '$lib/tools';
-  import { trackHash, trackTitle, trackAlbum, trackArtist, albumHash } from '$lib/stores/track';
+  import { hash, title, album, artist, albumhash } from '$lib/stores/track';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
@@ -21,11 +21,11 @@
     artist: string;
     albumhash: string;
   }): void {
-    trackHash.set(track.hash);
-    trackTitle.set(track.title);
-    trackAlbum.set(track.album);
-    trackArtist.set(track.artist);
-    albumHash.set(track.albumhash);
+    hash.set(track.hash),
+    title.set(track.title),
+    album.set(track.album),
+    artist.set(track.artist)
+    albumhash.set(track.albumhash)
   }
 </script>
 

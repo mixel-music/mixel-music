@@ -11,18 +11,10 @@
   <title>{ data.title } • mixel-music</title>
 </svelte:head>
 
-<div class="artist-content">
-  <TableBody>
-    {#each data.artistListItem as artist (artist.artisthash)}
-      <TableRow>
-        <TableCell text={ artist.artist } />
-      </TableRow>
-    {/each}
-  </TableBody>
-</div>
-
-<style>
-  .artist-content {
-    padding-top: var(--app-padding-l);
-  }
-</style>
+<TableBody>
+  {#each data.artistListItem as artist (artist.artisthash)}
+    <TableRow>
+      <TableCell text={ artist.artist } />
+    </TableRow>
+  {/each}
+</TableBody>

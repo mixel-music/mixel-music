@@ -8,11 +8,11 @@
   on:click
   on:keydown
   on:mousedown
+  tabindex="0"
   role="slider"
   aria-valuenow={value}
   aria-valuemin="0"
   aria-valuemax="100"
-  tabindex="0"
   class={`slider-ctl ${unique}`}
   style={`width: ${width};`}
 >
