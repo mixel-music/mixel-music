@@ -90,12 +90,12 @@ class Library:
 
     @staticmethod
     async def get_artwork(hash: str, type: int) -> Path | None:
-        if type == 0:
+        if type in conf.IMG_SIZE:
+            artwork_thumb = conf.IMG_DIR / f"{hash}_{type}.{conf.IMG_TYPE}"
+            return artwork_thumb if artwork_thumb.is_file() else None
+        elif type == 0:
             for orig_artwork in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
                 if orig_artwork.is_file(): return orig_artwork
-        elif type in conf.IMG_SIZE:
-            artwork_thumb = conf.IMG_DIR / f"{hash}_{type}.{conf.IMG_TYPE}"
-            return artwork_thumb if artwork_thumb .is_file() else None
         else:
             return None
 
