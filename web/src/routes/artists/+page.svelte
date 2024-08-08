@@ -12,7 +12,7 @@
 </svelte:head>
 
 <TableBody>
-  {#each data.artistListItem as artist (artist.artisthash)}
+  {#each data.list as artist (artist.artisthash)}
     <TableRow>
       <TableCell text={ artist.artist } />
     </TableRow>

@@ -18,9 +18,9 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-{#if data.albumListItem.length > 0}
+{#if data.list.length > 0}
   <CardItemGroup title={data.title}>
-    {#each data.albumListItem as album (album.albumhash)}
+    {#each data.list as album (album.albumhash)}
       <CardItem
         href="/albums/{ album.albumhash }"
         src={`${ARTWORK_BASE_URL}/${album.albumhash}?size=${IMAGE_SIZE}`}
@@ -42,15 +42,15 @@
   <div class="bottom-ctl">
     <NavbarButton
       icon="iconoir:nav-arrow-left"
-      href={getPrevPage(data.pageCount, data.itemCount)}
+      href={getPrevPage(data.page, data.item)}
     />
     <NavbarButton
       icon="iconoir:nav-arrow-right"
       href={
         getNextPage(
-          data.pageCount,
-          data.itemCount,
-          data.totalCountItem.count
+          data.page,
+          data.item,
+          data.total,
         )
       }
     />

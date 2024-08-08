@@ -1,14 +1,22 @@
+import { getArtistList } from '$lib/api';
 import type { PageLoad } from './$types';
-import type { artistList } from '$lib/interface';
 
-export const load: PageLoad = async ({ fetch }) => {
-  let artistListItem: artistList[] = [];
+export const load: PageLoad = async ({ fetch, url }) => {
+  const page = parseInt(url.searchParams.get('page') ?? '1', 10);
+  const item = parseInt(url.searchParams.get('item') ?? '40', 10);
 
-  const getArtistList = await fetch('http://localhost:2843/api/artists');
-  artistListItem = await getArtistList.json();
+  try {
+    const data = await getArtistList(page, item);
 
-  return {
-    artistListItem,
-    title: 'Artists',
-  };
+    return {
+      list: data.list,
+      page: page,
+      item: item,
+      total: data.total,
+      title: 'Artists',
+    };
+  }
+  catch (error) {
+    console.error(error);
+  }
 };

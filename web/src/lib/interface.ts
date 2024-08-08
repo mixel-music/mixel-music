@@ -1,4 +1,4 @@
-export interface trackList {
+export interface TrackList {
   title: string;
   album: string;
   artist: string;
@@ -6,7 +6,7 @@ export interface trackList {
   albumhash: string;
 }
 
-export interface trackItem {
+export interface TrackItem {
   hash: string;
   title: string;
   artist: string;
@@ -37,7 +37,7 @@ export interface trackItem {
   isrc: string;
 }
 
-export interface albumList {
+export interface AlbumList {
   albumhash: string;
   album: string;
   albumartist: string;
@@ -49,7 +49,7 @@ export interface albumList {
   sizetotals: number;
 }
 
-export interface albumItem {
+export interface AlbumItem {
   albumhash: string;
   album: string;
   albumartist: string;
@@ -59,23 +59,14 @@ export interface albumItem {
   tracktotals: number;
   disctotals: number;
   sizetotals: number;
-  tracks: albumTrackItem[];
+  tracks: TrackItem[];
 }
 
-export interface albumTrackItem {
-  title: string;
-  artist: string;
-  duration: number;
-  track: number;
-  hash: string;
-  comment: string;
-}
-
-export interface artistList {
+export interface ArtistList {
   artisthash: string;
   artist: string;
 }
 
-export interface artistItem {
+export interface ArtistItem {
 
 }

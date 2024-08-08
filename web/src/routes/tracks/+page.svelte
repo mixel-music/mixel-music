@@ -33,9 +33,9 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-{#if data.trackListItem.length > 0}
+{#if data.list.length > 0}
   <CardItemGroup title={data.title}>
-    {#each data.trackListItem as track (track.hash)}
+    {#each data.list as track (track.hash)}
       <CardItem
         on:click={() => SetTrack(track)}
         src={`${ARTWORK_BASE_URL}/${track.album === 'Unknown Album'
@@ -55,15 +55,15 @@
   <div class="bottom-ctl">
     <NavbarButton
       icon="iconoir:nav-arrow-left"
-      href={getPrevPage(data.pageCount, data.itemCount)}
+      href={getPrevPage(data.page, data.item)}
     />
     <NavbarButton
       icon="iconoir:nav-arrow-right"
       href={
         getNextPage(
-          data.pageCount,
-          data.itemCount,
-          data.totalCountItem.count
+          data.page,
+          data.item,
+          data.total
         )
       }
     />

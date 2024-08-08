@@ -14,34 +14,34 @@
   function SetTrack(tag: any): void {
     hash.set(tag.hash),
     title.set(tag.title),
-    album.set(data.albumItem.album),
+    album.set(data.item.album),
     artist.set(tag.artist)
-    albumhash.set(data.albumItem.albumhash)
+    albumhash.set(data.item.albumhash)
   }
 </script>
 
 <div class="album-container">
   <AlbumCover
-    src={ getArtwork(data.albumItem.albumhash, 500) }
-    alt={ data.albumItem.album }
+    src={ getArtwork(data.item.albumhash, 500) }
+    alt={ data.item.album }
     width=230
     height=230
   />
 
   <AlbumTitle
-    album={ data.albumItem.album }
-    albumartist={ data.albumItem.albumartist }
-    year={ data.albumItem.year }
-    totalTracks={ data.albumItem.tracktotals }
-    totalLength={ convertDateTime(data.albumItem.durationtotals) }
-    comment={ data.albumItem.tracks[0].comment }
-    size={ convertFileSize(data.albumItem.sizetotals) }
+    album={ data.item.album }
+    albumartist={ data.item.albumartist }
+    year={ data.item.year }
+    totalTracks={ data.item.tracktotals }
+    totalLength={ convertDateTime(data.item.durationtotals) }
+    comment={ data.item.tracks[0].comment }
+    size={ convertFileSize(data.item.sizetotals) }
   />
 </div>
 
 <div class="album-content">
 <TableBody>
-  {#each data.albumItem.tracks as album}
+  {#each data.item.tracks as album}
     <TableRow on:click={() => SetTrack(album)}>
 
       <TableCell sub text={ album.track !== 0 ? album.track : '-' } />
