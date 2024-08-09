@@ -87,7 +87,7 @@ class Library:
                         Tracks.albumhash,
                     )
                     .order_by(Tracks.title.asc())
-                    .offset(page * item)
+                    .offset(page)
                     .limit(item)
                 )
 

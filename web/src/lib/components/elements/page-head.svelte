@@ -17,7 +17,7 @@
   }
 
   span {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: bolder;
     letter-spacing: -1px;
     line-height: 1;

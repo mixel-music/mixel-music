@@ -1,8 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  export let href: string | undefined = undefined;
   export let icon: string | undefined = undefined;
-  export let title: string | undefined = undefined;
+  export let href: string;
 </script>
 
 <li>
@@ -12,8 +11,8 @@
         <Icon {icon} width="24" height="24" />
       </span>
     {/if}
-    
-    {title}
+
+    <slot />
   </a>
 </li>
 
@@ -31,18 +30,18 @@
     width: 100%;
   }
 
-  a span {
+  a:hover,
+  a:focus,
+  a:active {
+    outline-offset: 8px;
+  }
+
+  span {
     width: 36px;
     min-height: 36px;
     display: flex;
     color: var(--color-dark-text-2);
     align-items: center;
     justify-content: center;
-  }
-
-  a:hover,
-  a:focus,
-  a:active {
-    outline-offset: 8px;
   }
 </style>

@@ -7,9 +7,8 @@
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
   import PlayerButton from './player-button.svelte';
-  import PlayerSlider from './player-slider.svelte';
+  import PlayerRanges from './player-ranges.svelte';
   import AlbumCover from '$lib/components/albums/album-cover.svelte';
-  import { get } from 'svelte/store';
 
   let musicItem: HTMLAudioElement = new Audio();
   let coverPath: string = getArtwork('', 128);
@@ -128,7 +127,7 @@
   }
 
   function seekLength(event: MouseEvent): void {
-    handleSeek(event, '.length-ctl', (value) => {
+    handleSeek(event, '.length', (value) => {
       if (musicItem && $hash) {
         current = value * length;
         lengthBar = value * 100;
@@ -141,7 +140,7 @@
   }
 
   function seekVolume(event: MouseEvent): void {
-    handleSeek(event, '.volume-ctl', (value) => {
+    handleSeek(event, '.volume', (value) => {
       if (musicItem) {
         musicItem.muted = false;
         musicItem.volume = value;
@@ -183,33 +182,33 @@
     <div class="player-button">
       {#key isPlay}
         <PlayerButton
-          title='Previous'
           on:click={playPrev}
+          alt='Previous'
           icon='iconoir:skip-prev-solid'
           ControlButton
         />
 
         <PlayerButton
-          title={isPlay ? 'Pause' : 'Play'}
           on:click={toggleMusic}
+          alt={isPlay ? 'Pause' : 'Play'}
           icon={isPlay ? 'iconoir:pause-solid' : 'iconoir:play-solid'}
           ControlButton
           PrimaryButton
         />
 
         <PlayerButton
-          title='Next'
           on:click={playNext}
+          alt='Next'
           icon='iconoir:skip-next-solid'
           ControlButton
         />
       {/key}
     </div>
 
-    <PlayerSlider
+    <PlayerRanges
+      name='length'
       width='550px'
       value={lengthBar}
-      unique='length-ctl'
       on:click={seekLength}
       on:mousedown={(event) => handleDrag(event, 'length')}
     />
@@ -239,44 +238,44 @@
     <div class="player-area-2">
       <div class="player-volume">
         {#key muteMusic}
-          <PlayerSlider
+          <PlayerRanges
+            name='volume'
             width='110px'
-            unique='volume-ctl'
             value={musicItem.muted ? 0 : volumeBar}
             on:click={seekVolume}
             on:mousedown={(event) => handleDrag(event, "volume")}
           />
 
           <PlayerButton
-            title="Volume"
             on:click={muteMusic}
-            state={volumeBar === 0 || musicItem.muted}
+            alt="Volume"
             icon={volumeBar === 0 || musicItem.muted
               ? 'iconoir:sound-off' : volumeBar < 50
               ? 'iconoir:sound-low' : 'iconoir:sound-high'
             }
+            off={volumeBar === 0 || musicItem.muted}
           />
         {/key}
       </div>
 
       <PlayerButton
-        title={isLoop === 2 ? 'Repeat one' : 'Repeat'}
+        on:click={loopMusic}
+        alt={isLoop === 2 ? 'Repeat one' : 'Repeat'}
         icon={isLoop === 1
           ? 'iconoir:repeat' : isLoop === 2
           ? 'iconoir:repeat-once' : 'iconoir:repeat'
         }
-        state={!isLoop}
-        on:click={loopMusic}
+        off={!isLoop}
       />
 
       <PlayerButton
-        title='Shuffle'
+        alt='Shuffle'
         icon='iconoir:shuffle'
-        state
+        off
       />
 
       <PlayerButton
-        title='Playlist'
+        alt='Playlist'
         icon='iconoir:playlist'
       />
     </div>

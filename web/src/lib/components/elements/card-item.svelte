@@ -13,20 +13,23 @@
 
 <div class="card-item">
   {#if src}
-    <div {href} on:click class="card-body">
-      {#if showArtwork}
-        <img
-          loading={lazyload ? 'lazy' : null}
-          {src} {alt} on:error={loadFailed}
-          draggable="false"
-        >
-      {/if}
+    <div class="card-body">
+        <a tabindex="-1" {href} on:click>
+        {#if showArtwork}
+          <img
+            loading={lazyload ? 'lazy' : null}
+            {src} {alt} on:error={loadFailed}
+          >
+        {/if}
+      </a>
     </div>
     <slot />
 
   {:else}
     <div class="card-body">
+      <a tabindex="-1" {href} on:click>
 
+      </a>
     </div>
     <slot />
 
@@ -46,6 +49,12 @@
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
     border-radius: calc(var(--app-radius) / 2);
     aspect-ratio: 1/1;
+  }
+
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   img {
