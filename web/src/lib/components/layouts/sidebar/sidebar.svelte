@@ -39,11 +39,9 @@
 
 <style>
   div {
-    position: fixed;
-    width: 250px;
-    height: 100%;
-    top: 0;
-    left: 0;
+    width: 230px;
+    min-height: 100dvh;
+    flex-shrink: 0;
     z-index: 0;
     padding: 24px 21px;
     background-color: var(--color-dark-bg-2);

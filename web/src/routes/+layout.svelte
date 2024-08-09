@@ -20,16 +20,21 @@
   #app {
     width: 100%;
     display: flex;
-    min-height: 100dvh;
-    flex-direction: column;
+    height: 100dvh;
+    flex-direction: row;
     box-sizing: border-box;
   }
 
   section {
-    max-width: 100%;
+    width: 100%;
     padding: 64px;
     padding-top: 0;
-    margin-left: 250px;
     margin-bottom: 96px;
+    overflow-y: scroll;
+    user-select: none;
+  }
+
+  section:focus {
+    outline: none;
   }
 </style>

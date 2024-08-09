@@ -32,12 +32,12 @@
     display: inline-flex;
     background-color: var(--color-dark-bg-2);
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-    border-radius: var(--app-radius);
+    border-radius: calc(var(--app-radius) / 2);
   }
 
   img {
     object-fit: scale-down;
     aspect-ratio: 1/1;
-    border-radius: var(--app-radius);
+    border-radius: calc(var(--app-radius) / 2);
   }
 </style>

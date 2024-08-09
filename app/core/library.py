@@ -14,45 +14,6 @@ semaphore = asyncio.Semaphore(5)
 
 class Library:
     @staticmethod
-    async def get_track_count() -> int:
-        async with session() as conn:
-            try:
-                count = await conn.execute(select(func.count()).select_from(Tracks))
-                count = count.scalar_one()
-                return count
-
-            except Exception as error:
-                logs.error("Error, %s", error)
-                return 0
-
-
-    @staticmethod
-    async def get_album_count() -> int:
-        async with session() as conn:
-            try:
-                count = await conn.execute(select(func.count()).select_from(Albums))
-                count = count.scalar_one()
-                return count
-
-            except Exception as error:
-                logs.error("Error, %s", error)
-                return 0
-
-
-    @staticmethod
-    async def get_artist_count() -> int:
-        async with session() as conn:
-            try:
-                count = await conn.execute(select(func.count()).select_from(Artists))
-                count = count.scalar_one()
-                return count
-
-            except Exception as error:
-                logs.error("Error, %s", error)
-                return 0
-
-
-    @staticmethod
     async def streaming(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
         
         path = await hash_track_to_path(hash)
@@ -142,7 +103,7 @@ class Library:
 
         return {
             'list': track_list,
-            'total': count
+            'total': count,
         }
     
 
@@ -204,7 +165,7 @@ class Library:
 
         return {
             'list': album_list,
-            'total': count
+            'total': count,
         }
 
 
@@ -259,6 +220,7 @@ class Library:
     @staticmethod
     async def _get_artist_list(page: int, item: int) -> list[dict]:
         artist_list = [{}]
+        count = 0
 
         try:
             async with session() as conn:
@@ -272,12 +234,18 @@ class Library:
                 db_result = await conn.execute(db_query)
                 artist_list = [dict(row) for row in db_result.mappings().all()]
                 
-                return artist_list
-            
+                count_query = select(func.count()).select_from(Artists)
+                count_result = await conn.execute(count_query)
+                count = count_result.scalar_one()
+
         except OperationalError as error:
             logs.error("Failed to load artist list, %s", error)
-            raise error
 
+        return {
+            'list': artist_list,
+            'total': count,
+        }
+    
 
 
 class LibraryTask:
