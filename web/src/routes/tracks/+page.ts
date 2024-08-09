@@ -6,14 +6,13 @@ export const load: PageLoad = async ({ fetch, url }) => {
   const item = parseInt(url.searchParams.get('item') ?? '40', 10);
 
   try {
-    const data = await getTrackList(page, item);
+    const data = await getTrackList(fetch, page, item);
 
     return {
       list: data.list,
+      title: 'Tracks',
       page: page,
       item: item,
-      total: data.total,
-      title: 'Tracks',
     };
   }
   catch (error) {

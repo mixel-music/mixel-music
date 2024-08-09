@@ -57,8 +57,8 @@
 <style>
   .album-container {
     display: flex;
-    width: 70%;
-    margin: 0 auto;
+    /* width: 70%;
+    margin: 0 auto; */
     margin-top: 2em;
     gap: 24px;
   }

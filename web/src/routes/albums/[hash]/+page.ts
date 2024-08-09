@@ -5,10 +5,10 @@ export const load: PageLoad = async ({ fetch, params }) => {
   const hash: string = params.hash
 
   try {
-    const data = await getAlbumItem(hash);
+    const data = await getAlbumItem(fetch, hash);
 
     return {
-      item: data.item,
+      item: data.item!,
       title: data.item.album,
     };
   }

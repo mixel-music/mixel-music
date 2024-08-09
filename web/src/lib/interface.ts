@@ -1,3 +1,8 @@
+export interface TrackListResponse {
+  list: TrackList[];
+  total: number;
+}
+
 export interface TrackList {
   title: string;
   album: string;
@@ -37,6 +42,11 @@ export interface TrackItem {
   isrc: string;
 }
 
+export interface AlbumListResponse {
+  list: AlbumList[];
+  total: number;
+}
+
 export interface AlbumList {
   albumhash: string;
   album: string;
@@ -62,11 +72,17 @@ export interface AlbumItem {
   tracks: TrackItem[];
 }
 
+export interface ArtistListResponse {
+  list: ArtistList[];
+  total: number;
+}
+
 export interface ArtistList {
   artisthash: string;
   artist: string;
 }
 
 export interface ArtistItem {
-
+  artisthash: string;
+  artist: string;
 }

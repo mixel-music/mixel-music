@@ -29,4 +29,4 @@ async def gen_artwork(
     hash: str,
 ) -> None:
     
-    LibraryTask.create_artwork(hash)
+    await LibraryTask.create_artwork(hash)

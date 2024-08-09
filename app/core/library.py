@@ -112,6 +112,9 @@ class Library:
 
     @staticmethod
     async def _get_track_list(page: int, item: int) -> list[dict]:
+        track_list = [{}]
+        count = 0
+
         try:
             async with session() as conn:
                 db_query = (
@@ -123,22 +126,30 @@ class Library:
                         Tracks.albumhash,
                     )
                     .order_by(Tracks.title.asc())
-                    .offset(page)
+                    .offset(page * item)
                     .limit(item)
                 )
 
                 db_result = await conn.execute(db_query)
                 track_list = [dict(row) for row in db_result.mappings().all()]
 
-                return track_list
-            
+                count_query = select(func.count()).select_from(Tracks)
+                count_result = await conn.execute(count_query)
+                count = count_result.scalar_one()
+
         except OperationalError as error:
             logs.error("Failed to load track list, %s", error)
-            raise error
 
+        return {
+            'list': track_list,
+            'total': count
+        }
+    
 
     @staticmethod
     async def _get_track_info(hash: str) -> dict:
+        track_info = {}
+
         try:
             path = await hash_track_to_path(hash)
             async with session() as conn:
@@ -154,7 +165,7 @@ class Library:
             
         except OperationalError as error:
             logs.error("Failed to load track info, %s", error)
-            raise error
+            return track_info
         
 
     @staticmethod
@@ -169,6 +180,9 @@ class Library:
 
     @staticmethod
     async def _get_album_list(page: int, item: int) -> list[dict]:
+        album_list = [{}]
+        count = 0
+
         try:
             async with session() as conn:
                 db_query = (
@@ -180,16 +194,24 @@ class Library:
 
                 db_result = await conn.execute(db_query)
                 album_list = [dict(row) for row in db_result.mappings().all()]
-                
-                return album_list
-            
+
+                count_query = select(func.count()).select_from(Albums)
+                count_result = await conn.execute(count_query)
+                count = count_result.scalar_one()
+
         except OperationalError as error:
             logs.error("Failed to load album list, %s", error)
-            raise error
+
+        return {
+            'list': album_list,
+            'total': count
+        }
 
 
     @staticmethod
     async def _get_album_info(hash: str) -> dict:
+        album_info = {}
+
         try:
             async with session() as conn:
                 album_query = select(Albums.__table__).where(Albums.albumhash == hash)
@@ -221,7 +243,7 @@ class Library:
                 
         except OperationalError as error:
             logs.error("Failed to load album info, %s", error)
-            raise error
+            return album_info
         
 
     @staticmethod
@@ -236,6 +258,8 @@ class Library:
 
     @staticmethod
     async def _get_artist_list(page: int, item: int) -> list[dict]:
+        artist_list = [{}]
+
         try:
             async with session() as conn:
                 db_query = (

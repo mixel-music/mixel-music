@@ -21,6 +21,7 @@
     artist: string;
     albumhash: string;
   }): void {
+    
     hash.set(track.hash),
     title.set(track.title),
     album.set(track.album),
@@ -33,9 +34,9 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-{#if data.list.length > 0}
+{#if data.list}
   <CardItemGroup title={data.title}>
-    {#each data.list as track (track.hash)}
+    {#each data.list.list as track (track.hash)}
       <CardItem
         on:click={() => SetTrack(track)}
         src={`${ARTWORK_BASE_URL}/${track.album === 'Unknown Album'
@@ -52,22 +53,24 @@
     {/each}
   </CardItemGroup>
 
-  <div class="bottom-ctl">
-    <NavbarButton
-      icon="iconoir:nav-arrow-left"
-      href={getPrevPage(data.page, data.item)}
-    />
-    <NavbarButton
-      icon="iconoir:nav-arrow-right"
-      href={
-        getNextPage(
-          data.page,
-          data.item,
-          data.total
-        )
-      }
-    />
-  </div>
+  {#if data.list.total > data.item}
+    <div class="bottom-ctl">
+      <NavbarButton
+        icon="iconoir:nav-arrow-left"
+        href={getPrevPage(data.page, data.item)}
+      />
+      <NavbarButton
+        icon="iconoir:nav-arrow-right"
+        href={
+          getNextPage(
+            data.page,
+            data.item,
+            data.list.total
+          )
+        }
+      />
+    </div>
+  {/if}
 {/if}
 
 <style>

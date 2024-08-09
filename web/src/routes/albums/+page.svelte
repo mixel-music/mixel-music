@@ -18,9 +18,9 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-{#if data.list.length > 0}
+{#if data.list}
   <CardItemGroup title={data.title}>
-    {#each data.list as album (album.albumhash)}
+    {#each data.list.list as album (album.albumhash)}
       <CardItem
         href="/albums/{ album.albumhash }"
         src={`${ARTWORK_BASE_URL}/${album.albumhash}?size=${IMAGE_SIZE}`}
@@ -39,22 +39,24 @@
     {/each}
   </CardItemGroup>
 
-  <div class="bottom-ctl">
-    <NavbarButton
-      icon="iconoir:nav-arrow-left"
-      href={getPrevPage(data.page, data.item)}
-    />
-    <NavbarButton
-      icon="iconoir:nav-arrow-right"
-      href={
-        getNextPage(
-          data.page,
-          data.item,
-          data.total,
-        )
-      }
-    />
-  </div>
+  {#if data.list.total > data.item}
+    <div class="bottom-ctl">
+      <NavbarButton
+        icon="iconoir:nav-arrow-left"
+        href={getPrevPage(data.page, data.item)}
+      />
+      <NavbarButton
+        icon="iconoir:nav-arrow-right"
+        href={
+          getNextPage(
+            data.page,
+            data.item,
+            data.list.total
+          )
+        }
+      />
+    </div>
+  {/if}
 {/if}
 
 <style>
