@@ -7,7 +7,9 @@
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
-  import NavbarButton from '$lib/components/layouts/navbar/navbar-button.svelte';
+
+  import RdButton from '$lib/newponents/elements/rd-button.svelte';
+  import Icon from '@iconify/svelte';
 
   export let data: PageData;
 
@@ -54,21 +56,19 @@
   </CardItemGroup>
 
   {#if data.list.total > data.item}
-    <div class="bottom-ctl">
-      <NavbarButton
-        icon="iconoir:nav-arrow-left"
-        href={getPrevPage(data.page, data.item)}
-      />
-      <NavbarButton
-        icon="iconoir:nav-arrow-right"
-        href={
-          getNextPage(
-            data.page,
-            data.item,
-            data.list.total
-          )
-        }
-      />
+    <div class='bottom-ctl'>
+      <RdButton href={getPrevPage(data.page, data.item)}>
+        <Icon icon='iconoir:nav-arrow-left' />
+      </RdButton>
+      <RdButton href={
+        getNextPage(
+          data.page,
+          data.item,
+          data.list.total
+        )
+      }>
+        <Icon icon='iconoir:nav-arrow-right' />
+      </RdButton>
     </div>
   {/if}
 {/if}
