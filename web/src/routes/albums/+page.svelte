@@ -1,6 +1,6 @@
-<script lang='ts'>
+<script lang="ts">
   import type { PageData } from './$types';
-  import { getNextPage, getPrevPage } from '$lib/tools';
+  import { getNextPage, getPrevPage, getArtwork } from '$lib/tools';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
@@ -11,9 +11,6 @@
   import Icon from '@iconify/svelte';
 
   export let data: PageData;
-
-  const ARTWORK_BASE_URL = 'http://localhost:2843/api/artwork';
-  const IMAGE_SIZE = 300;
 </script>
 
 <svelte:head>
@@ -25,7 +22,7 @@
     {#each data.list.list as album (album.albumhash)}
       <CardItem
         href='/albums/{ album.albumhash }'
-        src={`${ARTWORK_BASE_URL}/${album.albumhash}?size=${IMAGE_SIZE}`}
+        src={getArtwork(album.albumhash, 300)}
         alt={album.album}
         lazyload
       >

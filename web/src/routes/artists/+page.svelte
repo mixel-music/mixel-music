@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-  <title>{ data.title } • mixel-music</title>
+  <title>{data.title} • mixel-music</title>
 </svelte:head>
 
 {#if data.list}
@@ -17,7 +17,7 @@
   <TableBody>
     {#each data.list.list as artist (artist.artisthash)}
       <TableRow>
-        <TableCell text={ artist.artist } />
+        <TableCell text={artist.artist} />
       </TableRow>
     {/each}
   </TableBody>

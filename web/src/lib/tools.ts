@@ -5,12 +5,12 @@ export function getArtwork(hash: string, size: number): string {
   return artwork;
 }
 
-export function getNextPage(page: number = 1, item: number = 40, total: number = 0) {
+export function getNextPage(page: number = 1, item: number = 40, total: number = 0): string {
   const nextPage = total - (page * item) < 1 ? page : page + 1;
   return `?page=${nextPage}&item=${item}`
 }
 
-export function getPrevPage(page: number = 1, item: number = 40) {
+export function getPrevPage(page: number = 1, item: number = 40): string {
   const prevPage = page - 1 < 1 ? 1 : page - 1;
   return `?page=${prevPage}&item=${item}`
 }

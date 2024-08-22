@@ -1,11 +1,11 @@
 <script lang="ts">
   import './style.css';
-  import Sidebar from '$lib/newponents/layouts/sidebar.svelte';
-  import Navbar from '$lib/newponents/layouts/navbar.svelte';
-  import Player from '$lib/newponents/layouts/player.svelte';
+  import Sidebar from '$lib/newponents/layouts/sidebar/sidebar.svelte';
+  import Navbar from '$lib/newponents/layouts/navbar/navbar.svelte';
+  import Player from '$lib/newponents/layouts/player/player.svelte';
 </script>
 
-<div id="app">
+<div id='app'>
   <Sidebar />
 
   <section>

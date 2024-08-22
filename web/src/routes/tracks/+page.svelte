@@ -1,35 +1,17 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getNextPage, getPrevPage } from '$lib/tools';
-  import { hash, title, album, artist, albumhash } from '$lib/stores/track';
+  import { getArtwork, getNextPage, getPrevPage } from '$lib/tools';
+  import { trackStore } from '$lib/stores/track-store';
+  import { initTrack } from '$lib/newponents/layouts/player/controls';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
-
   import RdButton from '$lib/newponents/elements/rd-button.svelte';
   import Icon from '@iconify/svelte';
 
   export let data: PageData;
-
-  const ARTWORK_BASE_URL = 'http://localhost:2843/api/artwork';
-  const IMAGE_SIZE = 300;
-
-  function SetTrack(track: {
-    hash: string;
-    title: string;
-    album: string;
-    artist: string;
-    albumhash: string;
-  }): void {
-    
-    hash.set(track.hash),
-    title.set(track.title),
-    album.set(track.album),
-    artist.set(track.artist)
-    albumhash.set(track.albumhash)
-  }
 </script>
 
 <svelte:head>
@@ -40,10 +22,14 @@
   <CardItemGroup title={data.title}>
     {#each data.list.list as track (track.hash)}
       <CardItem
-        on:click={() => SetTrack(track)}
-        src={`${ARTWORK_BASE_URL}/${track.album === 'Unknown Album'
-          ? track.hash : track.albumhash}?size=${IMAGE_SIZE}`
-        }
+        on:click={() => initTrack(
+          track.hash,
+          track.title,
+          track.album,
+          track.artist,
+          track.albumhash,
+        )}
+        src={getArtwork(track.albumhash, 300)}
         alt={track.title}
         lazyload
       >
