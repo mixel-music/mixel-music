@@ -3,12 +3,12 @@
 <a href="requirements.txt"><img src="https://img.shields.io/badge/Python-3.9+-211951?style=flat-square&labelColor=211951"></a>
 
 > [!NOTE]
-> **As I’m focusing on preparing for the CSAT (Korean SAT) in November 2024, I will need to dedicate more time to my studies. Therefore, the development may be delayed until then.**
+> **As I'm focusing on preparing for the CSAT (Korean SAT) in November 2024, I will need to dedicate more time to my studies. Therefore, the development may be delayed until then.**
 
 **mixel-music** is an open-source, self-hosted music streaming application developed with Python and Svelte. It offers fast performance, a simple yet attractive UI, and broad device compatibility, ensuring a consistent music experience across various platforms.
 
-* This is my first time using JavaScript, TypeScript and Svelte. Also, I have little experience doing backend development using Python.
-  * There may be many areas that need improvement. Feedback is always welcome.
+* This is my first time using JavaScript, TypeScript, and Svelte. Also, I have little experience doing backend development using Python.
+  * So there may be many areas that need improvement. Feedback is always welcome.
 
 <img src=".github/album-list.png" width="850">
 <img src=".github/album-info.png" width="850">
