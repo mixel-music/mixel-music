@@ -1,4 +1,4 @@
-import { getAlbumItem } from '$lib/api';
+import { getAlbumItem } from '$lib/requests';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params }) => {

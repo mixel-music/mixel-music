@@ -4,21 +4,23 @@
   export let width: string | number | undefined = undefined;
   export let height: string | number | undefined = undefined;
 
-  let showArtwork = true;
+  let displayArtwork = true;
 
   function loadFailed() {
-    showArtwork = false;
+    displayArtwork = false;
   }
 </script>
 
 <div style='height: {height}px;'>
-  {#if showArtwork}
+  {#if displayArtwork}
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <img
       {src}
       {alt}
       {width}
       {height}
       on:click
+      on:keydown
       on:mousedown
       on:mouseleave
       on:error={loadFailed}

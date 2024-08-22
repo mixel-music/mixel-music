@@ -2,13 +2,14 @@
   import { onDestroy } from 'svelte';
 
   import { getArtwork, convertDateTime } from '$lib/tools';
-  import { hash, title, album, artist, albumhash } from '$lib/stores/track';
+  import { trackStore } from '$lib/stores/track-store';
 
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
   import PlayerButton from './player-button.svelte';
-  import PlayerRanges from './player-ranges.svelte';
-  import AlbumCover from '$lib/components/albums/album-cover.svelte';
+  import PlayerRanges from './player-range.svelte';
+
+  import PlayerInfo from './player-info.svelte';
 
   let musicItem: HTMLAudioElement = new Audio();
   let coverPath: string = getArtwork('', 128);
@@ -21,13 +22,13 @@
   let isDrag: boolean = false;
   let isLoop: number = 0;
 
-  $: $hash, streamMusic(), setMusicInfo();
+  $: $trackStore.hash, streamMusic(), setMusicInfo();
   $: musicItem.volume, volumeBar = musicItem.volume * 100;
 
   function streamMusic(): void {
     if ($hash !== undefined) {
-      musicItem.src = `http://localhost:2843/api/stream/${$hash}`;
-      coverPath = getArtwork($hash, 128);
+      musicItem.src = `http://localhost:2843/api/stream/${$trackStore.hash}`;
+      coverPath = getArtwork($trackStore.hash, 128);
 
       musicItem.addEventListener("loadedmetadata", handleMetadataLoaded);
       musicItem.addEventListener("timeupdate", handleTimeUpdate);
@@ -51,7 +52,7 @@
   }
 
   function toggleMusic(): void {
-    if ($hash) {
+    if ($trackStore.hash) {
       if (musicItem.paused) {
         musicItem.play();
         isPlay = true;
@@ -73,11 +74,11 @@
   function setMusicInfo(): void {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: $title,
-        album: $album,
-        artist: $artist,
-        artwork: [{src: $album === 'Unknown Album'
-            ? getArtwork($hash, 128) : getArtwork($albumhash, 128)
+        title: $trackStore.title,
+        album: $trackStore.album,
+        artist: $trackStore.artist,
+        artwork: [{src: $trackStore.album === 'Unknown Album'
+            ? getArtwork($trackStore.hash, 128) : getArtwork($trackStore.albumhash, 128)
           }],
       });
 
@@ -128,7 +129,7 @@
 
   function seekLength(event: MouseEvent): void {
     handleSeek(event, '.length', (value) => {
-      if (musicItem && $hash) {
+      if (musicItem && $trackStore.hash) {
         current = value * length;
         lengthBar = value * 100;
 
@@ -215,25 +216,7 @@
   </div>
 
   <div class="player-area">
-    <div class="player-area-1">
-      {#if $hash}
-        <AlbumCover
-          src={$album === 'Unknown Album'
-            ? getArtwork($hash, 128) : getArtwork($albumhash, 128)
-          }
-          width=56
-          height=56
-          alt="Front Cover"
-        />
-
-        <div class="player-track">
-          <ContentHead head='{$title ? $title : ""}' />
-          <ContentBody body='{$artist} - {$album}' />
-          <!-- 여기 링크 처리 필요한데 컴포넌트로 묶으면 안됨; -->
-          <ContentBody body='{convertDateTime(current)} / {convertDateTime(length)}' />
-        </div>
-      {/if}
-    </div>
+    <PlayerInfo />
 
     <div class="player-area-2">
       <div class="player-volume">

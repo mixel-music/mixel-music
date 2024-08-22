@@ -1,4 +1,4 @@
-import { getTrackList } from '$lib/api';
+import { getTrackList } from '$lib/requests';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, url }) => {

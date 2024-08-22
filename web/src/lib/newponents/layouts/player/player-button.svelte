@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
+  
   export let alt: string = '';
   export let off: boolean = false;
   export let icon: string = '';
