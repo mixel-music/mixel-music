@@ -1,17 +1,17 @@
 <script lang="ts">
-  import RdButton from '$lib/newponents/elements/rd-button.svelte';
+  import ButtonRd from '$lib/newponents/elements/button-rd.svelte';
   import TextBox from '$lib/newponents/elements/textbox.svelte';
   import Icon from '@iconify/svelte';
 </script>
 
 <nav>
   <div>
-    <RdButton on:click={() => history.back()}>
+    <ButtonRd on:click={() => history.back()}>
       <Icon icon="iconoir:nav-arrow-left" />
-    </RdButton>
-    <RdButton on:click={() => history.forward()}>
+    </ButtonRd>
+    <ButtonRd on:click={() => history.forward()}>
       <Icon icon="iconoir:nav-arrow-right" />
-    </RdButton>
+    </ButtonRd>
   </div>
 
   <div>
@@ -21,12 +21,12 @@
       width="290px"
       placeholder="Search"
     />
-    <RdButton>
+    <ButtonRd>
       <Icon icon="iconoir:refresh" />
-    </RdButton>
-    <RdButton>
+    </ButtonRd>
+    <ButtonRd>
       <Icon icon="iconoir:user" />
-    </RdButton>
+    </ButtonRd>
   </div>
 </nav>
 

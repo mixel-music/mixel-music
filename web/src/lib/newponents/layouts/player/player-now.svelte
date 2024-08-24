@@ -1,15 +1,17 @@
 <script lang="ts">
   import Artwork from "$lib/newponents/elements/artwork.svelte";
   import { convertDateTime, getArtwork } from "$lib/tools";
-  import { trackStore } from "$lib/stores/track-store";
+  import audioElement from '$lib/stores/stores';
+
+  $: trk = $audioElement;
 </script>
 
-<div class="player-info">
-  {#if $trackStore.hash}
+<div class="player-now">
+  {#if trk.hash}
     <Artwork
-      src={$trackStore.album === 'Unknown Album'
-        ? getArtwork($trackStore.hash, 128)
-        : $trackStore.albumhash && getArtwork($trackStore.albumhash, 128)
+      src={trk.album === 'Unknown Album'
+        ? getArtwork(trk.hash, 128)
+        : trk.albumhash && getArtwork(trk.albumhash, 128)
       }
       width=60
       height=60
@@ -17,17 +19,17 @@
     />
 
     <div class="track">
-      <span class="title">{$trackStore.title}</span>
-      <span class="description">{$trackStore.artist} - {$trackStore.album}</span>
+      <span class="title">{trk.title}</span>
+      <span class="description">{trk.artist} - {trk.album}</span>
       <span class="description">
-        {convertDateTime($stateStore.currentTime)} / {convertDateTime($stateStore.duration)}
+        {convertDateTime(trk.currentTime)} / {convertDateTime(trk.duration)}
       </span>
     </div>
   {/if}
 </div>
 
 <style>
-  .player-info {
+  .player-now {
     display: flex;
     align-items: center;
     gap: var(--app-padding-s);

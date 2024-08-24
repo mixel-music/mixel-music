@@ -79,3 +79,35 @@ button {
 button:disabled {
   color: var(--color-dark-disabled);
 }
+
+input[type='range'] {
+  appearance: none;
+  cursor: pointer;
+  /* outline: none; */
+
+  overflow: hidden;
+  width: 550px;
+  appearance: none;
+  background-color: var(--color-dark-trk-len);
+  border-radius: calc(var(--app-radius) * 2);
+  height: 3.5px;
+  margin-left: 0.5px;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  width: 0;
+  height: 0;
+  appearance: none;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  width: 0px;
+  cursor: pointer;
+  appearance: none;
+  height: 3.5px;
+  box-shadow: -551px 0 0 551px var(--color-dark-trk-now);
+}

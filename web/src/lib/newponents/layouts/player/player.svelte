@@ -1,179 +1,239 @@
 <script lang="ts">
+  import audioElement from "$lib/stores/stores";
+  import PlayerButton from '$lib/newponents/layouts/player/player-button.svelte'
+  import PlayerNow from '$lib/newponents/layouts/player/player-now.svelte';
+
+  $: trk = $audioElement;
+</script>
+
+<div class="player">
+  <div class="player-center">
+    <div class="player-button">
+      <PlayerButton
+        alt="Previous"
+        on:click={audioElement.goPrev}
+        icon="iconoir:skip-prev-solid"
+        ControlButton
+      />
+
+      <PlayerButton
+        on:click={audioElement.toggle}
+        alt={trk.isPlaying ? 'Pause' : 'Play'}
+        icon={trk.isPlaying ? 'iconoir:pause-solid' : 'iconoir:play-solid'}
+        ControlButton
+        PrimaryButton
+        disabled={!trk.isReady}
+      />
+
+      <PlayerButton
+        alt="Next"
+        on:click={() => console.log('Next track')}
+        icon="iconoir:skip-next-solid"
+        ControlButton
+      />
+    </div>
+
+    <input
+      type="range"
+      min="0"
+      max={trk.duration}
+      value={trk.currentTime}
+      on:input={(e) => audioElement.seek(parseFloat(e.target.value))}
+      disabled={!trk.isReady}
+    />
+  </div>
+
+  <div class="player-area">
+    <PlayerNow />
+    
+    <div class="player-menu">
+      <div class="player-volume">
+        <!-- <Slider
+          bind:value={trk.volume}
+          name='volume'
+          width='110px'
+          max={1.0}
+        /> -->
+    
+        <PlayerButton
+          on:click={audioElement.mute}
+          alt="Volume"
+          icon={trk.volume === 0 || trk.mute
+            ? 'iconoir:sound-off' : trk.volume * 100 < 50
+            ? 'iconoir:sound-low' : 'iconoir:sound-high'
+          }
+          off={trk.volume === 0 || trk.mute}
+        />
+      </div>
+    
+      <PlayerButton
+        on:click={audioElement.loop}
+        alt={trk.loop === 2 ? 'Repeat one' : 'Repeat'}
+        icon={trk.loop === 1
+          ? 'iconoir:repeat' : trk.loop === 2
+          ? 'iconoir:repeat-once' : 'iconoir:repeat'
+        }
+        off={!trk.loop}
+      />
+    
+      <PlayerButton
+        alt='Shuffle'
+        icon='iconoir:shuffle'
+        off
+      />
+    
+      <PlayerButton
+        alt='Playlist'
+        icon='iconoir:playlist'
+      />
+    </div>
+  </div>
+</div>
+
+<style>
+  .player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    z-index: 2;
+    width: 100%;
+    height: 96px;
+    background-color: var(--color-dark-bg-trk);
+    box-shadow: 0 0 0 1px var(--color-dark-border) inset;
+    backdrop-filter: blur(64px);
+  }
+
+  .player-area {
+    width: 100%;
+    display: flex;
+    padding: 0 21px;
+    justify-content: space-between;
+  }
+
+  .player-center {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .player-button {
+    display: flex;
+    justify-content: center;
+    /* padding-top: 3px;
+    padding-bottom: 2px; */
+    gap: 24px;
+    /* margin-bottom: -1px; */
+    margin-left: 2px;
+  }
+
+  .player-menu {
+    display: flex;
+    align-items: center;
+  }
+
+  .player-volume {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+</style>
+
+<!-- <script lang="ts">
   import { onDestroy } from 'svelte';
-
-  import { getArtwork, convertDateTime } from '$lib/tools';
-  import { trackStore } from '$lib/stores/track-store';
-
-  import ContentHead from '$lib/components/elements/text-title.svelte';
-  import ContentBody from '$lib/components/elements/text-sub.svelte';
+  import { trackStore, stateStore } from '$lib/stores/stores';
+  import Slider from '$lib/newponents/elements/slider.svelte';
   import PlayerButton from './player-button.svelte';
-  import PlayerRanges from './player-range.svelte';
+  import PlayerNow from './player-now.svelte';
 
-  import PlayerInfo from './player-info.svelte';
+  let trackElement: HTMLAudioElement = new Audio();
+  let value: number = 0;
 
-  let musicItem: HTMLAudioElement = new Audio();
-  let coverPath: string = getArtwork('', 128);
-  let current: number = 0;
-  let length: number = 0;
+  $: $trackStore.hash, initTrack();
+  $: value = $stateStore.currentTime;
 
-  let lengthBar: number = 0;
-  let volumeBar: number = 100;
-  let isPlay: boolean = false;
-  let isDrag: boolean = false;
-  let isLoop: number = 0;
-
-  $: $trackStore.hash, streamMusic(), setMusicInfo();
-  $: musicItem.volume, volumeBar = musicItem.volume * 100;
-
-  function streamMusic(): void {
-    if ($hash !== undefined) {
-      musicItem.src = `http://localhost:2843/api/stream/${$trackStore.hash}`;
-      coverPath = getArtwork($trackStore.hash, 128);
-
-      musicItem.addEventListener("loadedmetadata", handleMetadataLoaded);
-      musicItem.addEventListener("timeupdate", handleTimeUpdate);
+  function initTrack(): void {
+    if (trackElement.src) {
+      trackElement.removeEventListener('loadedmetadata', handleDataLoaded);
+      trackElement.removeEventListener('timeupdate', handleTimeUpdate);
     }
-  }
 
-  function handleMetadataLoaded() {
-    length = musicItem.duration;
-    musicItem.play();
-    isPlay = true;
-  }
+    trackElement.src = `http://localhost:2843/api/stream/${$trackStore.hash}`
+    trackElement.addEventListener('loadedmetadata', handleDataLoaded);
+    trackElement.addEventListener('timeupdate', handleTimeUpdate);
+    setTrackInfo();
+  };
 
-  function handleTimeUpdate() {
-    current = musicItem.currentTime;
-    if (!isDrag) lengthBar = (current / length) * 100;
+  function handleDataLoaded(): void {
+    trackElement.play();
+    stateStore.update(state => ({...state,
+      duration: trackElement.duration,
+      isPlaying: true,
+    }));
+  };
 
-    if (current >= musicItem.duration) {
-      musicItem.pause();
-      isPlay = false;
+  function handleTimeUpdate(): void {
+    stateStore.update(state => ({...state,
+      currentTime: trackElement.currentTime,
+    }));
+
+    if (trackElement.currentTime >= $stateStore.duration) {
+      trackElement.pause();
+      stateStore.update(state => ({...state,
+        isPlaying: false,
+      }));
     }
-  }
+  };
 
-  function toggleMusic(): void {
-    if ($trackStore.hash) {
-      if (musicItem.paused) {
-        musicItem.play();
-        isPlay = true;
-      } else {
-        musicItem.pause();
-        isPlay = false;
+  function toggleTrack(): void {
+    if (trackElement.src) {
+      if (trackElement.paused) {
+        trackElement.play();
+        stateStore.update(state => ({...state,
+          isPlaying: true,
+        }));
+      }
+      else {
+        trackElement.pause();
+        stateStore.update(state => ({...state,
+          isPlaying: false,
+        }));
       }
     }
-  }
+  };
 
-  function playPrev(): void {
-    musicItem.currentTime = 0;
-  }
+  function prevTrack(): void {
 
-  function playNext(): void {
-    console.debug("playNext()");
-  }
+  };
 
-  function setMusicInfo(): void {
+  function nextTrack(): void {
+
+  };
+
+  function setTrackInfo(): void {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: $trackStore.title,
         album: $trackStore.album,
         artist: $trackStore.artist,
-        artwork: [{src: $trackStore.album === 'Unknown Album'
-            ? getArtwork($trackStore.hash, 128) : getArtwork($trackStore.albumhash, 128)
-          }],
+        artwork: [{src: ''}],
       });
 
-      navigator.mediaSession.setActionHandler('play', toggleMusic);
-      navigator.mediaSession.setActionHandler('pause', toggleMusic);
-      navigator.mediaSession.setActionHandler('seekbackward', () => { musicItem.currentTime -= 10; });
-      navigator.mediaSession.setActionHandler('seekforward', () => { musicItem.currentTime += 10; });
-      navigator.mediaSession.setActionHandler('previoustrack', playPrev);
-      navigator.mediaSession.setActionHandler('nexttrack', playNext);
-    }
-  }
-
-  function handleSeek(event: MouseEvent, type: string, callback: (value: number) => void): void {
-    event.preventDefault();
-    const ctl = document.querySelector(type);
-    
-    if (ctl) {
-      const ctlWidth = ctl.clientWidth;
-      const ctlBound = ctl.getBoundingClientRect();
-      const newValue = Math.max(0, Math.min(event.clientX - ctlBound.left, ctlWidth));
-
-      callback(newValue / ctlWidth);
-    }
-  }
-
-  function handleDrag(event: MouseEvent, type: 'length' | 'volume'): void {
-    isDrag = true;
-    event.preventDefault();
-
-    const moveHandler = type === 'length' ? seekLength : seekVolume;
-    const postHandler = () => {
-      document.removeEventListener("mousemove", moveHandler);
-      document.removeEventListener("mouseup", postHandler);
-
-      if (type === 'length' && musicItem) {
-        musicItem.currentTime = current - 0.1;
-        // 0.1을 붙여야 오른쪽 끝 드래그 > 재생 > 오른쪽 끝 드래그 시 이벤트 안 먹히는 문제 방지
-        // 왜 그런 건지는 잘 모르겠음. 여유가 없어서 그런가? 쨌든 나중에 고쳐야 함
-      }
-
-      isDrag = false;
-    };
-
-    document.addEventListener("mousemove", moveHandler);
-    document.addEventListener("mouseup", postHandler);
-    moveHandler(event);
-  }
-
-  function seekLength(event: MouseEvent): void {
-    handleSeek(event, '.length', (value) => {
-      if (musicItem && $trackStore.hash) {
-        current = value * length;
-        lengthBar = value * 100;
-
-        if (!isDrag) {
-          musicItem.currentTime = current;
-        }
-      }
-    });
-  }
-
-  function seekVolume(event: MouseEvent): void {
-    handleSeek(event, '.volume', (value) => {
-      if (musicItem) {
-        musicItem.muted = false;
-        musicItem.volume = value;
-      }
-    });
-  }
-
-  function muteMusic(): void {
-    if (musicItem.volume === 0) {
-      musicItem.volume = 1;
-      musicItem.muted = false;
-    } else {
-      musicItem.muted = !musicItem.muted;
-    }
-  }
-
-  function loopMusic(): void {
-    if (isLoop === 0) {
-      isLoop = 1;
-      musicItem.loop = true;
-    } else if (isLoop === 1) {
-      isLoop = 2;
-      musicItem.loop = true;
-    } else {
-      isLoop = 0;
-      musicItem.loop = false;
+      navigator.mediaSession.setActionHandler('play', toggleTrack);
+      navigator.mediaSession.setActionHandler('pause', toggleTrack);
+      navigator.mediaSession.setActionHandler('seekbackward', () => { trackElement.currentTime -= 10; });
+      navigator.mediaSession.setActionHandler('seekforward', () => { trackElement.currentTime += 10; });
+      navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+      navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
     }
   }
 
   onDestroy(() => {
-    if (musicItem) {
-      musicItem.src = '';
+    if (trackElement) {
+      trackElement.removeEventListener('loadedmetadata', handleDataLoaded);
+      trackElement.removeEventListener('timeupdate', handleTimeUpdate);
+      trackElement.src = '';
     }
   });
 </script>
@@ -181,82 +241,76 @@
 <div class="player">
   <div class="player-center">
     <div class="player-button">
-      {#key isPlay}
-        <PlayerButton
-          on:click={playPrev}
-          alt='Previous'
-          icon='iconoir:skip-prev-solid'
-          ControlButton
-        />
+      <PlayerButton
+        alt="Previous"
+        on:click={prevTrack}
+        icon="iconoir:skip-prev-solid"
+        ControlButton
+      />
 
-        <PlayerButton
-          on:click={toggleMusic}
-          alt={isPlay ? 'Pause' : 'Play'}
-          icon={isPlay ? 'iconoir:pause-solid' : 'iconoir:play-solid'}
-          ControlButton
-          PrimaryButton
-        />
+      <PlayerButton
+        on:click={toggleTrack}
+        alt={$stateStore.isPlaying ? 'Pause' : 'Play'}
+        icon={$stateStore.isPlaying ? 'iconoir:pause-solid' : 'iconoir:play-solid'}
+        ControlButton
+        PrimaryButton
+      />
 
-        <PlayerButton
-          on:click={playNext}
-          alt='Next'
-          icon='iconoir:skip-next-solid'
-          ControlButton
-        />
-      {/key}
+      <PlayerButton
+        alt="Next"
+        on:click={nextTrack}
+        icon="iconoir:skip-next-solid"
+        ControlButton
+      />
     </div>
 
-    <PlayerRanges
-      name='length'
-      width='550px'
-      value={lengthBar}
-      on:click={seekLength}
-      on:mousedown={(event) => handleDrag(event, 'length')}
+    <Slider
+      bind:value={value}
+      name="length"
+      width="550px"
+      max={$stateStore.duration}
     />
   </div>
 
   <div class="player-area">
-    <PlayerInfo />
-
-    <div class="player-area-2">
+    <PlayerNow />
+    
+    <div class="player-menu">
       <div class="player-volume">
-        {#key muteMusic}
-          <PlayerRanges
-            name='volume'
-            width='110px'
-            value={musicItem.muted ? 0 : volumeBar}
-            on:click={seekVolume}
-            on:mousedown={(event) => handleDrag(event, "volume")}
-          />
-
-          <PlayerButton
-            on:click={muteMusic}
-            alt="Volume"
-            icon={volumeBar === 0 || musicItem.muted
-              ? 'iconoir:sound-off' : volumeBar < 50
-              ? 'iconoir:sound-low' : 'iconoir:sound-high'
-            }
-            off={volumeBar === 0 || musicItem.muted}
-          />
-        {/key}
+        <Slider
+          bind:value={$stateStore.volume}
+          name='volume'
+          width='110px'
+          max={1.0}
+        />
+    
+        <PlayerButton
+          on:click
+          alt="Volume"
+          icon={$stateStore.volume === 0 || $stateStore.mute
+            ? 'iconoir:sound-off' : $stateStore.volume * 100 < 50
+            ? 'iconoir:sound-low' : 'iconoir:sound-high'
+          }
+          off={$stateStore.volume === 0 || $stateStore.mute}
+        />
       </div>
-
+    
       <PlayerButton
-        on:click={loopMusic}
-        alt={isLoop === 2 ? 'Repeat one' : 'Repeat'}
-        icon={isLoop === 1
-          ? 'iconoir:repeat' : isLoop === 2
+        on:click
+        alt={$stateStore.loop === 2 ? 'Repeat one' : 'Repeat'}
+        icon={$stateStore.loop === 1
+          ? 'iconoir:repeat' : $stateStore.loop === 2
           ? 'iconoir:repeat-once' : 'iconoir:repeat'
         }
-        off={!isLoop}
+        off={!$stateStore.loop}
       />
-
+    
       <PlayerButton
         alt='Shuffle'
         icon='iconoir:shuffle'
         off
       />
-
+    
       <PlayerButton
         alt='Playlist'
         icon='iconoir:playlist'
@@ -320,9 +374,14 @@
     gap: 24px;
   }
 
+  .player-menu {
+    display: flex;
+    align-items: center;
+  }
+
   .player-volume {
     display: flex;
     align-items: center;
     gap: 4px;
   }
-</style>
+</style> -->

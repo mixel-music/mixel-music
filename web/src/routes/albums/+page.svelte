@@ -1,19 +1,15 @@
-<script lang='ts'>
+<script lang="ts">
+  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import { getNextPage, getPrevPage } from '$lib/tools';
+  import { getNextPage, getPrevPage, getArtwork } from '$lib/tools';
 
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
-
-  import RdButton from '$lib/newponents/elements/rd-button.svelte';
-  import Icon from '@iconify/svelte';
+  import ButtonRd from '$lib/newponents/elements/button-rd.svelte';
 
   export let data: PageData;
-
-  const ARTWORK_BASE_URL = 'http://localhost:2843/api/artwork';
-  const IMAGE_SIZE = 300;
 </script>
 
 <svelte:head>
@@ -25,7 +21,7 @@
     {#each data.list.list as album (album.albumhash)}
       <CardItem
         href='/albums/{ album.albumhash }'
-        src={`${ARTWORK_BASE_URL}/${album.albumhash}?size=${IMAGE_SIZE}`}
+        src={getArtwork(album.albumhash, 300)}
         alt={album.album}
         lazyload
       >
@@ -43,10 +39,10 @@
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <RdButton href={getPrevPage(data.page, data.item)}>
+      <ButtonRd href={getPrevPage(data.page, data.item)}>
         <Icon icon='iconoir:nav-arrow-left' />
-      </RdButton>
-      <RdButton href={
+      </ButtonRd>
+      <ButtonRd href={
         getNextPage(
           data.page,
           data.item,
@@ -54,7 +50,7 @@
         )
       }>
         <Icon icon='iconoir:nav-arrow-right' />
-      </RdButton>
+      </ButtonRd>
     </div>
   {/if}
 {/if}

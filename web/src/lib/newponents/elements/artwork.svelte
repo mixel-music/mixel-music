@@ -4,15 +4,15 @@
   export let width: string | number | undefined = undefined;
   export let height: string | number | undefined = undefined;
 
-  let displayArtwork = true;
+  let isDisplay = true;
 
   function loadFailed() {
-    displayArtwork = false;
+    isDisplay = false;
   }
 </script>
 
 <div style='height: {height}px;'>
-  {#if displayArtwork}
+  {#if isDisplay}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <img
       {src}
