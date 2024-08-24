@@ -1,5 +1,5 @@
 import { getArtwork } from "$lib/tools";
-import { writable, get } from "svelte/store";
+import { writable, get, derived } from "svelte/store";
 
 interface AudioState {
   isReady: boolean;
@@ -57,11 +57,12 @@ function createAudioStore() {
 
   const setTrackInfo = () => {
     if ('mediaSession' in navigator) {
+      const { title, album, artist, artwork } = get({ subscribe });
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: get({subscribe}).title,
-        album: get({subscribe}).album,
-        artist: get({subscribe}).artist,
-        artwork: [{src: get({ subscribe }).artwork}],
+        title,
+        album,
+        artist,
+        artwork: artwork ? [{ src: artwork }] : [],
       });
 
       navigator.mediaSession.setActionHandler('play', audioStore.toggle);
@@ -71,7 +72,7 @@ function createAudioStore() {
       navigator.mediaSession.setActionHandler('previoustrack', audioStore.goPrev);
       navigator.mediaSession.setActionHandler('nexttrack', audioStore.goNext);
     }
-  }
+  };
 
   return {
     subscribe,
@@ -98,9 +99,7 @@ function createAudioStore() {
           setTrackInfo();
         };
 
-        audio.ontimeupdate = () => {
-          updateState();
-        };
+        audio.ontimeupdate = updateState;
 
         audio.onerror = () => {
           console.error("Failed to load audio.");
@@ -112,11 +111,19 @@ function createAudioStore() {
     toggle: () => {
       if (audio.paused) {
         audio.play();
-        update(state => ({ ...state, isPlaying: true }));
       } else {
         audio.pause();
-        update(state => ({ ...state, isPlaying: false }));
       }
+      update(state => ({ ...state, isPlaying: !audio.paused }));
+    },
+
+    volume: (value: number) => {
+      if (audio.muted) {
+        audio.muted = false;
+      }
+
+      audio.volume = value / 100;
+      update(state => ({ ...state, volume: value }));
     },
 
     seek: (time: number) => {
@@ -125,43 +132,26 @@ function createAudioStore() {
     },
 
     mute: () => {
-      if (audio.muted) {
-        if (audio.volume == 0) {
-          audio.volume = 1.0;
-          audio.muted = false;
-          update(state => ({ ...state, mute: false }));
-        }
-        else {
-          audio.muted = false;
-          update(state => ({ ...state, mute: false }));
-        }
+      audio.muted = !audio.muted;
+      if (!audio.muted && audio.volume === 0) {
+        audio.volume = 1.0;
       }
-      else {
-        audio.muted = true;
-        update(state => ({ ...state, mute: true }));
-      }
+      update(state => ({ ...state, mute: audio.muted }));
     },
 
     loop: () => {
-      let isLoop = get({ subscribe }).loop;
-
-      if (isLoop === 0) {
-        update(state => ({ ...state, loop: 1 }));
-      }
-      else if (isLoop === 1) {
-        audio.loop = true;
-        update(state => ({ ...state, loop: 2 }));
-      }
-      else {
-        audio.loop = false;
-        update(state => ({ ...state, loop: 0 }));
-      }
+      update(state => {
+        const newLoop = (state.loop + 1) % 3;
+        audio.loop = newLoop === 2;
+        return { ...state, loop: newLoop };
+      });
     },
 
     getState: () => get({ subscribe }),
     getCurrentTime: () => get({ subscribe }).currentTime,
     goPrev: () => audio.currentTime = 0,
     goNext: () => audio.currentTime = get({ subscribe }).duration,
+    getVolume: () => get({ subscribe }).volume * 100,
   };
 }
 
