@@ -1,26 +1,6 @@
 import { getArtwork } from "$lib/tools";
-import { writable, get, derived } from "svelte/store";
-
-interface AudioState {
-  isReady: boolean;
-  isPlaying: boolean;
-  currentTime: number;
-  duration: number;
-  volume: number;
-  mute: boolean;
-  loop: number;
-}
-
-interface Track {
-  hash: string;
-  title: string;
-  album: string;
-  artist: string;
-  artwork?: string;
-  albumhash: string;
-}
-
-interface StoreState extends AudioState, Track {}
+import { writable, get } from "svelte/store";
+import type { TrackList, StoreState } from "$lib/interface";
 
 function createAudioStore() {
   const initialState: StoreState = {
@@ -40,7 +20,7 @@ function createAudioStore() {
     loop: 0,
   };
 
-  const { subscribe, update, set } = writable<StoreState>(initialState);
+  const { subscribe, update } = writable<StoreState>(initialState);
   const audio = new Audio();
 
   const updateState = () => {
@@ -77,7 +57,7 @@ function createAudioStore() {
   return {
     subscribe,
 
-    setTrack: ({ hash, title, album, artist, albumhash }: Track) => {
+    setTrack: ({ hash, title, album, artist, albumhash }: TrackList) => {
       update(state => ({
         ...state,
         hash,

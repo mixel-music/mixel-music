@@ -9,6 +9,7 @@ export interface TrackList {
   artist: string;
   hash: string;
   albumhash: string;
+  artwork?: string;
 }
 
 export interface TrackItem {
@@ -86,3 +87,15 @@ export interface ArtistItem {
   artisthash: string;
   artist: string;
 }
+
+export interface AudioState {
+  isReady: boolean;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  volume: number;
+  mute: boolean;
+  loop: number;
+}
+
+export interface StoreState extends AudioState, TrackList {}
