@@ -68,7 +68,7 @@
           type="range"
           min="0"
           max="100"
-          value={audioElement.getVolume}
+          value={trk.mute ? 0 : trk.volumeRange}
           style="width: 95px; margin: 0 8px;"
         />
 
@@ -76,7 +76,7 @@
           on:click={audioElement.mute}
           alt="Volume"
           icon={trk.volume === 0 || trk.mute
-            ? "iconoir:sound-off" : audioElement.getVolume < 50
+            ? "iconoir:sound-off" : trk.volumeRange < 50
             ? "iconoir:sound-low" : "iconoir:sound-high"
           }
           off={trk.volume === 0 || trk.mute}

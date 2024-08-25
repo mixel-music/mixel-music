@@ -94,6 +94,7 @@ export interface AudioState {
   currentTime: number;
   duration: number;
   volume: number;
+  volumeRange: number;
   mute: boolean;
   loop: number;
 }

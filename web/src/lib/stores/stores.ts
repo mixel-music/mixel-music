@@ -16,6 +16,7 @@ function createAudioStore() {
     currentTime: 0,
     duration: 0,
     volume: 1.0,
+    volumeRange: 100,
     mute: false,
     loop: 0,
   };
@@ -31,6 +32,7 @@ function createAudioStore() {
       currentTime: audio.currentTime,
       duration: audio.duration || 0,
       volume: audio.volume,
+      volumeRange: audio.volume * 100,
       mute: audio.muted,
     }));
   };
@@ -101,9 +103,8 @@ function createAudioStore() {
       if (audio.muted) {
         audio.muted = false;
       }
-
       audio.volume = value / 100;
-      update(state => ({ ...state, volume: value }));
+      update(state => ({ ...state, volume: value, volumeRange: value }));
     },
 
     seek: (time: number) => {
@@ -112,9 +113,12 @@ function createAudioStore() {
     },
 
     mute: () => {
-      audio.muted = !audio.muted;
       if (!audio.muted && audio.volume === 0) {
         audio.volume = 1.0;
+        update(state => ({ ...state, volume: 1.0, volumeRange: 100 }));
+      }
+      else {
+        audio.muted = !audio.muted;
       }
       update(state => ({ ...state, mute: audio.muted }));
     },
@@ -131,7 +135,6 @@ function createAudioStore() {
     getCurrentTime: () => get({ subscribe }).currentTime,
     goPrev: () => audio.currentTime = 0,
     goNext: () => audio.currentTime = get({ subscribe }).duration,
-    getVolume: () => get({ subscribe }).volume * 100,
   };
 }
 
