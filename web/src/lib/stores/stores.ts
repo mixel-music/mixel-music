@@ -48,7 +48,7 @@ function createAudioStore() {
       album: track.album,
       artist: track.artist,
       albumhash: track.albumhash,
-      artwork: getArtwork(track.albumhash, 128),
+      artwork: track.album == 'Unknown Album' ? getArtwork(track.hash, 128) : getArtwork(track.albumhash, 128),
     }));
   };
 

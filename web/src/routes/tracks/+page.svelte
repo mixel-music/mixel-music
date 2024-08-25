@@ -37,8 +37,8 @@
   <CardItemGroup title={data.title}>
     {#each data.list.list as track (track.hash)}
       <CardItem
-        on:click={playTrack(track)}
-        src={getArtwork(track.albumhash, 300)}
+        on:click={() => playTrack(track)}
+        src={'Unknown Album' ? getArtwork(track.hash, 300) : getArtwork(track.albumhash, 300)}
         alt={track.title}
         lazyload
       >
