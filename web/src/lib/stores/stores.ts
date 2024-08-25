@@ -19,6 +19,9 @@ function createAudioStore() {
     volumeRange: 100,
     mute: false,
     loop: 0,
+
+    trackList: [],
+    currentTrackIndex: -1,
   };
 
   const { subscribe, update } = writable<StoreState>(initialState);
@@ -37,14 +40,25 @@ function createAudioStore() {
     }));
   };
 
-  const setTrackInfo = () => {
+  const updateMetadata = (track: TrackList) => {
+    update(state => ({
+      ...state,
+      hash: track.hash,
+      title: track.title,
+      album: track.album,
+      artist: track.artist,
+      albumhash: track.albumhash,
+      artwork: getArtwork(track.albumhash, 128),
+    }));
+  };
+
+  const setTrackInfo = (track: TrackList) => {
     if ('mediaSession' in navigator) {
-      const { title, album, artist, artwork } = get({ subscribe });
       navigator.mediaSession.metadata = new MediaMetadata({
-        title,
-        album,
-        artist,
-        artwork: artwork ? [{ src: artwork }] : [],
+        title: track.title,
+        album: track.album,
+        artist: track.artist,
+        artwork: track.artwork ? [{ src: track.artwork }] : [],
       });
 
       navigator.mediaSession.setActionHandler('play', audioStore.toggle);
@@ -59,35 +73,52 @@ function createAudioStore() {
   return {
     subscribe,
 
-    setTrack: ({ hash, title, album, artist, albumhash }: TrackList) => {
-      update(state => ({
-        ...state,
-        hash,
-        title,
-        album,
-        artist,
-        albumhash,
-        artwork: getArtwork(albumhash, 128),
-        isReady: false,
-      }));
+    addTrack: (track: TrackList, index?: number) => {
+      update(state => {
+        const updatedTrackList = [...state.trackList];
 
-      if (hash) {
-        audio.src = `http://localhost:2843/api/stream/${hash}`;
-        audio.load();
+        if (typeof index === 'number' && index >= 0 && index <= updatedTrackList.length) {
+          updatedTrackList.splice(index, 0, track);
+        } else {
+          updatedTrackList.push(track);
+        }
 
-        audio.onloadedmetadata = () => {
-          audio.play();
-          updateState();
-          setTrackInfo();
-        };
+        return { ...state, trackList: updatedTrackList };
+      });
+    },
 
-        audio.ontimeupdate = updateState;
+    setTrack: (index: number) => {
+      update(state => {
+        const track = state.trackList[index];
 
-        audio.onerror = () => {
-          console.error("Failed to load audio.");
-          update(state => ({ ...state, isReady: false }));
-        };
-      }
+        if (track) {
+          audio.src = `http://localhost:2843/api/stream/${track.hash}`;
+          audio.load();
+
+          audio.onloadedmetadata = () => {
+            audio.play();
+            updateState();
+            updateMetadata(track);
+            setTrackInfo(track);
+          };
+
+          audio.ontimeupdate = updateState;
+
+          audio.onerror = () => {
+            console.error("Failed to load audio.");
+            update(state => ({ ...state, isReady: false }));
+          };
+
+          return {
+            ...state,
+            currentTrackIndex: index,
+            ...track,
+            artwork: getArtwork(track.albumhash, 128),
+          };
+        }
+
+        return state;
+      });
     },
 
     toggle: () => {
@@ -131,10 +162,35 @@ function createAudioStore() {
       });
     },
 
+    goPrev: () => {
+      update(state => {
+        const newIndex = state.currentTrackIndex > 0 ? state.currentTrackIndex - 1 : 0;
+        audio.currentTime = 0;
+
+        if (newIndex !== state.currentTrackIndex) {
+          audioStore.setTrack(newIndex);
+        }
+
+        return state;
+      });
+    },
+
+    goNext: () => {
+      update(state => {
+        const newIndex = state.currentTrackIndex < state.trackList.length - 1
+          ? state.currentTrackIndex + 1
+          : state.currentTrackIndex;
+
+        if (newIndex !== state.currentTrackIndex && newIndex < state.trackList.length) {
+          audioStore.setTrack(newIndex);
+        }
+
+        return state;
+      });
+    },
+
     getState: () => get({ subscribe }),
     getCurrentTime: () => get({ subscribe }).currentTime,
-    goPrev: () => audio.currentTime = 0,
-    goNext: () => audio.currentTime = get({ subscribe }).duration,
   };
 }
 

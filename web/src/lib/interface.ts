@@ -97,6 +97,8 @@ export interface AudioState {
   volumeRange: number;
   mute: boolean;
   loop: number;
+  trackList: TrackList[];
+  currentTrackIndex: number;
 }
 
 export interface StoreState extends AudioState, TrackList {}

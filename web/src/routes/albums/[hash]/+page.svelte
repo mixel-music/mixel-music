@@ -35,7 +35,7 @@
   <div class="album-content">
   <TableBody>
   {#each data.item.tracks as album}
-    <TableRow on:click={() => audioElement.setTrack({
+    <TableRow on:click={() => audioElement.addTrack({
       hash: album.hash,
       title: album.title,
       album: data.item.album,

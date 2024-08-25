@@ -9,8 +9,24 @@
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
+  import type { TrackList } from '$lib/interface';
 
   export let data: PageData;
+
+  const playTrack = (track: TrackList) => {
+    audioElement.addTrack({
+      hash: track.hash,
+      title: track.title,
+      album: track.album,
+      artist: track.artist,
+      albumhash: track.albumhash,
+    });
+
+    const trackIndex = audioElement.getState().trackList.length - 1;
+    if (trackIndex === 0) {
+      audioElement.setTrack(trackIndex);
+    }
+  }
 </script>
 
 <svelte:head>
@@ -21,14 +37,7 @@
   <CardItemGroup title={data.title}>
     {#each data.list.list as track (track.hash)}
       <CardItem
-        on:click={() => audioElement.setTrack({
-          hash: track.hash,
-          title: track.title,
-          album: track.album,
-          artist: track.artist,
-          albumhash: track.albumhash,
-          })
-        }
+        on:click={playTrack(track)}
         src={getArtwork(track.albumhash, 300)}
         alt={track.title}
         lazyload
