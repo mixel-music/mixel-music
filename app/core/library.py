@@ -281,9 +281,18 @@ class LibraryTask:
                     logs.error("LibraryTask: Failed to remove track: %s", error)
                     await conn.rollback()
 
+                    
+    @staticmethod
+    def create_artwork(hash: str) -> None:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+        loop.run_until_complete(LibraryTask._create_artwork(hash))
+        loop.close()
+
 
     @staticmethod
-    async def create_artwork(hash: str) -> None:
+    async def _create_artwork(hash: str) -> None:
         try:
             async with session() as conn:
                 query = (
@@ -308,15 +317,6 @@ class LibraryTask:
                     
         except Exception as error:
             logs.error('error %s', error)
-
-
-    @staticmethod
-    def create_artwork_wrap(hash: str) -> None:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-        loop.run_until_complete(LibraryTask.create_artwork(hash))
-        loop.close()
 
 
     @staticmethod

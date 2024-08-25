@@ -16,7 +16,7 @@ class Config(BaseSettings):
     MUSIC_DIR: Path = get_path('library')
 
     IMG_DIR: Path = get_path('config', 'artworks')
-    IMG_SIZE: list[int] = [128, 300, 500]
+    IMG_SIZE: list[int] = [128, 300]
     IMG_TYPE: str = 'webp' # png, jpeg, webp
     IMG_QUAL: int = 100
 

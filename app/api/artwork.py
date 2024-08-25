@@ -12,10 +12,10 @@ router = APIRouter(prefix = '/api')
 async def api_artwork(hash: str, type: int = 300):
     artwork_path = await Library.get_artwork(hash, type)
 
-    try:
+    if artwork_path:
         return FileResponse(artwork_path)
-    except:
-        io_task = threading.Thread(target=LibraryTask.create_artwork_wrap, args=(hash,))
+    else:
+        io_task = threading.Thread(target=LibraryTask.create_artwork, args=(hash,))
         io_task.start()
 
         return JSONResponse(
