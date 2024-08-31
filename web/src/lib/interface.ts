@@ -88,17 +88,17 @@ export interface ArtistItem {
   artist: string;
 }
 
-export interface AudioState {
-  isReady: boolean;
+export interface PlayerState {
+  index: number;
+  lists: TrackList[];
+  isLoaded: boolean;
   isPlaying: boolean;
   currentTime: number;
+  volumeRange: number;
   duration: number;
   volume: number;
-  volumeRange: number;
   mute: boolean;
   loop: number;
-  trackList: TrackList[];
-  currentTrackIndex: number;
 }
 
-export interface StoreState extends AudioState, TrackList {}
+export interface PlayerStore extends PlayerState, TrackList {}

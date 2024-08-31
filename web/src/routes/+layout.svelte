@@ -1,8 +1,15 @@
 <script lang="ts">
   import './style.css';
+  import { onDestroy } from 'svelte';
   import Sidebar from '$lib/newponents/layouts/sidebar/sidebar.svelte';
   import Navbar from '$lib/newponents/layouts/navbar/navbar.svelte';
   import Player from '$lib/newponents/layouts/player/player.svelte';
+  import PlayerQueue from '$lib/newponents/layouts/player/player-queue.svelte';
+  import PlayerService from '$lib/stores/stores';
+
+  onDestroy(() => {
+    PlayerService.destroy();
+  })
 </script>
 
 <div id="app">
@@ -13,6 +20,7 @@
     <slot />
   </section>
 
+  <PlayerQueue />
   <Player />
 </div>
 

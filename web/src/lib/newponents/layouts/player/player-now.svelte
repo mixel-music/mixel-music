@@ -1,9 +1,9 @@
 <script lang="ts">
   import Artwork from "$lib/newponents/elements/artwork.svelte";
   import { convertDateTime, getArtwork } from "$lib/tools";
-  import audioElement from '$lib/stores/stores';
+  import PlayerService from "$lib/stores/stores";
 
-  $: trk = $audioElement;
+  $: trk = $PlayerService;
 </script>
 
 <div class="player-now">
@@ -34,12 +34,14 @@
     align-items: center;
     gap: var(--app-padding-s);
   }
+
   .track {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
   }
+  
   .title {
     display: block;
     font-size: 95%;
@@ -47,6 +49,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
   .description {
     display: block;
     color: var(--color-dark-text-2);

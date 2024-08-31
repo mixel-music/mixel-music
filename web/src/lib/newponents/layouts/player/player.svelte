@@ -1,16 +1,18 @@
 <script lang="ts">
-  import audioElement from "$lib/stores/stores";
+  import PlayerService from "$lib/stores/stores";
   import PlayerButton from '$lib/newponents/layouts/player/player-button.svelte'
   import PlayerNow from '$lib/newponents/layouts/player/player-now.svelte';
+  import { updated } from "$app/stores";
+  import { isQueueOpen } from "$lib/stores/layout";
 
-  $: trk = $audioElement;
+  $: trk = $PlayerService;
 </script>
 
 <div class="player">
   <div class="player-center">
     <div class="player-controls">
       <PlayerButton
-        on:click={audioElement.goPrev}
+        on:click={PlayerService.goPrev}
         icon="iconoir:skip-prev-solid"
         ControlButton
         alt="Previous"
@@ -18,18 +20,18 @@
 
       {#if trk.isPlaying}
         <PlayerButton
-          on:click={audioElement.toggle}
+          on:click={PlayerService.toggle}
           icon="iconoir:pause-solid"
-          disabled={!trk.isReady}
+          disabled={!trk.isLoaded}
           ControlButton
           PrimaryButton
           alt="Pause"
         />
       {:else}
         <PlayerButton
-          on:click={audioElement.toggle}
+          on:click={PlayerService.toggle}
           icon="iconoir:play-solid"
-          disabled={!trk.isReady}
+          disabled={!trk.isLoaded}
           ControlButton
           PrimaryButton
           alt="Play"
@@ -37,7 +39,7 @@
       {/if}
 
       <PlayerButton
-        on:click={audioElement.goNext}
+        on:click={PlayerService.goNext}
         icon="iconoir:skip-next-solid"
         ControlButton
         alt="Next"
@@ -46,13 +48,13 @@
 
     <input
       on:input={(event) =>
-        audioElement.seek(parseFloat(event.target.value))
+        PlayerService.seek(parseFloat(event.target.value))
       }
       type="range"
       min="0"
       max={trk.duration}
       value={trk.currentTime}
-      disabled={!trk.isReady}
+      disabled={!trk.isLoaded}
     />
   </div>
 
@@ -62,9 +64,9 @@
     <div class="player-settings">
       <div class="player-volume">
         <input
-          on:input={(event) =>
-            audioElement.volume(parseFloat(event.target.value))
-          }
+          on:input={(event) => {
+            PlayerService.volume(parseFloat(event.target.value))
+          }}
           type="range"
           min="0"
           max="100"
@@ -73,7 +75,7 @@
         />
 
         <PlayerButton
-          on:click={audioElement.mute}
+          on:click={PlayerService.mute}
           alt="Volume"
           icon={trk.volume === 0 || trk.mute
             ? "iconoir:sound-off" : trk.volumeRange < 50
@@ -84,7 +86,7 @@
       </div>
     
       <PlayerButton
-        on:click={audioElement.loop}
+        on:click={PlayerService.loop}
         alt={trk.loop === 2 ? "Repeat one" : "Repeat"}
         icon={trk.loop === 1
           ? "iconoir:repeat" : trk.loop === 2
@@ -100,6 +102,9 @@
       />
     
       <PlayerButton
+        on:click={() => {
+          $isQueueOpen = !$isQueueOpen
+        }}
         alt="Playlist"
         icon="iconoir:playlist"
       />

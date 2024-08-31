@@ -3,6 +3,7 @@
   export let src: string | undefined = undefined;
   export let width: string | number | undefined = undefined;
   export let height: string | number | undefined = undefined;
+  export let FullCover: boolean = false;
 
   let isDisplay = true;
 
@@ -24,6 +25,7 @@
       on:mousedown
       on:mouseleave
       on:error={loadFailed}
+      style={FullCover ? 'object-fit: cover;' : 'object-fit: scale-down;'}
     />
   {/if}
 </div>
@@ -38,7 +40,6 @@
   }
 
   img {
-    object-fit: scale-down;
     aspect-ratio: 1/1;
     border-radius: calc(var(--app-radius) / 2);
   }
