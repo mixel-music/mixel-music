@@ -14,9 +14,9 @@
   <div class="player-queue" transition:fly={
     {
       delay: 10,
-      duration: 450,
-      x: 360,
-      opacity: 1,
+      duration: 400,
+      y: document.querySelector('.player-queue').clientHeight,
+      opacity: 0.95,
       easing: circOut,
     }
   }>
@@ -47,23 +47,24 @@
 <style>
   .player-queue {
     position: fixed;
-    right: 0;
+    right: 64px;
+    bottom: 96px;
 
     z-index: 0;
     flex-shrink: 0;
     padding: 24px 21px;
     background-color: var(--color-dark-bg-2);
-    border-left: 1px solid var(--color-dark-border);
+    border: 1px solid var(--color-dark-border);
+    border-radius: var(--app-radius) var(--app-radius) 0 0;
 
-    width: 360px;
-    height: 100%;
+    width: 25%;
+    height: 50%;
     display: flex;
     gap: var(--app-padding-l);
     flex-direction: column;
     overflow-y: scroll;
 
-    padding-top: 32px;
-    padding-bottom: 128px;
+    padding-top: 24px;
   }
 
   .track {
