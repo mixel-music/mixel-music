@@ -16,7 +16,7 @@
       delay: 10,
       duration: 400,
       y: document.querySelector('.player-queue').clientHeight,
-      opacity: 0.95,
+      opacity: 1,
       easing: circOut,
     }
   }>

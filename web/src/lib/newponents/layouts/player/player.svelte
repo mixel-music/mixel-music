@@ -96,17 +96,15 @@
       />
     
       <PlayerButton
-        alt="Shuffle"
-        icon="iconoir:shuffle"
-        off
-      />
-    
-      <PlayerButton
         on:click={() => {
           $isQueueOpen = !$isQueueOpen
         }}
         alt="Playlist"
         icon="iconoir:playlist"
+      />
+
+      <PlayerButton
+        icon="iconoir:nav-arrow-up"
       />
     </div>
   </div>
