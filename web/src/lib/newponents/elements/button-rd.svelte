@@ -1,3 +1,4 @@
+
 <script lang="ts">
   export let type: string | undefined = undefined;
   export let href: string | undefined = undefined;
@@ -7,6 +8,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
+  data-sveltekit-preload-data="hover"
   style='width: {width}px; height: {height}px;'
   type={href ? undefined : type}
   this={href ? 'a' : 'button'}

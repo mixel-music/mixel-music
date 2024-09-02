@@ -25,7 +25,6 @@ async def init(app: FastAPI):
         await disconnect_database()
         log.close()
 
-        # Cancel all remaining tasks
         tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
         [task.cancel() for task in tasks]
         results = await asyncio.gather(*tasks, return_exceptions=True)

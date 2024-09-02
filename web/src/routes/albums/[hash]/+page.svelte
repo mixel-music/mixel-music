@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { getArtwork, convertDateTime, convertFileSize } from '$lib/tools';
-  import audioElement from '$lib/stores/stores';
+  import PlayerService from '$lib/stores/stores';
 
   import Artwork from '$lib/newponents/elements/artwork.svelte';
   import AlbumTitle from '$lib/components/albums/album-header.svelte';
@@ -35,13 +35,17 @@
   <div class="album-content">
   <TableBody>
   {#each data.item.tracks as album}
-    <TableRow on:click={() => audioElement.addTrack({
-      hash: album.hash,
-      title: album.title,
-      album: data.item.album,
-      artist: album.artist,
-      albumhash: data.item.albumhash,
-    })}>
+    <TableRow on:click={() => {
+      PlayerService.addTrack({
+        hash: album.hash,
+        title: album.title,
+        album: data.item.album,
+        artist: album.artist,
+        albumhash: data.item.albumhash,
+      }, 0)
+      PlayerService.setTrack(0)
+    }
+  }>
 
       <TableCell sub text={ album.track !== 0 ? album.track : '-' } />
       <TableCell large text={ album.title } />

@@ -3,16 +3,22 @@ from tinytag import TinyTag
 
 root = (Path.cwd().resolve()).parent
 
-def get_path(*args: str | Path, rel: bool = False) -> Path:
+def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> Path:
     """
-    Abstracts a path-like object or string path within the application and returns it as a path-like object.
+    Abstracts a path-like object or string path and returns it as a path-like object.
+    Optionally creates the directory if it doesn't exist.
 
     Args:
         *args (str | Path, optional): Directory or filename.
         rel (bool, optional): Relative path, defaults to False.
+        create_dir (bool, optional): Create the directory if it doesn't exist, defaults to False.
     """
     home = root
-    for arg in args: home = home / arg
+    if create_dir:
+        for arg in args: home = home / arg
+        home.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        for arg in args: home = home / arg
     if rel: home = home.relative_to(root)
 
     return home
@@ -20,7 +26,7 @@ def get_path(*args: str | Path, rel: bool = False) -> Path:
 
 def str_path(*args: str | Path, rel: bool = True) -> str:
     """
-    Abstracts a path-like object or string path within the application and returns it as a string.
+    Abstracts a path-like object or string path and returns it as a string.
 
     Args:
         *args (str | Path, optional): Directory or filename.

@@ -1,4 +1,49 @@
 :root {
+  /* xs, s, m, l, xl */
+
+  --padding-xs: 8px;
+  --padding-s: 16px;
+  --padding-m: 21px;
+  --padding-l: 32px;
+  --padding-xl: 64px;
+
+  --margin-xs: ;
+  --margin-s: ;
+  --margin-m: ;
+  --margin-l: ;
+  --margin-xl: ;
+
+  --radius-s: ;
+  --radius-m: ;
+  --radius-l: ;
+
+
+  --dark-bg-1: rgb(18, 18, 18);
+  --dark-bg-1-acrylic: rgb(18, 18, 18, 0.95);
+
+  --dark-bg-2: rgb(21, 21, 21);
+  --dark-bg-2-acrylic: rgb(21, 21, 21, 0.95);
+
+  --dark-bg-3: rgb(24, 24, 24);
+  --dark-bg-3-acrylic: rgb(24, 24, 24, 0.95);
+
+  --dark-bg-4: rgb(46, 46, 46);
+  --dark-bg-4-acrylic: rgb(24, 24, 24, 0.95);
+
+
+  --dark-color-1: rgb(215, 215, 215);
+  --dark-color-2: rgb(166, 166, 166);
+
+
+  --color-dark-trk-len: rgb(46, 46, 46);
+  --color-dark-trk-now: rgb(215, 215, 215);
+  --color-dark-disabled: rgb(86, 86, 86);
+  --color-dark-border: rgb(32, 32, 32);
+  --color-dark-focus: rgb(155, 155, 155);
+
+
+  /* ----------------- */
+
   --app-padding-s: 16px;
   --app-padding-l: 21px;
   --app-margin-s: 16px;

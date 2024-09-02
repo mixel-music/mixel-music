@@ -155,4 +155,13 @@
     align-items: center;
     gap: 4px;
   }
+
+  .player-volume input {
+    opacity: 0;
+  }
+  
+  .player-volume:hover input {
+    opacity: 1;
+    transition: all 0.2s ease;
+  }
 </style>

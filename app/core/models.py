@@ -6,12 +6,12 @@ Base = declarative_base()
 class Tracks(Base):
     __tablename__ = 'tracks'
 
-    hash: str = Column(String(40), primary_key=True, nullable=False)
+    hash: str = Column(String, primary_key=True, nullable=False)
     title: str = Column(String, nullable=False)
     artist: str = Column(String, nullable=False)
-    artisthash: str = Column(String(40), nullable=False)
+    artisthash: str = Column(String, nullable=False)
     album: str = Column(String, nullable=False)
-    albumhash: str = Column(String(40), nullable=False)
+    albumhash: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
     bitdepth: int = Column(Integer, nullable=False)
     bitrate: float = Column(REAL, nullable=False)
@@ -32,17 +32,18 @@ class Tracks(Base):
     path: str = Column(String, nullable=False)
     created_date: DateTime = Column(DateTime, nullable=False)
     updated_date: DateTime = Column(DateTime, nullable=False)
-    lyrics: str = Column(String, nullable=False)
+    unsyncedlyrics: str = Column(String, nullable=False)
+    syncedlyrics: str = Column(String, nullable=False)
     isrc: str = Column(String(12), nullable=False)
 
 
 class Albums(Base):
     __tablename__ = 'albums'
 
-    albumhash: str = Column(String(40), primary_key=True, nullable=False)
+    albumhash: str = Column(String, primary_key=True, nullable=False)
     album: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
-    albumartisthash: str = Column(String(40), nullable=False)
+    albumartisthash: str = Column(String, nullable=False)
     year: str = Column(String, nullable=False)
     durationtotals: float = Column(REAL, nullable=False)
     tracktotals: int = Column(Integer, nullable=False)
@@ -53,7 +54,7 @@ class Albums(Base):
 class Artists(Base):
     __tablename__ = 'artists'
 
-    artisthash: str = Column(String(40), primary_key=True, nullable=False)
+    artisthash: str = Column(String, primary_key=True, nullable=False)
     artist: str = Column(String, nullable=False)
 
 
