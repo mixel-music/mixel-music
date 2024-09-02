@@ -10,8 +10,9 @@
 * This is my first time using JavaScript, TypeScript, and Svelte. Also, I have little experience doing backend development using Python.
   * So there may be many areas that need improvement. Feedback is always welcome.
 
-<img src=".github/album-list.png" width="850">
-<img src=".github/album-info.png" width="850">
+![album-list](https://github.com/user-attachments/assets/28c4c559-e89b-4c28-9cfd-121d58153456)
+
+![album-info](https://github.com/user-attachments/assets/01747124-f1ea-43f9-a309-f788625656d4)
 
 <!--
 ## Features
