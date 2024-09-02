@@ -18,7 +18,7 @@ def get_mime(path: str) -> list[str]:
 
 def hash_str(*args) -> str:
     try:
-        return hashlib.sha1(''.join(str(arg) for arg in args).encode()).hexdigest()
+        return hashlib.md5(''.join(str(arg) for arg in args).encode()).hexdigest()
     except ValueError:
         return ''
 

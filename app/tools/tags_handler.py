@@ -5,6 +5,8 @@ from infra.loggings import *
 from tools.path_handler import get_path, get_filename
 from tools.convert_value import hash_str, get_mime
 
+from async_lru import alru_cache
+
 async def extract_tags(path: str) -> dict:
     path, real_path = str_path(path), get_path(path)
     
@@ -37,17 +39,25 @@ async def extract_tags(path: str) -> dict:
             'path': path,
             'created_date': datetime.now(),
             'updated_date': datetime.now(),
-            'isrc': tags.extra.get('isrc', '') or '',
-            'lyrics': '',
+            'isrc': tags.extra.get('isrc', '')[0] if tags.extra.get('isrc', '') else '',
+            'unsyncedlyrics': '',
+            'syncedlyrics': '',
         }
         return track_dict
-    except:
+    
+    except Exception as error:
+        logs.error('Failed to extract, %s', error)
         return {}
 
 
-async def extract_artwork(path: str) -> bin:
+@alru_cache(maxsize=8192)
+async def extract_artwork(path: str) -> bytes | None:
     try:
         artwork = TinyTag.get(get_path(path), image=True)
-        return artwork.get_image()
+        if artwork:
+            return artwork.get_image()
+        else:
+            return None
+        
     except:
         return None

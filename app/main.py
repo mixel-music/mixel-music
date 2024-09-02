@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 import asyncio
 
-from api import albums, artists, artwork, stream, tracks, count
+from api import albums, artists, artwork, stream, tracks
 from core.watcher import find_changes, watch_change
 from infra.config import *
 from infra.database import *
@@ -25,7 +25,6 @@ async def init(app: FastAPI):
         await disconnect_database()
         log.close()
 
-        # Cancel all remaining tasks
         tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
         [task.cancel() for task in tasks]
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -34,9 +33,9 @@ async def init(app: FastAPI):
                 logs.error(f"Error During Shutdown, {result}")
 
 app = FastAPI(
-    debug=conf.DEBUG,
-    title=conf.TITLE,
-    version=conf.VERSION,
+    debug=conf.Debug,
+    title=conf.AppName,
+    version=conf.Version,
     lifespan=init,
 )
 
@@ -53,14 +52,13 @@ app.include_router(artists.router)
 app.include_router(artwork.router)
 app.include_router(stream.router)
 app.include_router(tracks.router)
-app.include_router(count.router)
 
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host=conf.HOST,
-        port=conf.PORT,
-        reload=conf.DEBUG,
-        log_level=conf.LOG_LEVEL,
+        host=conf.Host,
+        port=conf.Port,
+        reload=conf.Debug,
+        log_level=conf.LogLevel,
         log_config=None,
     )

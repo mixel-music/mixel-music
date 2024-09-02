@@ -1,67 +1,62 @@
 <script lang="ts">
+  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import { getNextPageLink, getPrevPageLink } from '$lib/tools';
+  import { getArtwork, getNextPage, getPrevPage } from '$lib/tools';
+  import PlayerService from '$lib/stores/stores';
 
-  import {
-    trackHash,
-    trackTitle,
-    trackAlbum,
-    trackArtist,
-    albumHash
-  } from '$lib/stores/track';
-
+  import ButtonRd from '$lib/newponents/elements/button-rd.svelte';
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
-  import NavbarButton from '$lib/components/layouts/navbar/navbar-button.svelte';
 
   export let data: PageData;
-
-  function SetTrack(tag: any): void {
-    trackHash.set(tag.hash),
-    trackTitle.set(tag.title),
-    trackAlbum.set(tag.album),
-    trackArtist.set(tag.artist),
-    albumHash.set(tag.albumhash)
-  }
 </script>
 
 <svelte:head>
-  <title>{ data.title } • mixel-music</title>
+  <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-{#if data.trackListItem.length > 0}
-  <CardItemGroup title={ data.title }>
-
-    {#each data.trackListItem as track (track.hash)}
+{#if data.list}
+  <CardItemGroup title={data.title}>
+    {#each data.list.list as track (track.hash)}
       <CardItem
-        on:click={() => SetTrack(track) }
-        src={ `http://localhost:2843/api/artwork/${ track.album == 'Unknown Album' ? track.hash : track.albumhash }?size=300` }
-        alt={ track.title }
+        on:click={() => PlayerService.addTrack({
+            hash: track.hash,
+            title: track.title,
+            album: track.album,
+            artist: track.artist,
+            albumhash: track.albumhash,
+          })
+        }
+        src={track.album == 'Unknown Album' ? getArtwork(track.hash, 300) : getArtwork(track.albumhash, 300)}
+        alt={track.title}
         lazyload
       >
         <div>
-          <ContentHead head="{ track.title }" />
-          <ContentBody body="{ track.artist }" />
+          <ContentHead head={track.title} />
+          <ContentBody body={track.artist} />
         </div>
-
       </CardItem>
     {/each}
-
   </CardItemGroup>
 
-  <div class="bottom-ctl">
-    <NavbarButton
-      icon="iconoir:nav-arrow-left"
-      href='{ getPrevPageLink(data.pageCount, data.itemCount) }'
-    />
-    <NavbarButton
-      icon='iconoir:nav-arrow-right'
-      href='{ getNextPageLink(data.pageCount, data.itemCount, data.totalCountItem.count) }'
-    />
-  </div>
-
+  {#if data.list.total > data.item}
+    <div class='bottom-ctl'>
+      <ButtonRd href={getPrevPage(data.page, data.item)}>
+        <Icon icon='iconoir:nav-arrow-left' />
+      </ButtonRd>
+      <ButtonRd href={
+        getNextPage(
+          data.page,
+          data.item,
+          data.list.total
+        )
+      }>
+        <Icon icon='iconoir:nav-arrow-right' />
+      </ButtonRd>
+    </div>
+  {/if}
 {/if}
 
 <style>

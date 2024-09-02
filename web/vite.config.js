@@ -4,10 +4,10 @@ import Icons from 'unplugin-icons/vite'
 
 export default defineConfig({
 	plugins: [
-		sveltekit(),
+	sveltekit(),
 		Icons({
-      compiler: 'svelte',
+			compiler: 'svelte',
 			autoInstall: true,
-    }),
-	]
+		}),
+	],
 });

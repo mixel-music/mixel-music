@@ -1,37 +1,35 @@
-from fastapi import APIRouter, status, BackgroundTasks
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import APIRouter, status
+from fastapi.responses import FileResponse
 
 from core.library import *
 from tools.convert_value import *
 
+import io
+from fastapi.responses import StreamingResponse
+
+from async_lru import alru_cache
+
 router = APIRouter(prefix = '/api')
 
 @router.get('/artwork/{hash}')
-async def api_artwork(
-    hash: str,
-    bg_task: BackgroundTasks,
-    type: int = 300,
-):
-
-    artwork_path = await Library.get_artwork(hash, type)
+@alru_cache(maxsize=8192)
+async def api_artwork(hash: str, size: int = 300):
+    artwork_path = await Library.get_artwork(hash, size)
 
     if artwork_path:
         return FileResponse(artwork_path)
-    else:
-        bg_task.add_task(gen_artwork, hash, type)
-        return JSONResponse(
-            status_code=status.HTTP_202_ACCEPTED,
-            content={'message': 'extracting...'}
-        )
-    
+    elif size:
+        arts = await LibraryTask._create_artwork(hash, size)
+        if arts:
+            with Image.open(io.BytesIO(arts)) as img:
+                format = img.format.lower()
+                img.thumbnail([size, size], Image.Resampling.LANCZOS)
 
-async def gen_artwork(
-    hash: str,
-    type: int,
-) -> None:
-    
-    status = {}
-
-    await LibraryTask.create_artwork(hash)
-    artwork_path = await Library.get_artwork(hash, type)
-    status[hash] = '' if artwork_path else 'Failed'
+                buffer = io.BytesIO()
+                img.save(buffer, format)
+                buffer.seek(0)
+                
+                return StreamingResponse(buffer)
+            
+        else:
+            return None

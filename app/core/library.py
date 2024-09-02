@@ -12,46 +12,9 @@ from tools.tags_handler import *
 
 semaphore = asyncio.Semaphore(5)
 
+from async_lru import alru_cache
+
 class Library:
-    @staticmethod
-    async def get_track_count():
-        async with session() as conn:
-            try:
-                count = await conn.execute(select(func.count()).select_from(Tracks))
-                count = count.scalar_one()
-                return count
-
-            except Exception as error:
-                logs.error("Error, %s", error)
-                return 0
-
-
-    @staticmethod
-    async def get_album_count():
-        async with session() as conn:
-            try:
-                count = await conn.execute(select(func.count()).select_from(Albums))
-                count = count.scalar_one()
-                return count
-
-            except Exception as error:
-                logs.error("Error, %s", error)
-                return 0
-
-
-    @staticmethod
-    async def get_artist_count():
-        async with session() as conn:
-            try:
-                count = await conn.execute(select(func.count()).select_from(Artists))
-                count = count.scalar_one()
-                return count
-
-            except Exception as error:
-                logs.error("Error, %s", error)
-                return 0
-
-
     @staticmethod
     async def streaming(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
         
@@ -89,15 +52,15 @@ class Library:
 
 
     @staticmethod
-    async def get_artwork(hash: str, type: int) -> Path | None:
-        if type == 0:
-            for orig_artwork in conf.IMAGES_DIR.glob(f"{hash}_orig*"):
-                if orig_artwork.is_file(): return orig_artwork
-        elif type in conf.IMG_SIZE:
-            artwork_thumb = conf.IMG_DIR / f"{hash}_{type}.{conf.IMG_TYPE}"
-            return artwork_thumb if artwork_thumb .is_file() else None
+    async def get_artwork(hash: str, size: int) -> Path | None:
+        if size:
+            thumb = get_path(conf.ArtworkDir, f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{size}.webp')
+            return thumb if thumb.is_file() else None
         else:
-            return None
+            for original in conf.ArtworkDir.glob(
+                str_path(f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', 'original.*')
+            ):
+                return original if original.is_file() else None
 
 
     @staticmethod
@@ -112,6 +75,9 @@ class Library:
 
     @staticmethod
     async def _get_track_list(page: int, item: int) -> list[dict]:
+        track_list = [{}]
+        count = 0
+
         try:
             async with session() as conn:
                 db_query = (
@@ -119,7 +85,6 @@ class Library:
                         Tracks.title,
                         Tracks.album,
                         Tracks.artist,
-                        Tracks.albumartist,
                         Tracks.hash,
                         Tracks.albumhash,
                     )
@@ -131,15 +96,23 @@ class Library:
                 db_result = await conn.execute(db_query)
                 track_list = [dict(row) for row in db_result.mappings().all()]
 
-                return track_list
-            
+                count_query = select(func.count()).select_from(Tracks)
+                count_result = await conn.execute(count_query)
+                count = count_result.scalar_one()
+
         except OperationalError as error:
             logs.error("Failed to load track list, %s", error)
-            raise error
 
+        return {
+            'list': track_list,
+            'total': count,
+        }
+    
 
     @staticmethod
     async def _get_track_info(hash: str) -> dict:
+        track_info = {}
+
         try:
             path = await hash_track_to_path(hash)
             async with session() as conn:
@@ -155,7 +128,7 @@ class Library:
             
         except OperationalError as error:
             logs.error("Failed to load track info, %s", error)
-            raise error
+            return track_info
         
 
     @staticmethod
@@ -170,6 +143,9 @@ class Library:
 
     @staticmethod
     async def _get_album_list(page: int, item: int) -> list[dict]:
+        album_list = [{}]
+        count = 0
+
         try:
             async with session() as conn:
                 db_query = (
@@ -181,16 +157,24 @@ class Library:
 
                 db_result = await conn.execute(db_query)
                 album_list = [dict(row) for row in db_result.mappings().all()]
-                
-                return album_list
-            
+
+                count_query = select(func.count()).select_from(Albums)
+                count_result = await conn.execute(count_query)
+                count = count_result.scalar_one()
+
         except OperationalError as error:
             logs.error("Failed to load album list, %s", error)
-            raise error
+
+        return {
+            'list': album_list,
+            'total': count,
+        }
 
 
     @staticmethod
     async def _get_album_info(hash: str) -> dict:
+        album_info = {}
+
         try:
             async with session() as conn:
                 album_query = select(Albums.__table__).where(Albums.albumhash == hash)
@@ -206,6 +190,7 @@ class Library:
                             Tracks.duration,
                             Tracks.track,
                             Tracks.hash,
+                            Tracks.comment,
                         )
                         .order_by(Tracks.track.asc())
                         .where(Tracks.albumhash == hash)
@@ -221,7 +206,7 @@ class Library:
                 
         except OperationalError as error:
             logs.error("Failed to load album info, %s", error)
-            raise error
+            return album_info
         
 
     @staticmethod
@@ -236,6 +221,9 @@ class Library:
 
     @staticmethod
     async def _get_artist_list(page: int, item: int) -> list[dict]:
+        artist_list = [{}]
+        count = 0
+
         try:
             async with session() as conn:
                 db_query = (
@@ -248,12 +236,18 @@ class Library:
                 db_result = await conn.execute(db_query)
                 artist_list = [dict(row) for row in db_result.mappings().all()]
                 
-                return artist_list
-            
+                count_query = select(func.count()).select_from(Artists)
+                count_result = await conn.execute(count_query)
+                count = count_result.scalar_one()
+
         except OperationalError as error:
             logs.error("Failed to load artist list, %s", error)
-            raise error
 
+        return {
+            'list': artist_list,
+            'total': count,
+        }
+    
 
 
 class LibraryTask:
@@ -264,17 +258,18 @@ class LibraryTask:
 
     async def create_track(self) -> None:
         self.tags = await extract_tags(self.path)
+        
+        if self.tags:
+            async with semaphore:
+                async with session() as conn:
+                    try:
+                        logs.debug("Inserting \"%s\"", self.tags.get('title'))
+                        await LibraryRepo.insert_track(conn, self.tags)
+                        await conn.commit()
 
-        async with semaphore:
-            async with session() as conn:
-                try:
-                    logs.debug("Inserting \"%s\"", self.tags.get('title'))
-                    await LibraryRepo.insert_track(conn, self.tags)
-                    await conn.commit()
-
-                except Exception as error:
-                    logs.error("LibraryTask: Failed to create track: %s", error)
-                    await conn.rollback()
+                    except Exception as error:
+                        logs.error("LibraryTask: Failed to create track: %s", error)
+                        await conn.rollback()
 
 
     async def remove_track(self) -> None:
@@ -289,15 +284,23 @@ class LibraryTask:
                     logs.error("LibraryTask: Failed to remove track: %s", error)
                     await conn.rollback()
 
+                    
+    @staticmethod
+    def create_artwork(hash: str, size: int) -> None:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+        loop.run_until_complete(LibraryTask._create_artwork(hash, size))
+        loop.close()
+
 
     @staticmethod
-    async def create_artwork(hash: str) -> None:
+    async def _create_artwork(hash: str, size: int) -> None:
         try:
             async with session() as conn:
                 query = (
                     select(
                         Tracks.path,
-                        Tracks.album,
                     )
                     .where(or_(Tracks.albumhash == hash, Tracks.hash == hash))
                 )
@@ -307,26 +310,58 @@ class LibraryTask:
                 if data: data = dict(data)
 
                 artwork = await extract_artwork(data.get('path'))
-                if artwork and data.get('album') != 'Unknown Album':
-                    await save_artwork(artwork, hash)
-                elif artwork:
-                    await save_artwork(artwork, hash_str(data.get('path')))
-                else:
-                    logs.debug("Failed to extract artwork.")
+                # asyncio.create_task(save_artwork(artwork, hash, size))
+                return artwork
                     
         except Exception as error:
             logs.error('error %s', error)
 
 
+    # @staticmethod
+    # def perform_artwork() -> None:
+    #     loop = asyncio.new_event_loop()
+    #     asyncio.set_event_loop(loop)
+
+    #     loop.run_until_complete(LibraryTask._perform_artwork())
+    #     loop.close()
+
+    
+    # @staticmethod
+    # async def _perform_artwork() -> None:
+    #     try:
+    #         async with session() as conn:
+    #             db_query = select(Tracks.path, Tracks.album, Tracks.hash)
+    #             db_result = await conn.execute(db_query)
+    #             result = db_result.mappings().all()
+
+    #     except Exception as error:
+    #         logs.error('error %s', error)
+
+    #     for row in result:
+    #         if row.album != 'Unknown Album':
+    #             check = await Library.get_artwork(hash_str(row.album), 0)
+    #             if not check:
+    #                 artwork = await extract_artwork(row.path)
+    #                 if artwork: asyncio.create_task(save_artwork(artwork, hash_str(row.album), 0))
+    #         else:
+    #             check = await Library.get_artwork(row.hash, 0)
+    #             if not check:
+    #                 artwork = await extract_artwork(row.path)
+    #                 if artwork: asyncio.create_task(save_artwork(artwork, row.hash, 0))
+
+
     @staticmethod
-    async def remove_artwork(hash: str) -> None:
+    async def remove_artwork(hash: str, size: int) -> None:
         pass
 
 
 
 class LibraryScan:
     @staticmethod
-    async def scan_all() -> None:
+    async def perform_all() -> None:
+        # io_task = threading.Thread(target=LibraryTask.perform_artwork, daemon=True)
+        # io_task.start()
+
         await LibraryScan.perform_albums()
         await LibraryScan.perform_artists()
 
@@ -339,7 +374,7 @@ class LibraryScan:
                 db_query = (
                     select(
                         Tracks.album,
-                        Tracks.artist, # For Unknown Album
+                        Tracks.artist,
                         Tracks.albumartist,
                         Tracks.tracktotal,
                         Tracks.disctotal,
@@ -476,6 +511,7 @@ class LibraryScan:
                     select(
                         Tracks.albumartist,
                     )
+                    .distinct(Tracks.albumartist)
                     .order_by(Tracks.albumartist.asc())
                 )
 
@@ -483,12 +519,14 @@ class LibraryScan:
                 artists_data = db_result.all()
 
                 for art in artists_data:
-                    artist_data = {
-                        'artist': art.albumartist,
-                        'artisthash': hash_str(art.albumartist)
-                    }
-                    await LibraryRepo.insert_artist(conn, artist_data)
-                    await conn.commit()
+                    if art.albumartist:
+                        artist_data = {
+                            'artist': art.albumartist,
+                            'artisthash': hash_str(art.albumartist)
+                        }
+                        await LibraryRepo.insert_artist(conn, artist_data)
+                
+                await conn.commit()
 
 
             async with session() as conn:
