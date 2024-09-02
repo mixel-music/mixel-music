@@ -94,6 +94,11 @@
         }
         off={!trk.loop}
       />
+
+      <PlayerButton
+        icon="iconoir:closed-captions-tag"
+        off
+      />
     
       <PlayerButton
         on:click={() => {
@@ -101,6 +106,7 @@
         }}
         alt="Playlist"
         icon="iconoir:playlist"
+        off={!$isQueueOpen}
       />
 
       <PlayerButton

@@ -5,14 +5,12 @@ from core.library import *
 from tools.convert_value import *
 
 import io
+import threading
 from fastapi.responses import StreamingResponse
-
-from async_lru import alru_cache
 
 router = APIRouter(prefix = '/api')
 
 @router.get('/artwork/{hash}')
-@alru_cache(maxsize=8192)
 async def api_artwork(hash: str, size: int = 300):
     artwork_path = await Library.get_artwork(hash, size)
 
@@ -29,6 +27,9 @@ async def api_artwork(hash: str, size: int = 300):
                 img.save(buffer, format)
                 buffer.seek(0)
                 
+                io_task = threading.Thread(target=LibraryTask.create_artwork, args=(hash, size, True))
+                io_task.start()
+
                 return StreamingResponse(buffer)
             
         else:

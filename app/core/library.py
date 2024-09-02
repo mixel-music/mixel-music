@@ -258,7 +258,7 @@ class LibraryTask:
 
     async def create_track(self) -> None:
         self.tags = await extract_tags(self.path)
-        
+
         if self.tags:
             async with semaphore:
                 async with session() as conn:
@@ -286,16 +286,16 @@ class LibraryTask:
 
                     
     @staticmethod
-    def create_artwork(hash: str, size: int) -> None:
+    def create_artwork(hash: str, size: int, save: bool) -> None:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        loop.run_until_complete(LibraryTask._create_artwork(hash, size))
+        loop.run_until_complete(LibraryTask._create_artwork(hash, size, save))
         loop.close()
 
 
     @staticmethod
-    async def _create_artwork(hash: str, size: int) -> None:
+    async def _create_artwork(hash: str, size: int, save: bool = False) -> None:
         try:
             async with session() as conn:
                 query = (
@@ -310,7 +310,9 @@ class LibraryTask:
                 if data: data = dict(data)
 
                 artwork = await extract_artwork(data.get('path'))
-                # asyncio.create_task(save_artwork(artwork, hash, size))
+                if save:
+                    await save_artwork(artwork, hash, size)
+
                 return artwork
                     
         except Exception as error:

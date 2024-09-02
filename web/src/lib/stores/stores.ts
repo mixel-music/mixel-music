@@ -35,6 +35,12 @@ function InitPlayerService() {
       volume: audio.volume,
       mute: audio.muted,
     }));
+
+    if (audio.currentTime >= audio.duration) {
+      if (PlayerService.getState().index + 1) {
+        PlayerService.setTrack(PlayerService.getState().index + 1);
+      }
+    }
   };
 
   const updateTrack = (track: TrackList) => {
