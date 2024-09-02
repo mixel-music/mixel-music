@@ -22,13 +22,12 @@ async def api_artwork(hash: str, size: int = 300):
             with Image.open(io.BytesIO(arts)) as img:
                 format = img.format.lower()
                 img.thumbnail([size, size], Image.Resampling.LANCZOS)
+                io_task = threading.Thread(target=save_artwork, args=(img, hash, size))
+                io_task.start()
 
                 buffer = io.BytesIO()
                 img.save(buffer, format)
                 buffer.seek(0)
-                
-                io_task = threading.Thread(target=LibraryTask.create_artwork, args=(hash, size, True))
-                io_task.start()
 
                 return StreamingResponse(buffer)
             

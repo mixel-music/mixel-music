@@ -286,16 +286,16 @@ class LibraryTask:
 
                     
     @staticmethod
-    def create_artwork(hash: str, size: int, save: bool) -> None:
+    def create_artwork(hash: str, size: int) -> None:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        loop.run_until_complete(LibraryTask._create_artwork(hash, size, save))
+        loop.run_until_complete(LibraryTask._create_artwork(hash, size))
         loop.close()
 
 
     @staticmethod
-    async def _create_artwork(hash: str, size: int, save: bool = False) -> None:
+    async def _create_artwork(hash: str, size: int) -> None:
         try:
             async with session() as conn:
                 query = (
@@ -310,9 +310,6 @@ class LibraryTask:
                 if data: data = dict(data)
 
                 artwork = await extract_artwork(data.get('path'))
-                if save:
-                    await save_artwork(artwork, hash, size)
-
                 return artwork
                     
         except Exception as error:

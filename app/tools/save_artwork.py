@@ -2,35 +2,29 @@ from infra.config import *
 from PIL import Image
 import io
 
-async def save_artwork(data: bytes, hash: str, size: int) -> None:
+def save_artwork(data: Image, hash: str, size: int) -> None:
     path = conf.ArtworkDir
-    original = Image.open(io.BytesIO(data))
-    suffix = original.format.lower()
+    # original = Image.open(io.BytesIO(data))
+    suffix = data.format.lower()
 
-    if suffix:
-        img = original.copy()
+    # if suffix:
+    #     img = original.copy()
 
-        if not size:
-            img_name = str_path(
-                get_path(
-                    path / f'{hash[:2]}' / f'{hash[2:4]}' / f'{hash[4:6]}' / f'original.{suffix}',
-                    create_dir=True,
-                ),
-                rel=False,
-            )
-            img.save(img_name)
-            
-        elif size < img.width:
-            img.thumbnail([size, size], Image.Resampling.LANCZOS)
-            img_name = str_path(
-                get_path(
-                    path / f'{hash[:2]}' / f'{hash[2:4]}' / f'{hash[4:6]}' / f'{size}.{conf.ArtworkFormat}',
-                    create_dir=True,
-                ),
-                rel=False,
-            )
-            img.save(img_name, conf.ArtworkFormat, quality=conf.ArtworkQuality)
-        else:
-            return None
-    else:
-        return None
+    if not size:
+        img_name = str_path(
+            get_path(
+                path / f'{hash[:2]}' / f'{hash[2:4]}' / f'{hash[4:6]}' / f'original.{suffix}',
+                create_dir=True,
+            ),
+            rel=False,
+        )
+        data.save(img_name)  
+
+    img_name = str_path(
+        get_path(
+            path / f'{hash[:2]}' / f'{hash[2:4]}' / f'{hash[4:6]}' / f'{size}.{conf.ArtworkFormat}',
+            create_dir=True,
+        ),
+        rel=False,
+    )
+    data.save(img_name, conf.ArtworkFormat, quality=conf.ArtworkQuality)
