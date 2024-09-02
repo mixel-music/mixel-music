@@ -14,11 +14,13 @@ def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> 
         create_dir (bool, optional): Create the directory if it doesn't exist, defaults to False.
     """
     home = root
+
     if create_dir:
         for arg in args: home = home / arg
         home.parent.mkdir(parents=True, exist_ok=True)
     else:
         for arg in args: home = home / arg
+    
     if rel: home = home.relative_to(root)
 
     return home
@@ -61,6 +63,6 @@ def is_music_file(path: str) -> bool:
     
 
 def create_dir(conf) -> None:
-    conf.IMG_DIR.mkdir(exist_ok=True)
-    conf.DATA_DIR.mkdir(exist_ok=True)
-    conf.MUSIC_DIR.mkdir(exist_ok=True)
+    conf.ConfigDir.mkdir(exist_ok=True)
+    conf.ArtworkDir.mkdir(exist_ok=True)
+    conf.LibraryDir.mkdir(exist_ok=True)

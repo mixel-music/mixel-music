@@ -36,7 +36,7 @@ async def find_changes() -> None:
 
 
 async def library_scan(property: dict, path = None) -> None:
-    if path is None: path = conf.MUSIC_DIR
+    if path is None: path = conf.LibraryDir
     queue, tasks = [path], []
 
     while queue:
@@ -61,7 +61,7 @@ async def watch_change() -> None:
     logs.info("Event watcher started.")
 
     async for event_handler in awatch(
-        conf.MUSIC_DIR,
+        conf.LibraryDir,
         recursive=True,
         force_polling=True,
     ):

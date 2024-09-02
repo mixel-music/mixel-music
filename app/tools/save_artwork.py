@@ -3,7 +3,7 @@ from PIL import Image
 import io
 
 async def save_artwork(data: bytes, hash: str, size: int) -> None:
-    path = conf.IMG_DIR
+    path = conf.ArtworkDir
     original = Image.open(io.BytesIO(data))
     suffix = original.format.lower()
 
@@ -24,12 +24,12 @@ async def save_artwork(data: bytes, hash: str, size: int) -> None:
             img.thumbnail([size, size], Image.Resampling.LANCZOS)
             img_name = str_path(
                 get_path(
-                    path / f'{hash[:2]}' / f'{hash[2:4]}' / f'{hash[4:6]}' / f'{size}.{conf.IMG_TYPE}',
+                    path / f'{hash[:2]}' / f'{hash[2:4]}' / f'{hash[4:6]}' / f'{size}.{conf.ArtworkFormat}',
                     create_dir=True,
                 ),
                 rel=False,
             )
-            img.save(img_name, conf.IMG_TYPE, quality=conf.IMG_QUAL)
+            img.save(img_name, conf.ArtworkFormat, quality=conf.ArtworkQuality)
         else:
             return None
     else:

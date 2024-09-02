@@ -33,9 +33,9 @@ async def init(app: FastAPI):
                 logs.error(f"Error During Shutdown, {result}")
 
 app = FastAPI(
-    debug=conf.DEBUG,
-    title=conf.TITLE,
-    version=conf.VERSION,
+    debug=conf.Debug,
+    title=conf.AppName,
+    version=conf.Version,
     lifespan=init,
 )
 
@@ -56,9 +56,9 @@ app.include_router(tracks.router)
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host=conf.HOST,
-        port=conf.PORT,
-        reload=conf.DEBUG,
-        log_level=conf.LOG_LEVEL,
+        host=conf.Host,
+        port=conf.Port,
+        reload=conf.Debug,
+        log_level=conf.LogLevel,
         log_config=None,
     )

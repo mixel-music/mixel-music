@@ -44,12 +44,13 @@ async def extract_tags(path: str) -> dict:
             'syncedlyrics': '',
         }
         return track_dict
+    
     except Exception as error:
         logs.error('Failed to extract, %s', error)
         return {}
 
 
-@alru_cache(maxsize=10000000)
+@alru_cache(maxsize=8192)
 async def extract_artwork(path: str) -> bytes | None:
     try:
         artwork = TinyTag.get(get_path(path), image=True)

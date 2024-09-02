@@ -54,10 +54,10 @@ class Library:
     @staticmethod
     async def get_artwork(hash: str, size: int) -> Path | None:
         if size:
-            thumb = get_path(conf.IMG_DIR, f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{size}.webp')
+            thumb = get_path(conf.ArtworkDir, f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{size}.webp')
             return thumb if thumb.is_file() else None
         else:
-            for original in conf.IMG_DIR.glob(
+            for original in conf.ArtworkDir.glob(
                 str_path(f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', 'original.*')
             ):
                 return original if original.is_file() else None
@@ -258,7 +258,7 @@ class LibraryTask:
 
     async def create_track(self) -> None:
         self.tags = await extract_tags(self.path)
-        print(self.tags)
+        
         if self.tags:
             async with semaphore:
                 async with session() as conn:
@@ -295,7 +295,6 @@ class LibraryTask:
 
 
     @staticmethod
-    @alru_cache(maxsize=10000000)
     async def _create_artwork(hash: str, size: int) -> None:
         try:
             async with session() as conn:

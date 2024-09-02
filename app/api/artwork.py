@@ -11,8 +11,8 @@ from async_lru import alru_cache
 
 router = APIRouter(prefix = '/api')
 
-@alru_cache(maxsize=10000000)
 @router.get('/artwork/{hash}')
+@alru_cache(maxsize=8192)
 async def api_artwork(hash: str, size: int = 300):
     artwork_path = await Library.get_artwork(hash, size)
 
