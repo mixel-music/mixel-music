@@ -1,6 +1,6 @@
 export function getArtwork(hash: string, size: number): string {
   let artwork: string =
-    `http://localhost:2843/api/artwork/${hash}?size=${size.toString()}`;
+    `http://localhost:2843/api/artworks/${hash}?size=${size.toString()}`;
 
   return artwork;
 }

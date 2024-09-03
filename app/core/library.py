@@ -2,22 +2,18 @@ import aiofiles
 import asyncio
 
 from core.models import *
-from infra.config import *
-from infra.loggings import *
-from infra.database import *
+from core.logger import *
+from core.database import *
+from core.schema import Config
 from tools.convert_value import *
 from tools.path_handler import *
-from tools.save_artwork import *
 from tools.tags_handler import *
 
 semaphore = asyncio.Semaphore(5)
 
-from async_lru import alru_cache
-
 class Library:
     @staticmethod
     async def streaming(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
-        
         path = await hash_track_to_path(hash)
         track_info = await Library.get_track_info(hash)
         if not track_info: return
@@ -35,7 +31,8 @@ class Library:
             track_start = 0
             track_end = track_start + track_chunk
 
-        logs.debug("Streaming \"%s\" (%s-%s)", track_info['title'], track_start, track_end)
+        if track_start == 0:
+            logs.debug("Playing \"%s\" (%s-%s)", track_info['title'], track_start, track_end)
         track_end = min(track_end, track_size - 1)
 
         async with aiofiles.open(real_path, mode="rb") as track_file:
@@ -49,18 +46,6 @@ class Library:
             }
 
             return data, headers
-
-
-    @staticmethod
-    async def get_artwork(hash: str, size: int) -> Path | None:
-        if size:
-            thumb = get_path(conf.ArtworkDir, f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{size}.webp')
-            return thumb if thumb.is_file() else None
-        else:
-            for original in conf.ArtworkDir.glob(
-                str_path(f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', 'original.*')
-            ):
-                return original if original.is_file() else None
 
 
     @staticmethod
@@ -247,7 +232,7 @@ class Library:
             'list': artist_list,
             'total': count,
         }
-    
+
 
 
 class LibraryTask:
@@ -284,87 +269,15 @@ class LibraryTask:
                     logs.error("LibraryTask: Failed to remove track: %s", error)
                     await conn.rollback()
 
-                    
-    @staticmethod
-    def create_artwork(hash: str, size: int) -> None:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-        loop.run_until_complete(LibraryTask._create_artwork(hash, size))
-        loop.close()
-
-
-    @staticmethod
-    async def _create_artwork(hash: str, size: int) -> None:
-        try:
-            async with session() as conn:
-                query = (
-                    select(
-                        Tracks.path,
-                    )
-                    .where(or_(Tracks.albumhash == hash, Tracks.hash == hash))
-                )
-
-                result = await conn.execute(query)
-                data = result.mappings().first()
-                if data: data = dict(data)
-
-                artwork = await extract_artwork(data.get('path'))
-                return artwork
-                    
-        except Exception as error:
-            logs.error('error %s', error)
-
-
-    # @staticmethod
-    # def perform_artwork() -> None:
-    #     loop = asyncio.new_event_loop()
-    #     asyncio.set_event_loop(loop)
-
-    #     loop.run_until_complete(LibraryTask._perform_artwork())
-    #     loop.close()
-
-    
-    # @staticmethod
-    # async def _perform_artwork() -> None:
-    #     try:
-    #         async with session() as conn:
-    #             db_query = select(Tracks.path, Tracks.album, Tracks.hash)
-    #             db_result = await conn.execute(db_query)
-    #             result = db_result.mappings().all()
-
-    #     except Exception as error:
-    #         logs.error('error %s', error)
-
-    #     for row in result:
-    #         if row.album != 'Unknown Album':
-    #             check = await Library.get_artwork(hash_str(row.album), 0)
-    #             if not check:
-    #                 artwork = await extract_artwork(row.path)
-    #                 if artwork: asyncio.create_task(save_artwork(artwork, hash_str(row.album), 0))
-    #         else:
-    #             check = await Library.get_artwork(row.hash, 0)
-    #             if not check:
-    #                 artwork = await extract_artwork(row.path)
-    #                 if artwork: asyncio.create_task(save_artwork(artwork, row.hash, 0))
-
-
-    @staticmethod
-    async def remove_artwork(hash: str, size: int) -> None:
-        pass
-
 
 
 class LibraryScan:
     @staticmethod
     async def perform_all() -> None:
-        # io_task = threading.Thread(target=LibraryTask.perform_artwork, daemon=True)
-        # io_task.start()
-
         await LibraryScan.perform_albums()
         await LibraryScan.perform_artists()
 
-    
+
     @staticmethod
     async def perform_albums() -> None:
         try:

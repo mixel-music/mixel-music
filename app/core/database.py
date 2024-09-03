@@ -1,15 +1,13 @@
 from sqlalchemy import text, func, select, insert, update, delete, or_
-from sqlalchemy.dialects.sqlite import Insert
 from sqlalchemy.exc import OperationalError, SQLAlchemyError, DatabaseError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.dialects.sqlite import Insert
 from sqlalchemy.orm import sessionmaker
 
+from core.schema import Config
 from core.models import Base
-from infra.config import *
 
-engine = create_async_engine(conf.DataBaseUrl, echo=conf.DataBaseEcho)
-metadata = Base.metadata
-
+engine = create_async_engine(Config.DBURL, echo=Config.DBECHO)
 session = sessionmaker(
     class_=AsyncSession,
     autocommit=False,

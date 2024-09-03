@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Query
 from core.library import *
-from infra.loggings import *
 
 router = APIRouter(prefix = '/api')
 
@@ -12,6 +11,7 @@ async def api_album_list(
     
     album_list = await Library.get_album_list(page, item)
     return album_list
+
 
 @router.get('/albums/{hash}')
 async def api_album_info(

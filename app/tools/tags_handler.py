@@ -1,11 +1,9 @@
 from tinytag import TinyTag
 from datetime import datetime
 
-from infra.loggings import *
-from tools.path_handler import get_path, get_filename
+from core.logger import *
+from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime
-
-from async_lru import alru_cache
 
 async def extract_tags(path: str) -> dict:
     path, real_path = str_path(path), get_path(path)
@@ -50,14 +48,9 @@ async def extract_tags(path: str) -> dict:
         return {}
 
 
-@alru_cache(maxsize=8192)
 async def extract_artwork(path: str) -> bytes | None:
     try:
         artwork = TinyTag.get(get_path(path), image=True)
-        if artwork:
-            return artwork.get_image()
-        else:
-            return None
-        
+        return artwork.get_image() if artwork else None
     except:
         return None

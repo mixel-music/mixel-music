@@ -2,10 +2,11 @@ from watchfiles import Change, awatch
 from sqlalchemy import select
 import asyncio
 
+from core.logger import *
 from core.library import *
+from core.database import *
+from core.schema import Config
 from core.models import Tracks
-from infra.database import *
-from infra.loggings import *
 from tools.path_handler import *
 
 async def find_changes() -> None:
@@ -27,7 +28,7 @@ async def find_changes() -> None:
             if not real_path.exists() or real_path.stat().st_size != size_data:
                 tasks.append(LibraryTask(path_data).remove_track())
             else:
-                path_property[path_data] = 'p' # Pass
+                path_property[path_data] = 'p' # 'PASS'
 
         await asyncio.gather(*tasks)
 
@@ -36,7 +37,7 @@ async def find_changes() -> None:
 
 
 async def library_scan(property: dict, path = None) -> None:
-    if path is None: path = conf.LibraryDir
+    if path is None: path = Config.LIBRARYDIR
     queue, tasks = [path], []
 
     while queue:
@@ -45,7 +46,7 @@ async def library_scan(property: dict, path = None) -> None:
             str_path_val = str_path(path)
 
             if path.is_dir():
-                property[str_path_val] = 'd' # Dir
+                property[str_path_val] = 'd' # 'DIR'
                 queue.append(path)
 
             elif is_music_file(str_path_val):
@@ -58,10 +59,10 @@ async def library_scan(property: dict, path = None) -> None:
 
 
 async def watch_change() -> None:
-    logs.info("Event watcher started.")
+    logs.info("Started scanning for library.")
 
     async for event_handler in awatch(
-        conf.LibraryDir,
+        Config.LIBRARYDIR,
         recursive=True,
         force_polling=True,
     ):

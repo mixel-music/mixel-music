@@ -1,6 +1,5 @@
-from fastapi import APIRouter, status, HTTPException, Query
+from fastapi import APIRouter, Query
 from core.library import *
-from infra.loggings import *
 
 router = APIRouter(prefix = '/api')
 

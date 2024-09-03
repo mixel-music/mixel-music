@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
-from infra.config import *
+from core.schema import Config
 import logging
 
 install(word_wrap=True)
@@ -19,12 +19,12 @@ print_handler = RichHandler(
 uvicorn_logger = logging.getLogger("uvicorn")
 uvicorn_access_logger = logging.getLogger("uvicorn.access")
 fastapi_logger = logging.getLogger("fastapi")
-logs = logging.getLogger(conf.AppName)
+logs = logging.getLogger(Config.APPNAME)
 
-uvicorn_logger.setLevel(conf.LogLevel)
-uvicorn_access_logger.setLevel(conf.LogLevel)
-fastapi_logger.setLevel(conf.LogLevel)
-logs.setLevel(conf.LogLevel)
+uvicorn_logger.setLevel(Config.LOGLEVEL)
+uvicorn_access_logger.setLevel(Config.LOGLEVEL)
+fastapi_logger.setLevel(Config.LOGLEVEL)
+logs.setLevel(Config.LOGLEVEL)
 
 uvicorn_logger.propagate = False
 uvicorn_access_logger.propagate = False
@@ -38,7 +38,7 @@ logs.addHandler(print_handler)
 
 def log_file_handler() -> logging.FileHandler:
     file_handler = logging.FileHandler(
-        conf.LogFileDir,
+        Config.LOGPATH,
         mode='a',
         encoding='utf-8'
     )

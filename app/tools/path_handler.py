@@ -1,7 +1,8 @@
 from pathlib import Path
 from tinytag import TinyTag
+from pydantic_settings import BaseSettings
 
-root = (Path.cwd().resolve()).parent
+ROOTDIR: Path = (Path.cwd().resolve()).parent
 
 def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> Path:
     """
@@ -13,7 +14,7 @@ def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> 
         rel (bool, optional): Relative path, defaults to False.
         create_dir (bool, optional): Create the directory if it doesn't exist, defaults to False.
     """
-    home = root
+    home = ROOTDIR
 
     if create_dir:
         for arg in args: home = home / arg
@@ -21,9 +22,7 @@ def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> 
     else:
         for arg in args: home = home / arg
     
-    if rel: home = home.relative_to(root)
-
-    return home
+    return home.relative_to(ROOTDIR) if rel else home
 
 
 def str_path(*args: str | Path, rel: bool = True) -> str:
@@ -34,15 +33,17 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
         *args (str | Path, optional): Directory or filename.
         rel (bool, optional): Relative path, defaults to True.
     """
-    home = root
+    home = ROOTDIR
+
     for arg in args: home = home / arg
-    if rel: home = home.relative_to(root)
+    if rel: home = home.relative_to(ROOTDIR)
 
     return home.as_posix()
 
 
 def get_filename(*args: str | Path) -> list[str]:
-    home = root
+    home = ROOTDIR
+
     for arg in args: home = home / arg
     name, stem, suffix = home.name, home.stem, home.suffix
 
@@ -60,9 +61,9 @@ def is_music_file(path: str) -> bool:
         return True
     else:
         return False
-    
 
-def create_dir(conf) -> None:
-    conf.ConfigDir.mkdir(exist_ok=True)
-    conf.ArtworkDir.mkdir(exist_ok=True)
-    conf.LibraryDir.mkdir(exist_ok=True)
+
+def create_dir(Config: BaseSettings) -> None:
+    Config.DATADIR.mkdir(exist_ok=True)
+    Config.LIBRARYDIR.mkdir(exist_ok=True)
+    Config.ARTWORKDIR.mkdir(exist_ok=True)

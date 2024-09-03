@@ -102,7 +102,7 @@ function InitPlayerService() {
 
       if (track) {
         console.debug("init track");
-        audio.src = `http://localhost:2843/api/stream/${track.hash}`;
+        audio.src = `http://localhost:2843/api/streaming/${track.hash}`;
         audio.load();
 
         audio.onloadedmetadata = (): void => {

@@ -4,15 +4,16 @@ from contextlib import asynccontextmanager
 import uvicorn
 import asyncio
 
-from api import albums, artists, artwork, stream, tracks
-from core.watcher import find_changes, watch_change
-from infra.config import *
-from infra.database import *
-from infra.loggings import *
+from tools.path_handler import create_dir
+from api import albums, artists, tracks, artworks, streaming
+from core.scanner import find_changes, watch_change
+from core.schema import Config
+from core.database import *
+from core.logger import *
 
 @asynccontextmanager
 async def init(app: FastAPI):
-    create_dir(conf)
+    create_dir(Config)
     log = log_file_handler()
     await connect_database()
     
@@ -33,9 +34,9 @@ async def init(app: FastAPI):
                 logs.error(f"Error During Shutdown, {result}")
 
 app = FastAPI(
-    debug=conf.Debug,
-    title=conf.AppName,
-    version=conf.Version,
+    debug=Config.DEBUG,
+    title=Config.APPNAME,
+    version=Config.VERSION,
     lifespan=init,
 )
 
@@ -49,16 +50,16 @@ app.add_middleware(
 
 app.include_router(albums.router)
 app.include_router(artists.router)
-app.include_router(artwork.router)
-app.include_router(stream.router)
+app.include_router(artworks.router)
+app.include_router(streaming.router)
 app.include_router(tracks.router)
 
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host=conf.Host,
-        port=conf.Port,
-        reload=conf.Debug,
-        log_level=conf.LogLevel,
+        host=Config.HOST,
+        port=Config.PORT,
+        reload=Config.DEBUG,
+        log_level=Config.LOGLEVEL,
         log_config=None,
     )
