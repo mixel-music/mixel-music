@@ -1,10 +1,10 @@
 <script lang="ts">
   import './style.css';
   import { onDestroy } from 'svelte';
-  import Sidebar from '$lib/newponents/layouts/sidebar/sidebar.svelte';
-  import Navbar from '$lib/newponents/layouts/navbar/navbar.svelte';
-  import Player from '$lib/newponents/layouts/player/player.svelte';
-  import PlayerQueue from '$lib/newponents/layouts/player/player-queue.svelte';
+  import Sidebar from '$lib/components/layouts/sidebar/sidebar.svelte';
+  import Navbar from '$lib/components/layouts/navbar/navbar.svelte';
+  import Player from '$lib/components/layouts/player/player.svelte';
+  import PlayerQueue from '$lib/components/layouts/player/player-queue.svelte';
   import PlayerService from '$lib/stores/stores';
 
   onDestroy(() => {
@@ -15,10 +15,12 @@
 <div id="app">
   <Sidebar />
 
-  <section>
-    <Navbar />
-    <slot />
-  </section>
+  <div class="app-body">
+    <div class="app-main">
+      <Navbar />
+      <slot />
+    </div>
+  </div>
 
   <PlayerQueue />
   <Player />
@@ -33,16 +35,28 @@
     box-sizing: border-box;
   }
 
-  section {
+  .app-body {
     width: 100%;
-    padding: 64px;
-    padding-top: 0;
     margin-bottom: 96px;
     overflow-y: scroll;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
   }
 
-  section:focus {
+  .app-body:focus {
     outline: none;
+  }
+
+  .app-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* width: min(1600px, 100%); */
+    padding-left: 64px;
+    padding-right: 64px;
+    margin-bottom: 24px;
   }
 </style>

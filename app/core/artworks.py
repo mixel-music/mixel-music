@@ -12,31 +12,31 @@ class ArtworkService:
 
 
     @staticmethod
-    def convert_hash(hash: str, size: int) -> list[Path, str]:
+    def convert_hash(hash: str, size: int) -> tuple[Path, str]:
         if size:
-            data = hash_str(f'{hash}_{size}') # 해시를 또 해싱함?
-            path = get_path(Config.ARTWORKDIR, f'{data[:2]}', f'{data[2:4]}', f'{data[4:6]}', f'{data[6:8]}.{Config.ARTWORKFORMAT}')
-            return path, data
+            path = get_path(Config.ARTWORKDIR, f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{size}.{Config.ARTWORKFORMAT}')
+            return path
         else:
-            path = get_path(Config.ARTWORKDIR, f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{hash[6:8]}') # 확장자를 모름
-            return path, hash
+            path = get_path(f'{hash[:2]}', f'{hash[2:4]}', f'{hash[4:6]}', f'{size}')
+            return path
         
 
     @staticmethod
     async def get_artwork(hash: str, size: int) -> Path | None:
         if size:
-            thumb = ArtworkService.convert_hash(hash, size)[0]
+            thumb = ArtworkService.convert_hash(hash, size)
             logs.debug('get_artwork: %s, %s', thumb, thumb.is_file())
             return thumb if thumb.is_file() else None
         else:
             for original in Config.ARTWORKDIR.glob(
-                str_path(f'{ArtworkService.convert_hash(hash, size)[0]}.*') # 확장자를 모름
+                str_path(ArtworkService.convert_hash(hash, size)) + '.*' # 확장자를 모름
             ):
+                logs.debug('get_artwork: %s, %s', original, original.is_file())
                 return original if original.is_file() else None
-            
+
 
     @staticmethod
-    async def init_artwork(hash: str) -> None:
+    async def init_artwork(hash: str) -> tuple[bytes | None, str] | None:
         try:
             async with session() as conn:
                 query = select(Tracks.path).where(
@@ -55,18 +55,24 @@ class ArtworkService:
         
 
     @staticmethod
-    def save_artwork(data: Image, hash: str, size: int, format: str = Config.ARTWORKFORMAT) -> None:
-        img_name = get_path(
-            str_path(
-                ArtworkService.convert_hash(hash, size)[0],
-                rel=False,
-            ),
-            create_dir=True,
-        )
-
+    def save_artwork(data: Image, hash: str, size: int, type: str = Config.ARTWORKFORMAT) -> None:
         if not size:
-            data.save(img_name, format)
+            img_name = str_path(
+                get_path(
+                    ArtworkService.convert_hash(hash, size),
+                    create_dir=True,
+                ),
+                rel=False,
+            )
+            data.save(img_name, format=type)
         else:
+            img_name = str_path(
+                get_path(
+                    ArtworkService.convert_hash(hash, size),
+                    create_dir=True,
+                ),
+                rel=False,
+            )
             data.save(img_name, quality=Config.ARTWORKQUALITY)
 
 

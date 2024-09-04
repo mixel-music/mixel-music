@@ -7,7 +7,7 @@
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';
   import ContentBody from '$lib/components/elements/text-sub.svelte';
-  import ButtonRd from '$lib/newponents/elements/button-rd.svelte';
+  import ButtonRd from '$lib/components/elements/button-rd.svelte';
 
   export let data: PageData;
 </script>

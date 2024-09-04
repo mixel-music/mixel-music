@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ButtonRd from '$lib/newponents/elements/button-rd.svelte';
-  import TextBox from '$lib/newponents/elements/textbox.svelte';
+  import ButtonRd from '$lib/components/elements/button-rd.svelte';
+  import TextBox from '$lib/components/elements/textbox.svelte';
   import Icon from '@iconify/svelte';
 </script>
 

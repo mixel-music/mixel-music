@@ -4,7 +4,7 @@
   import { getArtwork, getNextPage, getPrevPage } from '$lib/tools';
   import PlayerService from '$lib/stores/stores';
 
-  import ButtonRd from '$lib/newponents/elements/button-rd.svelte';
+  import ButtonRd from '$lib/components/elements/button-rd.svelte';
   import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
   import CardItem from '$lib/components/elements/card-item.svelte';
   import ContentHead from '$lib/components/elements/text-title.svelte';

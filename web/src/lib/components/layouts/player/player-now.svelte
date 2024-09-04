@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Artwork from "$lib/newponents/elements/artwork.svelte";
+  import Artwork from "$lib/components/elements/artwork.svelte";
   import { convertDateTime, getArtwork } from "$lib/tools";
   import PlayerService from "$lib/stores/stores";
 

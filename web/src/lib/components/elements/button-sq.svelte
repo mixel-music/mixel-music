@@ -22,7 +22,7 @@
 <style>
   .button-sq {
     padding: 12px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--color-dark-text-2);
@@ -30,6 +30,7 @@
     border: 1px solid var(--color-dark-border);
     transition: 0.2s ease;
     font-size: 18px;
+    border-radius: var(--app-radius);
   }
 
   .button-sq:hover {
