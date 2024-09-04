@@ -70,7 +70,7 @@
       width=150px
       height=50px
     >
-      Suffle
+      Shuffle
     </ButtonSq>
   </div>
 
