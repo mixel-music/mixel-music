@@ -4,7 +4,8 @@
   function getColumnClass(index: number): string {
     if (index === 0) return 'track';
     if (index === 1) return 'title';
-    if (index === 2) return 'artist';
+    if (index === 2) return 'albums';
+    if (index === 3) return 'artist';
     return 'default';
   }
 </script>
@@ -35,12 +36,17 @@
   }
 
   .cell.title {
-    flex: 6;
+    flex: 4;
+    padding: 12px 6px;
+  }
+
+  .cell.albums {
+    flex: 3;
     padding: 12px 6px;
   }
 
   .cell.artist {
-    flex: 3;
+    flex: 2;
     padding: 12px 6px;
   }
 

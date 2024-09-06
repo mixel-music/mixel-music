@@ -41,7 +41,7 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
     return home.as_posix()
 
 
-def get_filename(*args: str | Path) -> list[str]:
+def get_filename(*args: str | Path) -> list[str, str, str]:
     home = ROOTDIR
 
     for arg in args: home = home / arg

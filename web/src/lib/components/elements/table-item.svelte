@@ -5,7 +5,8 @@
   function getColumnClass(index: number): string {
     if (index === 0) return 'track';
     if (index === 1) return 'title';
-    if (index === 2) return 'artist';
+    if (index === 2) return 'albums';
+    if (index === 3) return 'artist';
     return 'default';
   }
 </script>
@@ -42,18 +43,35 @@
   }
 
   .cell.title {
-    flex: 6;
+    flex: 4;
     padding: 12px 6px;
   }
 
-  .cell.artist {
+  .cell.albums {
     flex: 3;
     padding: 12px 6px;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cell.artist {
+    flex: 2;
+    padding: 12px 6px;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .cell.default {
     flex: 0.5;
     padding: 12px 6px;
+
+    overflow: hidden;
+    padding: 12px 6px;
+    text-overflow: ellipsis;
+    overflow-wrap: normal;
+    text-wrap: nowrap;
   }
 
   .cell.tools {

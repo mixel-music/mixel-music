@@ -46,9 +46,15 @@ class ArtworkService:
                 result = await conn.execute(query)
                 data = result.mappings().first()
                 if data: data = dict(data)
+                artwork_path = get_path(data.get('path')).parent
 
-            artwork = await extract_artwork(data.get('path'))
-            return artwork
+                for fs in artwork_path.iterdir():
+                    if fs.is_file() and fs.suffix.lower() in Config.ARTWORKTARGETS:
+                        async with aiofiles.open(fs, 'rb') as f:
+                            return await f.read()
+                        
+                artwork = await extract_artwork(data.get('path'))
+                return artwork
 
         except Exception as error:
             logs.error('Error(process_artwork): %s', error)

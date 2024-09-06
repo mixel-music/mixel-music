@@ -50,6 +50,7 @@ class Config(BaseSettings):
     ARTWORKFORMAT: str = 'webp'
     ARTWORKCACHING: bool = True
     ARTWORKQUALITY: int = 100
+    ARTWORKTARGETS: set = {'.png', '.jpg', '.jpeg', '.tiff'}
 
     DEBUG: bool = True
     DBECHO: bool = False

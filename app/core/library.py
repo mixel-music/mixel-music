@@ -72,6 +72,7 @@ class Library:
                         Tracks.artist,
                         Tracks.hash,
                         Tracks.albumhash,
+                        Tracks.duration,
                     )
                     .order_by(Tracks.title.asc())
                     .offset(page)

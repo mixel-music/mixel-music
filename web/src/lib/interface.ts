@@ -10,6 +10,8 @@ export interface TrackList {
   hash: string;
   albumhash: string;
   artwork?: string;
+  duration?: number;
+  index?: number;
 }
 
 export interface TrackItem {

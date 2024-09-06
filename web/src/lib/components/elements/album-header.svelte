@@ -14,24 +14,28 @@
       {album}
     </span>
 
-    <span class="album-artist">
-      {albumartist}
-    </span>
+    {#if albumartist}
+      <span class="album-artist">
+        {albumartist}
+      </span>
+    {/if}
   </div>
 
-  <div class="album-info">
-    <span class="album-text">
-      {#if totalTracks === 1}
-        {totalTracks} Track
-      {:else}
-        {totalTracks} Tracks
-      {/if}
-      ({totalLength}) · {year} · {size}
-    </span>
-    <span class="album-text">
-      {comment}
-    </span>
-  </div>
+  {#if year || totalTracks || totalLength || comment || size}
+    <div class="album-info">
+      <span class="album-text">
+        {#if totalTracks === 1}
+          {totalTracks} Track
+        {:else}
+          {totalTracks} Tracks
+        {/if}
+        ({totalLength}) · {year} · {size}
+      </span>
+      <span class="album-text">
+        {comment}
+      </span>
+    </div>
+  {/if}
 </div>
 
 <style>
