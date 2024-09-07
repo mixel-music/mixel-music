@@ -1,10 +1,9 @@
 import aiofiles
 import asyncio
-
+from concurrent.futures import ThreadPoolExecutor
 from core.models import *
 from core.logger import *
 from core.database import *
-from core.schema import Config
 from tools.convert_value import *
 from tools.path_handler import *
 from tools.tags_handler import *
@@ -243,7 +242,9 @@ class LibraryTask:
         
 
     async def create_track(self) -> None:
-        self.tags = await extract_tags(self.path)
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as executor:
+            self.tags = await loop.run_in_executor(executor, extract_tags, self.path)
 
         if self.tags:
             async with semaphore:
@@ -275,9 +276,10 @@ class LibraryTask:
 class LibraryScan:
     @staticmethod
     async def perform_all() -> None:
-        await LibraryScan.perform_albums()
-        await LibraryScan.perform_artists()
-
+        alb = asyncio.create_task(LibraryScan.perform_albums())
+        art = asyncio.create_task(LibraryScan.perform_artists())
+        await alb, art
+        
 
     @staticmethod
     async def perform_albums() -> None:

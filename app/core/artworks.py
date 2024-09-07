@@ -25,13 +25,13 @@ class ArtworkService:
     async def get_artwork(hash: str, size: int) -> Path | None:
         if size:
             thumb = ArtworkService.convert_hash(hash, size)
-            logs.debug('get_artwork: %s, %s', thumb, thumb.is_file())
+            # logs.debug('get_artwork: %s, %s', thumb, thumb.is_file())
             return thumb if thumb.is_file() else None
         else:
             for original in Config.ARTWORKDIR.glob(
                 str_path(ArtworkService.convert_hash(hash, size)) + '.*' # 확장자를 모름
             ):
-                logs.debug('get_artwork: %s, %s', original, original.is_file())
+                # logs.debug('get_artwork: %s, %s', original, original.is_file())
                 return original if original.is_file() else None
 
 
@@ -45,19 +45,29 @@ class ArtworkService:
 
                 result = await conn.execute(query)
                 data = result.mappings().first()
-                if data: data = dict(data)
-                artwork_path = get_path(data.get('path')).parent
+                if data: 
+                    data = dict(data)
+                    artwork_path = get_path(data.get('path')).parent
+
+                async def read_artwork_file(file_path) -> bytes:
+                    # logs.debug(f'Reading file: {file_path}')
+                    async with aiofiles.open(file_path, 'rb') as f:
+                        return await f.read()
 
                 for fs in artwork_path.iterdir():
-                    if fs.is_file() and fs.suffix.lower() in Config.ARTWORKTARGETS:
-                        async with aiofiles.open(fs, 'rb') as f:
-                            return await f.read()
-                        
-                artwork = await extract_artwork(data.get('path'))
+                    # logs.debug(f'Checking file: {fs}')
+                    if fs.is_file() and fs.suffix.lower() in Config.ARTWORKTARGETS and not is_hidden_file(fs.name):
+                        return await read_artwork_file(fs)
+
+                loop = asyncio.get_running_loop()
+                with ThreadPoolExecutor() as executor:
+                    artwork = await loop.run_in_executor(executor, extract_artwork, data.get('path'))
+                
                 return artwork
 
         except Exception as error:
             logs.error('Error(process_artwork): %s', error)
+            return None
         
 
     @staticmethod
@@ -70,6 +80,7 @@ class ArtworkService:
                 ),
                 rel=False,
             )
+
             data.save(img_name, format=type)
         else:
             img_name = str_path(
@@ -79,6 +90,7 @@ class ArtworkService:
                 ),
                 rel=False,
             )
+
             data.save(img_name, quality=Config.ARTWORKQUALITY)
 
 

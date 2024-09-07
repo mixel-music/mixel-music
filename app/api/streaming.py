@@ -5,7 +5,6 @@ router = APIRouter(prefix = '/api')
 
 @router.get('/streaming/{hash}')
 async def api_streaming(hash: str, range: str = Header(None)) -> Response:
-
     content, headers = await Library.streaming(hash, range)
     if content:
         return Response(

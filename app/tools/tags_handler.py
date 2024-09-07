@@ -5,7 +5,7 @@ from core.logger import *
 from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime
 
-async def extract_tags(path: str) -> dict:
+def extract_tags(path: str) -> dict:
     path, real_path = str_path(path), get_path(path)
     
     try:
@@ -41,6 +41,7 @@ async def extract_tags(path: str) -> dict:
             'unsyncedlyrics': '',
             'syncedlyrics': '',
         }
+
         return track_dict
     
     except Exception as error:
@@ -48,7 +49,7 @@ async def extract_tags(path: str) -> dict:
         return {}
 
 
-async def extract_artwork(path: str) -> bytes | None:
+def extract_artwork(path: str) -> bytes | None:
     try:
         artwork = TinyTag.get(get_path(path), image=True)
         return artwork.get_image() if artwork else None

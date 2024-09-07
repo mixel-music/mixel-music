@@ -1,6 +1,7 @@
 from pathlib import Path
 from tinytag import TinyTag
 from pydantic_settings import BaseSettings
+import re
 
 ROOTDIR: Path = (Path.cwd().resolve()).parent
 
@@ -67,3 +68,24 @@ def create_dir(Config: BaseSettings) -> None:
     Config.DATADIR.mkdir(exist_ok=True)
     Config.LIBRARYDIR.mkdir(exist_ok=True)
     Config.ARTWORKDIR.mkdir(exist_ok=True)
+
+
+def is_hidden_file(name: str) -> bool:
+    """
+        Check if a file should be excluded based on its name.
+        도대체 왜 시스템이 멋대로 아트워크 캐시를 생성하는 걸까요?
+    """
+
+    patterns = [
+        r'.*Small.*',
+        r'.*Cache.*',
+        r'.*[{].*',
+        r'.*cache.*',
+        r'^\.',
+        r'.*~$',
+    ]
+
+    for pattern in patterns:
+        if re.search(pattern, name, re.IGNORECASE):
+            return True
+    return False
