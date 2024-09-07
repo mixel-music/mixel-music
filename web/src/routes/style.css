@@ -183,3 +183,21 @@ input[type="range"]::-moz-range-thumb {
 img {
   color: transparent;
 }
+
+.text {
+  display: block;
+  font-size: 95%;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 150%;
+}
+
+.text-sub {
+  display: block;
+  color: var(--color-dark-text-2);
+  font-size: 80%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 150%;
+}

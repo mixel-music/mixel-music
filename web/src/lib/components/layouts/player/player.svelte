@@ -2,7 +2,6 @@
   import PlayerService from "$lib/stores/stores";
   import PlayerButton from '$lib/components/layouts/player/player-button.svelte'
   import PlayerNow from '$lib/components/layouts/player/player-now.svelte';
-  import { updated } from "$app/stores";
   import { isQueueOpen } from "$lib/stores/layout";
 
   $: trk = $PlayerService;

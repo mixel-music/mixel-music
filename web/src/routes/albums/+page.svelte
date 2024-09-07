@@ -3,11 +3,9 @@
   import type { PageData } from './$types';
   import { getNextPage, getPrevPage, getArtwork } from '$lib/tools';
 
-  import CardItemGroup from '$lib/components/elements/card-item-group.svelte';
-  import CardItem from '$lib/components/elements/card-item.svelte';
-  import ContentHead from '$lib/components/elements/text-title.svelte';
-  import ContentBody from '$lib/components/elements/text-sub.svelte';
-  import ButtonRd from '$lib/components/elements/button-rd.svelte';
+  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
+  import CardItemGrid from '$lib/components/elements/CardItemGrid.svelte';
+  import CardItem from '$lib/components/elements/CardItem.svelte';
 
   export let data: PageData;
 </script>
@@ -17,7 +15,7 @@
 </svelte:head>
 
 {#if data.list}
-  <CardItemGroup title={data.title}>
+  <CardItemGrid title={data.title}>
     {#each data.list.list as album (album.albumhash)}
       <CardItem
         href='/albums/{ album.albumhash }'
@@ -27,22 +25,22 @@
       >
         <div>
           <a href='/albums/{album.albumhash}'>
-            <ContentHead head={album.album} />
+            <span class="text">{album.album}</span>
           </a>
           <a href='/artists'>
-            <ContentBody body={album.albumartist} />
+            <span class="text-sub">{album.albumartist}</span>
           </a>
         </div>
       </CardItem>
     {/each}
-  </CardItemGroup>
+  </CardItemGrid>
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <ButtonRd href={getPrevPage(data.page, data.item)}>
+      <ButtonRound href={getPrevPage(data.page, data.item)}>
         <Icon icon='iconoir:nav-arrow-left' />
-      </ButtonRd>
-      <ButtonRd href={
+      </ButtonRound>
+      <ButtonRound href={
         getNextPage(
           data.page,
           data.item,
@@ -50,7 +48,7 @@
         )
       }>
         <Icon icon='iconoir:nav-arrow-right' />
-      </ButtonRd>
+      </ButtonRound>
     </div>
   {/if}
 {/if}

@@ -4,11 +4,9 @@
   import { getArtwork, getNextPage, getPrevPage, convertDateTime } from '$lib/tools';
   import PlayerService from '$lib/stores/stores';
 
-  import ButtonRd from '$lib/components/elements/button-rd.svelte';
-  import Table from '$lib/components/elements/table.svelte';
-  import TableHeader from '$lib/components/elements/table-header.svelte';
-  import TableItem from '$lib/components/elements/table-item.svelte';
-  import AlbumHeader from '$lib/components/elements/album-header.svelte';
+  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
+  import Table from '$lib/components/elements/Table.svelte';
+  import TableItem from '$lib/components/elements/TableItem.svelte';
 
   export let data: PageData;
 
@@ -24,7 +22,8 @@
     PlayerService.setTrack(0);
   }
 
-  let columns = ['#', 'Title', 'Albums', 'Artist', 'Time'];
+  let columns = ['#', 'Title', 'Album', 'Artist', 'Time', null];
+  let columnsRatios = [0.15, 2, 2, 2, 1, 0.5];
   let rows = data.list.list.map(item => ({
     row: [
       item.title,
@@ -40,27 +39,22 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-<AlbumHeader
-album='Tracks'
-/>
 
 {#if data.list}
   <div class="album-tracks">
-    <Table>
-      <TableHeader columns={columns} />
-
+    <Table headers={columns} columnRatios={columnsRatios}>
       {#each rows as { row, onClick }, index}
-        <TableItem row={[index + 1, ...row]} on:click={onClick} />
+        <TableItem row={[index + 1, ...row]} columnRatios={columnsRatios} onClick={onClick} />
       {/each}
     </Table>
   </div>
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <ButtonRd href={getPrevPage(data.page, data.item)}>
+      <ButtonRound href={getPrevPage(data.page, data.item)}>
         <Icon icon='iconoir:nav-arrow-left' />
-      </ButtonRd>
-      <ButtonRd href={
+      </ButtonRound>
+      <ButtonRound href={
         getNextPage(
           data.page,
           data.item,
@@ -68,7 +62,7 @@ album='Tracks'
         )
       }>
         <Icon icon='iconoir:nav-arrow-right' />
-      </ButtonRd>
+      </ButtonRound>
     </div>
   {/if}
 {/if}

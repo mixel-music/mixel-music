@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Artwork from "$lib/components/elements/artwork.svelte";
+  import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
   import { convertDateTime, getArtwork } from "$lib/tools";
   import PlayerService from "$lib/stores/stores";
 
@@ -8,7 +8,7 @@
 
 <div class="player-now">
   {#if trk.hash}
-    <Artwork
+    <ArtworkImage
       src={trk.album === 'Unknown Album'
         ? getArtwork(trk.hash, 128)
         : trk.albumhash && getArtwork(trk.albumhash, 128)

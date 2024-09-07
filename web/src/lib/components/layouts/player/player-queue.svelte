@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Artwork from "$lib/components/elements/artwork.svelte";
+  import Artwork from "$lib/components/elements/ArtworkImage.svelte";
   import { isQueueOpen } from "$lib/stores/layout";
   import PlayerService from "$lib/stores/stores";
   import { getArtwork } from "$lib/tools";
