@@ -13,7 +13,7 @@
 
 <style>
   div {
-    margin: 21px 0;
+    margin: var(--space-m) 0;
   }
 
   span {

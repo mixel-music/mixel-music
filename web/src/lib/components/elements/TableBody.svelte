@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let columnRatios: number[];
+
 </script>
 
 <div class="table-body">
@@ -9,7 +9,7 @@
 <style>
   .table-body {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
   }
 </style>

@@ -12,7 +12,7 @@
   style='width: {width}px; height: {height}px;'
   type={href ? undefined : type}
   this={href ? 'a' : 'button'}
-  class="button-rd"
+  class="button-round"
   on:click
   on:focus
   {href}
@@ -21,8 +21,7 @@
 </svelte:element>
 
 <style>
-  .button-rd {
-    padding: 12px;
+  .button-round {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,11 +29,13 @@
     background-color: var(--color-dark-bg-2);
     border: 1px solid var(--color-dark-border);
     transition: 0.2s ease;
-    border-radius: 50%;
     font-size: 18px;
+
+    border-radius: var(--radius-l);
+    padding: var(--space-xs);
   }
 
-  .button-rd:hover {
+  .button-round:hover {
     color: var(--color-dark-text-1);
     transition: 0.2s ease;
   }

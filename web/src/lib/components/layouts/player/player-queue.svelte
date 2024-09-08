@@ -60,7 +60,7 @@
     width: 25%;
     height: 50%;
     display: flex;
-    gap: var(--app-padding-l);
+    gap: var(--space-s);
     flex-direction: column;
     overflow-y: scroll;
 
@@ -70,7 +70,7 @@
   .track {
     display: flex;
     flex-direction: row;
-    gap: var(--app-padding-s);
+    gap: var(--space-s);
   }
 
   .texts {

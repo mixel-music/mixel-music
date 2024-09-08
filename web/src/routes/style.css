@@ -1,22 +1,17 @@
 :root {
   /* xs, s, m, l, xl */
 
-  --padding-xs: 8px;
-  --padding-s: 16px;
-  --padding-m: 21px;
-  --padding-l: 32px;
-  --padding-xl: 64px;
+  --space-xs: 9px;
+  --space-s: 16px;
+  --space-m: 21px;
+  --space-l: 32px;
+  --space-xl: 64px;
 
-  --margin-xs: ;
-  --margin-s: ;
-  --margin-m: ;
-  --margin-l: ;
-  --margin-xl: ;
+  --table-padding: 12px 6px;
 
-  --radius-s: ;
-  --radius-m: ;
-  --radius-l: ;
-
+  --radius-s: 0.2em;
+  --radius-m: 0.4em;
+  --radius-l: 50%;
 
   --dark-bg-1: rgb(18, 18, 18);
   --dark-bg-1-acrylic: rgb(18, 18, 18, 0.95);
@@ -90,7 +85,7 @@
 
 *:focus {
   outline: 1px dotted gray;
-  border-radius: var(--app-radius);
+  border-radius: var(--radius-m);
 }
 
 html {
@@ -125,6 +120,10 @@ a {
   cursor: pointer;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 input[type='range'] {
   appearance: none;
   cursor: pointer;
@@ -132,7 +131,7 @@ input[type='range'] {
   width: 550px;
   appearance: none;
   background-color: var(--color-dark-trk-len);
-  border-radius: calc(var(--app-radius) * 2);
+  border-radius: var(--radius-s);
   height: 3.5px;
   margin-left: 0.5px;
 }
@@ -200,4 +199,16 @@ img {
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 150%;
+}
+
+.bottom-ctl {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 24px;
+  padding-bottom: 12px;
+}
+
+.info-card {
+  padding-top: var(--space-s);
 }

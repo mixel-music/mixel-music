@@ -1,50 +1,58 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import { getArtwork, getNextPage, getPrevPage, convertDateTime } from '$lib/tools';
-  import PlayerService from '$lib/stores/stores';
+  import { handleClick, getNextPage, getPrevPage, convertDateTime, getArtistLink, getAlbumLink } from '$lib/tools';
 
-  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
   import Table from '$lib/components/elements/Table.svelte';
-  import TableItem from '$lib/components/elements/TableItem.svelte';
+  import TableHead from '$lib/components/elements/TableHead.svelte';
+  import TableHeadItem from '$lib/components/elements/TableHeadItem.svelte';
+  import TableBody from '$lib/components/elements/TableBody.svelte';
+  import TableBodyItem from '$lib/components/elements/TableBodyItem.svelte';
+  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
+  import PageTitle from '$lib/components/elements/PageTitle.svelte';
 
   export let data: PageData;
-
-  function handleClick(item: any) {
-    PlayerService.addTrack({
-      hash: item.hash,
-      title: item.title,
-      album: item.album,
-      artist: item.artist,
-      albumhash: item.albumhash,
-    }, 0);
-
-    PlayerService.setTrack(0);
-  }
-
-  let columns = ['#', 'Title', 'Album', 'Artist', 'Time', null];
-  let columnsRatios = [0.15, 2, 2, 2, 1, 0.5];
-  let rows = data.list.list.map(item => ({
-    row: [
-      item.title,
-      item.album,
-      item.artist,
-      convertDateTime(item.duration),
-    ],
-    onClick: () => handleClick(item)
-  }));
 </script>
 
 <svelte:head>
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-
 {#if data.list}
-  <div class="album-tracks">
-    <Table headers={columns} columnRatios={columnsRatios}>
-      {#each rows as { row, onClick }, index}
-        <TableItem row={[index + 1, ...row]} columnRatios={columnsRatios} onClick={onClick} />
+  <div>
+    <PageTitle title=Tracks />
+    
+    <Table>
+      <TableHead>
+        <TableHeadItem size='m'>Title</TableHeadItem>
+        <TableHeadItem size='m'>Album</TableHeadItem>
+        <TableHeadItem size='m'>Artist</TableHeadItem>
+        <TableHeadItem size="s">Time</TableHeadItem>
+        <TableHeadItem size="xs"></TableHeadItem>
+      </TableHead>
+
+      {#each data.list.list as item}
+        <TableBody>
+          <TableBodyItem size='m'>
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <a on:click={handleClick(item)} on:keydown>
+              {item.title}
+            </a>
+          </TableBodyItem>
+          <TableBodyItem size="m">
+            <a href='{getAlbumLink(item.albumhash)}'>
+              {item.album}
+            </a>
+          </TableBodyItem>
+          <TableBodyItem size='m'>
+            <a href='{getArtistLink(item.artisthash)}'>
+              {item.artist}
+            </a>
+          </TableBodyItem>
+          <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
+          <TableBodyItem size='xs'></TableBodyItem>
+        </TableBody>
       {/each}
     </Table>
   </div>
@@ -68,13 +76,5 @@
 {/if}
 
 <style>
-  div {
-    padding-top: var(--app-padding-s);
-  }
 
-  .bottom-ctl {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
 </style>

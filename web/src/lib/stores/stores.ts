@@ -9,6 +9,7 @@ function InitPlayerService() {
     album: '',
     artist: '',
     artwork: '',
+    artisthash: '',
     albumhash: '',
     isLoaded: false,
     isPlaying: false,
@@ -50,6 +51,7 @@ function InitPlayerService() {
       title: track.title,
       album: track.album,
       artist: track.artist,
+      artisthash: track.artisthash,
       albumhash: track.albumhash,
       artwork: getArtwork(track.hash, 128),
     }));

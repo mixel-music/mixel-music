@@ -19,7 +19,7 @@
 <style>
   li {
     display: flex;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-s);
     align-items: center;
   }
 

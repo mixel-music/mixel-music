@@ -1,6 +1,6 @@
 <script lang="ts">
   import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
-  import { convertDateTime, getArtwork } from "$lib/tools";
+  import { convertDateTime, getAlbumLink, getArtistLink, getArtwork } from "$lib/tools";
   import PlayerService from "$lib/stores/stores";
 
   $: trk = $PlayerService;
@@ -19,9 +19,17 @@
     />
 
     <div class="track">
-      <span class="title">{trk.title}</span>
-      <span class="description">{trk.artist} - {trk.album}</span>
-      <span class="description">
+      <span class="text">{trk.title}</span>
+      <span class="text-sub">
+        <a href="{getArtistLink(trk.artisthash)}">
+          {trk.artist}
+        </a>
+        -
+        <a href="{getAlbumLink(trk.albumhash)}">
+          {trk.album}
+        </a>  
+      </span>
+      <span class="text-sub">
         {convertDateTime(trk.currentTime)} / {convertDateTime(trk.duration)}
       </span>
     </div>
@@ -32,7 +40,8 @@
   .player-now {
     display: flex;
     align-items: center;
-    gap: var(--app-padding-s);
+    gap: var(--space-s);
+    line-height: 100%
   }
 
   .track {
@@ -40,21 +49,5 @@
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
-  }
-  
-  .title {
-    display: block;
-    font-size: 95%;
-    font-weight: 600;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  .description {
-    display: block;
-    color: var(--color-dark-text-2);
-    font-size: 80%;
-    text-overflow: ellipsis;
-    overflow: hidden;
   }
 </style>

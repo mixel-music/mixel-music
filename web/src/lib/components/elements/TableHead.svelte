@@ -1,15 +1,15 @@
 <script lang="ts">
-
+  
 </script>
 
-<div class="table">
+<div class="table-head">
   <slot />
 </div>
 
 <style>
-  .table {
+  .table-head {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
   }
 </style>

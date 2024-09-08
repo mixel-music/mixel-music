@@ -1,8 +1,10 @@
-<!-- <script lang="ts">
+<script lang="ts">
+  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import TableBody from '$lib/components/elements/table-body.svelte';
-  import TableCell from '$lib/components/elements/table-item.svelte';
-  import CardItemGroup from '$lib/components/elements/CardItemGrid.svelte';
+  import { getArtistLink, getNextPage, getPrevPage } from '$lib/tools';
+  import CardItem from '$lib/components/elements/CardItem.svelte';
+  import CardItemGrid from '$lib/components/elements/CardItemGrid.svelte';
+  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
 
   export let data: PageData;
 </script>
@@ -12,10 +14,44 @@
 </svelte:head>
 
 {#if data.list}
-  <CardItemGroup title={data.title} />
-  <TableBody>
-    {#each data.list.list as artist (artist.artisthash)}
-        <TableCell text={ artist.artist } />
+  <CardItemGrid title={data.title}>
+    {#each data.list.list as artist}
+      <CardItem
+        href='{getArtistLink(artist.artisthash)}'
+        src=''
+        alt={artist.artist}
+        lazyload
+        round
+      >
+        <div class="info-card">
+          <a href='{getArtistLink(artist.artisthash)}'>
+            <span class="text">{artist.artist}</span>
+          </a>
+        </div>
+      </CardItem>
     {/each}
-  </TableBody>
-{/if} -->
+  </CardItemGrid>
+
+  {#if data.list.total > data.item}
+    <div class='bottom-ctl'>
+      <ButtonRound href={getPrevPage(data.page, data.item)}>
+        <Icon icon='iconoir:nav-arrow-left' />
+      </ButtonRound>
+      <ButtonRound href={
+        getNextPage(
+          data.page,
+          data.item,
+          data.list.total
+        )
+      }>
+        <Icon icon='iconoir:nav-arrow-right' />
+      </ButtonRound>
+    </div>
+  {/if}
+{/if}
+
+<style>
+  div {
+    text-align: center;
+  }
+</style>

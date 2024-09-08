@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import { getNextPage, getPrevPage, getArtwork } from '$lib/tools';
+  import { getAlbumLink, getArtistLink, getNextPage, getPrevPage, getArtwork } from '$lib/tools';
 
   import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
   import CardItemGrid from '$lib/components/elements/CardItemGrid.svelte';
@@ -23,11 +23,11 @@
         alt={album.album}
         lazyload
       >
-        <div>
-          <a href='/albums/{album.albumhash}'>
+        <div class="info-card">
+          <a href='{getAlbumLink(album.albumhash)}'>
             <span class="text">{album.album}</span>
           </a>
-          <a href='/artists'>
+          <a href='{getArtistLink(album.albumartisthash)}'>
             <span class="text-sub">{album.albumartist}</span>
           </a>
         </div>
@@ -54,13 +54,5 @@
 {/if}
 
 <style>
-  div {
-    padding-top: var(--app-padding-s);
-  }
 
-  .bottom-ctl {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
 </style>

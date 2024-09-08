@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { getArtistLink } from "$lib/tools";
+
   export let album: string;
   export let albumartist: string;
+  export let albumartisthash: string = '';
   export let year: string;
   export let totalTracks: number;
   export let totalLength: number | string;
@@ -15,9 +18,11 @@
     </span>
 
     {#if albumartist}
-      <span class="album-artist">
-        {albumartist}
-      </span>
+      <a href="{getArtistLink(albumartisthash)}">
+        <span class="album-artist">
+          {albumartist}
+        </span>
+      </a>
     {/if}
   </div>
 
@@ -44,7 +49,7 @@
     flex-direction: column;
     justify-content: center;
     width: -webkit-fill-available;
-    gap: 24px;
+    gap: var(--space-m);
   }
 
   .album-main {
@@ -74,5 +79,9 @@
     font-size: 80%;
     line-height: 1rem;
     color: var(--color-dark-text-2);
+  }
+
+  a {
+    width: fit-content;
   }
 </style>

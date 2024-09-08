@@ -1,8 +1,38 @@
+import PlayerService from "$lib/stores/stores";
+
 export function getArtwork(hash: string, size: number): string {
   let artwork: string =
     `http://localhost:2843/api/artworks/${hash}?size=${size.toString()}`;
 
   return artwork;
+}
+
+export function handleClick(item: any, play: boolean = false) {
+  PlayerService.addTrack({
+    hash: item.hash,
+    title: item.title,
+    album: item.album,
+    artist: item.artist,
+    artisthash: item.artisthash,
+    albumhash: item.albumhash,
+  }, play ? 0 : null);
+
+  if (play)
+    PlayerService.setTrack(0);
+}
+
+export function getAlbumLink(hash: string): string {
+  let album: string =
+    `/albums/${hash}`;
+
+  return album
+}
+
+export function getArtistLink(hash: string): string {
+  let artist: string =
+    `/artists/${hash}`;
+    
+  return artist;
 }
 
 export function getNextPage(page: number = 1, item: number = 40, total: number = 0): string {

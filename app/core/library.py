@@ -71,6 +71,7 @@ class Library:
                         Tracks.artist,
                         Tracks.hash,
                         Tracks.albumhash,
+                        Tracks.artisthash,
                         Tracks.duration,
                     )
                     .order_by(Tracks.title.asc())
@@ -171,10 +172,13 @@ class Library:
                     track_query = (
                         select(
                             Tracks.title,
+                            Tracks.hash,
+                            Tracks.album,
+                            Tracks.albumhash,
                             Tracks.artist,
+                            Tracks.artisthash,
                             Tracks.duration,
                             Tracks.track,
-                            Tracks.hash,
                             Tracks.comment,
                         )
                         .order_by(Tracks.track.asc())

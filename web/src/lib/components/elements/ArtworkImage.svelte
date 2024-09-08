@@ -36,11 +36,11 @@
     display: inline-flex;
     background-color: var(--color-dark-bg-2);
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-    border-radius: calc(var(--app-radius) / 2);
+    border-radius: var(--radius-s);
   }
 
   img {
     aspect-ratio: 1/1;
-    border-radius: calc(var(--app-radius) / 2);
+    border-radius: var(--radius-s);
   }
 </style>

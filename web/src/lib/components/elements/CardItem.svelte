@@ -3,6 +3,7 @@
   export let href: string | undefined = undefined;
   export let alt: string | undefined = undefined;
   export let src: string | undefined = undefined;
+  export let round: boolean = false;
 
   let showArtwork = true;
 
@@ -13,7 +14,7 @@
 
 <div class="card-item">
   {#if src}
-    <div class="card-body">
+    <div class="card-body {round ? 'round' : ''}">
         <a tabindex="-1" {href} on:click>
         {#if showArtwork}
           <img
@@ -26,10 +27,8 @@
     <slot />
 
   {:else}
-    <div class="card-body">
-      <a tabindex="-1" {href} on:click>
-
-      </a>
+    <div class="card-body {round ? 'round' : ''}">
+      <a tabindex="-1" {href} on:click />
     </div>
     <slot />
 
@@ -39,7 +38,7 @@
 <style>
   .card-item {
     white-space: nowrap;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-s);
   }
 
   .card-body {
@@ -47,8 +46,12 @@
     display: flex;
     background-color: var(--color-dark-bg-2);
     box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-    border-radius: calc(var(--app-radius) / 2);
     aspect-ratio: 1/1;
+    border-radius: var(--radius-s);
+  }
+
+  .round {
+    border-radius: 50%;
   }
 
   a {
@@ -63,6 +66,6 @@
     display: block;
     object-fit: scale-down;
     aspect-ratio: 1/1;
-    border-radius: calc(var(--app-radius) / 2);
+    border-radius: var(--radius-s);
   }
 </style>

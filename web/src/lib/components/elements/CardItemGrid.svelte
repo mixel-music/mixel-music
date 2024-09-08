@@ -11,8 +11,8 @@
 <style>
   div {
     display: grid;
-    grid-gap: 21px;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-gap: var(--space-m);
     overflow-x: hidden;
   }
 </style>

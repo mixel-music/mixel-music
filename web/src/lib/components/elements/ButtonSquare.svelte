@@ -11,7 +11,7 @@
   this={href ? 'a' : 'button'}
   style:height={height}
   style:width={width}
-  class="button-sq"
+  class="button-square"
   on:click
   on:focus
   {href}
@@ -20,8 +20,7 @@
 </svelte:element>
 
 <style>
-  .button-sq {
-    padding: 12px;
+  .button-square {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -30,10 +29,12 @@
     border: 1px solid var(--color-dark-border);
     transition: 0.2s ease;
     font-size: 18px;
-    border-radius: var(--app-radius);
+
+    border-radius: var(--radius-s);
+    padding: var(--space-xs);
   }
 
-  .button-sq:hover {
+  .button-square:hover {
     color: var(--color-dark-text-1);
     transition: 0.2s ease;
   }

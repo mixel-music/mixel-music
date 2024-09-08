@@ -1,50 +1,33 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getArtwork, convertDateTime, convertFileSize } from '$lib/tools';
-  import PlayerService from '$lib/stores/stores';
-  import Artwork from '$lib/components/elements/ArtworkImage.svelte';
-  import AlbumTitle from '$lib/components/elements/AlbumHeader.svelte';
-  import ButtonSq from '$lib/components/elements/ButtonSquare.svelte';
+  import { handleClick, getArtwork, convertDateTime, convertFileSize, getArtistLink } from '$lib/tools';
+
   import Table from '$lib/components/elements/Table.svelte';
-  import TableItem from '$lib/components/elements/TableItem.svelte';
+  import TableHead from '$lib/components/elements/TableHead.svelte';
+  import TableHeadItem from '$lib/components/elements/TableHeadItem.svelte';
+  import TableBody from '$lib/components/elements/TableBody.svelte';
+  import TableBodyItem from '$lib/components/elements/TableBodyItem.svelte';
+  import AlbumHeader from '$lib/components/elements/AlbumHeader.svelte';
+  import ArtworkImage from '$lib/components/elements/ArtworkImage.svelte';
+  import ButtonSquare from '$lib/components/elements/ButtonSquare.svelte';
 
   export let data: PageData;
-
-  function handleClick(item: any) {
-    PlayerService.addTrack({
-      hash: item.hash,
-      title: item.title,
-      album: data.item.album,
-      artist: item.artist,
-      albumhash: data.item.albumhash,
-    }, 0);
-
-    PlayerService.setTrack(0);
-  }
-
-  let columns = ['#', 'Title', 'Artist', 'Time'];
-  let columnsRatios = [0.1, 4, 2, 1];
-  let rows = data.item.tracks.map(item => ({
-    row: [
-      item.track != 0 ? item.track : '',
-      item.title,
-      item.artist,
-      convertDateTime(item.duration),
-    ],
-    onClick: () => handleClick(item)
-  }));
 </script>
+
+<svelte:head>
+  <title>{data.item.album} / {data.item.albumartist} • mixel-music</title>
+</svelte:head>
 
 {#if data.item}
   <div class="album-header">
-    <Artwork
+    <ArtworkImage
       src={getArtwork(data.item.albumhash, 500)}
       alt={data.item.album}
       width={230}
       height={230}
     />
 
-    <AlbumTitle
+    <AlbumHeader
       album={data.item.album}
       albumartist={data.item.albumartist}
       year={data.item.year}
@@ -56,29 +39,58 @@
   </div>
 
   <div class="album-action">
-    <ButtonSq
+    <ButtonSquare
       href='.'
       width='150px'
       height='50px'
     >
       Play
-    </ButtonSq>
+    </ButtonSquare>
 
-    <ButtonSq
+    <ButtonSquare
       href='.'
       width='150px'
       height='50px'
     >
       Shuffle
-    </ButtonSq>
+    </ButtonSquare>
   </div>
 
   <div class="album-tracks">
-    <Table headers={columns} columnRatios={columnsRatios}>
-      {#each rows as { row, onClick }}
-        <TableItem row={row} columnRatios={columnsRatios} onClick={onClick} />
+
+    <Table>
+      <TableHead>
+        <TableHeadItem size='xs'>#</TableHeadItem>
+        <TableHeadItem size='xl'>Title</TableHeadItem>
+        <TableHeadItem size='m'>Artist</TableHeadItem>
+        <TableHeadItem size="s">Time</TableHeadItem>
+        <TableHeadItem size="s"></TableHeadItem>
+      </TableHead>
+
+      {#each data.item.tracks as item}
+        <TableBody>
+          <TableBodyItem size='xs'>{item.track}</TableBodyItem>
+          <TableBodyItem size='xl'>
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <a on:click={handleClick(item, true)} on:keydown>
+              {item.title}
+            </a>
+          </TableBodyItem>
+
+          <TableBodyItem size='m'>
+            <a href='{getArtistLink(item.artisthash)}'>
+              {item.artist}
+            </a>
+          </TableBodyItem>
+
+          <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
+          <TableBodyItem size='s'></TableBodyItem>
+        </TableBody>
       {/each}
+
     </Table>
+
   </div>
 {/if}
 
