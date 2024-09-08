@@ -35,6 +35,7 @@
       totalLength={convertDateTime(data.item.durationtotals)}
       comment={data.item.tracks[0].comment}
       size={convertFileSize(data.item.sizetotals)}
+      albumartisthash={data.item.albumartisthash}
     />
   </div>
 

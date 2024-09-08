@@ -205,7 +205,7 @@ class Library:
 
     @staticmethod
     async def get_artist_info(hash: str) -> tuple[list[dict], dict]:
-        pass
+        return await Library._get_artist_info(hash)
 
 
     @staticmethod
@@ -236,6 +236,37 @@ class Library:
             'list': artist_list,
             'total': count,
         }
+    
+
+    @staticmethod
+    async def _get_artist_info(hash: str) -> dict:
+        artist_info = {}
+
+        try:
+            async with session() as conn:
+                artist_query = select(Artists.__table__).where(Artists.artisthash == hash)
+                artist_result = await conn.execute(artist_query)
+                artist_info = artist_result.mappings().first()
+
+                if artist_info:
+                    artist_info = dict(artist_info)
+                    album_query = (
+                        select(Albums.__table__)
+                        .order_by(Albums.year.asc())
+                        .where(Albums.albumartisthash == hash)
+                    )
+
+                    album_result = await conn.execute(album_query)
+                    artist_info['albums'] = [dict(album) for album in album_result.mappings().all()]
+
+                    return artist_info
+                
+                else:
+                    return {}
+                
+        except OperationalError as error:
+            logs.error("Failed to load artist info, %s", error)
+            return artist_info
 
 
 

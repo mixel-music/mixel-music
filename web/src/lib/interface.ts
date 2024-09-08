@@ -89,6 +89,7 @@ export interface ArtistList {
 export interface ArtistItem {
   artisthash: string;
   artist: string;
+  albums: AlbumItem[];
 }
 
 export interface PlayerState {
