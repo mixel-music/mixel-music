@@ -32,9 +32,7 @@
           <a href='{getAlbumLink(album.albumhash)}'>
             <span class="text">{album.album}</span>
           </a>
-          <a href='{getArtistLink(album.albumartisthash)}'>
-            <span class="text-sub">{album.year}</span>
-          </a>
+          <span class="text-sub">{album.year}</span>
         </div>
       </CardItem>
     {/each}
