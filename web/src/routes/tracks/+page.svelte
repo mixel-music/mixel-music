@@ -10,6 +10,7 @@
   import TableBodyItem from '$lib/components/elements/TableBodyItem.svelte';
   import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
+  import TableMenu from '$lib/components/TableMenu.svelte';
 
   export let data: PageData;
 </script>
@@ -24,7 +25,7 @@
     
     <Table>
       <TableHead>
-        <TableHeadItem size='m'>Title</TableHeadItem>
+        <TableHeadItem size='l'>Title</TableHeadItem>
         <TableHeadItem size='m'>Album</TableHeadItem>
         <TableHeadItem size='m'>Artist</TableHeadItem>
         <TableHeadItem size="s">Time</TableHeadItem>
@@ -33,7 +34,7 @@
 
       {#each data.list.list as item}
         <TableBody>
-          <TableBodyItem size='m'>
+          <TableBodyItem size='l'>
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <!-- svelte-ignore a11y-missing-attribute -->
             <a on:click={handleClick(item)} on:keydown>
@@ -51,7 +52,9 @@
             </a>
           </TableBodyItem>
           <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
-          <TableBodyItem size='xs'></TableBodyItem>
+          <TableBodyItem size='xs'>
+            <TableMenu />
+          </TableBodyItem>
         </TableBody>
       {/each}
     </Table>

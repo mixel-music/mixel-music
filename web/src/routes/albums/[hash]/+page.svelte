@@ -10,6 +10,7 @@
   import AlbumHeader from '$lib/components/elements/AlbumHeader.svelte';
   import ArtworkImage from '$lib/components/elements/ArtworkImage.svelte';
   import ButtonSquare from '$lib/components/elements/ButtonSquare.svelte';
+  import TableMenu from '$lib/components/TableMenu.svelte';
 
   export let data: PageData;
 </script>
@@ -65,7 +66,7 @@
         <TableHeadItem size='xl'>Title</TableHeadItem>
         <TableHeadItem size='m'>Artist</TableHeadItem>
         <TableHeadItem size="s">Time</TableHeadItem>
-        <TableHeadItem size="s"></TableHeadItem>
+        <TableHeadItem size="xs"></TableHeadItem>
       </TableHead>
 
       {#each data.item.tracks as item}
@@ -86,7 +87,9 @@
           </TableBodyItem>
 
           <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
-          <TableBodyItem size='s'></TableBodyItem>
+          <TableBodyItem size='xs'>
+            <TableMenu />
+          </TableBodyItem>
         </TableBody>
       {/each}
 

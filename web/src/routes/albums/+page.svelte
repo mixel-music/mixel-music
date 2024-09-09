@@ -8,6 +8,11 @@
   import CardItem from '$lib/components/elements/CardItem.svelte';
 
   export let data: PageData;
+
+  let emptySlots = 0;
+  if (data.list?.list && data.list.list.length < 8) {
+    emptySlots = 8 - data.list.list.length;
+  }
 </script>
 
 <svelte:head>
@@ -33,6 +38,12 @@
         </div>
       </CardItem>
     {/each}
+
+    {#if emptySlots > 0}
+      {#each Array(emptySlots) as _}
+        <CardItem Empty />
+      {/each}
+    {/if}
   </CardItemGrid>
 
   {#if data.list.total > data.item}

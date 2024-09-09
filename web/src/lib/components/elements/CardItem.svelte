@@ -4,6 +4,7 @@
   export let alt: string | undefined = undefined;
   export let src: string | undefined = undefined;
   export let round: boolean = false;
+  export let Empty: boolean = false;
 
   let showArtwork = true;
 
@@ -12,33 +13,43 @@
   }
 </script>
 
-<div class="card-item">
-  {#if src}
-    <div class="card-body {round ? 'round' : ''}">
-        <a tabindex="-1" {href} on:click>
-        {#if showArtwork}
-          <img
-            loading={lazyload ? 'lazy' : null}
-            {src} {alt} on:error={loadFailed}
-          >
-        {/if}
-      </a>
-    </div>
-    <slot />
+{#if !Empty}
+  <div class="card-item">
+    {#if src}
+      <div class="card-body {round ? 'round' : ''}">
+          <a tabindex="-1" {href} on:click>
+          {#if showArtwork}
+            <img
+              loading={lazyload ? 'lazy' : null}
+              {src} {alt} on:error={loadFailed}
+            >
+          {/if}
+        </a>
+      </div>
+      <slot />
 
-  {:else}
-    <div class="card-body {round ? 'round' : ''}">
-      <a tabindex="-1" {href} on:click />
-    </div>
-    <slot />
+    {:else}
+      <div class="card-body {round ? 'round' : ''}">
+        <a tabindex="-1" {href} on:click />
+      </div>
+      <slot />
 
-  {/if}
-</div>
+    {/if}
+  </div>
+{:else}
+  <div class="card-item">
+    
+  </div>
+{/if}
 
 <style>
   .card-item {
     white-space: nowrap;
     margin-bottom: var(--space-s);
+  }
+
+  .empty-item {
+    visibility: hidden;
   }
 
   .card-body {

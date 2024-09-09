@@ -1,11 +1,16 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { handleClick, getArtwork, convertDateTime, getArtistLink, getAlbumLink } from '$lib/tools';
+  import { handleClick, getArtwork, getArtistLink, getAlbumLink } from '$lib/tools';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import CardItem from '$lib/components/elements/CardItem.svelte';
   import CardItemGrid from '$lib/components/elements/CardItemGrid.svelte';
 
   export let data: PageData;
+
+  let emptySlots = 0;
+  if (data.item?.albums && data.item.albums.length < 8) {
+    emptySlots = 8 - data.item.albums.length;
+  }
 </script>
 
 <svelte:head>
@@ -33,6 +38,12 @@
         </div>
       </CardItem>
     {/each}
+
+    {#if emptySlots > 0}
+      {#each Array(emptySlots) as _}
+        <CardItem Empty />
+      {/each}
+    {/if}
   </CardItemGrid>
 {/if}
 
