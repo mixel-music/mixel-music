@@ -13,6 +13,7 @@ class Tracks(Base):
     album: str = Column(String, nullable=False)
     albumhash: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
+    albumartisthash: str = Column(String, nullable=False)
     bitdepth: int = Column(Integer, nullable=False)
     bitrate: float = Column(REAL, nullable=False)
     channels: int = Column(Integer, nullable=False)

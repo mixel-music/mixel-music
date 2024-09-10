@@ -1,8 +1,8 @@
 <script lang="ts">
   import PlayerService from "$lib/stores/stores";
-  import PlayerButton from '$lib/components/layouts/player/player-button.svelte'
-  import PlayerNow from '$lib/components/layouts/player/player-now.svelte';
   import { isQueueOpen } from "$lib/stores/layout";
+  import PlayerButton from '$lib/components/layouts/player/PlayerButton.svelte'
+  import PlayerInfo from '$lib/components/layouts/player/PlayerInfo.svelte';
 
   $: trk = $PlayerService;
 </script>
@@ -58,7 +58,7 @@
   </div>
 
   <div class="player-contents">
-    <PlayerNow />
+    <PlayerInfo />
     
     <div class="player-settings">
       <div class="player-volume">
@@ -94,10 +94,10 @@
         off={!trk.loop}
       />
 
-      <PlayerButton
+      <!-- <PlayerButton
         icon="iconoir:closed-captions-tag"
         off
-      />
+      /> -->
     
       <PlayerButton
         on:click={() => {

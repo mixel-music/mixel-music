@@ -1,15 +1,17 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { handleClick, getArtwork, getArtistLink, getAlbumLink } from '$lib/tools';
+  import { getAlbumLink } from '$lib/tools';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
-  import CardItem from '$lib/components/elements/CardItem.svelte';
-  import CardItemGrid from '$lib/components/elements/CardItemGrid.svelte';
+  import GridWrap from '$lib/components/elements/GridWrap.svelte';
+  import GridItem from '$lib/components/elements/GridItem.svelte';
 
   export let data: PageData;
 
   let emptySlots = 0;
-  if (data.item?.albums && data.item.albums.length < 8) {
-    emptySlots = 8 - data.item.albums.length;
+  $: { 
+    if (data.item?.albums && data.item.albums.length < 8) {
+      emptySlots = 8 - data.item.albums.length;
+    }
   }
 </script>
 
@@ -17,14 +19,14 @@
   <title>{data.item.artist} • mixel-music</title>
 </svelte:head>
 
-{#if data.item}
-  <PageTitle title={data.item.artist} />
+<PageTitle title={data.item.artist} />
 
-  <CardItemGrid>
+{#if data.item}
+  <GridWrap>
     {#each data.item.albums as album}
-      <CardItem
-        href='/albums/{ album.albumhash }'
-        src={getArtwork(album.albumhash, 300)}
+      <GridItem
+        href={getAlbumLink(album.albumhash)}
+        src={album.albumhash}
         alt={album.album}
         lazyload
       >
@@ -34,17 +36,13 @@
           </a>
           <span class="text-sub">{album.year}</span>
         </div>
-      </CardItem>
+      </GridItem>
     {/each}
 
     {#if emptySlots > 0}
       {#each Array(emptySlots) as _}
-        <CardItem Empty />
+        <GridItem Empty />
       {/each}
     {/if}
-  </CardItemGrid>
+  </GridWrap>
 {/if}
-
-<style>
-
-</style>

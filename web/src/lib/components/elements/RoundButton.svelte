@@ -1,18 +1,18 @@
-
 <script lang="ts">
   export let type: string | undefined = undefined;
   export let href: string | undefined = undefined;
-  export let width: string | number | undefined = 42;
-  export let height: string | number | undefined = 42;
+  export let width: string = '42px';
+  export let height: string = '42px';
+  export let preload: string = 'false';
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
-  data-sveltekit-preload-data="hover"
-  style='width: {width}px; height: {height}px;'
+  data-sveltekit-preload-data={preload ? preload : 'false'}
   type={href ? undefined : type}
   this={href ? 'a' : 'button'}
-  class="button-round"
+  style:height={height}
+  style:width={width}
   on:click
   on:focus
   {href}
@@ -21,7 +21,7 @@
 </svelte:element>
 
 <style>
-  .button-round {
+  a, button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,7 +35,7 @@
     padding: var(--space-xs);
   }
 
-  .button-round:hover {
+  a:hover, button:hover {
     color: var(--color-dark-text-1);
     transition: 0.2s ease;
   }

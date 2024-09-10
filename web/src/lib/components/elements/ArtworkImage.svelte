@@ -4,7 +4,7 @@
   export let width: string | number | undefined = undefined;
   export let height: string | number | undefined = undefined;
   export let FullCover: boolean = false;
-
+  export let WrapCover: boolean = false;
   let isDisplay = true;
 
   function loadFailed() {
@@ -12,7 +12,7 @@
   }
 </script>
 
-<div style='height: {height}px;'>
+<div class:wrap-cover={WrapCover} style="height: {height}px;">
   {#if isDisplay}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <img
@@ -25,7 +25,8 @@
       on:mousedown
       on:mouseleave
       on:error={loadFailed}
-      style={FullCover ? 'object-fit: cover;' : 'object-fit: scale-down;'}
+      class:full-cover={FullCover}
+      loading="lazy"
     />
   {/if}
 </div>
@@ -42,5 +43,15 @@
   img {
     aspect-ratio: 1/1;
     border-radius: var(--radius-s);
+    object-fit: scale-down;
+  }
+
+  .full-cover {
+    object-fit: cover;
+  }
+
+  .wrap-cover {
+    box-shadow: 0 0 0 1px #ffffff05 inset;
+    background-color: #ffffff05;
   }
 </style>

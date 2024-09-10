@@ -250,19 +250,47 @@ class Library:
 
                 if artist_info:
                     artist_info = dict(artist_info)
+
                     album_query = (
                         select(Albums.__table__)
-                        .order_by(Albums.year.asc())
                         .where(Albums.albumartisthash == hash)
+                        .order_by(Albums.year.asc())
                     )
 
                     album_result = await conn.execute(album_query)
-                    artist_info['albums'] = [dict(album) for album in album_result.mappings().all()]
+                    albums_data = album_result.mappings().all()
+                    logs.debug("%s", albums_data)
 
+                    artist_info['albums'] = [dict(album) for album in albums_data]
+                    
                     return artist_info
-                
                 else:
-                    return {}
+                    track_subquery = (
+                        select(Tracks.albumartisthash)
+                        .where(Tracks.artisthash == hash)
+                        .subquery()
+                    )
+                    
+                    album_from_tracks_query = (
+                        select(Albums.__table__)
+                        .where(Albums.albumartisthash.in_(select(track_subquery)))
+                        .order_by(Albums.year.asc())
+                    )
+
+                    track_result = await conn.execute(album_from_tracks_query)
+                    albums_data = track_result.mappings().all()
+                    albums_data = [dict(album) for album in albums_data]
+
+                    if albums_data:
+                        album = albums_data[0]
+                        artist_info = {
+                            'artist': album.get('albumartist', ''),
+                            'artisthash': album.get('artisthash', ''),
+                            'albums': albums_data
+                        }
+                        return artist_info
+                
+            return {}
                 
         except OperationalError as error:
             logs.error("Failed to load artist info, %s", error)
@@ -314,7 +342,6 @@ class LibraryScan:
         alb = asyncio.create_task(LibraryScan.perform_albums())
         art = asyncio.create_task(LibraryScan.perform_artists())
         await alb, art
-        
 
     @staticmethod
     async def perform_albums() -> None:
@@ -452,13 +479,14 @@ class LibraryScan:
             logs.error("Failed to refresh album list, %s", error)
             await conn.rollback()
 
-
+    
     @staticmethod
     async def perform_artists() -> None:
         try:
             async with session() as conn:
                 db_query = (
                     select(
+                        Tracks.hash,
                         Tracks.albumartist,
                     )
                     .distinct(Tracks.albumartist)
@@ -468,38 +496,41 @@ class LibraryScan:
                 db_result = await conn.execute(db_query)
                 artists_data = db_result.all()
 
-                for art in artists_data:
-                    if art.albumartist:
+                # 아티스트, 앨범 아티스트 그대로, 아티스트는 변환 거친 해시, 앨범 아티스트는 그냥 해시
+                # 앨범에는 앨범 아티스트와 앨범 아티스트 해시만 존재
+                # 아티스트 목록에는 앨범 아티스트만 표시하되, 아티스트 해시가 달라도 앨범 아티스트 해시 동일하면 여기로
+
+                for track in artists_data:
+                    if track.albumartist:
                         artist_data = {
-                            'artist': art.albumartist,
-                            'artisthash': hash_str(art.albumartist)
+                            'artist': track.albumartist,
+                            'artisthash': hash_str(track.albumartist),
                         }
+
                         await LibraryRepo.insert_artist(conn, artist_data)
-                
-                await conn.commit()
-
-
-            async with session() as conn:
-                artists_query = select(Artists.artisthash)
-                result = await conn.execute(artists_query)
-                artist_hash = {row.artisthash for row in result}
-
-                albums_query = select(Albums.albumartisthash).distinct()
-                result = await conn.execute(albums_query)
-                album_hash = {row.albumartisthash for row in result}
-
-                find = artist_hash - album_hash
-
-                for artisthash in find:
-                    logs.debug("Removing Artist %s", artisthash)
-                    await LibraryRepo.delete_artist(conn, artisthash)
 
                 await conn.commit()
-
 
         except Exception as error:
             logs.error("Failed to refresh artist list, %s", error)
             await conn.rollback()
+
+        async with session() as conn:
+            artists_query = select(Artists.artisthash)
+            result = await conn.execute(artists_query)
+            artist_hash = {row.artisthash for row in result}
+
+            albums_query = select(Tracks.albumartisthash).distinct()
+            result = await conn.execute(albums_query)
+            album_hash = {row.albumartisthash for row in result}
+
+            find = artist_hash - album_hash
+
+            for artisthash in find:
+                logs.debug("Removing Artist %s", artisthash)
+                await LibraryRepo.delete_artist(conn, artisthash)
+
+            await conn.commit()
 
 
 

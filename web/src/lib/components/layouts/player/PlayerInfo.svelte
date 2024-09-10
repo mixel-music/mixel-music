@@ -1,12 +1,17 @@
 <script lang="ts">
-  import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
-  import { convertDateTime, getAlbumLink, getArtistLink, getArtwork } from "$lib/tools";
+  import {
+    getAlbumLink,
+    getArtistLink,
+    getArtwork,
+    convertDateTime,
+  } from "$lib/tools";
   import PlayerService from "$lib/stores/stores";
+  import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
 
   $: trk = $PlayerService;
 </script>
 
-<div class="player-now">
+<div class="player-info">
   {#if trk.hash}
     <ArtworkImage
       src={trk.album === 'Unknown Album'
@@ -18,13 +23,12 @@
       alt="Front Cover"
     />
 
-    <div class="track">
+    <div>
       <span class="text">{trk.title}</span>
       <span class="text-sub">
         <a href="{getArtistLink(trk.artisthash)}">
           {trk.artist}
-        </a>
-        -
+        </a> -
         <a href="{getAlbumLink(trk.albumhash)}">
           {trk.album}
         </a>  
@@ -37,14 +41,14 @@
 </div>
 
 <style>
-  .player-now {
+  .player-info {
     display: flex;
     align-items: center;
     gap: var(--space-s);
     line-height: 100%
   }
 
-  .track {
+  .player-info div {
     display: flex;
     flex-direction: column;
     justify-content: space-around;

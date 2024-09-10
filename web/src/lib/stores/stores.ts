@@ -38,8 +38,15 @@ function InitPlayerService() {
     }));
 
     if (audio.currentTime >= audio.duration) {
-      if (PlayerService.getState().index + 1) {
-        PlayerService.setTrack(PlayerService.getState().index + 1);
+      let stats = PlayerService.getState();
+
+      if (stats.lists[stats.index + 1]) {
+        PlayerService.setTrack(stats.index + 1);
+        console.log("stats.index found");
+      }
+      else if (stats.loop === 1) {
+        PlayerService.setTrack(0);
+        console.log("go to first");
       }
     }
   };
@@ -103,14 +110,13 @@ function InitPlayerService() {
       console.debug(`setTrack called with ${index}`);
 
       if (track) {
-        console.debug("init track");
         audio.src = `http://localhost:2843/api/streaming/${track.hash}`;
         audio.load();
 
         audio.onloadedmetadata = (): void => {
+          updateState();
           updateTrack(track);
           SetMediaInfo();
-          updateState();
           audio.play();
         };
 
@@ -211,12 +217,14 @@ function InitPlayerService() {
 
     goNext: (): void => {
       update(state => {
-        const newIndex = state.index < state.lists.length - 1 ? state.index + 1 : state.index;
-        console.debug(`state.lists.length: ${state.lists.length}`);
+        let newIndex = state.index + 1;
 
-        if (newIndex !== state.index && newIndex < state.lists.length) {
-          console.debug(`newIndex value: ${newIndex}`);
+        if (state.lists[newIndex]) {
           PlayerService.setTrack(newIndex);
+        }
+        else if (state.loop === 1) {
+          PlayerService.setTrack(0);
+          newIndex = 0;
         }
 
         return {

@@ -1,9 +1,24 @@
 from tinytag import TinyTag
 from datetime import datetime
+import re
 
 from core.logger import *
 from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime
+
+g_pattern = re.compile(r'\s*\([^)]*[:;,][^)]*\)')
+f_pattern = re.compile(r'\s*feat\.?\s.*')
+
+def convert_artist(data: str) -> str:
+    try:
+        artist_value = g_pattern.sub('', data)
+        artist_value = f_pattern.sub('', data)
+
+        return artist_value
+    
+    except:
+        return ''
+
 
 def extract_tags(path: str) -> dict:
     path, real_path = str_path(path), get_path(path)
@@ -14,10 +29,11 @@ def extract_tags(path: str) -> dict:
             'hash': hash_str(path),
             'title': tags.title or get_filename(path)[0] or 'Unknown Title',
             'artist': tags.artist or 'Unknown Artist',
-            'artisthash': hash_str(tags.artist) if tags.artist else '',
+            'artisthash': hash_str(convert_artist(tags.artist)),
             'album': tags.album or 'Unknown Album',
             'albumhash': '',
             'albumartist': tags.albumartist or '',
+            'albumartisthash': hash_str(tags.albumartist) or '',
             'bitdepth': tags.bitdepth or 0,
             'bitrate': tags.bitrate or 0.0,
             'channels': tags.channels or 0,

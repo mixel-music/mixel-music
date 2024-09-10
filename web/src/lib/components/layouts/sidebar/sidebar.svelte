@@ -1,37 +1,37 @@
 <script lang="ts">
-  import SidebarList from './sidebar-list.svelte';
-  import SidebarLink from './sidebar-link.svelte';
+  import SidebarList from './SidebarList.svelte';
+  import SidebarItem from './SidebarItem.svelte';
 </script>
 
 <div>
   <SidebarList>
-    <SidebarLink href='/'>
+    <SidebarItem href='/'>
       Home
-    </SidebarLink>
-    <SidebarLink href='/'>
+    </SidebarItem>
+    <SidebarItem href='/'>
       Search
-    </SidebarLink>
-    <SidebarLink href='/'>
+    </SidebarItem>
+    <SidebarItem href='/'>
       My Mix
-    </SidebarLink>
+    </SidebarItem>
   </SidebarList>
 
   <SidebarList name='Library'>
-    <SidebarLink href='/albums' icon='iconoir:compact-disc'>
+    <SidebarItem href='/albums' icon='iconoir:compact-disc'>
       Albums
-    </SidebarLink>
-    <SidebarLink href='/artists' icon='iconoir:microphone'>
+    </SidebarItem>
+    <SidebarItem href='/artists' icon='iconoir:microphone'>
       Artists
-    </SidebarLink>
-    <SidebarLink href='/tracks' icon='iconoir:music-double-note'>
+    </SidebarItem>
+    <SidebarItem href='/tracks' icon='iconoir:music-double-note'>
       Tracks
-    </SidebarLink>
+    </SidebarItem>
   </SidebarList>
 
   <SidebarList name='Playlists'>
-    <SidebarLink href='' icon='iconoir:plus'>
+    <SidebarItem href='' icon='iconoir:plus'>
       Create Playlist
-    </SidebarLink>
+    </SidebarItem>
   </SidebarList>
 </div>
 

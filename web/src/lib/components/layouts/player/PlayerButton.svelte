@@ -42,9 +42,17 @@
     align-items: center;
   }
 
+  button:active {
+    color: var(--color-dark-text-1);
+  }
+
   button:hover {
     color: var(--color-dark-focus);
     transition: all 0.2s ease;
+  }
+
+  button:focus {
+    outline: none;
   }
 
   .control {

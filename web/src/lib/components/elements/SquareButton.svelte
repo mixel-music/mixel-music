@@ -3,15 +3,16 @@
   export let href: string | undefined = undefined;
   export let width: string = '42px';
   export let height: string = '42px';
+  export let preload: string = 'false';
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
+  data-sveltekit-preload-data={preload ? preload : 'false'}
   type={href ? undefined : type}
   this={href ? 'a' : 'button'}
   style:height={height}
   style:width={width}
-  class="button-square"
   on:click
   on:focus
   {href}
@@ -20,7 +21,7 @@
 </svelte:element>
 
 <style>
-  .button-square {
+  a, button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -34,7 +35,7 @@
     padding: var(--space-xs);
   }
 
-  .button-square:hover {
+  a:hover, button:hover {
     color: var(--color-dark-text-1);
     transition: 0.2s ease;
   }

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { getArtwork } from "$lib/tools";
+
   export let lazyload: boolean = false;
   export let href: string | undefined = undefined;
   export let alt: string | undefined = undefined;
@@ -17,41 +19,33 @@
   <div class="card-item">
     {#if src}
       <div class="card-body {round ? 'round' : ''}">
-          <a tabindex="-1" {href} on:click>
+        <a tabindex="-1" {href} on:click>
           {#if showArtwork}
             <img
               loading={lazyload ? 'lazy' : null}
-              {src} {alt} on:error={loadFailed}
+              src={getArtwork(src, 300)} {alt} on:error={loadFailed}
             >
           {/if}
         </a>
       </div>
-      <slot />
 
+      <slot />
     {:else}
       <div class="card-body {round ? 'round' : ''}">
-        <a tabindex="-1" {href} on:click />
+        <a tabindex="-1" {href} on:click>
+
+        </a>
       </div>
       <slot />
-
     {/if}
   </div>
 {:else}
-  <div class="card-item">
+  <div class="card-item empty">
     
   </div>
 {/if}
 
 <style>
-  .card-item {
-    white-space: nowrap;
-    margin-bottom: var(--space-s);
-  }
-
-  .empty-item {
-    visibility: hidden;
-  }
-
   .card-body {
     width: auto;
     display: flex;
@@ -61,8 +55,21 @@
     border-radius: var(--radius-s);
   }
 
+  .card-item {
+    white-space: nowrap;
+    margin-bottom: var(--space-s);
+  }
+
+  .empty {
+    visibility: hidden;
+  }
+
   .round {
-    border-radius: 50%;
+    border-radius: var(--radius-l);
+  }
+
+  .round *:focus {
+    border-radius: var(--radius-l);
   }
 
   a {

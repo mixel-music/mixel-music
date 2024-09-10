@@ -2,7 +2,7 @@
   import Artwork from "$lib/components/elements/ArtworkImage.svelte";
   import { isQueueOpen } from "$lib/stores/layout";
   import PlayerService from "$lib/stores/stores";
-  import { getArtwork } from "$lib/tools";
+  import { getArtistLink, getArtwork } from "$lib/tools";
 
   import { fly } from "svelte/transition";
   import { circOut } from "svelte/easing";
@@ -22,7 +22,7 @@
   }>
     Play Queue
     
-    {#each lists.lists as trk}
+    {#each lists.lists as trk, index}
       <div class="track">
         <Artwork
           src={trk.album === 'Unknown Album'
@@ -36,8 +36,17 @@
         />
 
         <div class="texts">
-          <span class="title">{trk.title}</span>
-          <span class="description">{trk.artist}</span>
+          <!-- svelte-ignore a11y-missing-attribute -->
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <span class="title">
+                {trk.title}
+            </span>
+            <span class="description">
+              <a href="{getArtistLink(trk.artisthash)}">
+                {trk.artist}
+              </a>
+            </span>
         </div>
       </div>
     {/each}

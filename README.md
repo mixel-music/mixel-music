@@ -10,9 +10,10 @@
 * This is my first time using JavaScript, TypeScript, and Svelte. Also, I have little experience doing backend development using Python.
   * So there may be many areas that need improvement. Feedback is always welcome.
 
-![album-list](https://github.com/user-attachments/assets/420b8ffe-362b-45f9-930c-28065cc1228e)
+## Screenshots
+![album-list-1620_864_75_60](https://github.com/user-attachments/assets/0cc1637c-3786-485d-938e-a1ee25fd3d46)
 
-![album-info](https://github.com/user-attachments/assets/45a2f407-1536-407d-8e24-65d9abe5e887)
+![album-info-1620_864_75_60](https://github.com/user-attachments/assets/02f2c1b5-9bec-4c40-8cbc-f99e3b0103a5)
 
 <!--
 ## Features

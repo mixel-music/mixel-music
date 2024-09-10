@@ -1,16 +1,11 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import { handleClick, getNextPage, getPrevPage, convertDateTime, getArtistLink, getAlbumLink } from '$lib/tools';
-
-  import Table from '$lib/components/elements/Table.svelte';
-  import TableHead from '$lib/components/elements/TableHead.svelte';
-  import TableHeadItem from '$lib/components/elements/TableHeadItem.svelte';
-  import TableBody from '$lib/components/elements/TableBody.svelte';
-  import TableBodyItem from '$lib/components/elements/TableBodyItem.svelte';
-  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
+  import { getNextPage, getPrevPage } from '$lib/tools';
+  import RoundButton from '$lib/components/elements/RoundButton.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
-  import TableMenu from '$lib/components/TableMenu.svelte';
+  import TrackTables from '$lib/components/TrackTables.svelte';
+  import ControlsBar from '$lib/components/ControlsBar.svelte';
 
   export let data: PageData;
 </script>
@@ -19,53 +14,19 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
-{#if data.list}
-  <div>
-    <PageTitle title=Tracks />
-    
-    <Table>
-      <TableHead>
-        <TableHeadItem size='l'>Title</TableHeadItem>
-        <TableHeadItem size='m'>Album</TableHeadItem>
-        <TableHeadItem size='m'>Artist</TableHeadItem>
-        <TableHeadItem size="s">Time</TableHeadItem>
-        <TableHeadItem size="xs"></TableHeadItem>
-      </TableHead>
+<PageTitle title={data.title} />
 
-      {#each data.list.list as item}
-        <TableBody>
-          <TableBodyItem size='l'>
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <a on:click={handleClick(item)} on:keydown>
-              {item.title}
-            </a>
-          </TableBodyItem>
-          <TableBodyItem size="m">
-            <a href='{getAlbumLink(item.albumhash)}'>
-              {item.album}
-            </a>
-          </TableBodyItem>
-          <TableBodyItem size='m'>
-            <a href='{getArtistLink(item.artisthash)}'>
-              {item.artist}
-            </a>
-          </TableBodyItem>
-          <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
-          <TableBodyItem size='xs'>
-            <TableMenu />
-          </TableBodyItem>
-        </TableBody>
-      {/each}
-    </Table>
-  </div>
+{#if data.list}
+  <ControlsBar />
+  <TrackTables list={ data.list.list } />
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <ButtonRound href={getPrevPage(data.page, data.item)}>
+      <RoundButton href={getPrevPage(data.page, data.item)} preload="hover">
         <Icon icon='iconoir:nav-arrow-left' />
-      </ButtonRound>
-      <ButtonRound href={
+      </RoundButton>
+
+      <RoundButton preload="hover" href={
         getNextPage(
           data.page,
           data.item,
@@ -73,11 +34,7 @@
         )
       }>
         <Icon icon='iconoir:nav-arrow-right' />
-      </ButtonRound>
+      </RoundButton>
     </div>
   {/if}
 {/if}
-
-<style>
-
-</style>

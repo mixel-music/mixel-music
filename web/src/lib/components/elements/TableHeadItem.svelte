@@ -2,7 +2,7 @@
   export let size = 'm';
 
   $: flexSize = {
-    xs: 0.3,
+    xs: 0.2,
     s: 1,
     m: 2,
     l: 3,

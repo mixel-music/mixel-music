@@ -1,17 +1,17 @@
 <script lang="ts">
-  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
+  import RoundButton from '$lib/components/elements/RoundButton.svelte';
   import TextBox from '$lib/components/elements/TextBox.svelte';
   import Icon from '@iconify/svelte';
 </script>
 
 <nav>
   <div>
-    <ButtonRound on:click={() => history.back()}>
+    <RoundButton on:click={() => history.back()}>
       <Icon icon="iconoir:nav-arrow-left" />
-    </ButtonRound>
-    <ButtonRound on:click={() => history.forward()}>
+    </RoundButton>
+    <RoundButton on:click={() => history.forward()}>
       <Icon icon="iconoir:nav-arrow-right" />
-    </ButtonRound>
+    </RoundButton>
   </div>
 
   <div>
@@ -21,12 +21,12 @@
       width="290px"
       placeholder="Search"
     />
-    <ButtonRound>
+    <RoundButton>
       <Icon icon="iconoir:refresh" />
-    </ButtonRound>
-    <ButtonRound>
+    </RoundButton>
+    <RoundButton>
       <Icon icon="iconoir:user" />
-    </ButtonRound>
+    </RoundButton>
   </div>
 </nav>
 

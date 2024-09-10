@@ -1,14 +1,12 @@
 <script lang="ts">
-  export let title: string | undefined;
+  export let title: string;
   export let inline: boolean = false;
 </script>
 
 {#if title}
-<div style:display={ inline ? 'inline' : ''}>
-  <span>
-    {title}
-  </span>
-</div>
+  <div style:display={ inline ? 'inline' : ''}>
+    <span>{title}</span>
+  </div>
 {/if}
 
 <style>

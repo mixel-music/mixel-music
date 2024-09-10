@@ -2,10 +2,10 @@
   import './style.css';
   import { onDestroy } from 'svelte';
 
-  import Sidebar from '$lib/components/layouts/sidebar/sidebar.svelte';
-  import Navbar from '$lib/components/layouts/navbar/navbar.svelte';
-  import Player from '$lib/components/layouts/player/player.svelte';
-  import PlayerQueue from '$lib/components/layouts/player/player-queue.svelte';
+  import Sidebar from '$lib/components/layouts/sidebar/Sidebar.svelte';
+  import Navbar from '$lib/components/layouts/navbar/Navbar.svelte';
+  import Player from '$lib/components/layouts/player/Player.svelte';
+  import PlayerQueue from '$lib/components/layouts/player/PlayerList.svelte';
   import PlayerService from '$lib/stores/stores';
 
   onDestroy(() => {

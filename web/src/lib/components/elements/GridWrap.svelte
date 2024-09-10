@@ -1,9 +1,7 @@
 <script lang="ts">
-  import PageTitle from "./PageTitle.svelte";
-  export let title: string | undefined = undefined;
+
 </script>
 
-<PageTitle {title} />
 <div>
   <slot />
 </div>

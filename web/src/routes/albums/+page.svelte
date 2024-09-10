@@ -1,11 +1,16 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
-  import { getAlbumLink, getArtistLink, getNextPage, getPrevPage, getArtwork } from '$lib/tools';
-
-  import ButtonRound from '$lib/components/elements/ButtonRound.svelte';
-  import CardItemGrid from '$lib/components/elements/CardItemGrid.svelte';
-  import CardItem from '$lib/components/elements/CardItem.svelte';
+  import {
+    getAlbumLink,
+    getArtistLink,
+    getNextPage,
+    getPrevPage,
+  } from '$lib/tools';
+  import RoundButton from '$lib/components/elements/RoundButton.svelte';
+  import PageTitle from '$lib/components/elements/PageTitle.svelte';
+  import GridWrap from '$lib/components/elements/GridWrap.svelte';
+  import GridItem from '$lib/components/elements/GridItem.svelte';
 
   export let data: PageData;
 
@@ -19,12 +24,14 @@
   <title>{data.title} • mixel-music</title>
 </svelte:head>
 
+<PageTitle title={data.title} />
+
 {#if data.list}
-  <CardItemGrid title={data.title}>
+  <GridWrap>
     {#each data.list.list as album (album.albumhash)}
-      <CardItem
-        href='/albums/{ album.albumhash }'
-        src={getArtwork(album.albumhash, 300)}
+      <GridItem
+        href={getAlbumLink(album.albumhash)}
+        src={album.albumhash}
         alt={album.album}
         lazyload
       >
@@ -36,34 +43,32 @@
             <span class="text-sub">{album.albumartist}</span>
           </a>
         </div>
-      </CardItem>
+      </GridItem>
     {/each}
 
     {#if emptySlots > 0}
       {#each Array(emptySlots) as _}
-        <CardItem Empty />
+        <GridItem Empty />
       {/each}
     {/if}
-  </CardItemGrid>
+  </GridWrap>
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <ButtonRound href={getPrevPage(data.page, data.item)}>
+      <RoundButton href={getPrevPage(data.page, data.item)} preload="hover">
         <Icon icon='iconoir:nav-arrow-left' />
-      </ButtonRound>
-      <ButtonRound href={
-        getNextPage(
+      </RoundButton>
+      
+      <RoundButton
+        href={getNextPage(
           data.page,
           data.item,
           data.list.total
-        )
-      }>
+        )}
+        preload="hover"
+      >
         <Icon icon='iconoir:nav-arrow-right' />
-      </ButtonRound>
+      </RoundButton>
     </div>
   {/if}
 {/if}
-
-<style>
-
-</style>
