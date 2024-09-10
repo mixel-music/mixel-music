@@ -6,12 +6,23 @@
   --space-m: 21px;
   --space-l: 32px;
   --space-xl: 64px;
-
-  --table-padding: 16px 8px;
-
   --radius-s: 0.2em;
   --radius-m: 0.4em;
   --radius-l: 50%;
+
+  --table-padding: 16px 8px;
+
+  --font-family:
+    Pretendard Variable,
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    Noto Sans KR,
+    Segoe UI,
+    Apple SD Gothic Neo,
+    Helvetica Neue,
+    Arial,
+    sans-serif;
 
   --dark-bg-1: rgb(18, 18, 18);
   --dark-bg-1-acrylic: rgb(18, 18, 18, 0.95);
@@ -29,33 +40,12 @@
   --dark-color-1: rgb(215, 215, 215);
   --dark-color-2: rgb(166, 166, 166);
 
-
-  --color-dark-trk-len: rgb(46, 46, 46);
-  --color-dark-trk-now: rgb(215, 215, 215);
-  --color-dark-disabled: rgb(86, 86, 86);
-  --color-dark-border: rgb(32, 32, 32);
-  --color-dark-focus: rgb(155, 155, 155);
-
-
   /* ----------------- */
 
   --app-padding-s: 16px;
   --app-padding-l: 21px;
   --app-margin-s: 16px;
   --app-margin-l: 21px;
-  --app-radius: 0.4em;
-
-  --app-font-family:
-  Pretendard Variable,
-  Pretendard,
-  -apple-system,
-  BlinkMacSystemFont,
-  Noto Sans KR,
-  Segoe UI,
-  Apple SD Gothic Neo,
-  Helvetica Neue,
-  Arial,
-  sans-serif;
 
   --color-dark-bg-1: rgb(18, 18, 18);
   --color-dark-bg-2: rgb(21, 21, 21);
@@ -89,7 +79,7 @@
 }
 
 html {
-  font-family: var(--app-font-family);
+  font-family: var(--font-family);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   scrollbar-gutter: stable;
@@ -98,7 +88,7 @@ html {
 
 body {
   overflow-x: hidden;
-  background-color: var(--color-dark-bg-1);
+  background-color: var(--dark-bg-1);
   color: var(--color-dark-text-1);
   font-size: 16px;
   letter-spacing: -0.2px;
