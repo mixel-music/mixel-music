@@ -22,7 +22,7 @@
   let artwork = getArtwork(albumhash, 500);
 </script>
 
-<div class="album-wrap" style="background-image: url({artwork});" />
+<div class="album-wrap" style:background-image="url('{artwork}')" />
 <div class="album-header">
   <ArtworkImage
     src={artwork}
@@ -55,18 +55,22 @@
 
 <style>
   .album-wrap {
-    width: 100%;
-    padding: 0;
-    height: 55%;
     position: fixed;
+    width: 100%;
+    height: 55%;
+    padding: 0;
     z-indeX: -1;
     background-position-y: center;
     background-size: cover;
     filter: blur(8px);
-    border-image: fill 0 linear-gradient(rgb(22 22 22 / 80%), rgb(20 20 20 / 97%), rgb(18 18 18));
-    left: 0%;
-    margin-left: 210px;
+    border-image: fill 0 linear-gradient(
+      rgb(22 22 22 / 80%),
+      rgb(20 20 20 / 97%),
+      rgb(18 18 18)
+    );
+    margin-left: 100px;
     margin-top: -30px;
+    left: 0%;
   }
 
   .album-header {
