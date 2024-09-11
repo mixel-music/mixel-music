@@ -51,7 +51,7 @@
   }
 
   .wrap-cover {
-    box-shadow: 0 0 0 1px #ffffff05 inset;
-    background-color: #ffffff05;
+    box-shadow: 0 0 0 1px #ffffff0c inset;
+    background-color: #1818184f;
   }
 </style>

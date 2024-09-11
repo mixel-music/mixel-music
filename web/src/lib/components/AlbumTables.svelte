@@ -26,7 +26,7 @@
 
   {#each list.tracks as item}
     <TableBody>
-      <TableBodyItem size='xs'>{item.track}</TableBodyItem>
+      <TableBodyItem size='xs'>{item.track != 0 ? item.track : '-'}</TableBodyItem>
       <TableBodyItem size='xl'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->

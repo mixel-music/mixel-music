@@ -26,7 +26,7 @@
     align-items: center;
     justify-content: center;
     color: var(--color-dark-text-2);
-    background-color: var(--color-dark-bg-2);
+    background-color: var(--dark-bg-2);
     border: 1px solid var(--color-dark-border);
     transition: 0.2s ease;
     font-size: 18px;

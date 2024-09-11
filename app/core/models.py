@@ -47,7 +47,7 @@ class Albums(Base):
     albumartisthash: str = Column(String, nullable=False)
     year: str = Column(String, nullable=False)
     durationtotals: float = Column(REAL, nullable=False)
-    tracktotals: int = Column(Integer, nullable=False)
+    tracktotals: int = Column(Integer, nullable=False) # 이게 꼭 필요할까? 프론트엔드에서 처리해도 될 듯 한데..
     disctotals: int = Column(Integer, nullable=False)
     sizetotals: int = Column(Integer, nullable=False)
 
