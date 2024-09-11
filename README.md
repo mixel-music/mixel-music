@@ -13,3 +13,6 @@
 * This is my first time working with JavaScript, TypeScript, and Svelte, and I’m still pretty new to backend development with Python. So, there’s definitely room for improvement.
 
 ## Screenshots
+![album-list-1610-864_75_55](https://github.com/user-attachments/assets/bcfc1f4e-5598-4063-b844-c48b4e4de289)
+
+![album-info-1610-864_75_55](https://github.com/user-attachments/assets/f48456d4-9414-4181-94ff-e5187222e572)
