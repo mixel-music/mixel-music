@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="web/static/favicon.ico" width="120">
+  <img src="web/static/favicon.ico" width="115">
   <h3 align="center">mixel-music</h3>
 </p>
 
