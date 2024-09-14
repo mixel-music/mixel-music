@@ -34,7 +34,7 @@
           <a href='{getAlbumLink(album.albumhash)}'>
             <span class="text">{album.album}</span>
           </a>
-          <span class="text-sub">{album.year}</span>
+          <span class="text-sub">{parseInt(album.year.substring(0, 4)) ? `${album.year.substring(0, 4)}` : 'Unknown Year'}</span>
         </div>
       </GridItem>
     {/each}

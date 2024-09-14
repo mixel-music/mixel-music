@@ -7,17 +7,24 @@
   import Player from '$lib/components/layouts/player/Player.svelte';
   import PlayerQueue from '$lib/components/layouts/player/PlayerQueue.svelte';
   import PlayerService from '$lib/stores/stores';
-  import { afterNavigate } from '$app/navigation';
 
-  // Fix Sveltekit Scrolling issue (https://stackoverflow.com/questions/10744299)
+  import { afterNavigate } from '$app/navigation';
+  import { page } from '$app/stores';
+
+  let previousPathname: string | null = null;
+
   afterNavigate(() => {
-    document.getElementById("contents").scrollIntoView(
-      {
+    const currentPathname = $page.url.pathname;
+
+    if (previousPathname == null || currentPathname !== previousPathname) {
+      document.getElementById("contents")?.scrollIntoView({
         behavior: "smooth",
         block: "start",
         inline: "nearest"
-      }
-    )
+      });
+    }
+
+    previousPathname = currentPathname;
   });
 
   onDestroy(() => {
