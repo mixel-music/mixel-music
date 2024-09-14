@@ -2,12 +2,12 @@
 
 </script>
 
-<div class="table-body">
+<div>
   <slot />
 </div>
 
 <style>
-  .table-body {
+  div {
     display: flex;
     flex-direction: row;
     width: 100%;

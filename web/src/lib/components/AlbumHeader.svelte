@@ -17,10 +17,10 @@
   export let size: number;
   export let comment: string = '';
 
-  let strLength = convertDateTime(totalLength);
-  let yearOnly = year.substring(0, 4);
-  let strSize = convertFileSize(size);
-  let artwork = getArtwork(albumhash, 500);
+  $: strLength = convertDateTime(totalLength);
+  $: yearOnly = parseInt(year.substring(0, 4)) ? `${year.substring(0, 4)} ·` : '';
+  $: artwork = getArtwork(albumhash, 500);
+  $: strSize = convertFileSize(size);
 </script>
 
 <div class="album-wrap" style:background-image="url('{artwork}')" />
@@ -46,7 +46,7 @@
         {#if totalTracks === 1} {totalTracks} Track
         {:else} {totalTracks} Tracks {/if}
 
-        ({strLength}) · {yearOnly} · {strSize}
+        ({strLength}) · {yearOnly} {strSize}
       </span>
 
       <span class="detail">{comment}</span>
@@ -115,18 +115,18 @@
 
   .title {
     font-size: clamp(1rem, 2vw, 2rem);
-    font-weight: 800;
+    font-weight: 700;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
   .artist {
-    color: var(--color-dark-text-2);
+    color: var(--dark-text-sub);
     font-size: 110%;
   }
 
   .detail {
-    color: var(--color-dark-text-2);
+    color: var(--dark-text-sub);
     font-size: 80%;
     line-height: 1rem;
     letter-spacing: 0;

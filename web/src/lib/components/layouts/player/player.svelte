@@ -125,8 +125,8 @@
     z-index: 2;
     width: 100%;
     height: 96px;
-    background-color: var(--color-dark-bg-trk);
-    box-shadow: 0 0 0 1px var(--color-dark-border) inset;
+    background-color: var(--dark-player);
+    box-shadow: 0 0 0 1px var(--dark-border) inset;
     backdrop-filter: blur(64px);
   }
 

@@ -7,7 +7,7 @@ import asyncio
 from tools.path_handler import create_dir
 from api import albums, artists, tracks, artworks, streaming
 from core.scanner import find_changes, watch_change
-from core.schema import Config
+from core.config import Config
 from core.database import *
 from core.logger import *
 

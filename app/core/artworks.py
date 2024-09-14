@@ -1,6 +1,6 @@
 from core.models import *
 from core.library import *
-from core.schema import Config
+from core.config import Config
 from tools.convert_value import *
 from tools.path_handler import *
 from tools.tags_handler import *

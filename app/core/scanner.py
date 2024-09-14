@@ -5,7 +5,7 @@ import asyncio
 from core.logger import *
 from core.library import *
 from core.database import *
-from core.schema import Config
+from core.config import Config
 from core.models import Tracks
 from tools.path_handler import *
 

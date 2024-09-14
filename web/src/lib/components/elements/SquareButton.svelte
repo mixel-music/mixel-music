@@ -25,9 +25,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-dark-text-2);
-    background-color: var(--color-dark-bg-2);
-    border: 1px solid var(--color-dark-border);
+    color: var(--dark-text-sub);
+    background-color: var(--dark-element);
+    border: 1px solid var(--dark-border);
     transition: 0.2s ease;
     font-size: 18px;
 
@@ -36,7 +36,7 @@
   }
 
   a:hover, button:hover {
-    color: var(--color-dark-text-1);
+    color: var(--dark-text);
     transition: 0.2s ease;
   }
 </style>

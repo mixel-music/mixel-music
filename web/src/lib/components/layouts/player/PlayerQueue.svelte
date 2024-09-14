@@ -62,8 +62,8 @@
     z-index: 0;
     flex-shrink: 0;
     padding: 24px 21px;
-    background-color: var(--color-dark-bg-2);
-    border: 1px solid var(--color-dark-border);
+    background-color: var(--black-2);
+    border: 1px solid var(--black-4);
     border-radius: var(--app-radius) var(--app-radius) 0 0;
 
     width: 25%;
@@ -100,7 +100,7 @@
 
   .description {
     display: block;
-    color: var(--color-dark-text-2);
+    color: var(--dark-text-sub);
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 90%;

@@ -13,7 +13,7 @@
     margin-top: 36px;
     margin-bottom: 12px;
     content: attr(title);
-    color: var(--color-dark-text-2);
+    color: var(--dark-text-sub);
   }
 
   ul {

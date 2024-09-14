@@ -42,7 +42,7 @@
     flex-shrink: 0;
     min-height: 100dvh;
     padding: 24px 21px;
-    background-color: var(--color-dark-bg-2);
-    border-right: 1px solid var(--color-dark-border);
+    background-color: var(--dark-sidebar);
+    border-right: 1px solid var(--dark-border);
   }
 </style>

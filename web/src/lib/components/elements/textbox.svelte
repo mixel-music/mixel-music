@@ -20,11 +20,11 @@
   input {
     height: 100%;
     padding: 12px;
-    background-color: var(--color-dark-bg-2);
-    border: 1px solid var(--color-dark-border);
-    border-radius: var(--app-radius);
-    color: var(--color-dark-text-1);
-    font-family: var(--app-font-family);
+    background-color: var(--dark-element);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--radius-m);
+    color: var(--dark-text);
+    font-family: var(--font-family);
     transition: all 0.2s ease;
     backdrop-filter: blur(32px);
   }

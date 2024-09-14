@@ -6,11 +6,13 @@
   --space-m: 21px;
   --space-l: 32px;
   --space-xl: 64px;
+
   --radius-s: 0.2em;
   --radius-m: 0.4em;
   --radius-l: 50%;
 
   --table-padding: 16px 8px;
+
 
   --font-family:
     Pretendard Variable,
@@ -24,44 +26,48 @@
     Arial,
     sans-serif;
 
-  --dark-bg-1: rgb(18, 18, 18);
-  --dark-bg-1-acrylic: rgb(18, 18, 18, 0.95);
 
-  --dark-bg-2: rgb(21, 21, 21);
-  --dark-bg-2-acrylic: rgb(21, 21, 21, 0.95);
+  --black-1: rgb(18, 18, 18);
+  --black-1a: rgb(18, 18, 18, 0.95);
+  --black-2: rgb(22, 22, 22);
+  --black-2a: rgb(22, 22, 22, 0.95);
+  --black-3: rgb(26, 26, 26);
+  --black-3a: rgb(26, 26, 26, 0.95);
+  --black-4: rgb(32, 32, 32);
+  --black-4a: rgb(32, 32, 32, 0.95);
+  --black-5: rgb(46, 46, 46);
+  --black-5a: rgb(24, 24, 24, 0.95);
+  --black-6: rgb(86, 86, 86);
+  --black-6a: rgb(86, 86, 86, 0.95);
 
-  --dark-bg-3: rgb(24, 24, 24);
-  --dark-bg-3-acrylic: rgb(24, 24, 24, 0.95);
+  --white-1: rgb(242, 242, 242);
+  --white-1a: rgb(242, 242, 242,  0.95);
+  --white-2: rgb(237, 237, 237);
+  --white-2a: rgb(237, 237, 237, 0.95);
+  --white-3: rgb(232, 232, 232);
+  --white-3a: rgb(232, 232, 232, 0.95);
+  --white-4: rgb(215, 215, 215);
+  --white-4a: rgb(215, 215, 215, 0.95);
+  --white-5: rgb(166, 166, 166);
+  --white-5a: rgb(166, 166, 166, 0.95);
+  --white-6: rgb(155, 155, 155);
+  --white-6a: rgb(155, 155, 155, 0.95);
 
-  --dark-bg-4: rgb(46, 46, 46);
-  --dark-bg-4-acrylic: rgb(24, 24, 24, 0.95);
+  --dark-body: var(--black-1);
+  --dark-border: var(--black-4);
+  --dark-sidebar: var(--black-2);
+  --dark-player: var(--black-2a);
+  --dark-element: var(--black-2);
 
-  --dark-color-1: rgb(215, 215, 215);
-  --dark-color-2: rgb(166, 166, 166);
+  --dark-range: var(--black-5);
+  --dark-range-now: var(--white-4);
+  --dark-text: var(--white-4);
+  --dark-text-sub: var(--white-5);
 
-  /* ----------------- */
-
-  --app-padding-s: 16px;
-  --app-padding-l: 21px;
-  --app-margin-s: 16px;
-  --app-margin-l: 21px;
-
-  --color-dark-bg-1: rgb(18, 18, 18);
-  --color-dark-bg-2: rgb(21, 21, 21);
-  --color-dark-bg-3: rgb(24, 24, 24);
-  --color-dark-bg-trk: rgb(21, 21, 21, 0.95);
-  --color-dark-bg-nav: rgb(18, 18, 18, 0.95);
-
-  --color-dark-text-1: rgb(215, 215, 215);
-  --color-dark-text-2: rgb(166, 166, 166);
-
-  --color-dark-nav-itm: rgb(32, 32, 32, 0.95);
-  --color-dark-trk-len: rgb(46, 46, 46);
-  --color-dark-trk-now: rgb(215, 215, 215);
-
-  --color-dark-disabled: rgb(86, 86, 86);
-  --color-dark-border: rgb(32, 32, 32);
-  --color-dark-focus: rgb(155, 155, 155);
+  --dark-focus: var(--white-6);
+  --dark-hover: var(--white-6);
+  --dark-disabled: var(--black-6);
+  --dark-active: var(--white-4);
 }
 
 * {
@@ -73,22 +79,22 @@
 }
 
 *:focus {
-  outline: 1px dotted gray;
+  outline: 1px dotted var(--dark-focus);
   border-radius: var(--radius-m);
 }
 
 html {
   font-family: var(--font-family);
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   overflow-x: hidden;
-  background-color: var(--dark-bg-1);
-  color: var(--color-dark-text-1);
+  background-color: var(--dark-body);
+  color: var(--dark-text);
   font-size: 16px;
   letter-spacing: -0.2px;
   word-break: keep-all;
@@ -100,7 +106,7 @@ button {
 }
 
 button:disabled {
-  color: var(--color-dark-disabled);
+  color: var(--dark-disabled);
 }
 
 a {
@@ -120,7 +126,7 @@ input[type='range'] {
   overflow: hidden;
   width: 550px;
   appearance: none;
-  background-color: var(--color-dark-trk-len);
+  background-color: var(--dark-range);
   border-radius: var(--radius-s);
   height: 3.5px;
   margin-left: 0.5px;
@@ -140,8 +146,8 @@ input[type='range']::-webkit-slider-thumb {
   height: 0;
   appearance: none;
   box-sizing: content-box;
-  background-color: var(--color-dark-trk-now);
-  box-shadow: -550px 0 0 550px var(--color-dark-trk-now);
+  background-color: var(--dark-range-now);
+  box-shadow: -550px 0 0 550px var(--dark-range-now);
 }
 
 input[type="range"]::-moz-range-track {
@@ -157,7 +163,7 @@ input[type="range"]::-moz-range-progress {
   height: 100%;
   appearance: none;
   box-sizing: content-box;
-  background-color: var(--color-dark-trk-now);
+  background-color: var(--dark-range-now);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -184,11 +190,20 @@ img {
 
 .text-sub {
   display: block;
-  color: var(--color-dark-text-2);
+  color: var(--dark-text-sub);
   font-size: 80%;
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 150%;
+}
+
+.normal {
+  font-size: 100%;
+  line-height: normal;
+}
+
+.small {
+  font-size: 80%;
 }
 
 .bottom-ctl {

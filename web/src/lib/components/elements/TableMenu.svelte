@@ -9,7 +9,7 @@
 <style>
   span {
     display: flex;
-    color: var(--color-dark-text-2);
+    color: var(--dark-text-sub);
     align-items: center;
     justify-content: center;
   }

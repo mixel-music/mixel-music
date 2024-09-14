@@ -2,9 +2,9 @@ from sqlalchemy import text, func, select, insert, update, delete, or_, and_
 from sqlalchemy.exc import OperationalError, SQLAlchemyError, DatabaseError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.dialects.sqlite import Insert
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, selectinload
 
-from core.schema import Config
+from core.config import Config
 from core.models import Base
 
 engine = create_async_engine(Config.DBURL, echo=Config.DBECHO)

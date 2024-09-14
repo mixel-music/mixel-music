@@ -17,7 +17,7 @@
 <style>
   div {
     font-weight: bold;
-    color: var(--color-dark-text-2);
+    color: var(--dark-text-sub);
     font-size: 75%;
     text-transform: uppercase;
     letter-spacing: 0.3px;

@@ -5,15 +5,12 @@
   export let height: string | number | undefined = undefined;
   export let FullCover: boolean = false;
   export let WrapCover: boolean = false;
-  let isDisplay = true;
-
-  function loadFailed() {
-    isDisplay = false;
-  }
+  
+  $: showArtwork = true;
 </script>
 
-<div class:wrap-cover={WrapCover} style="height: {height}px;">
-  {#if isDisplay}
+<div class:wrap={WrapCover} style="height: {height}px;">
+  {#if showArtwork}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <img
       {src}
@@ -24,8 +21,8 @@
       on:keydown
       on:mousedown
       on:mouseleave
-      on:error={loadFailed}
-      class:full-cover={FullCover}
+      on:error={() => showArtwork = !showArtwork}
+      class:full={FullCover}
       loading="lazy"
     />
   {/if}
@@ -35,8 +32,8 @@
   div {
     aspect-ratio: 1/1;
     display: inline-flex;
-    background-color: var(--color-dark-bg-2);
-    box-shadow: 0 0 0 1px var(--color-dark-border) inset;
+    background-color: var(--dark-element);
+    box-shadow: 0 0 0 1px var(--dark-border) inset;
     border-radius: var(--radius-s);
   }
 
@@ -46,11 +43,11 @@
     object-fit: scale-down;
   }
 
-  .full-cover {
+  .full {
     object-fit: cover;
   }
 
-  .wrap-cover {
+  .wrap {
     box-shadow: 0 0 0 1px #ffffff0c inset;
     background-color: #1818184f;
   }

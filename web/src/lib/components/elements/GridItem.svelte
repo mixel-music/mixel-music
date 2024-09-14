@@ -8,22 +8,18 @@
   export let round: boolean = false;
   export let Empty: boolean = false;
 
-  let showArtwork = true;
-
-  function loadFailed() {
-    showArtwork = false;
-  }
+  $: showArtwork = true;
 </script>
 
 {#if !Empty}
-  <div class="card-item">
+  <div class="grid-item">
     {#if src}
-      <div class="card-body {round ? 'round' : ''}">
+      <div class="item-body {round ? 'round' : ''}">
         <a tabindex="-1" {href} on:click>
           {#if showArtwork}
             <img
               loading={lazyload ? 'lazy' : null}
-              src={getArtwork(src, 300)} {alt} on:error={loadFailed}
+              src={getArtwork(src, 300)} {alt} on:error={() => showArtwork = !showArtwork}
             >
           {/if}
         </a>
@@ -31,7 +27,7 @@
 
       <slot />
     {:else}
-      <div class="card-body {round ? 'round' : ''}">
+      <div class="item-body {round ? 'round' : ''}">
         <a tabindex="-1" {href} on:click>
 
         </a>
@@ -46,18 +42,18 @@
 {/if}
 
 <style>
-  .card-body {
-    width: auto;
-    display: flex;
-    background-color: var(--color-dark-bg-2);
-    box-shadow: 0 0 0 1px var(--color-dark-border) inset;
-    aspect-ratio: 1/1;
-    border-radius: var(--radius-s);
-  }
-
-  .card-item {
+  .grid-item {
     white-space: nowrap;
     margin-bottom: var(--space-s);
+  }
+
+  .item-body {
+    width: auto;
+    display: flex;
+    background-color: var(--dark-element);
+    box-shadow: 0 0 0 1px var(--dark-border) inset;
+    aspect-ratio: 1/1;
+    border-radius: var(--radius-s);
   }
 
   .empty {

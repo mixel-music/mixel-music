@@ -2,7 +2,7 @@
   import SquareButton from "./elements/SquareButton.svelte";
 </script>
 
-<div class="controls-bar">
+<div>
   <SquareButton
     href='.'
     width='150px'
@@ -21,7 +21,7 @@
 </div>
 
 <style>
-  .controls-bar {
+  div {
     display: flex;
     margin-bottom: var(--space-l);
     gap: 12px;

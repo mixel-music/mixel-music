@@ -30,7 +30,7 @@
       <TableBodyItem size='l'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->
-        <a on:click={(event) => handleClick(item)} on:keydown>
+        <a on:click={() => handleClick(item)} on:keydown>
           {item.title}
         </a>
       </TableBodyItem>

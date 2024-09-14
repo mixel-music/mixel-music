@@ -5,8 +5,20 @@
   import Sidebar from '$lib/components/layouts/sidebar/Sidebar.svelte';
   import Navbar from '$lib/components/layouts/navbar/Navbar.svelte';
   import Player from '$lib/components/layouts/player/Player.svelte';
-  import PlayerQueue from '$lib/components/layouts/player/PlayerList.svelte';
+  import PlayerQueue from '$lib/components/layouts/player/PlayerQueue.svelte';
   import PlayerService from '$lib/stores/stores';
+  import { afterNavigate } from '$app/navigation';
+
+  // Fix Sveltekit Scrolling issue (https://stackoverflow.com/questions/10744299)
+  afterNavigate(() => {
+    document.getElementById("contents").scrollIntoView(
+      {
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest"
+      }
+    )
+  });
 
   onDestroy(() => {
     PlayerService.destroy();
@@ -16,8 +28,8 @@
 <div id="app">
   <Sidebar />
 
-  <div class="app-body">
-    <div class="app-main">
+  <div>
+    <div id="contents">
       <Navbar />
       <slot />
     </div>
@@ -36,7 +48,7 @@
     box-sizing: border-box;
   }
 
-  .app-body {
+  #app > div {
     width: 100%;
     margin-bottom: 96px;
     overflow-y: scroll;
@@ -47,11 +59,11 @@
     flex-wrap: wrap;
   }
 
-  .app-body:focus {
+  #app > div:hover {
     outline: none;
   }
 
-  .app-main {
+  #app > div > div {
     display: flex;
     flex-direction: column;
     width: 100%;

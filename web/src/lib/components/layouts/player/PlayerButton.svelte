@@ -36,23 +36,23 @@
     padding: 12px;
     border: none;
     transition: 0.2s ease;
-    color: var(--color-dark-text-1);
+    color: var(--dark-text);
     background-color: transparent;
     justify-content: center;
     align-items: center;
   }
 
-  button:active {
-    color: var(--color-dark-text-1);
+  button:focus {
+    outline: none;
   }
 
   button:hover {
-    color: var(--color-dark-focus);
+    color: var(--dark-hover);
     transition: all 0.2s ease;
   }
 
-  button:focus {
-    outline: none;
+  button:active {
+    color: var(--dark-active);
   }
 
   .control {
@@ -62,6 +62,6 @@
   }
 
   .off {
-    color: var(--color-dark-disabled);
+    color: var(--dark-disabled);
   }
 </style>

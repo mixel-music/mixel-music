@@ -26,11 +26,15 @@
 
   {#each list.tracks as item}
     <TableBody>
-      <TableBodyItem size='xs'>{item.track != 0 ? item.track : '-'}</TableBodyItem>
+      <TableBodyItem size='xs'>
+          <span class="text-sub normal">
+            {item.track != 0 ? item.track : '-'}
+          </span>
+        </TableBodyItem>
       <TableBodyItem size='xl'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->
-        <a on:click={(event) => handleClick(item, true)} on:keydown>
+        <a on:click={() => handleClick(item, true)} on:keydown>
           {item.title}
         </a>
       </TableBodyItem>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import RoundButton from '$lib/components/elements/RoundButton.svelte';
+  import Dropdown from '$lib/components/elements/Dropdown.svelte';
   import TextBox from '$lib/components/elements/TextBox.svelte';
   import Icon from '@iconify/svelte';
 </script>

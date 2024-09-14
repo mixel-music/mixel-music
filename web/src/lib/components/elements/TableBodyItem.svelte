@@ -10,12 +10,12 @@
   }[size] || 1;
 </script>
 
-<div class="table-body-item" style={`flex: ${flexSize};`}>
+<div style={`flex: ${flexSize};`}>
   <slot />
 </div>
 
 <style>
-  .table-body-item {
+  div {
     padding: var(--table-padding);
     overflow: hidden;
     text-overflow: ellipsis;
