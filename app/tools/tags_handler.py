@@ -25,37 +25,51 @@ def extract_tags(path: str) -> dict:
     
     try:
         tags = TinyTag.get(real_path)
+        if tags.extra.get('unsyncedlyrics', ''):
+            if not tags.extra.get('syncedlyrics', '') or tags.extra.get('lyrics', ''):
+                lyrics = tags.extra_get('unsyncedlyrics', '')
+            elif tags.extra.get('syncedlyrics', ''):
+                lyrics = tags.extra_get('syncedlyrics', '')
+            elif tags.extra.get('lyrics', ''):
+                lyrics = tags.extra_get('lyrics', '')
+        else:
+            lyrics = ''
+
         track_dict = {
-            'hash': hash_str(path),
-            'title': tags.title or get_filename(path)[0] or 'Unknown Title',
-            'artist': tags.artist or 'Unknown Artist',
-            'artisthash': hash_str(convert_artist(tags.artist)),
-            'album': tags.album or 'Unknown Album',
-            'albumhash': '',
+            'track_id': hash_str(path),
+            'album_id': tags.album or '',
+            'artist_id': hash_str(convert_artist(tags.artist)) if tags.artist else '',
+            'albumartist_id': hash_str(tags.albumartist) if tags.albumartist else '',
+            'title': tags.title or get_filename(path)[0],
+            'album': tags.album or '',
             'albumartist': tags.albumartist or '',
-            'albumartisthash': hash_str(tags.albumartist) or '',
-            'bitdepth': tags.bitdepth or 0,
-            'bitrate': tags.bitrate or 0.0,
-            'channels': tags.channels or 0,
-            'comment': tags.comment or '',
             'composer': tags.composer or '',
-            'disc': tags.disc or 0,
-            'disctotal': tags.disc_total or 0,
-            'duration': tags.duration or 0.0,
-            'size': tags.filesize or 0,
+            'artist': tags.artist or '',
             'genre': tags.genre or '',
-            'samplerate': tags.samplerate or 0,
+            'total_track': tags.track_total or 0,
+            'total_disc': tags.disc_total or 0,
             'track': tags.track or 0,
-            'tracktotal': tags.track_total or 0,
-            'year': tags.year or 'Unknown Year',
-            'directory': get_filename(path)[1],
+            'disc': tags.disc or 0,
+            'isrc':
+                tags.extra.get('isrc', '')[0] if tags.extra.get('isrc', '') else '',
+            'label': 
+                tags.extra.get('label', '')[0] if tags.extra.get('label', '') else '',
+            'lyrics': lyrics,
+            'comment': tags.comment or '',
+            'copyright':
+                tags.extra.get('copyright', '')[0] if tags.extra.get('copyright', '') else '',
+            'filepath': path,
+            'filesize': tags.filesize or 0,
+            'duration': tags.duration or 0,
             'mime': get_mime(path),
-            'path': path,
-            'created_date': datetime.now(),
-            'updated_date': datetime.now(),
-            'isrc': tags.extra.get('isrc', '')[0] if tags.extra.get('isrc', '') else '',
-            'unsyncedlyrics': '',
-            'syncedlyrics': '',
+            'date': tags.year or 0,
+            'year': tags.year or 0,
+            'bitrate': tags.bitrate or 0.0,
+            'bitdepth': tags.bitdepth or 0,
+            'channels': tags.channels or 0,
+            'samplerate': tags.samplerate or 0,
+            'created_at': datetime.now(),
+            'updated_at': datetime.now(),
         }
 
         return track_dict

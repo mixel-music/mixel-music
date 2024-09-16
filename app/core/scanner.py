@@ -18,7 +18,7 @@ async def find_changes() -> None:
     path_property, tasks = {}, []
     
     async with session() as conn:
-        track_info = await conn.execute(select(Tracks.path, Tracks.size))
+        track_info = await conn.execute(select(Tracks.filepath, Tracks.filesize))
         track_info = track_info.all()
 
     if track_info:

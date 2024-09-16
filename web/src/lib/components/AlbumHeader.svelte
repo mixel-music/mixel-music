@@ -13,12 +13,11 @@
   export let albumartisthash: string;
   export let totalTracks: number;
   export let totalLength: number;
-  export let year: string;
+  export let year: number;
   export let size: number;
   export let comment: string = '';
 
   $: strLength = convertDateTime(totalLength);
-  $: yearOnly = parseInt(year.substring(0, 4)) ? `${year.substring(0, 4)} ·` : '';
   $: artwork = getArtwork(albumhash, 500);
   $: strSize = convertFileSize(size);
 </script>
@@ -46,7 +45,7 @@
         {#if totalTracks === 1} {totalTracks} Track
         {:else} {totalTracks} Tracks {/if}
 
-        ({strLength}) · {yearOnly} {strSize}
+        ({strLength}) · {year} · {strSize}
       </span>
 
       <span class="detail">{comment}</span>

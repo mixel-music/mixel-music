@@ -4,46 +4,48 @@ export interface TrackListResponse {
 }
 
 export interface TrackList {
+  track_id: string;
+  album_id: string;
+  artist_id: string;
   title: string;
   album: string;
   artist: string;
-  hash: string;
-  albumhash: string;
-  artisthash?: string;
-  artwork?: string;
   duration?: number;
+  artwork?: string;
   index?: number;
 }
 
 export interface TrackItem {
-  hash: string;
+  track_id: string;
+  album_id: string;
+  artist_id: string;
+  albumartist_id: string;
   title: string;
-  artist: string;
-  artisthash: string;
   album: string;
-  albumhash: string
   albumartist: string;
-  bitdepth: number;
-  bitrate: number;
-  channels: number;
-  comment: string;
   composer: string;
-  disc: number;
-  disctotal: number;
-  duration: number;
-  size: number;
+  artist: string;
   genre: string;
-  samplerate: number;
-  track: number;
-  tracktotal: number;
-  year: string;
-  directory: string;
-  mime: string;
-  path: string;
-  created_date: Date;
-  updated_date: Date;
+  total_track: number;
+  total_disc: number;
+  track: number
+  disc: number;
+  label: string;  
   lyrics: string;
-  isrc: string;
+  comment: string;
+  copyright: string;
+  filepath: string;
+  filesize: number;
+  duration: number;
+  mime: string;
+  date: Date;
+  year: number;
+  bitrate: number;
+  bitdepth: number;
+  channels: number;
+  samplerate: number
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface AlbumListResponse {
@@ -52,27 +54,22 @@ export interface AlbumListResponse {
 }
 
 export interface AlbumList {
-  albumhash: string;
   album: string;
+  album_id: string;
   albumartist: string;
-  albumartisthash: string;
-  year: string;
-  durationtotals: number;
-  tracktotals: number;
-  disctotals: number;
-  sizetotals: number;
+  albumartist_id: string;
+  year: number;
 }
 
 export interface AlbumItem {
-  albumhash: string;
   album: string;
+  album_id: string;
   albumartist: string;
-  albumartisthash: string;
-  year: string;
-  durationtotals: number;
-  tracktotals: number;
-  disctotals: number;
-  sizetotals: number;
+  albumartist_id: string;
+  total_filesize: number;
+  total_duration: number;
+  total_disc: number;
+  year: number;
   tracks: TrackItem[];
 }
 
@@ -82,12 +79,12 @@ export interface ArtistListResponse {
 }
 
 export interface ArtistList {
-  artisthash: string;
+  artist_id: string;
   artist: string;
 }
 
 export interface ArtistItem {
-  artisthash: string;
+  artist_id: string;
   artist: string;
   albums: AlbumItem[];
 }

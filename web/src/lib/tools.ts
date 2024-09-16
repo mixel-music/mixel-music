@@ -10,12 +10,12 @@ export function getArtwork(hash: string, size: number): string {
 
 export function handleClick(item: any, play: boolean = false) {
   PlayerService.addTrack({
-    hash: item.hash,
+    track_id: item.track_id,
+    album_id: item.album_id,
+    artist_id: item.artist_id,
     title: item.title,
     album: item.album,
     artist: item.artist,
-    artisthash: item.artisthash,
-    albumhash: item.albumhash,
   }, play ? 0 : null);
 
   if (play)

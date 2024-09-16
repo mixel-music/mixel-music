@@ -66,12 +66,12 @@ class Library:
             async with session() as conn:
                 db_query = (
                     select(
+                        Tracks.track_id,
+                        Tracks.album_id,
+                        Tracks.artist_id,
                         Tracks.title,
                         Tracks.album,
                         Tracks.artist,
-                        Tracks.hash,
-                        Tracks.albumhash,
-                        Tracks.artisthash,
                         Tracks.duration,
                     )
                     .order_by(Tracks.title.asc())
@@ -104,7 +104,7 @@ class Library:
             async with session() as conn:
                 db_query = (
                     select(Tracks.__table__)
-                    .where(Tracks.path == path)
+                    .where(Tracks.filepath == path)
                 )
 
                 db_result = await conn.execute(db_query)
@@ -135,7 +135,13 @@ class Library:
         try:
             async with session() as conn:
                 db_query = (
-                    select(Albums.__table__)
+                    select(
+                        Albums.album,
+                        Albums.album_id,
+                        Albums.albumartist,
+                        Albums.albumartist_id,
+                        Albums.year,
+                    )
                     .order_by(Albums.album.asc())
                     .offset(page)
                     .limit(item)
@@ -163,7 +169,7 @@ class Library:
 
         try:
             async with session() as conn:
-                album_query = select(Albums.__table__).where(Albums.albumhash == hash)
+                album_query = select(Albums.__table__).where(Albums.album_id == hash)
                 album_result = await conn.execute(album_query)
                 album_info = album_result.mappings().first()
 
@@ -171,18 +177,17 @@ class Library:
                     album_info = dict(album_info)
                     track_query = (
                         select(
+                            Tracks.track_id,
+                            Tracks.artist_id,
                             Tracks.title,
-                            Tracks.hash,
-                            Tracks.album,
-                            Tracks.albumhash,
                             Tracks.artist,
-                            Tracks.artisthash,
-                            Tracks.duration,
                             Tracks.track,
+                            Tracks.disc,
                             Tracks.comment,
+                            Tracks.duration
                         )
                         .order_by(Tracks.track.asc())
-                        .where(Tracks.albumhash == hash)
+                        .where(Tracks.album_id == hash)
                     )
 
                     track_result = await conn.execute(track_query)
@@ -244,7 +249,7 @@ class Library:
 
         try:
             async with session() as conn:
-                artist_query = select(Artists.__table__).where(Artists.artisthash == hash)
+                artist_query = select(Artists.__table__).where(Artists.artist_id == hash)
                 artist_result = await conn.execute(artist_query)
                 artist_info = artist_result.mappings().first()
 
@@ -253,8 +258,8 @@ class Library:
 
                     album_query = (
                         select(Albums.__table__)
-                        .where(Albums.albumartisthash == hash)
-                        .order_by(Albums.year.asc())
+                        .where(Albums.albumartist_id == hash)
+                        .order_by(Albums.year.desc())
                     )
 
                     album_result = await conn.execute(album_query)
@@ -266,15 +271,15 @@ class Library:
                     return artist_info
                 else:
                     track_subquery = (
-                        select(Tracks.albumartisthash)
-                        .where(Tracks.artisthash == hash)
+                        select(Tracks.albumartist_id)
+                        .where(Tracks.artist_id == hash)
                         .subquery()
                     )
                     
                     album_from_tracks_query = (
                         select(Albums.__table__)
-                        .where(Albums.albumartisthash.in_(select(track_subquery)))
-                        .order_by(Albums.year.asc())
+                        .where(Albums.albumartist_id.in_(select(track_subquery)))
+                        .order_by(Albums.year.desc())
                     )
 
                     track_result = await conn.execute(album_from_tracks_query)
@@ -284,8 +289,8 @@ class Library:
                     if albums_data:
                         album = albums_data[0]
                         artist_info = {
+                            'artist_id': album.get('artist_id', ''),
                             'artist': album.get('albumartist', ''),
-                            'artisthash': album.get('artisthash', ''),
                             'albums': albums_data
                         }
                         return artist_info
@@ -351,19 +356,19 @@ class LibraryScan:
                 db_query = (
                     select(
                         Tracks.album,
-                        Tracks.artist,
                         Tracks.albumartist,
-                        Tracks.tracktotal,
-                        Tracks.disctotal,
+                        Tracks.artist,
+                        Tracks.total_track,
+                        Tracks.total_disc,
                         Tracks.year,
-                        func.sum(Tracks.duration).label('totalduration'),
-                        func.sum(Tracks.size).label('totalsize'),
+                        func.sum(Tracks.duration).label('total_duration'),
+                        func.sum(Tracks.filesize).label('total_filesize'),
                     )
-                    .where(Tracks.album != 'Unknown Album')
+                    .where(Tracks.album != '')
                     .group_by(
                         Tracks.album,
                         Tracks.albumartist,
-                        Tracks.tracktotal,
+                        Tracks.total_track,
                     )
                 )
 
@@ -372,7 +377,7 @@ class LibraryScan:
 
                 for alb in albums_data:
                     albumhash = hash_str(
-                        f'{alb.album}-{alb.albumartist}-{alb.tracktotal}-{alb.year}'
+                        f'{alb.album}-{alb.albumartist}-{alb.total_track}-{alb.year}'
                     )
                     albumartisthash = hash_str(alb.albumartist)
 
@@ -381,21 +386,20 @@ class LibraryScan:
                         .where(
                             Tracks.album == alb.album,
                             Tracks.albumartist == alb.albumartist,
-                            Tracks.tracktotal == alb.tracktotal,
+                            Tracks.total_track == alb.total_track,
                         )
-                        .values(albumhash=albumhash)
+                        .values(album_id=albumhash)
                         .execution_options(synchronize_session='fetch')
                     )
 
                     album_data = {
+                        'album_id': albumhash,
+                        'albumartist_id': albumartisthash,
                         'album': alb.album,
                         'albumartist': alb.albumartist,
-                        'albumartisthash': albumartisthash,
-                        'albumhash': albumhash,
-                        'durationtotals': alb.totalduration,
-                        'sizetotals': alb.totalsize,
-                        'tracktotals': alb.tracktotal,
-                        'disctotals': alb.disctotal,
+                        'total_duration': alb.total_duration,
+                        'total_filesize': alb.total_filesize,
+                        'total_disc': alb.total_disc,
                         'year': alb.year,
                     }
 
@@ -407,17 +411,17 @@ class LibraryScan:
                     select(
                         Tracks.album,
                         Tracks.artist,
-                        Tracks.tracktotal,
-                        Tracks.disctotal,
+                        Tracks.total_track,
+                        Tracks.total_disc,
                         Tracks.year,
-                        func.sum(Tracks.duration).label('totalduration'),
-                        func.sum(Tracks.size).label('totalsize'),
+                        func.sum(Tracks.duration).label('total_duration'),
+                        func.sum(Tracks.filesize).label('total_filesize'),
                     )
-                    .where(Tracks.album == 'Unknown Album')
+                    .where(Tracks.album == '')
                     .group_by(
                         Tracks.album,
                         Tracks.artist,
-                        Tracks.tracktotal,
+                        Tracks.total_track,
                     )
                 )
 
@@ -426,7 +430,7 @@ class LibraryScan:
 
                 for alb in unknown_albums_data:
                     albumhash = hash_str(
-                        f'{alb.album}-{alb.artist}-{alb.tracktotal}-{alb.year}'
+                        f'{alb.album}-{alb.artist}-{alb.total_track}-{alb.year}'
                     )
                     albumartisthash = hash_str(alb.artist)
 
@@ -435,21 +439,20 @@ class LibraryScan:
                         .where(
                             Tracks.album == alb.album,
                             Tracks.artist == alb.artist,
-                            Tracks.tracktotal == alb.tracktotal,
+                            Tracks.total_track == alb.total_track,
                         )
-                        .values(albumhash=albumhash)
+                        .values(album_id=albumhash)
                         .execution_options(synchronize_session='fetch')
                     )
 
                     album_data = {
+                        'album_id': albumhash,
+                        'albumartist_id': albumartisthash,
                         'album': alb.album,
                         'albumartist': alb.artist,
-                        'albumartisthash': albumartisthash,
-                        'albumhash': albumhash,
-                        'durationtotals': alb.totalduration,
-                        'sizetotals': alb.totalsize,
-                        'tracktotals': alb.tracktotal,
-                        'disctotals': alb.disctotal,
+                        'total_duration': alb.total_duration,
+                        'total_filesize': alb.total_filesize,
+                        'total_disc': alb.total_disc,
                         'year': alb.year,
                     }
 
@@ -459,19 +462,19 @@ class LibraryScan:
                 await conn.commit()
 
                 async with session() as conn:
-                    albums_query = select(Albums.albumhash)
+                    albums_query = select(Albums.album_id)
                     result = await conn.execute(albums_query)
-                    album_hash = {row.albumhash for row in result}
+                    album_hash = {row.album_id for row in result}
 
-                    tracks_query = select(Tracks.albumhash).distinct()
+                    tracks_query = select(Tracks.album_id).distinct()
                     result = await conn.execute(tracks_query)
-                    track_hash = {row.albumhash for row in result}
+                    track_hash = {row.album_id for row in result}
 
                     find = album_hash - track_hash # 중복 없애고 set으로 차집합 연산
 
-                    for albumhash in find:
-                        logs.debug("Removing Album %s", albumhash)
-                        await LibraryRepo.delete_album(conn, albumhash)
+                    for album_id in find:
+                        logs.debug("Removing Album %s", album_id)
+                        await LibraryRepo.delete_album(conn, album_id)
 
                     await conn.commit()
 
@@ -486,7 +489,7 @@ class LibraryScan:
             async with session() as conn:
                 db_query = (
                     select(
-                        Tracks.hash,
+                        Tracks.track_id,
                         Tracks.albumartist,
                     )
                     .distinct(Tracks.albumartist)
@@ -504,7 +507,7 @@ class LibraryScan:
                     if track.albumartist:
                         artist_data = {
                             'artist': track.albumartist,
-                            'artisthash': hash_str(track.albumartist),
+                            'artist_id': hash_str(track.albumartist),
                         }
 
                         await LibraryRepo.insert_artist(conn, artist_data)
@@ -516,19 +519,19 @@ class LibraryScan:
             await conn.rollback()
 
         async with session() as conn:
-            artists_query = select(Artists.artisthash)
+            artists_query = select(Artists.artist_id)
             result = await conn.execute(artists_query)
-            artist_hash = {row.artisthash for row in result}
+            artist_hash = {row.artist_id for row in result}
 
-            albums_query = select(Tracks.albumartisthash).distinct()
+            albums_query = select(Tracks.albumartist_id).distinct()
             result = await conn.execute(albums_query)
-            album_hash = {row.albumartisthash for row in result}
+            album_hash = {row.albumartist_id for row in result}
 
             find = artist_hash - album_hash
 
-            for artisthash in find:
-                logs.debug("Removing Artist %s", artisthash)
-                await LibraryRepo.delete_artist(conn, artisthash)
+            for artist_id in find:
+                logs.debug("Removing Artist %s", artist_id)
+                await LibraryRepo.delete_artist(conn, artist_id)
 
             await conn.commit()
 
@@ -566,7 +569,7 @@ class LibraryRepo:
     async def delete_track(conn: AsyncSession, path: str) -> bool:
         try:
             await conn.execute(
-                delete(Tracks).where(Tracks.path == path)
+                delete(Tracks).where(Tracks.filepath == path)
             )
             return True
         
@@ -579,7 +582,7 @@ class LibraryRepo:
     async def delete_album(conn: AsyncSession, hash: str) -> bool:
         try:
             await conn.execute(
-                delete(Albums).where(Albums.albumhash == hash)
+                delete(Albums).where(Albums.album_id == hash)
             )
             return True
         
@@ -606,7 +609,7 @@ class LibraryRepo:
     async def delete_artist(conn: AsyncSession, hash: str) -> bool:
         try:
             await conn.execute(
-                delete(Artists).where(Artists.artisthash == hash)
+                delete(Artists).where(Artists.artist_id == hash)
             )
             return True
         

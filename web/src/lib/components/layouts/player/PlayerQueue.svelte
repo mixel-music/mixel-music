@@ -25,9 +25,9 @@
     {#each lists.lists as trk, index}
       <div class="track">
         <Artwork
-          src={trk.album === 'Unknown Album'
-            ? getArtwork(trk.hash, 128)
-            : trk.albumhash && getArtwork(trk.albumhash, 128)
+          src={trk.album === ''
+            ? getArtwork(trk.track_id, 128)
+            : trk.album_id && getArtwork(trk.album_id, 128)
           }
           width=45
           height=45
@@ -43,7 +43,7 @@
                 {trk.title}
             </span>
             <span class="description">
-              <a href="{getArtistLink(trk.artisthash)}">
+              <a href="{getArtistLink(trk.artist_id)}">
                 {trk.artist}
               </a>
             </span>

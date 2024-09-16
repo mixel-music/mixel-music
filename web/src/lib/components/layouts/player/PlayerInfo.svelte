@@ -12,11 +12,11 @@
 </script>
 
 <div class="player-info">
-  {#if trk.hash}
+  {#if trk.track_id}
     <ArtworkImage
-      src={trk.album === 'Unknown Album'
-        ? getArtwork(trk.hash, 128)
-        : trk.albumhash && getArtwork(trk.albumhash, 128)
+      src={trk.album === ''
+        ? getArtwork(trk.track_id, 128)
+        : trk.album_id && getArtwork(trk.album_id, 128)
       }
       width=60
       height=60
@@ -26,10 +26,10 @@
     <div>
       <span class="text">{trk.title}</span>
       <span class="text-sub">
-        <a href="{getArtistLink(trk.artisthash)}">
+        <a href="{getArtistLink(trk.artist_id)}">
           {trk.artist}
         </a> -
-        <a href="{getAlbumLink(trk.albumhash)}">
+        <a href="{getAlbumLink(trk.album_id)}">
           {trk.album}
         </a>  
       </span>

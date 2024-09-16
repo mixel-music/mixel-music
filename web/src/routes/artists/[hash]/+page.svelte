@@ -25,16 +25,16 @@
   <GridWrap>
     {#each data.item.albums as album}
       <GridItem
-        href={getAlbumLink(album.albumhash)}
-        src={album.albumhash}
+        href={getAlbumLink(album.album_id)}
+        src={album.album_id}
         alt={album.album}
         lazyload
       >
         <div class="info-card">
-          <a href='{getAlbumLink(album.albumhash)}'>
+          <a href='{getAlbumLink(album.album_id)}'>
             <span class="text">{album.album}</span>
           </a>
-          <span class="text-sub">{parseInt(album.year.substring(0, 4)) ? `${album.year.substring(0, 4)}` : 'Unknown Year'}</span>
+          <span class="text-sub">{album.year}</span>
         </div>
       </GridItem>
     {/each}

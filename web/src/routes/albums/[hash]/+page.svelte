@@ -17,11 +17,11 @@
     albumartist={data.item.albumartist}
     year={data.item.year}
     totalTracks={data.item.tracks.length}
-    totalLength={data.item.durationtotals}
+    totalLength={data.item.total_duration}
     comment={data.item.tracks[0].comment}
-    size={data.item.sizetotals}
-    albumhash={data.item.albumhash}
-    albumartisthash={data.item.albumartisthash}
+    size={data.item.total_filesize}
+    albumhash={data.item.album_id}
+    albumartisthash={data.item.albumartist_id}
   />
 
   <ControlsBar />

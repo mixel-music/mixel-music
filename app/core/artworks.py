@@ -39,15 +39,15 @@ class ArtworkService:
     async def init_artwork(hash: str) -> tuple[bytes | None, str] | None:
         try:
             async with session() as conn:
-                query = select(Tracks.path).where(
-                    or_(Tracks.albumhash == hash, Tracks.hash == hash)
+                query = select(Tracks.filepath).where(
+                    or_(Tracks.album_id == hash, Tracks.track_id == hash)
                 )
 
                 result = await conn.execute(query)
                 data = result.mappings().first()
                 if data: 
                     data = dict(data)
-                    artwork_path = get_path(data.get('path')).parent
+                    artwork_path = get_path(data.get('filepath')).parent
 
                 async def read_artwork_file(file_path) -> bytes:
                     # logs.debug(f'Reading file: {file_path}')
@@ -61,7 +61,7 @@ class ArtworkService:
 
                 loop = asyncio.get_running_loop()
                 with ThreadPoolExecutor() as executor:
-                    artwork = await loop.run_in_executor(executor, extract_artwork, data.get('path'))
+                    artwork = await loop.run_in_executor(executor, extract_artwork, data.get('filepath'))
                 
                 return artwork
 

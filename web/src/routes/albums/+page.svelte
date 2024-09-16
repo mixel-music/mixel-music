@@ -28,18 +28,18 @@
 
 {#if data.list}
   <GridWrap>
-    {#each data.list.list as album (album.albumhash)}
+    {#each data.list.list as album (album.album_id)}
       <GridItem
-        href={getAlbumLink(album.albumhash)}
-        src={album.albumhash}
+        href={getAlbumLink(album.album_id)}
+        src={album.album_id}
         alt={album.album}
         lazyload
       >
         <div class="info-card">
-          <a href='{getAlbumLink(album.albumhash)}'>
+          <a href='{getAlbumLink(album.album_id)}'>
             <span class="text">{album.album}</span>
           </a>
-          <a href='{getArtistLink(album.albumartisthash)}'>
+          <a href='{getArtistLink(album.albumartist_id)}'>
             <span class="text-sub">{album.albumartist}</span>
           </a>
         </div>

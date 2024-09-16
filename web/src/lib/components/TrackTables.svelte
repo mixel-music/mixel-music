@@ -35,12 +35,12 @@
         </a>
       </TableBodyItem>
       <TableBodyItem size="m">
-        <a href='{getAlbumLink(item.albumhash)}'>
+        <a href='{getAlbumLink(item.album_id)}'>
           {item.album}
         </a>
       </TableBodyItem>
       <TableBodyItem size='m'>
-        <a href='{getArtistLink(item.artisthash)}'>
+        <a href='{getArtistLink(item.artist_id)}'>
           {item.artist}
         </a>
       </TableBodyItem>

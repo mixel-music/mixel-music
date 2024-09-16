@@ -25,14 +25,14 @@
   <GridWrap>
     {#each data.list.list as artist}
       <GridItem
-        href='{getArtistLink(artist.artisthash)}'
+        href='{getArtistLink(artist.artist_id)}'
         src=''
         alt={artist.artist}
         lazyload
         round
       >
         <div class="info-card">
-          <a href='{getArtistLink(artist.artisthash)}'>
+          <a href='{getArtistLink(artist.artist_id)}'>
             <span class="text">{artist.artist}</span>
           </a>
         </div>

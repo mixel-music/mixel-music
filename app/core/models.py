@@ -1,40 +1,37 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, REAL, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, REAL, ForeignKey, JSON
 from sqlalchemy.orm import declarative_base, selectinload
 
 Base = declarative_base()
 
-class NewTracks(Base):
-    __tablename__ = 'new_tracks'
+class Tracks(Base):
+    __tablename__ = 'tracks'
 
-    track_id: str = Column(String, primary_key=True, nullable=False)
-    album_id: str = Column(String, ForeignKey('new_albums.album_id'), nullable=False)
-    artist_id: str = Column(String, ForeignKey('new_artists.artist_id'), nullable=False)
-
+    track_id: str = Column(String(32), primary_key=True, nullable=False)
+    album_id: str = Column(String(32), ForeignKey('albums.album_id'), nullable=False)
+    artist_id: str = Column(String(32), ForeignKey('artists.artist_id'), nullable=False)
+    albumartist_id: str = Column(String(32), ForeignKey('albums.albumartist_id'), nullable=False)
     title: str = Column(String, nullable=False)
     album: str = Column(String, nullable=False)
     albumartist: str = Column(String, nullable=False)
     composer: str = Column(String, nullable=False)
     artist: str = Column(String, nullable=False)
     genre: str = Column(String, nullable=False)
-
     total_track: int = Column(Integer, nullable=False)
     total_disc: int = Column(Integer, nullable=False)
     track: int = Column(Integer, nullable=False)
     disc: int = Column(Integer, nullable=False)
-
     isrc: str = Column(String, nullable=False)
     label: str = Column(String, nullable=False)
     lyrics: str = Column(String, nullable=False)
     comment: str = Column(String, nullable=False)
     copyright: str = Column(String, nullable=False)
-
     filepath: str = Column(String, nullable=False)
     filesize: int = Column(Integer, nullable=False)
     duration: float = Column(REAL, nullable=False)
     mime: str = Column(String, nullable=False)
     date: str = Column(String, nullable=False)
     year: int = Column(Integer, nullable=False)
-
+    bitrate: float = Column(REAL, nullable=False)
     bitdepth: int = Column(Integer, nullable=False)
     channels: int = Column(Integer, nullable=False)
     samplerate: int = Column(Integer, nullable=False)
@@ -42,30 +39,30 @@ class NewTracks(Base):
     updated_at: DateTime = Column(DateTime, nullable=False)
 
 
-class NewAlbums(Base):
-    __tablename__ = 'new_albums'
+class Albums(Base):
+    __tablename__ = 'albums'
 
     album: str = Column(String, nullable=False)
-    album_id: str = Column(String, primary_key=True, nullable=False)
-    albumartist: str = Column(String, ForeignKey('new_tracks.albumartist'), nullable=False)
-    albumartist_id: str = Column(String, ForeignKey('new_artists.artist_id'), nullable=False)
+    album_id: str = Column(String(32), primary_key=True, nullable=False)
+    albumartist: str = Column(String, ForeignKey('tracks.albumartist'), nullable=False)
+    albumartist_id: str = Column(String(32), ForeignKey('artists.artist_id'), nullable=False)
     total_filesize: int = Column(Integer, nullable=False)
     total_duration: float = Column(REAL, nullable=False)
     total_disc: int = Column(Integer, nullable=False)
+    year: int = Column(Integer, nullable=False)
 
 
-class NewArtists(Base):
-    __tablename__ = 'new_artists'
+class Artists(Base):
+    __tablename__ = 'artists'
 
-    artist_id: str = Column(String, primary_key=True, nullable=False)
-    artist_comment: str = Column(String, nullable=False)
+    artist_id: str = Column(String(32), primary_key=True, nullable=False)
     artist: str = Column(String, nullable=False)
 
 
 class Artworks(Base):
     __tablename__ = 'artworks'
     
-    artwork_id: str = Column(String, primary_key=True, nullable=False)
+    artwork_id: str = Column(String(32), primary_key=True, nullable=False)
     artwork_type: str = Column(String, nullable=False)
     filepath: str = Column(String, nullable=False)
 
@@ -77,7 +74,7 @@ class Artworks(Base):
 class Playlists(Base):
     __tablename__ = 'playlists'
 
-    playlist_id: str = Column(String, primary_key=True, nullable=False)
+    playlist_id: str = Column(String(32), primary_key=True, nullable=False)
     playlist_name: str = Column(String, nullable=False)
     playlist_user: str = Column(String, ForeignKey('users.user_id'), nullable=False)
     created_at: DateTime = Column(DateTime, nullable=False)
@@ -87,15 +84,15 @@ class Playlists(Base):
 class PlaylistsData(Base):
     __tablename__ = 'playlists_data'
 
-    playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
-    track_id: str = Column(String, ForeignKey('new_tracks.track_id'), nullable=False)
+    playlist_id: str = Column(String(32), ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
+    track_id: str = Column(String(32), ForeignKey('tracks.track_id'), nullable=False)
     added_at: DateTime = Column(DateTime, nullable=False)
 
 
 class Users(Base):
     __tablename__ = 'users'
 
-    user_id: str = Column(String, primary_key=True, nullable=False)
+    user_id: str = Column(String(32), primary_key=True, nullable=False)
     username: str = Column(String, nullable=False)
     nickname: str = Column(String, nullable=False)
     password: str = Column(String, nullable=False)
@@ -106,69 +103,69 @@ class Users(Base):
 class UsersData(Base):
     __tablename__ = 'users_data'
 
-    user_id: str = Column(String, ForeignKey('users.user_id'), primary_key=True, nullable=False)
+    user_id: str = Column(String(32), ForeignKey('users.user_id'), primary_key=True, nullable=False)
     last_login: DateTime = Column(DateTime, nullable=False)
     created_at: DateTime = Column(DateTime, nullable=False)
     profile_pic: str = Column(String, nullable=False)
-    preferences: str = Column(String, nullable=False)
+    preferences: str = Column(JSON, nullable=False)
 
 
 # ---------------------------------------------
 
-class Tracks(Base):
-    __tablename__ = 'tracks'
+# class Tracks(Base):
+#     __tablename__ = 'tracks'
 
-    hash: str = Column(String, primary_key=True, nullable=False)
-    title: str = Column(String, nullable=False)
-    artist: str = Column(String, nullable=False)
-    artisthash: str = Column(String, nullable=False)
-    album: str = Column(String, nullable=False)
-    albumhash: str = Column(String, nullable=False)
-    albumartist: str = Column(String, nullable=False)
-    albumartisthash: str = Column(String, nullable=False)
-    bitdepth: int = Column(Integer, nullable=False)
-    bitrate: float = Column(REAL, nullable=False)
-    channels: int = Column(Integer, nullable=False)
-    comment: str = Column(String, nullable=False)
-    composer: str = Column(String, nullable=False)
-    disc: int = Column(Integer, nullable=False)
-    disctotal: int = Column(Integer, nullable=False)
-    duration: float = Column(REAL, nullable=False)
-    size: int = Column(Integer, nullable=False)
-    genre: str = Column(String, nullable=False)
-    samplerate: int = Column(Integer, nullable=False)
-    track: int = Column(Integer, nullable=False)
-    tracktotal: int = Column(Integer, nullable=False)
-    year: str = Column(String, nullable=False)
-    directory: str = Column(String, nullable=False)
-    mime: str = Column(String, nullable=False)
-    path: str = Column(String, nullable=False)
-    created_date: DateTime = Column(DateTime, nullable=False)
-    updated_date: DateTime = Column(DateTime, nullable=False)
-    unsyncedlyrics: str = Column(String, nullable=False)
-    syncedlyrics: str = Column(String, nullable=False)
-    isrc: str = Column(String(12), nullable=False)
-
-
-class Albums(Base):
-    __tablename__ = 'albums'
-
-    albumhash: str = Column(String, primary_key=True, nullable=False)
-    album: str = Column(String, nullable=False)
-    albumartist: str = Column(String, nullable=False)
-    albumartisthash: str = Column(String, nullable=False)
-    year: str = Column(String, nullable=False)
-    durationtotals: float = Column(REAL, nullable=False)
-    tracktotals: int = Column(Integer, nullable=False) # 이게 꼭 필요할까? 프론트엔드에서 처리해도 될 듯 한데..
-    disctotals: int = Column(Integer, nullable=False)
-    sizetotals: int = Column(Integer, nullable=False)
+#     hash: str = Column(String, primary_key=True, nullable=False)
+#     title: str = Column(String, nullable=False)
+#     artist: str = Column(String, nullable=False)
+#     artisthash: str = Column(String, nullable=False)
+#     album: str = Column(String, nullable=False)
+#     albumhash: str = Column(String, nullable=False)
+#     albumartist: str = Column(String, nullable=False)
+#     albumartisthash: str = Column(String, nullable=False)
+#     bitdepth: int = Column(Integer, nullable=False)
+#     bitrate: float = Column(REAL, nullable=False)
+#     channels: int = Column(Integer, nullable=False)
+#     comment: str = Column(String, nullable=False)
+#     composer: str = Column(String, nullable=False)
+#     disc: int = Column(Integer, nullable=False)
+#     disctotal: int = Column(Integer, nullable=False)
+#     duration: float = Column(REAL, nullable=False)
+#     size: int = Column(Integer, nullable=False)
+#     genre: str = Column(String, nullable=False)
+#     samplerate: int = Column(Integer, nullable=False)
+#     track: int = Column(Integer, nullable=False)
+#     tracktotal: int = Column(Integer, nullable=False)
+#     year: str = Column(String, nullable=False)
+#     directory: str = Column(String, nullable=False)
+#     mime: str = Column(String, nullable=False)
+#     path: str = Column(String, nullable=False)
+#     created_date: DateTime = Column(DateTime, nullable=False)
+#     updated_date: DateTime = Column(DateTime, nullable=False)
+#     unsyncedlyrics: str = Column(String, nullable=False)
+#     syncedlyrics: str = Column(String, nullable=False)
+#     isrc: str = Column(String(12), nullable=False)
 
 
-class Artists(Base):
-    __tablename__ = 'artists'
+# class Albums(Base):
+#     __tablename__ = 'albums'
 
-    artisthash: str = Column(String, primary_key=True, nullable=False)
-    artist: str = Column(String, nullable=False)
+#     albumhash: str = Column(String, primary_key=True, nullable=False)
+#     album: str = Column(String, nullable=False)
+#     albumartist: str = Column(String, nullable=False)
+#     albumartisthash: str = Column(String, nullable=False)
+#     year: str = Column(String, nullable=False)
+#     durationtotals: float = Column(REAL, nullable=False)
+#     tracktotals: int = Column(Integer, nullable=False) # 이게 꼭 필요할까? 프론트엔드에서 처리해도 될 듯 한데..
+#     disctotals: int = Column(Integer, nullable=False)
+#     sizetotals: int = Column(Integer, nullable=False)
+
+
+# class Artists(Base):
+#     __tablename__ = 'artists'
+
+#     artisthash: str = Column(String, primary_key=True, nullable=False)
+#     artist: str = Column(String, nullable=False)
 
 
 # from sqlalchemy import (

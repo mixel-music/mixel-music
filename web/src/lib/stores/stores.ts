@@ -4,13 +4,13 @@ import type { PlayerStore, TrackList } from "$lib/interface";
 
 function InitPlayerService() {
   const DefaultValues: PlayerStore = {
-    hash: '',
+    track_id: '',
+    album_id: '',
+    artist_id: '',
     title: '',
     album: '',
     artist: '',
     artwork: '',
-    artisthash: '',
-    albumhash: '',
     isLoaded: false,
     isPlaying: false,
     volumeRange: 100,
@@ -54,13 +54,13 @@ function InitPlayerService() {
   const updateTrack = (track: TrackList) => {
     update(state => ({
       ...state,
-      hash: track.hash,
+      track_id: track.track_id,
+      album_id: track.album_id,
+      artist_id: track.artist_id,
       title: track.title,
       album: track.album,
       artist: track.artist,
-      artisthash: track.artisthash,
-      albumhash: track.albumhash,
-      artwork: getArtwork(track.hash, 128),
+      artwork: getArtwork(track.track_id, 128),
     }));
   };
 
@@ -110,7 +110,7 @@ function InitPlayerService() {
       console.debug(`setTrack called with ${index}`);
 
       if (track) {
-        audio.src = `http://localhost:2843/api/streaming/${track.hash}`;
+        audio.src = `http://localhost:2843/api/streaming/${track.track_id}`;
         audio.load();
 
         audio.onloadedmetadata = (): void => {
@@ -131,7 +131,7 @@ function InitPlayerService() {
           ...state,
           ...track,
           index: index,
-          artwork: getArtwork(track.albumhash, 128),
+          artwork: getArtwork(track.album_id, 128),
         };
       }
 

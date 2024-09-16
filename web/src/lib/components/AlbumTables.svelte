@@ -40,7 +40,7 @@
       </TableBodyItem>
 
       <TableBodyItem size='m'>
-        <a href='{getArtistLink(item.artisthash)}'>
+        <a href='{getArtistLink(item.artist_id)}'>
           {item.artist}
         </a>
       </TableBodyItem>
