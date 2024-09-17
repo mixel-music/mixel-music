@@ -6,15 +6,16 @@
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import TrackTables from '$lib/components/TrackTables.svelte';
   import ControlsBar from '$lib/components/ControlsBar.svelte';
+  import { _ } from 'svelte-i18n'
 
   export let data: PageData;
 </script>
 
 <svelte:head>
-  <title>{data.title} • mixel-music</title>
+  <title>{$_(data.title)} • mixel-music</title>
 </svelte:head>
 
-<PageTitle title={data.title} />
+<PageTitle title={$_(data.title)} />
 
 {#if data.list}
   <ControlsBar />

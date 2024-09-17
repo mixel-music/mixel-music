@@ -12,16 +12,17 @@
   import TableBody from "./elements/TableBody.svelte";
   import TableBodyItem from "./elements/TableBodyItem.svelte";
   import TableMenu from "./elements/TableMenu.svelte";
+  import { _ } from 'svelte-i18n'
 
   export let list: TrackList[];
 </script>
 
 <Table>
   <TableHead>
-    <TableHeadItem size='l'>Title</TableHeadItem>
-    <TableHeadItem size='m'>Album</TableHeadItem>
-    <TableHeadItem size='m'>Artist</TableHeadItem>
-    <TableHeadItem size="s">Time</TableHeadItem>
+    <TableHeadItem size='l'>{$_('label.title')}</TableHeadItem>
+    <TableHeadItem size='m'>{$_('label.album')}</TableHeadItem>
+    <TableHeadItem size='m'>{$_('label.artist')}</TableHeadItem>
+    <TableHeadItem size="s">{$_('label.time')}</TableHeadItem>
     <TableHeadItem size="xs"></TableHeadItem>
   </TableHead>
 
@@ -36,7 +37,7 @@
       </TableBodyItem>
       <TableBodyItem size="m">
         <a href='{getAlbumLink(item.album_id)}'>
-          {item.album ? item.album : 'Unknown Album'}
+          {item.album ? item.album : $_('unknown_album')}
         </a>
       </TableBodyItem>
       <TableBodyItem size='m'>

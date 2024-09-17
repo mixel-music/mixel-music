@@ -7,6 +7,7 @@
   } from "$lib/tools";
   import PlayerService from "$lib/stores/stores";
   import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
+  import { _ } from 'svelte-i18n'
 
   $: trk = $PlayerService;
 </script>
@@ -18,9 +19,9 @@
         ? getArtwork(trk.track_id, 128)
         : trk.album_id && getArtwork(trk.album_id, 128)
       }
+      alt={$_('player.front_cover')}
       width=60
       height=60
-      alt="Front Cover"
     />
 
     <div>
@@ -30,7 +31,7 @@
           {trk.artist}
         </a> -
         <a href="{getAlbumLink(trk.album_id)}">
-          {trk.album ? trk.album : 'Unknown Album'}
+          {trk.album ? trk.album : $_('unknown_album')}
         </a>  
       </span>
       <span class="text-sub">
@@ -45,7 +46,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-s);
-    line-height: 100%
+    line-height: 100%;
   }
 
   .player-info div {

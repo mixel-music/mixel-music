@@ -3,6 +3,7 @@
   import { isQueueOpen } from "$lib/stores/layout";
   import PlayerButton from '$lib/components/layouts/player/PlayerButton.svelte'
   import PlayerInfo from '$lib/components/layouts/player/PlayerInfo.svelte';
+  import { _ } from 'svelte-i18n'
 
   $: trk = $PlayerService;
 </script>
@@ -14,7 +15,7 @@
         on:click={PlayerService.goPrev}
         icon="iconoir:skip-prev-solid"
         ControlButton
-        alt="Previous"
+        alt={$_('player.previous')}
       />
 
       {#if trk.isPlaying}
@@ -24,7 +25,7 @@
           disabled={!trk.isLoaded}
           ControlButton
           PrimaryButton
-          alt="Pause"
+          alt={$_('player.pause')}
         />
       {:else}
         <PlayerButton
@@ -33,7 +34,7 @@
           disabled={!trk.isLoaded}
           ControlButton
           PrimaryButton
-          alt="Play"
+          alt={$_('player.play')}
         />
       {/if}
 
@@ -41,7 +42,7 @@
         on:click={PlayerService.goNext}
         icon="iconoir:skip-next-solid"
         ControlButton
-        alt="Next"
+        alt={$_('player.next')}
       />
     </div>
 
@@ -75,7 +76,7 @@
 
         <PlayerButton
           on:click={PlayerService.mute}
-          alt="Volume"
+          alt={$_('player.volume')}
           icon={trk.volume === 0 || trk.mute
             ? "iconoir:sound-off" : trk.volumeRange < 50
             ? "iconoir:sound-low" : "iconoir:sound-high"
@@ -86,7 +87,10 @@
     
       <PlayerButton
         on:click={PlayerService.loop}
-        alt={trk.loop === 2 ? "Repeat one" : "Repeat"}
+        alt={
+          trk.loop === 2 ? $_('player.repeat_one') :
+          trk.loop === 1 ? $_('player.repeat_all') : $_('player.repeat')
+        }
         icon={trk.loop === 1
           ? "iconoir:repeat" : trk.loop === 2
           ? "iconoir:repeat-once" : "iconoir:repeat"
@@ -103,7 +107,7 @@
         on:click={() => {
           $isQueueOpen = !$isQueueOpen
         }}
-        alt="Playlist"
+        alt={$_('player.queue')}
         icon="iconoir:playlist"
         off={!$isQueueOpen}
       />

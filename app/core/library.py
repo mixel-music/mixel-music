@@ -298,7 +298,6 @@ class Library:
                     if albums_data:
                         album = albums_data[0]
                         artist_info = {
-                            'artist_id': album.get('artist_id', ''),
                             'artist': album.get('albumartist', ''),
                             'artist_id': album.get('artist_id', ''),
                             'albums': albums_data
@@ -395,8 +394,6 @@ class LibraryScan:
                 # Insert each album data
                 for alb in albums_data:
                     album_data = {
-                        'album_id': albumhash,
-                        'albumartist_id': albumartisthash,
                         'album': alb.album,
                         'album_id': alb.album_id,
                         'albumartist_id': alb.albumartist_id,
@@ -433,8 +430,6 @@ class LibraryScan:
                 # Insert each unknown album
                 for alb in unknown_albums_data:
                     album_data = {
-                        'album_id': albumhash,
-                        'albumartist_id': albumartisthash,
                         'album': alb.album,
                         'album_id': alb.album_id,
                         'albumartist_id': '',

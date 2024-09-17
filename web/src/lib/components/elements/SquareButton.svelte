@@ -29,7 +29,8 @@
     background-color: var(--dark-element);
     border: 1px solid var(--dark-border);
     transition: 0.2s ease;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 16px;
 
     border-radius: var(--radius-s);
     padding: var(--space-xs);

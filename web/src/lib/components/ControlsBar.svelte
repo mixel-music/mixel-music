@@ -1,5 +1,6 @@
 <script lang="ts">
   import SquareButton from "./elements/SquareButton.svelte";
+  import { _ } from 'svelte-i18n'
 </script>
 
 <div>
@@ -8,7 +9,7 @@
     width='150px'
     height='50px'
   >
-    Play
+    {$_('play')}
   </SquareButton>
 
   <SquareButton
@@ -16,7 +17,7 @@
     width='150px'
     height='50px'
   >
-    Shuffle
+    {$_('shuffle')}
   </SquareButton>
 </div>
 

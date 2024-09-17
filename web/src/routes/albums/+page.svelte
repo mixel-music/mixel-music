@@ -11,6 +11,7 @@
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
+  import { _ } from 'svelte-i18n'
 
   export let data: PageData;
 
@@ -21,10 +22,10 @@
 </script>
 
 <svelte:head>
-  <title>{data.title} • mixel-music</title>
+  <title>{$_(data.title)} • mixel-music</title>
 </svelte:head>
 
-<PageTitle title={data.title} />
+<PageTitle title={$_(data.title)} />
 
 {#if data.list}
   <GridWrap>
@@ -32,12 +33,12 @@
       <GridItem
         href={getAlbumLink(album.album_id)}
         src={album.album_id}
-        alt={album.album ? album.album : 'Unknown Album'}
+        alt={album.album ? album.album : $_('unknown_album')}
         lazyload
       >
         <div class="info-card">
           <a href='{getAlbumLink(album.album_id)}'>
-            <span class="text">{album.album ? album.album : 'Unknown Album'}</span>
+            <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
           </a>
           <a href='{getArtistLink(album.albumartist_id)}'>
             <span class="text-sub">{album.albumartist}</span>

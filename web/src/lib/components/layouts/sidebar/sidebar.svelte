@@ -1,42 +1,44 @@
 <script lang="ts">
   import SidebarList from './SidebarList.svelte';
   import SidebarItem from './SidebarItem.svelte';
+  import { _ } from 'svelte-i18n'
 </script>
 
 <div>
   <SidebarList>
     <SidebarItem href='/'>
-      Home
+      {$_('sidebar.home')}
     </SidebarItem>
     <SidebarItem href='/'>
-      Search
+      {$_('sidebar.search')}
     </SidebarItem>
     <SidebarItem href='/'>
-      My Mix
+      {$_('sidebar.my_mix')}
     </SidebarItem>
   </SidebarList>
 
-  <SidebarList name='Library'>
+  <SidebarList name={$_('sidebar.library')}>
     <SidebarItem href='/albums' icon='iconoir:compact-disc'>
-      Albums
+      {$_('sidebar.library.albums')}
     </SidebarItem>
     <SidebarItem href='/artists' icon='iconoir:microphone'>
-      Artists
+      {$_('sidebar.library.artists')}
     </SidebarItem>
     <SidebarItem href='/tracks' icon='iconoir:music-double-note'>
-      Tracks
+      {$_('sidebar.library.tracks')}
     </SidebarItem>
   </SidebarList>
 
-  <SidebarList name='Playlists'>
+  <SidebarList name={$_('sidebar.playlists')}>
     <SidebarItem href='' icon='iconoir:plus'>
-      Create Playlist
+      {$_('sidebar.playlists.create')}
     </SidebarItem>
   </SidebarList>
 </div>
 
 <style>
   div {
+    font-size: 16px !important;
     z-index: 0;
     width: 240px;
     flex-shrink: 0;

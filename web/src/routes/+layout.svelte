@@ -1,7 +1,7 @@
 <script lang="ts">
   import './style.css';
   import { onDestroy } from 'svelte';
-
+  
   import Sidebar from '$lib/components/layouts/sidebar/Sidebar.svelte';
   import Navbar from '$lib/components/layouts/navbar/Navbar.svelte';
   import Player from '$lib/components/layouts/player/Player.svelte';

@@ -11,6 +11,7 @@
   import TableBody from "./elements/TableBody.svelte";
   import TableBodyItem from "./elements/TableBodyItem.svelte";
   import TableMenu from "./elements/TableMenu.svelte";
+  import { _ } from 'svelte-i18n'
 
   export let list: AlbumItem;
 </script>
@@ -18,9 +19,9 @@
 <Table>
   <TableHead>
     <TableHeadItem size='xs'>#</TableHeadItem>
-    <TableHeadItem size='xl'>Title</TableHeadItem>
-    <TableHeadItem size='m'>Artist</TableHeadItem>
-    <TableHeadItem size="s">Time</TableHeadItem>
+    <TableHeadItem size='xl'>{$_('label.title')}</TableHeadItem>
+    <TableHeadItem size='m'>{$_('label.artist')}</TableHeadItem>
+    <TableHeadItem size="s">{$_('label.time')}</TableHeadItem>
     <TableHeadItem size="xs"></TableHeadItem>
   </TableHead>
 

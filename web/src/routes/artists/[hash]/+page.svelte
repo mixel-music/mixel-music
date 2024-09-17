@@ -4,6 +4,7 @@
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
+  import { _ } from 'svelte-i18n'
 
   export let data: PageData;
 
@@ -32,7 +33,7 @@
       >
         <div class="info-card">
           <a href='{getAlbumLink(album.album_id)}'>
-            <span class="text">{album.album ? album.album : 'Unknown Album'}</span>
+            <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
           </a>
           <span class="text-sub">{album.year}</span>
         </div>

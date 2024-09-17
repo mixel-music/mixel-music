@@ -3,6 +3,7 @@
   import Dropdown from '$lib/components/elements/Dropdown.svelte';
   import TextBox from '$lib/components/elements/TextBox.svelte';
   import Icon from '@iconify/svelte';
+  import { _ } from 'svelte-i18n'
 </script>
 
 <nav>
@@ -20,7 +21,7 @@
       name="search"
       type="search"
       width="290px"
-      placeholder="Search"
+      placeholder={$_('navbar.search')}
     />
     <RoundButton>
       <Icon icon="iconoir:refresh" />

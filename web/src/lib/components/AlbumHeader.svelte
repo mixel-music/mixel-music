@@ -6,20 +6,21 @@
     convertDateTime,
     convertFileSize,
   } from "$lib/tools";
+  import { _ } from "svelte-i18n";
 
   export let album: string;
-  export let albumhash: string;
+  export let album_id: string;
   export let albumartist: string;
-  export let albumartisthash: string;
-  export let totalTracks: number;
-  export let totalLength: number;
-  export let year: number;
-  export let size: number;
+  export let albumartist_id: string;
   export let comment: string = '';
+  export let duration_total: number;
+  export let filesize_total: number;
+  export let track_total: number;
+  export let year: number;
 
-  $: strLength = convertDateTime(totalLength);
-  $: artwork = getArtwork(albumhash, 500);
-  $: strSize = convertFileSize(size);
+  $: strLength = convertDateTime(duration_total);
+  $: artwork = getArtwork(album_id, 500);
+  $: strSize = convertFileSize(filesize_total);
 </script>
 
 <div class="album-wrap" style:background-image="url('{artwork}')" />
@@ -33,17 +34,17 @@
   />
 
   <div class="album-details">
-    <span class="title">{album ? album : 'Unknown Album'}</span>
+    <span class="title">{album ? album : $_('unknown_album')}</span>
     {#if albumartist}
-      <a href={getArtistLink(albumartisthash)}>
+      <a href={getArtistLink(albumartist_id)}>
         <span class="artist">{albumartist}</span>
       </a>
     {/if}
 
     <div>
       <span class="detail">
-        {#if totalTracks === 1} {totalTracks} Track
-        {:else} {totalTracks} Tracks {/if}
+        {#if track_total === 1} {track_total} Track
+        {:else} {track_total} Tracks {/if}
 
         ({strLength}) · {year} · {strSize}
       </span>
@@ -93,7 +94,6 @@
     width: 100%;
     gap: var(--space-m);
     flex-direction: row;
-    margin-top: var(--space-s);
     margin-bottom: var(--space-l);
   }
 

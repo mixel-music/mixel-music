@@ -6,6 +6,7 @@
   import GridItem from '$lib/components/elements/GridItem.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import RoundButton from '$lib/components/elements/RoundButton.svelte';
+  import { _ } from 'svelte-i18n'
 
   export let data: PageData;
 
@@ -16,10 +17,10 @@
 </script>
 
 <svelte:head>
-  <title>{ data.title } • mixel-music</title>
+  <title>{$_(data.title)} • mixel-music</title>
 </svelte:head>
 
-<PageTitle title={data.title} />
+<PageTitle title={$_(data.title)} />
 
 {#if data.list}
   <GridWrap>
