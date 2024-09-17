@@ -36,7 +36,7 @@
       </TableBodyItem>
       <TableBodyItem size="m">
         <a href='{getAlbumLink(item.album_id)}'>
-          {item.album}
+          {item.album ? item.album : 'Unknown Album'}
         </a>
       </TableBodyItem>
       <TableBodyItem size='m'>

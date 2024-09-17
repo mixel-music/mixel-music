@@ -28,7 +28,7 @@ async def hash_track_to_album(hash: str) -> str:
     try:
         async with session() as conn:
             result = await conn.execute(
-                select(Tracks.albumhash).where(Tracks.hash == hash)
+                select(Tracks.album_id).where(Tracks.track_id == hash)
             )
             row = result.scalars().first()
         
@@ -43,7 +43,7 @@ async def hash_track_to_path(hash: str) -> str:
     try:
         async with session() as conn:
             result = await conn.execute(
-                select(Tracks.path).where(Tracks.hash == hash)
+                select(Tracks.filepath).where(Tracks.track_id == hash)
             )
             row = result.scalars().first()
 
@@ -51,4 +51,13 @@ async def hash_track_to_path(hash: str) -> str:
     
     except Exception as error:
         logs.error("Failed to get track's path, %s", error)
+        return ''
+    
+
+def safe_list(extra, key, default=''):
+    extra = dict(extra)
+    try:
+        value = extra.get(key, [default])
+        return value[0] if value else default
+    except:
         return ''

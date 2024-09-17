@@ -16,7 +16,7 @@ async def init(app: FastAPI):
     create_dir(Config)
     log = log_file_handler()
     await connect_database()
-    
+
     asyncio.create_task(find_changes())
     asyncio.create_task(watch_change())
 

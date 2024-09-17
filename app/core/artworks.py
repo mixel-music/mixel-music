@@ -45,7 +45,7 @@ class ArtworkService:
 
                 result = await conn.execute(query)
                 data = result.mappings().first()
-                if data: 
+                if data:
                     data = dict(data)
                     artwork_path = get_path(data.get('filepath')).parent
 

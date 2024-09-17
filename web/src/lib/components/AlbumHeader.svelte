@@ -33,7 +33,7 @@
   />
 
   <div class="album-details">
-    <span class="title">{album}</span>
+    <span class="title">{album ? album : 'Unknown Album'}</span>
     {#if albumartist}
       <a href={getArtistLink(albumartisthash)}>
         <span class="artist">{albumartist}</span>
@@ -93,7 +93,8 @@
     width: 100%;
     gap: var(--space-m);
     flex-direction: row;
-    margin: var(--space-l) 0;
+    margin-top: var(--space-s);
+    margin-bottom: var(--space-l);
   }
 
   .album-header span {

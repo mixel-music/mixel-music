@@ -28,13 +28,21 @@
     <TableBody>
       <TableBodyItem size='xs'>
           <span class="text-sub normal">
-            {item.track != 0 ? item.track : '-'}
+            {item.track_number != 0 ? item.track_number : '-'}
           </span>
         </TableBodyItem>
       <TableBodyItem size='xl'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->
-        <a on:click={() => handleClick(item, true)} on:keydown>
+        <a on:click={() => handleClick(
+          {
+            track_id: item.track_id,
+            title: item.title,
+            album: list.album,
+            artist: item.artist,
+            artist_id: item.artist_id,
+            album_id: list.album_id
+          }, true)} on:keydown>
           {item.title}
         </a>
       </TableBodyItem>

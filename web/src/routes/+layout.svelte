@@ -79,4 +79,10 @@
     padding-right: 64px;
     margin-bottom: 24px;
   }
+
+  @media screen and (max-width: 1960px) {
+    #app > div > div {
+      padding: 0 min(64px, 3%);
+    }
+  }
 </style>

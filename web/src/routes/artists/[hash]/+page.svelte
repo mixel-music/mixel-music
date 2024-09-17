@@ -32,7 +32,7 @@
       >
         <div class="info-card">
           <a href='{getAlbumLink(album.album_id)}'>
-            <span class="text">{album.album}</span>
+            <span class="text">{album.album ? album.album : 'Unknown Album'}</span>
           </a>
           <span class="text-sub">{album.year}</span>
         </div>

@@ -18,7 +18,7 @@
 
 {#if data.list}
   <ControlsBar />
-  <TrackTables list={ data.list.list } />
+  <TrackTables list={data.list.list} />
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>

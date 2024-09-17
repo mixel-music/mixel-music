@@ -17,9 +17,8 @@
     albumartist={data.item.albumartist}
     year={data.item.year}
     totalTracks={data.item.tracks.length}
-    totalLength={data.item.total_duration}
-    comment={data.item.tracks[0].comment}
-    size={data.item.total_filesize}
+    totalLength={data.item.duration_total}
+    size={data.item.filesize_total}
     albumhash={data.item.album_id}
     albumartisthash={data.item.albumartist_id}
   />

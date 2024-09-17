@@ -32,12 +32,12 @@
       <GridItem
         href={getAlbumLink(album.album_id)}
         src={album.album_id}
-        alt={album.album}
+        alt={album.album ? album.album : 'Unknown Album'}
         lazyload
       >
         <div class="info-card">
           <a href='{getAlbumLink(album.album_id)}'>
-            <span class="text">{album.album}</span>
+            <span class="text">{album.album ? album.album : 'Unknown Album'}</span>
           </a>
           <a href='{getArtistLink(album.albumartist_id)}'>
             <span class="text-sub">{album.albumartist}</span>

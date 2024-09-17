@@ -30,7 +30,7 @@
           {trk.artist}
         </a> -
         <a href="{getAlbumLink(trk.album_id)}">
-          {trk.album}
+          {trk.album ? trk.album : 'Unknown Album'}
         </a>  
       </span>
       <span class="text-sub">

@@ -5,12 +5,12 @@ import type { PlayerStore, TrackList } from "$lib/interface";
 function InitPlayerService() {
   const DefaultValues: PlayerStore = {
     track_id: '',
-    album_id: '',
-    artist_id: '',
     title: '',
     album: '',
     artist: '',
     artwork: '',
+    artist_id: '',
+    album_id: '',
     isLoaded: false,
     isPlaying: false,
     volumeRange: 100,
@@ -55,12 +55,12 @@ function InitPlayerService() {
     update(state => ({
       ...state,
       track_id: track.track_id,
-      album_id: track.album_id,
-      artist_id: track.artist_id,
       title: track.title,
       album: track.album,
       artist: track.artist,
-      artwork: getArtwork(track.track_id, 128),
+      artist_id: track.artist_id,
+      album_id: track.album_id,
+      artwork: getArtwork(track.album_id, 128),
     }));
   };
 

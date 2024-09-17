@@ -40,7 +40,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 0;
+    padding: var(--space-m) 0;
   }
 
   div {
