@@ -74,9 +74,9 @@ export interface AlbumItem {
   disc_total: number;
   duration_total: number;
   filesize_total: number;
-  year: string;
+  year: number;
 
-  tracks: [
+  tracks: [{
     artist: string,
     artist_id: string,
     comment: string,
@@ -84,7 +84,7 @@ export interface AlbumItem {
     title: string,
     track_id: string,
     track_number: number,
-  ];
+  }];
 }
 
 export interface ArtistListResponse {

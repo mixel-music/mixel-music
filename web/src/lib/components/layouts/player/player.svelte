@@ -48,7 +48,9 @@
 
     <input
       on:input={(event) =>
-        PlayerService.seek(parseFloat(event.target.value))
+        PlayerService.seek
+          (parseFloat(event.target.value)
+        )
       }
       type="range"
       min="0"
@@ -65,7 +67,9 @@
       <div class="player-volume">
         <input
           on:input={(event) => {
-            PlayerService.volume(parseFloat(event.target.value))
+            PlayerService.volume(
+              parseFloat(event.target.value)
+            )
           }}
           type="range"
           min="0"
@@ -76,7 +80,7 @@
 
         <PlayerButton
           on:click={PlayerService.mute}
-          alt={$_('player.volume')}
+          alt={$_('player.mute')}
           icon={trk.volume === 0 || trk.mute
             ? "iconoir:sound-off" : trk.volumeRange < 50
             ? "iconoir:sound-low" : "iconoir:sound-high"

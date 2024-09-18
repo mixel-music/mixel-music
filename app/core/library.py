@@ -64,7 +64,7 @@ class Library:
 
         try:
             async with session() as conn:
-                db_query = (
+                db_query = await conn.execute(
                     select(
                         Tracks.album,
                         Tracks.album_id,
@@ -77,9 +77,7 @@ class Library:
                     .offset(page)
                     .limit(item)
                 )
-
-                db_result = await conn.execute(db_query)
-                track_list = [dict(row) for row in db_result.mappings().all()]
+                track_list = [dict(row) for row in db_query.mappings().all()]
 
                 count_query = select(func.count()).select_from(Tracks)
                 count_result = await conn.execute(count_query)
@@ -100,13 +98,11 @@ class Library:
 
         try:
             async with session() as conn:
-                db_query = (
+                db_query = await conn.execute(
                     select(Tracks.__table__)
                     .where(Tracks.track_id == id)
                 )
-
-                db_result = await conn.execute(db_query)
-                track_info = dict(db_result.mappings().first())
+                track_info = dict(db_query.mappings().first())
 
                 return track_info
             
@@ -149,8 +145,8 @@ class Library:
                     .offset(page)
                     .limit(item)
                 )
-
                 album_list = [dict(row) for row in album_query.mappings().all()]
+
                 count_query = select(func.count()).select_from(Albums)
                 count_result = await conn.execute(count_query)
                 count = count_result.scalar_one()
@@ -177,7 +173,7 @@ class Library:
                     ).select_from(
                         join(
                             Albums, Artists,
-                            Albums.albumartist_id == Artists.artist_id
+                            Albums.albumartist_id == Artists.artist_id,
                         )
                     )
                     .where(Albums.album_id == id)
@@ -228,15 +224,13 @@ class Library:
 
         try:
             async with session() as conn:
-                db_query = (
+                db_query = await conn.execute(
                     select(Artists.__table__)
                     .order_by(Artists.artist.asc())
                     .offset(page)
                     .limit(item)
                 )
-
-                db_result = await conn.execute(db_query)
-                artist_list = [dict(row) for row in db_result.mappings().all()]
+                artist_list = [dict(row) for row in db_query.mappings().all()]
                 
                 count_query = select(func.count()).select_from(Artists)
                 count_result = await conn.execute(count_query)
@@ -377,8 +371,7 @@ class LibraryScan:
                         func.sum(Tracks.filesize).label('filesize_total'),
                     )
                     .where(
-                        Tracks.album_id != '',  # Exclude empty album_id
-                        Tracks.compilation != True,  # Exclude compilation albums
+                        Tracks.album_id != '',
                     )
                     .group_by(
                         Tracks.album,
@@ -452,7 +445,7 @@ class LibraryScan:
                 result = await conn.execute(tracks_query)
                 track_hash = {row.album_id for row in result}
 
-                # Find albums present in Albums but not in Tracks (orphans)
+                # Find albums present in Albums but not in Tracks
                 orphan_albums = album_hash - track_hash
 
                 for album_id in orphan_albums:
@@ -470,7 +463,6 @@ class LibraryScan:
     async def perform_artists() -> None:
         try:
             async with session() as conn:
-                # Fetch distinct artist, albumartist, and their respective IDs
                 db_query = (
                     select(
                         Tracks.artist,
@@ -484,7 +476,6 @@ class LibraryScan:
                 db_result = await conn.execute(db_query)
                 artists_data = db_result.all()
 
-                # Insert each artist and/or albumartist based on comparison
                 for track in artists_data:
                     # Initialize a set to avoid duplicating artists
                     artists_to_insert = set()

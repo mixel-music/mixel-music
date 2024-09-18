@@ -16,10 +16,11 @@
   export let duration_total: number;
   export let filesize_total: number;
   export let track_total: number;
-  export let year: number;
+  export let year: number | string;
 
   $: strLength = convertDateTime(duration_total);
   $: artwork = getArtwork(album_id, 500);
+  $: {year != 0 ? $_('year',{values:{year:year}})  : $_('unknown_year') };
   $: strSize = convertFileSize(filesize_total);
 </script>
 
@@ -47,7 +48,7 @@
         {#if track_total === 1} {$_('track',{values:{track_total:track_total}})}
         {:else} {$_('tracks',{values:{track_total:track_total}})} {/if}
 
-        ({strLength}) · {$_('year',{values:{year:year}})} · {strSize}
+        ({strLength}) · {year} · {strSize}
       </span>
 
       <span class="detail">{comment}</span>

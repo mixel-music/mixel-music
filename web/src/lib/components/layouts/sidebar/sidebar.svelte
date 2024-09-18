@@ -39,7 +39,7 @@
 <style>
   div {
     z-index: 0;
-    width: 230px;
+    width: 240px;
     flex-shrink: 0;
     min-height: 100dvh;
     padding: var(--space-m);

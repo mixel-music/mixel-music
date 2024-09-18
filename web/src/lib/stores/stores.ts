@@ -145,7 +145,7 @@ function InitPlayerService() {
     setTrack,
 
     toggle: (): void => {
-      if (audio.paused) {
+      if (audio.src && audio.paused) {
         audio.play();
       }
       else {

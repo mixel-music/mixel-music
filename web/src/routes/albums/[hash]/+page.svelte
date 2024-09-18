@@ -9,7 +9,11 @@
 </script>
 
 <svelte:head>
-  <title>{data.item.album} / {data.item.albumartist} • mixel-music</title>
+  <title>
+    {data.item.album
+      ? data.item.album : $_('unknown_album')
+    } / {data.item.albumartist} • mixel-music
+  </title>
 </svelte:head>
 
 {#if data.item}

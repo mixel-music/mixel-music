@@ -37,8 +37,5 @@
     "shuffle": "셔플",
     "track": "트랙 {track_total}개",
     "tracks": "트랙 {track_total}개",
-    "year": "{year}년",
-    "hour": "{hour}시간",
-    "minute": "{minute}분",
-    "second": " {second}초"
+    "year": "{year}년"
 }
