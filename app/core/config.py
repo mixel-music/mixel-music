@@ -6,7 +6,7 @@ import logging
 
 class Config(BaseSettings):
     APPNAME: str = 'mixel-music'
-    VERSION: str = '0.8.0'
+    VERSION: str = '0.8.1'
     HOST: str = '0.0.0.0'
     PORT: int = 2843
 

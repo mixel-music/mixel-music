@@ -35,7 +35,9 @@
           <a href='{getAlbumLink(album.album_id)}'>
             <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
           </a>
-          <span class="text-sub">{album.year != 0 ? $_('year',{values:{year:album.year}}) : $_('unknown_year')}</span>
+          <span class="text-sub">
+            {album.year != 0 ? $_('info.year',{values:{year:album.year}}) : $_('unknown_year')}
+          </span>
         </div>
       </GridItem>
     {/each}

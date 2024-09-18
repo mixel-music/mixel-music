@@ -20,7 +20,7 @@
 
   $: strLength = convertDateTime(duration_total);
   $: artwork = getArtwork(album_id, 500);
-  $: {year != 0 ? $_('year',{values:{year:year}})  : $_('unknown_year') };
+  $: {year != 0 ? $_('info.year',{values:{year:year}})  : $_('unknown_year') };
   $: strSize = convertFileSize(filesize_total);
 </script>
 
@@ -45,8 +45,8 @@
 
     <div>
       <span class="detail">
-        {#if track_total === 1} {$_('track',{values:{track_total:track_total}})}
-        {:else} {$_('tracks',{values:{track_total:track_total}})} {/if}
+        {#if track_total === 1} {$_('info.track',{values:{track_total:track_total}})}
+        {:else} {$_('info.tracks',{values:{track_total:track_total}})} {/if}
 
         ({strLength}) · {year} · {strSize}
       </span>
