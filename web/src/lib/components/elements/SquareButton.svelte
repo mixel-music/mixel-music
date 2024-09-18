@@ -1,6 +1,7 @@
 <script lang="ts">
   export let type: string | undefined = undefined;
   export let href: string | undefined = undefined;
+  export let title: string | undefined = undefined;
   export let width: string = '42px';
   export let height: string = '42px';
   export let preload: string = 'false';
@@ -13,6 +14,8 @@
   this={href ? 'a' : 'button'}
   style:height={height}
   style:width={width}
+  {...$$restProps}
+  title={title}
   on:click
   on:focus
   {href}
@@ -35,6 +38,7 @@
     border-radius: var(--radius-s);
     padding: var(--space-xs);
     gap: var(--space-xs);
+    text-decoration: none;
   }
 
   a:hover, button:hover {

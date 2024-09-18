@@ -8,9 +8,11 @@
     "sidebar.library.tracks": "Tracks",
     "sidebar.playlists": "Playlists",
     "sidebar.playlists.create": "Create Playlist",
+
     "navbar.previous": "Previous",
     "navbar.next": "Next",
     "navbar.search": "Search...",
+
     "player.front_cover": "Front Cover",
     "player.previous": "Previous",
     "player.play": "Play",
@@ -22,6 +24,7 @@
     "player.repeat": "repeat",
     "player.repeat_all": "repeat all",
     "player.repeat_one": "repeat one",
+
     "label.title": "Title",
     "label.artist": "Artist",
     "label.album": "Album",
@@ -31,14 +34,18 @@
     "albums.title": "Albums",
     "artists.title": "Artists",
     "tracks.title": "Tracks",
+
     "unknown_album": "Unknown Album",
     "unknown_year": "Unknown Year",
-    "play": "Play",
-    "shuffle": "Shuffle",
-    "track": "{track_total} Track",
-    "tracks": "{track_total} Tracks",
-    "year": "{year}",
-    "download": "Download",
-    "favorite": "Favorite",
-    "info": "Info"
+    "unknown_artist": "Unknown Artist",
+
+    "controls.play": "Play",
+    "controls.shuffle": "Shuffle",
+    "controls.download": "Download",
+    "controls.info": "Info",
+    "controls.favorite": "Favorite",
+
+    "info.track": "{track_total} Track",
+    "info.tracks": "{track_total} Tracks",
+    "info.year": "{year}"
 }

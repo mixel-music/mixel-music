@@ -27,9 +27,10 @@
     align-items: center;
     justify-content: center;
     color: var(--dark-text-sub);
-    transition: 0.2s ease;
-    font-size: 24px;
     background-color: transparent;
+    transition: 0.2s ease;
+    text-decoration: none;
+    font-size: 24px;
     border: none;
   }
 

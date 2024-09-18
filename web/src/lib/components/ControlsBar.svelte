@@ -11,39 +11,49 @@ import SquareButton from "./elements/SquareButton.svelte";
       href='.'
       width='150px'
       height='50px'
+      title={$_('controls.play')}
     >
       <Icon icon="iconoir:play-solid" />
-      {$_('play')}
+      {$_('controls.play')}
     </SquareButton>
 
     <SquareButton
       href='.'
       width='150px'
       height='50px'
+      title={$_('controls.shuffle')}
     >
     <Icon icon="iconoir:shuffle" />
-      {$_('shuffle')}
+      {$_('controls.shuffle')}
     </SquareButton>
   </div>
   <div>
-    <RoundButton width="50px" height="50px">
-      <Icon icon="iconoir:heart" />
+    <RoundButton
+      width="50px"
+      height="50px"
+      title={$_('controls.favorite')}
+    >
+      <Icon icon="iconoir:heart" width="21" height="21" />
     </RoundButton>
+    
     <SquareButton
       href='.'
       width='130px'
       height='50px'
+      title={$_('controls.info')}
     >
     <Icon icon="iconoir:info-circle-solid" />
-      {$_('info')}
+      {$_('controls.info')}
     </SquareButton>
+
     <SquareButton
       href='.'
-      width='130px'
+      width='140px'
       height='50px'
+      title={$_('controls.download')}
     >
     <Icon icon="iconoir:download" />
-      {$_('download')}
+      {$_('controls.download')}
     </SquareButton>
   </div>
 </div>
