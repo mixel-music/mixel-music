@@ -3,6 +3,7 @@
   import AlbumTables from '$lib/components/AlbumTables.svelte';
   import AlbumHeader from '$lib/components/AlbumHeader.svelte';
   import ControlsBar from '$lib/components/ControlsBar.svelte';
+  import { _ } from 'svelte-i18n';
 
   export let data: PageData;
 </script>
@@ -21,7 +22,7 @@
     duration_total={data.item.duration_total}
     filesize_total={data.item.filesize_total}
     track_total={data.item.tracks.length}
-    year={data.item.year}
+    year={data.item.year != 0 ? data.item.year : $_('unknown_year')}
   />
 
   <ControlsBar />

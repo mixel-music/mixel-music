@@ -32,6 +32,13 @@
     "artists.title": "Artists",
     "tracks.title": "Tracks",
     "unknown_album": "Unknown Album",
+    "unknown_year": "Unknown Year",
     "play": "Play",
-    "shuffle": "Shuffle"
+    "shuffle": "Shuffle",
+    "track": "{track_total} Track",
+    "tracks": "{track_total} Tracks",
+    "year": "{year}",
+    "hour": "{hour}",
+    "minute": "{minute}:",
+    "second": "{second}"
 }

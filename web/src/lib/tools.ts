@@ -1,4 +1,5 @@
 import PlayerService from "$lib/stores/stores";
+import { _ } from "svelte-i18n";
 
 export function getArtwork(hash: string, size: number): string {
   let artwork: string =
@@ -10,12 +11,12 @@ export function getArtwork(hash: string, size: number): string {
 
 export function handleClick(item: any, play: boolean = false) {
   PlayerService.addTrack({
-    track_id: item.track_id,
-    title: item.title,
     album: item.album,
+    album_id: item.album_id,
     artist: item.artist,
     artist_id: item.artist_id,
-    album_id: item.album_id,
+    title: item.title,
+    track_id: item.track_id,
   }, play ? 0 : null);
 
   if (play)
@@ -24,30 +25,26 @@ export function handleClick(item: any, play: boolean = false) {
 
 
 export function getAlbumLink(hash: string): string {
-  let album: string =
-    `/albums/${hash}`;
-
-  return album
+  let album: string = `/albums/${hash}`;
+  return album;
 }
 
 
 export function getArtistLink(hash: string): string {
-  let artist: string =
-    `/artists/${hash}`;
-    
+  let artist: string = `/artists/${hash}`;
   return artist;
 }
 
 
 export function getNextPage(page: number = 1, item: number = 40, total: number = 0): string {
   const nextPage = total - (page * item) < 1 ? page : page + 1;
-  return `?page=${nextPage}&item=${item}`
+  return `?page=${nextPage}&item=${item}`;
 }
 
 
 export function getPrevPage(page: number = 1, item: number = 40): string {
   const prevPage = page - 1 < 1 ? 1 : page - 1;
-  return `?page=${prevPage}&item=${item}`
+  return `?page=${prevPage}&item=${item}`;
 }
 
 
