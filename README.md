@@ -14,6 +14,6 @@
   * So there may be many areas that need improvement. Feedback is always welcome.
 
 ## Screenshots
-![album-list-1610-864_75_55](https://github.com/user-attachments/assets/bcfc1f4e-5598-4063-b844-c48b4e4de289)
+<img src=".github/albums-list-1620-864-75-55.png">
 
-![album-info-1610-864_75_55](https://github.com/user-attachments/assets/f48456d4-9414-4181-94ff-e5187222e572)
+<img src=".github/albums-info-1620-864-75-55.png">

@@ -38,12 +38,11 @@
 
 <style>
   div {
-    font-size: 16px !important;
     z-index: 0;
     width: 240px;
     flex-shrink: 0;
     min-height: 100dvh;
-    padding: 24px 21px;
+    padding: var(--space-m);
     background-color: var(--dark-sidebar);
     border-right: 1px solid var(--dark-border);
   }

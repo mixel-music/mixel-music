@@ -58,52 +58,52 @@ class Artists(Base):
     artist_id: str = Column(String(32), primary_key=True, nullable=False)
 
 
-# class Artworks(Base):
-#     __tablename__ = 'artworks'
+class Artworks(Base):
+    __tablename__ = 'artworks'
     
-#     artwork_id: str = Column(String, primary_key=True, nullable=False)
-#     artwork_type: str = Column(String, nullable=False)
-#     filepath: str = Column(String, nullable=False)
+    artwork_id: str = Column(String, primary_key=True, nullable=False)
+    artwork_type: str = Column(String, nullable=False)
+    filepath: str = Column(String, nullable=False)
 
 
-# # class Settings(Base):
-# #     __tablename__ = 'settings'
+# class Settings(Base):
+#     __tablename__ = 'settings'
 
 
-# class Playlists(Base):
-#     __tablename__ = 'playlists'
+class Playlists(Base):
+    __tablename__ = 'playlists'
 
-#     playlist_id: str = Column(String, primary_key=True, nullable=False)
-#     playlist_name: str = Column(String, nullable=False)
-#     playlist_user: str = Column(String, ForeignKey('users.user_id'), nullable=False)
-#     created_at: DateTime = Column(DateTime, nullable=False)
-#     updated_at: DateTime = Column(DateTime, nullable=False)
-
-
-# class PlaylistsData(Base):
-#     __tablename__ = 'playlists_data'
-
-#     playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
-#     track_id: str = Column(String, ForeignKey('new_tracks.track_id'), nullable=False)
-#     added_at: DateTime = Column(DateTime, nullable=False)
+    playlist_id: str = Column(String, primary_key=True, nullable=False)
+    playlist_name: str = Column(String, nullable=False)
+    playlist_user: str = Column(String, ForeignKey('users.user_id'), nullable=False)
+    created_at: DateTime = Column(DateTime, nullable=False)
+    updated_at: DateTime = Column(DateTime, nullable=False)
 
 
-# class Users(Base):
-#     __tablename__ = 'users'
+class PlaylistsData(Base):
+    __tablename__ = 'playlists_data'
 
-#     user_id: str = Column(String, primary_key=True, nullable=False)
-#     username: str = Column(String, nullable=False)
-#     nickname: str = Column(String, nullable=False)
-#     password: str = Column(String, nullable=False)
-#     email: str = Column(String, nullable=False)
-#     role: str = Column(String, nullable=False)
+    playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
+    track_id: str = Column(String, ForeignKey('tracks.track_id'), nullable=False)
+    added_at: DateTime = Column(DateTime, nullable=False)
 
 
-# class UsersData(Base):
-#     __tablename__ = 'users_data'
+class Users(Base):
+    __tablename__ = 'users'
 
-#     user_id: str = Column(String, ForeignKey('users.user_id'), primary_key=True, nullable=False)
-#     last_login: DateTime = Column(DateTime, nullable=False)
-#     created_at: DateTime = Column(DateTime, nullable=False)
-#     profile_pic: str = Column(String, nullable=False)
-#     preferences: str = Column(String, nullable=False)
+    user_id: str = Column(String, primary_key=True, nullable=False)
+    username: str = Column(String, nullable=False)
+    nickname: str = Column(String, nullable=False)
+    password: str = Column(String, nullable=False)
+    email: str = Column(String, nullable=False)
+    role: str = Column(String, nullable=False)
+
+
+class UsersData(Base):
+    __tablename__ = 'users_data'
+
+    user_id: str = Column(String, ForeignKey('users.user_id'), primary_key=True, nullable=False)
+    last_login: DateTime = Column(DateTime, nullable=False)
+    created_at: DateTime = Column(DateTime, nullable=False)
+    profile_pic: str = Column(String, nullable=False)
+    preferences: str = Column(String, nullable=False)

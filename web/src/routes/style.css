@@ -58,6 +58,7 @@
   --dark-sidebar: var(--black-2);
   --dark-player: var(--black-2a);
   --dark-element: var(--black-2);
+  --dark-queue: var(--black-3);
 
   --dark-range: var(--black-5);
   --dark-range-now: var(--white-4);
@@ -95,7 +96,7 @@ body {
   overflow-x: hidden;
   background-color: var(--dark-body);
   color: var(--dark-text);
-  font-size: 15px;
+  font-size: 15.5px;
   letter-spacing: -0.1px;
   word-break: keep-all;
   word-wrap: break-word;
@@ -198,8 +199,15 @@ img {
 }
 
 .normal {
+  display: unset;
   font-size: 100%;
+  text-overflow: unset;
+  overflow: unset;
   line-height: normal;
+}
+
+.big {
+  font-size: 110%;
 }
 
 .small {

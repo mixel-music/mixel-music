@@ -19,7 +19,7 @@
           {#if showArtwork}
             <img
               loading={lazyload ? 'lazy' : null}
-              src={getArtwork(src, 300)} {alt} on:error={() => showArtwork = !showArtwork}
+              src={getArtwork(src, 500)} {alt} on:error={() => showArtwork = !showArtwork}
             >
           {/if}
         </a>
@@ -78,7 +78,8 @@
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: scale-down;
+    /* object-fit: scale-down; */
+    object-fit: cover;
     aspect-ratio: 1/1;
     border-radius: var(--radius-s);
   }

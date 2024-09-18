@@ -1,7 +1,7 @@
 <script lang="ts">
   import RoundButton from '$lib/components/elements/RoundButton.svelte';
   import Dropdown from '$lib/components/elements/Dropdown.svelte';
-  import TextBox from '$lib/components/elements/TextBox.svelte';
+  import TextBox from '$lib/components/elements/Textbox.svelte';
   import Icon from '@iconify/svelte';
   import { _ } from 'svelte-i18n'
 </script>
@@ -42,6 +42,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--space-m) 0;
+    padding-bottom: var(--space-l);
   }
 
   div {
