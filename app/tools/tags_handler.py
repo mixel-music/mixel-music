@@ -12,7 +12,7 @@ f_pattern = re.compile(r'\s*feat\.?\s.*')
 
 patterns = {
     'full_date': re.compile(r'^(\d{4})[-., ]?(\d{1,2})[-., ]?(\d{1,2})$'),  # YYYY-MM-DD, YYYY.MM.DD, YYYYMMDD, etc.
-    'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),                # YYYY-MM, YYYY.MM, YYYYMM, etc.
+    'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),                 # YYYY-MM, YYYY.MM, YYYYMM, etc.
     'year_only': re.compile(r'^(\d{4})$')                                   # YYYY only
 }
 
@@ -26,12 +26,14 @@ def convert_date(date_input):
             year, month, day = match.groups()
             month = month.zfill(2)
             day = day.zfill(2)
+
             return f"{year}-{month}-{day}", year
 
         match = patterns['year_month'].match(date_input)
         if match:
             year, month = match.groups()
             month = month.zfill(2)
+
             return f"{year}-{month}", year
 
         match = patterns['year_only'].match(date_input)
@@ -75,9 +77,9 @@ def extract_tags(path: str) -> dict:
             )
         
         if tags.albumartist:
-            albumartist_id = hash_str(tags.albumartist)
+            albumartist_id = hash_str(tags.albumartist.lower())
         elif tags.artist:
-            albumartist_id = hash_str(tags.artist)
+            albumartist_id = hash_str(tags.artist.lower())
 
 
         track_dict = {
@@ -86,7 +88,7 @@ def extract_tags(path: str) -> dict:
             'albumartist': tags.albumartist or '',
             'albumartist_id': albumartist_id,
             'artist': tags.artist or '',
-            'artist_id': hash_str(convert_artist(tags.artist)) or '',
+            'artist_id': hash_str(convert_artist(tags.artist.lower())) or '',
             'artwork_id': '',
             'bitdepth': tags.bitdepth or 0,
             'bitrate': tags.bitrate or 0.0,

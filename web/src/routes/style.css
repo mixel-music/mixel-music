@@ -12,8 +12,6 @@
   --radius-l: 50%;
 
   --table-padding: 16px 8px;
-
-
   --font-family:
     Pretendard Variable,
     Pretendard,
@@ -25,7 +23,6 @@
     Helvetica Neue,
     Arial,
     sans-serif;
-
 
   --black-1: rgb(18, 18, 18);
   --black-1a: rgb(18, 18, 18, 0.95);
@@ -58,7 +55,7 @@
   --dark-sidebar: var(--black-2);
   --dark-player: var(--black-2a);
   --dark-element: var(--black-2);
-  --dark-queue: var(--black-3);
+  --dark-queue: var(--black-3a);
 
   --dark-range: var(--black-5);
   --dark-range-now: var(--white-4);
@@ -119,6 +116,10 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+a:active, a:focus {
+  outline: none;
 }
 
 input[type='range'] {
@@ -198,6 +199,17 @@ img {
   line-height: 150%;
 }
 
+.bottom-ctl {
+  gap: 12px;
+  display: flex;
+  justify-content: flex-end;
+  margin: var(--space-m) 0;
+}
+
+.info-card {
+  padding-top: var(--space-s);
+}
+
 .normal {
   display: unset;
   font-size: 100%;
@@ -212,16 +224,4 @@ img {
 
 .small {
   font-size: 80%;
-}
-
-.bottom-ctl {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 24px;
-  padding-bottom: 12px;
-}
-
-.info-card {
-  padding-top: var(--space-s);
 }

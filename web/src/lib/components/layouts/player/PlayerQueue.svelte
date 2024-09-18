@@ -1,11 +1,13 @@
 <script lang="ts">
   import Artwork from "$lib/components/elements/ArtworkImage.svelte";
   import PlayerService from "$lib/stores/stores";
-  import { getArtistLink, getArtwork } from "$lib/tools";
+  import { convertDateTime, getArtistLink, getArtwork } from "$lib/tools";
   import { isQueueOpen } from "$lib/stores/layout";
   import { cubicOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { _ } from "svelte-i18n";
+  import JustButton from "$lib/components/elements/JustButton.svelte";
+  import Icon from "@iconify/svelte";
 
   $: lists = $PlayerService;
 </script>
@@ -21,7 +23,7 @@
       easing: cubicOut
     }
   }>
-    <span class="title">{$_('player.queue')}</span>
+    <!-- <span class="title">{$_('player.queue')}</span> -->
     {#each lists.lists as trk, index}
       <div class="track">
         <Artwork
@@ -35,7 +37,7 @@
           FullCover
         />
 
-        <div class="texts">
+        <div class="left">
           <!-- svelte-ignore a11y-missing-attribute -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -48,6 +50,16 @@
               </a>
             </span>
         </div>
+
+        <div class="right">
+          <span class="text-sub small">
+            {convertDateTime(trk.duration)}
+          </span>
+
+          <JustButton width="21px" height="32px">
+            <Icon icon="iconoir:xmark" width="21" height="21" />
+          </JustButton>
+        </div>
       </div>
     {/each}
   </div>
@@ -55,25 +67,23 @@
 
 <style>
   .player-queue {
-    position: fixed;
-    right: 32px;
-    bottom: 126px;
-
     z-index: 0;
-    flex-shrink: 0;
-    padding: var(--space-m);
-    background-color: var(--dark-queue);
-    border: 1px solid var(--dark-border);
-    border-radius: var(--radius-m);
-
-    width: 500px;
-    height: 60%;
     display: flex;
-    gap: var(--space-m);
+    position: fixed;
+    top: var(--space-m);
+    right: var(--space-m);
     flex-direction: column;
+    flex-shrink: 0;
+    width: 500px;
+    height: calc(100% - 96px - calc(var(--space-m)* 2));
+    box-shadow: 0 0 0 1px var(--dark-border) inset;
+    background-color: var(--dark-queue);
+    border-radius: var(--radius-m);
+    gap: var(--space-m);
     overflow-y: scroll;
-
-    padding-top: 24px;
+    padding: var(--space-s);
+    padding-top: var(--space-m);
+    backdrop-filter: blur(64px);
   }
 
   .track {
@@ -82,7 +92,7 @@
     gap: var(--space-s);
   }
 
-  .texts {
+  .left {
     display: inline-flex;
     flex-direction: column;
     justify-content: space-around;
@@ -90,8 +100,28 @@
     overflow: hidden;
   }
 
-  .title {
-    font-weight: 500;
-    font-size: 120%;
+  .normal {
+    display: block;
+    font-size: 100%;
+    line-height: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
+
+  .small {
+    font-size: 90%;
+  }
+
+  .right {
+    display: inline-flex;
+    margin-left: auto;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  /* .title {
+    font-weight: 500;
+    font-size: 130%;
+    padding: var(--space-xs) 0;
+  } */
 </style>

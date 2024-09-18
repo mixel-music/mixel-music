@@ -1,9 +1,8 @@
 <script lang="ts">
   export let type: string | undefined = undefined;
   export let href: string | undefined = undefined;
-  export let title: string | undefined = undefined;
-  export let width: string = '42px';
-  export let height: string = '42px';
+  export let width: string = '1px';
+  export let height: string = '1px';
   export let preload: string = 'false';
 </script>
 
@@ -15,7 +14,6 @@
   style:height={height}
   style:width={width}
   {...$$restProps}
-  title={title}
   on:click
   on:focus
   {href}
@@ -25,20 +23,15 @@
 
 <style>
   a, button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: var(--dark-text-sub);
-    background-color: var(--dark-element);
-    border: 1px solid var(--dark-border);
+    background-color: transparent;
     transition: 0.2s ease;
-    font-weight: 500;
-    font-size: 16px;
-
-    border-radius: var(--radius-s);
-    padding: var(--space-xs);
-    gap: var(--space-xs);
     text-decoration: none;
+    font-size: 24px;
+    border: none;
   }
 
   a:hover, button:hover {

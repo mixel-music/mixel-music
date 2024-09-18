@@ -79,9 +79,8 @@
     flex-direction: column;
     width: 100%;
     /* width: min(1600px, 100%); */
-    padding-left: 64px;
-    padding-right: 64px;
-    margin-bottom: 24px;
+    padding: var(--space-m) var(--space-xl);
+    padding-top: 0
   }
 
   @media screen and (max-width: 1960px) {

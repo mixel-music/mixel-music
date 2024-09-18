@@ -35,15 +35,17 @@
       <TableBodyItem size='xl'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->
-        <a on:click={() => handleClick(
-          {
-            track_id: item.track_id,
-            title: item.title,
+        <a on:click={() => 
+          handleClick({
             album: list.album,
+            album_id: list.album_id,
             artist: item.artist,
             artist_id: item.artist_id,
-            album_id: list.album_id
-          }, true)} on:keydown>
+            duration: item.duration,
+            title: item.title,
+            track_id: item.track_id,
+          }, true)}
+        on:keydown>
           {item.title}
         </a>
       </TableBodyItem>

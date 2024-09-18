@@ -14,6 +14,7 @@ export function handleClick(item: any, play: boolean = false) {
     album_id: item.album_id,
     artist: item.artist,
     artist_id: item.artist_id,
+    duration: item.duration,
     title: item.title,
     track_id: item.track_id,
   }, play ? 0 : null);
