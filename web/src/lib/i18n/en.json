@@ -37,5 +37,8 @@
     "shuffle": "Shuffle",
     "track": "{track_total} Track",
     "tracks": "{track_total} Tracks",
-    "year": "{year}"
+    "year": "{year}",
+    "download": "Download",
+    "favorite": "Favorite",
+    "info": "Info"
 }

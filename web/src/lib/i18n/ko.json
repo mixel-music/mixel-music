@@ -37,5 +37,8 @@
     "shuffle": "셔플",
     "track": "트랙 {track_total}개",
     "tracks": "트랙 {track_total}개",
-    "year": "{year}년"
+    "year": "{year}년",
+    "download": "다운로드",
+    "favorite": "즐겨찾기",
+    "info": "정보"
 }

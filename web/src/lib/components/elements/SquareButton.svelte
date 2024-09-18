@@ -34,6 +34,7 @@
 
     border-radius: var(--radius-s);
     padding: var(--space-xs);
+    gap: var(--space-xs);
   }
 
   a:hover, button:hover {

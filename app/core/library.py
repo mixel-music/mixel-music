@@ -243,7 +243,7 @@ class Library:
             'list': artist_list,
             'total': count,
         }
-    
+
 
     @staticmethod
     async def _get_artist_info(id: str) -> dict:
@@ -251,55 +251,51 @@ class Library:
 
         try:
             async with session() as conn:
-                artist_query = await conn.execute(
-                    select(Artists.artist).where(Artists.artist_id == id)
+                # artist_id 또는 albumartist_id 일치하는 Tracks 항목
+                track_query = await conn.execute(
+                    select(Tracks.album_id)
+                    .where(or_(Tracks.artist_id == id, Tracks.albumartist_id == id))
                 )
-                artist_info = artist_query.mappings().first()
+                tracks_data = track_query.mappings().all()
 
-                if artist_info:
-                    artist_info = dict(artist_info)
-                    album_query = await conn.execute(
+                if tracks_data:
+                    # 해당 아이템 있으면 album_id 사용하여 앨범 검색
+                    album_ids = [track['album_id'] for track in tracks_data]
+                    
+                    album_from_tracks_query = await conn.execute(
                         select(
                             Albums.album,
                             Albums.album_id,
                             Albums.year,
+                            Albums.albumartist_id,
                         )
-                        .where(Albums.albumartist_id == id)
-                        .order_by(Albums.album.asc())
-                    )
-
-                    albums_data = album_query.mappings().all()
-                    artist_info['albums'] = [dict(album) for album in albums_data]
-                    
-                    return artist_info
-                else:
-                    track_subquery = (
-                        select(Tracks.albumartist_id)
-                        .where(Tracks.artist_id == id)
-                        .subquery()
-                    )
-                    
-                    album_from_tracks_query = (
-                        select(Albums.__table__)
-                        .where(Albums.albumartist_id.in_(select(track_subquery)))
+                        .where(Albums.album_id.in_(album_ids))
                         .order_by(Albums.year.asc())
                     )
-
-                    track_result = await conn.execute(album_from_tracks_query)
-                    albums_data = track_result.mappings().all()
+                    
+                    albums_data = album_from_tracks_query.mappings().all()
                     albums_data = [dict(album) for album in albums_data]
 
                     if albums_data:
                         album = albums_data[0]
-                        artist_info = {
-                            'artist': album.get('albumartist', ''),
-                            'artist_id': album.get('artist_id', ''),
-                            'albums': albums_data
-                        }
-                        return artist_info
-                
-            return {}
-                
+                        
+                        # 앨범 albumartist_id 이용하여 아티스트 조회
+                        artist_query = await conn.execute(
+                            select(Artists.artist)
+                            .where(Artists.artist_id == album['albumartist_id'])
+                        )
+                        artist_data = artist_query.mappings().first()
+
+                        if artist_data:
+                            artist_info = {
+                                'artist': artist_data['artist'],
+                                'artist_id': id,
+                                'albums': albums_data
+                            }
+                            return artist_info
+
+                return {}
+                        
         except OperationalError as error:
             logs.error("Failed to load artist info, %s", error)
             return artist_info

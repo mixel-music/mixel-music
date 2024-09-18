@@ -1,8 +1,8 @@
 <script lang="ts">
   export let type: string | undefined = undefined;
   export let href: string | undefined = undefined;
-  export let width: string = '42px';
-  export let height: string = '42px';
+  export let width: string = '1px';
+  export let height: string = '1px';
   export let preload: string = 'false';
 </script>
 
@@ -23,17 +23,14 @@
 
 <style>
   a, button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: var(--dark-text-sub);
-    background-color: var(--dark-element);
-    border: 1px solid var(--dark-border);
     transition: 0.2s ease;
-    font-size: 18px;
-
-    border-radius: var(--radius-l);
-    padding: var(--space-xs);
+    font-size: 24px;
+    background-color: transparent;
+    border: none;
   }
 
   a:hover, button:hover {
