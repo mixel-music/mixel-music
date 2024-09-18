@@ -31,6 +31,7 @@
     width={230}
     height={230}
     WrapCover
+    FullCover
   />
 
   <div class="album-details">

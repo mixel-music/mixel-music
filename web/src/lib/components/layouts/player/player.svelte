@@ -150,7 +150,7 @@
   .player-contents {
     width: 100%;
     display: flex;
-    padding: 0 21px;
+    padding: 0 var(--space-m);
     justify-content: space-between;
   }
 

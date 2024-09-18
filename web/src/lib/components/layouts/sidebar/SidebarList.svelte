@@ -10,8 +10,8 @@
   ul[title]::before {
     display: flex;
     font-size: 85%;
-    margin-top: 36px;
-    margin-bottom: 12px;
+    margin-top: var(--space-l);
+    margin-bottom: var(--space-s);
     content: attr(title);
     color: var(--dark-text-sub);
   }
