@@ -126,7 +126,7 @@ function InitPlayerService() {
         // 인덱스가 lists.length를 넘으면 0으로 되돌리기
         // setTrack 사용하면 매번 노래가 새로 재생되므로 스토어만 업데이트 해야 함
       })
-    } else if (index <= currentState.index && currentState.index > 0) {
+    } else if (index <= currentState.index && currentState.index >= 0) {
       update(state => {
         return { ...state, index: currentState.index - 1 }
         // 현재 재생 중인 인덱스보다 작은 인덱스 항목 삭제 시 이에 맞춰 인덱스 조절
