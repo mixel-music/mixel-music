@@ -1,4 +1,4 @@
-from core.models import *
+from models import *
 from core.library import *
 from core.config import Config
 from tools.convert_value import *

@@ -18,7 +18,7 @@
     { 
       delay: 10,
       duration: 600,
-      x: document.querySelector('.player-queue').clientWidth + 30,
+      x: document.querySelector('.player-queue').clientWidth + 20,
       opacity: 1,
       easing: cubicOut
     }
@@ -74,7 +74,7 @@
     right: var(--space-m);
     flex-direction: column;
     flex-shrink: 0;
-    width: 500px;
+    width: 410px;
     height: calc(100% - 96px - calc(var(--space-m)* 2));
     box-shadow: 0 0 0 1px var(--dark-border) inset;
     background-color: var(--dark-queue);

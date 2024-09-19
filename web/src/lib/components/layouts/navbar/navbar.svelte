@@ -42,7 +42,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--space-m) 0;
-    padding-bottom: var(--space-l);
+    padding-bottom: var(--space-m);
   }
 
   div {

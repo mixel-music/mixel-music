@@ -1,7 +1,7 @@
 import hashlib
 import mimetypes
 
-from core.models import *
+from models import *
 from core.logger import *
 from core.database import *
 from tools.path_handler import *

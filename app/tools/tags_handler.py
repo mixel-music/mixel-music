@@ -1,7 +1,6 @@
 from tinytag import TinyTag
 from datetime import datetime
 import re
-from types import SimpleNamespace
 
 from core.logger import *
 from tools.path_handler import *

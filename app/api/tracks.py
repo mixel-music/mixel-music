@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+from models.tracks import TracksListResponse, TracksItemResponse
 from core.library import *
 
 router = APIRouter(prefix = '/api')
@@ -7,7 +8,7 @@ router = APIRouter(prefix = '/api')
 async def api_track_list(
     page: int = Query(1, ge=1),
     item: int = Query(40, ge=1),
-) -> dict | list[dict]:
+) -> TracksListResponse:
     
     track_list = await Library.get_track_list(page, item)
     return track_list
@@ -16,7 +17,7 @@ async def api_track_list(
 @router.get('/tracks/{hash}')
 async def api_track_info(
     hash: str,
-) -> dict | list[dict]:
+) -> TracksItemResponse:
 
     track_info = await Library.get_track_info(hash)
     return track_info

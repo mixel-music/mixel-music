@@ -1,12 +1,12 @@
 import aiofiles
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from core.models import *
 from core.logger import *
 from core.database import *
 from tools.convert_value import *
 from tools.path_handler import *
 from tools.tags_handler import *
+from models import *
 
 semaphore = asyncio.Semaphore(5)
 
@@ -72,6 +72,7 @@ class Library:
                         Tracks.artist_id,
                         Tracks.duration,
                         Tracks.title,
+                        Tracks.track_id,
                     )
                     .order_by(Tracks.title.asc())
                     .offset(page)
@@ -266,8 +267,8 @@ class Library:
                         select(
                             Albums.album,
                             Albums.album_id,
-                            Albums.year,
                             Albums.albumartist_id,
+                            Albums.year,
                         )
                         .where(Albums.album_id.in_(album_ids))
                         .order_by(Albums.year.asc())
@@ -386,9 +387,9 @@ class LibraryScan:
                         'album': alb.album,
                         'album_id': alb.album_id,
                         'albumartist_id': alb.albumartist_id,
+                        'disc_total': alb.disc_total,
                         'duration_total': alb.duration_total,
                         'filesize_total': alb.filesize_total,
-                        'disc_total': alb.disc_total,
                         'year': alb.year,
                     }
 
@@ -461,10 +462,10 @@ class LibraryScan:
             async with session() as conn:
                 db_query = (
                     select(
-                        Tracks.artist,
-                        Tracks.artist_id,
                         Tracks.albumartist,
                         Tracks.albumartist_id,
+                        Tracks.artist,
+                        Tracks.artist_id,
                     )
                     .distinct(Tracks.artist, Tracks.albumartist)
                 )

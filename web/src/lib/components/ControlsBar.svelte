@@ -67,6 +67,6 @@ import SquareButton from "./elements/SquareButton.svelte";
 
   .controls-bar > div {
     display: flex;
-    gap: var(--space-xs);
+    gap: var(--space-s);
   }
 </style>

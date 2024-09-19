@@ -1,11 +1,9 @@
 from sqlalchemy import text, func, select, insert, update, delete, or_, and_, join
 from sqlalchemy.exc import OperationalError, SQLAlchemyError, DatabaseError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.dialects.sqlite import Insert
-from sqlalchemy.orm import sessionmaker, selectinload
-
 from core.config import Config
-from core.models import Base
 
 engine = create_async_engine(Config.DBURL, echo=Config.DBECHO)
 session = sessionmaker(
@@ -14,6 +12,7 @@ session = sessionmaker(
     autoflush=False,
     bind=engine,
 )
+Base = declarative_base()
 
 async def connect_database() -> None:
     async with engine.begin() as conn:

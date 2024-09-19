@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+from models.artists import ArtistsListResponse, ArtistsItemResponse
 from core.library import *
 
 router = APIRouter(prefix = '/api')
@@ -7,7 +8,7 @@ router = APIRouter(prefix = '/api')
 async def api_artist_list(
     page: int = Query(1, ge=1),
     item: int = Query(40, ge=1),
-) -> dict | list[dict]:
+) -> ArtistsListResponse:
 
     artist_list = await Library.get_artist_list(page, item)
     return artist_list
@@ -16,7 +17,7 @@ async def api_artist_list(
 @router.get('/artists/{hash}')
 async def api_artist_info(
     hash: str,
-) -> dict | list[dict]:
+) -> ArtistsItemResponse:
 
     artist_info = await Library.get_artist_info(hash)
     return artist_info

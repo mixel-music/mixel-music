@@ -11,6 +11,7 @@
 
 <style>
   div {
+    margin-top: var(--space-l);
     margin-bottom: var(--space-m);
   }
 

@@ -6,7 +6,7 @@ from core.logger import *
 from core.library import *
 from core.database import *
 from core.config import Config
-from core.models import Tracks
+from models import Tracks
 from tools.path_handler import *
 
 async def find_changes() -> None:
