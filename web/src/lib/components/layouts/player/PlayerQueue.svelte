@@ -56,7 +56,12 @@
             {convertDateTime(trk.duration)}
           </span>
 
-          <JustButton width="21px" height="32px">
+          <JustButton
+            width="21px"
+            height="32px"
+            on:click={(event) => PlayerService.delTrack(index)}
+            title
+          >
             <Icon icon="iconoir:xmark" width="21" height="21" />
           </JustButton>
         </div>

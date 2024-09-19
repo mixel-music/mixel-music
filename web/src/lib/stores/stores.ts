@@ -101,12 +101,44 @@ function InitPlayerService() {
 
     if (PlayerService.getState().lists.length === 1) {
       setTrack(0);
+      // 이것도 스토어만 업데이트하는 방향으로 가던가 메서드에서 재생 여부를 제어하던가
+    }
+  };
+
+  const delTrack = (index?: number) => {
+    update(state => {
+      const newLists = [...state.lists];
+
+      if (typeof index === 'number' && index >= 0 && index < newLists.length) {
+        newLists.splice(index, 1);
+        // index type check, index 0 또는 자연수 여부 검증, 리스트 길이보다 작은지 검증
+      }
+
+      console.debug(newLists);
+      return { ...state, lists: newLists };
+    });
+
+    const currentState = PlayerService.getState();
+
+    if (currentState.index > currentState.lists.length) {
+      update(state => {
+        return { ...state, index: 0 }
+        // 인덱스가 lists.length를 넘으면 0으로 되돌리기
+        // setTrack 사용하면 매번 노래가 새로 재생되므로 스토어만 업데이트 해야 함
+      })
+    } else if (index <= currentState.index && currentState.index > 0) {
+      update(state => {
+        return { ...state, index: currentState.index - 1 }
+        // 현재 재생 중인 인덱스보다 작은 인덱스 항목 삭제 시 이에 맞춰 인덱스 조절
+        // 역시 같은 이유로 setTrack 사용하면 안 됨.
+      })
     }
   };
 
   const setTrack = (index: number) => {
     update(state => {
       const track = state.lists[index];
+      const validIndex = Math.max(0, Math.min(index, state.lists.length - 1));
       console.debug(`setTrack called with ${index}`);
 
       if (track) {
@@ -130,7 +162,7 @@ function InitPlayerService() {
         return {
           ...state,
           ...track,
-          index: index,
+          index: validIndex,
           artwork: getArtwork(track.album_id, 128),
         };
       }
@@ -142,6 +174,7 @@ function InitPlayerService() {
   return {
     subscribe,
     addTrack,
+    delTrack,
     setTrack,
 
     toggle: (): void => {
