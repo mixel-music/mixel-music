@@ -2,23 +2,23 @@ from watchfiles import Change, awatch
 from sqlalchemy import select
 import asyncio
 
-from core.logger import *
-from core.library import *
-from core.database import *
-from core.config import Config
-from models import Tracks
+from services.logger import *
+from services.library import *
+from services.database import *
+from services.config import Config
+from models import Track
 from tools.path_handler import *
 
-async def find_changes() -> None:
+async def scanner() -> None:
     """
     It retrieves all track information from the database and checks if the files actually exist with matching sizes.
     If a file doesn't exist or the size differs, it is removed from the database; otherwise, it is excluded from the library scan.
     """
 
-    path_property, tasks = {}, []
+    path_props, tasks = {}, []
     
     async with session() as conn:
-        track_info = await conn.execute(select(Tracks.filepath, Tracks.filesize))
+        track_info = await conn.execute(select(Track.filepath, Track.filesize))
         track_info = track_info.all()
 
     if track_info:
@@ -28,15 +28,15 @@ async def find_changes() -> None:
             if not real_path.exists() or real_path.stat().st_size != size_data:
                 tasks.append(LibraryTask(path_data).remove_track())
             else:
-                path_property[path_data] = 'p' # 'PASS'
+                path_props[path_data] = 'p' # 'PASS'
 
         await asyncio.gather(*tasks)
 
-    await library_scan(property=path_property)
+    await library_scanner(property=path_props)
     asyncio.create_task(LibraryScan.perform_all())
 
 
-async def library_scan(property: dict, path = None) -> None:
+async def library_scanner(property: dict, path = None) -> None:
     if path is None: path = Config.LIBRARYDIR
     queue, tasks = [path], []
 
@@ -58,7 +58,7 @@ async def library_scan(property: dict, path = None) -> None:
     await asyncio.gather(*tasks)
 
 
-async def watch_change() -> None:
+async def tracker() -> None:
     logs.info("Started scanning for library.")
 
     async for event_handler in awatch(

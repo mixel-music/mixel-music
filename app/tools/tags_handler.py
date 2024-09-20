@@ -2,7 +2,7 @@ from tinytag import TinyTag
 from datetime import datetime
 import re
 
-from core.logger import *
+from services.logger import *
 from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime, safe_list
 

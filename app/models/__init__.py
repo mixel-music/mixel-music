@@ -1,7 +1,7 @@
-from models.albums import *
-from models.artists import *
-from models.artworks import *
-from models.playlists import *
-from models.settings import *
-from models.tracks import *
-from models.users import *
+from models.album import Album
+from models.artist import Artist
+from models.artwork import Artwork
+from models.playlist import Playlist, PlaylistData
+from models.setting import *
+from models.track import Track
+from models.user import User, UserData

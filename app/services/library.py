@@ -1,20 +1,24 @@
+from concurrent.futures import ThreadPoolExecutor
 import aiofiles
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
-from core.logger import *
-from core.database import *
+
+from models import *
+from models.album import AlbumItemResponse, AlbumList
+from models.artist import ArtistItemResponse, ArtistList
+from models.track import TrackItemResponse, TrackList
+from services.logger import *
+from services.database import *
 from tools.convert_value import *
 from tools.path_handler import *
 from tools.tags_handler import *
-from models import *
 
 semaphore = asyncio.Semaphore(5)
 
 class Library:
     @staticmethod
-    async def streaming(hash: str, range: str) -> tuple[bytes, dict[str, any]] | None:
-        path = await hash_track_to_path(hash)
-        track_info = await Library.get_track_info(hash)
+    async def streaming(id: str, range: str):
+        path = await hash_track_to_path(id)
+        track_info = await Library.get_track_info(id)
         if not track_info: return
 
         track_mime = track_info['content_type']
@@ -48,17 +52,17 @@ class Library:
 
 
     @staticmethod
-    async def get_track_list(page: int, item: int) -> list[dict]:
+    async def get_track_list(page: int, item: int) -> TrackList:
         return await Library._get_track_list(item * (page - 1), item)
 
 
     @staticmethod
-    async def get_track_info(hash: str) -> tuple[list[dict], dict]:
-        return await Library._get_track_info(hash)
+    async def get_track_info(id: str) -> TrackItemResponse:
+        return await Library._get_track_info(id)
 
 
     @staticmethod
-    async def _get_track_list(page: int, item: int) -> list[dict]:
+    async def _get_track_list(page: int, item: int) -> TrackList:
         track_list = [{}]
         count = 0
 
@@ -66,21 +70,21 @@ class Library:
             async with session() as conn:
                 db_query = await conn.execute(
                     select(
-                        Tracks.album,
-                        Tracks.album_id,
-                        Tracks.artist,
-                        Tracks.artist_id,
-                        Tracks.duration,
-                        Tracks.title,
-                        Tracks.track_id,
+                        Track.album,
+                        Track.album_id,
+                        Track.artist,
+                        Track.artist_id,
+                        Track.duration,
+                        Track.title,
+                        Track.track_id,
                     )
-                    .order_by(Tracks.title.asc())
+                    .order_by(Track.title.asc())
                     .offset(page)
                     .limit(item)
                 )
                 track_list = [dict(row) for row in db_query.mappings().all()]
 
-                count_query = select(func.count()).select_from(Tracks)
+                count_query = select(func.count()).select_from(Track)
                 count_result = await conn.execute(count_query)
                 count = count_result.scalar_one()
 
@@ -94,14 +98,14 @@ class Library:
     
 
     @staticmethod
-    async def _get_track_info(id: str) -> dict:
+    async def _get_track_info(id: str) -> TrackItemResponse:
         track_info = {}
 
         try:
             async with session() as conn:
                 db_query = await conn.execute(
-                    select(Tracks.__table__)
-                    .where(Tracks.track_id == id)
+                    select(Track.__table__)
+                    .where(Track.track_id == id)
                 )
                 track_info = dict(db_query.mappings().first())
 
@@ -113,17 +117,17 @@ class Library:
         
 
     @staticmethod
-    async def get_album_list(page: int, item: int) -> list[dict]:
+    async def get_album_list(page: int, item: int) -> AlbumList:
         return await Library._get_album_list(item * (page - 1), item)
 
 
     @staticmethod
-    async def get_album_info(hash: str) -> tuple[list[dict], dict]:
-        return await Library._get_album_info(hash)
+    async def get_album_info(id: str) -> AlbumItemResponse:
+        return await Library._get_album_info(id)
 
 
     @staticmethod
-    async def _get_album_list(page: int, item: int) -> list[dict]:
+    async def _get_album_list(page: int, item: int) -> AlbumList:
         album_list = [{}]
         count = 0
 
@@ -131,24 +135,24 @@ class Library:
             async with session() as conn:
                 album_query = await conn.execute(
                     select(
-                        Albums.album,
-                        Albums.album_id,
-                        Artists.artist.label('albumartist'),
-                        Albums.albumartist_id,
-                        Albums.year,
+                        Album.album,
+                        Album.album_id,
+                        Artist.artist.label('albumartist'),
+                        Album.albumartist_id,
+                        Album.year,
                     ).select_from(
                         join(
-                            Albums, Artists,
-                            Albums.albumartist_id == Artists.artist_id,
+                            Album, Artist,
+                            Album.albumartist_id == Artist.artist_id,
                         )
                     )
-                    .order_by(Albums.album.asc())
+                    .order_by(Album.album.asc())
                     .offset(page)
                     .limit(item)
                 )
                 album_list = [dict(row) for row in album_query.mappings().all()]
 
-                count_query = select(func.count()).select_from(Albums)
+                count_query = select(func.count()).select_from(Album)
                 count_result = await conn.execute(count_query)
                 count = count_result.scalar_one()
 
@@ -162,22 +166,22 @@ class Library:
 
 
     @staticmethod
-    async def _get_album_info(id: str) -> dict:
+    async def _get_album_info(id: str)  -> AlbumItemResponse:
         album_info = {}
 
         try:
             async with session() as conn:
                 album_query = await conn.execute(
                     select(
-                        Albums.__table__,
-                        Artists.artist.label('albumartist')
+                        Album.__table__,
+                        Artist.artist.label('albumartist')
                     ).select_from(
                         join(
-                            Albums, Artists,
-                            Albums.albumartist_id == Artists.artist_id,
+                            Album, Artist,
+                            Album.albumartist_id == Artist.artist_id,
                         )
                     )
-                    .where(Albums.album_id == id)
+                    .where(Album.album_id == id)
                 )
                 album_row = album_query.mappings().first()
 
@@ -187,16 +191,16 @@ class Library:
 
                     track_query = await conn.execute(
                         select(
-                            Tracks.artist,
-                            Tracks.artist_id,
-                            Tracks.comment,
-                            Tracks.duration,
-                            Tracks.title,
-                            Tracks.track_id,
-                            Tracks.track_number,
+                            Track.artist,
+                            Track.artist_id,
+                            Track.comment,
+                            Track.duration,
+                            Track.title,
+                            Track.track_id,
+                            Track.track_number,
                         )
-                        .where(Tracks.album_id == id)
-                        .order_by(Tracks.track_number.asc())
+                        .where(Track.album_id == id)
+                        .order_by(Track.track_number.asc())
                     )
                     tracks = [dict(row) for row in track_query.mappings().all()]
                     album_info['tracks'].extend(tracks)
@@ -209,31 +213,31 @@ class Library:
         
 
     @staticmethod
-    async def get_artist_list(page: int, item: int) -> list[dict]:
+    async def get_artist_list(page: int, item: int) -> ArtistList:
         return await Library._get_artist_list(item * (page - 1), item)
 
 
     @staticmethod
-    async def get_artist_info(hash: str) -> tuple[list[dict], dict]:
-        return await Library._get_artist_info(hash)
+    async def get_artist_info(id: str) -> ArtistItemResponse:
+        return await Library._get_artist_info(id)
 
 
     @staticmethod
-    async def _get_artist_list(page: int, item: int) -> list[dict]:
+    async def _get_artist_list(page: int, item: int) -> ArtistList:
         artist_list = [{}]
         count = 0
 
         try:
             async with session() as conn:
                 db_query = await conn.execute(
-                    select(Artists.__table__)
-                    .order_by(Artists.artist.asc())
+                    select(Artist.__table__)
+                    .order_by(Artist.artist.asc())
                     .offset(page)
                     .limit(item)
                 )
                 artist_list = [dict(row) for row in db_query.mappings().all()]
                 
-                count_query = select(func.count()).select_from(Artists)
+                count_query = select(func.count()).select_from(Artist)
                 count_result = await conn.execute(count_query)
                 count = count_result.scalar_one()
 
@@ -247,15 +251,15 @@ class Library:
 
 
     @staticmethod
-    async def _get_artist_info(id: str) -> dict:
+    async def _get_artist_info(id: str) -> ArtistItemResponse:
         artist_info = {}
 
         try:
             async with session() as conn:
                 # artist_id 또는 albumartist_id 일치하는 Tracks 항목
                 track_query = await conn.execute(
-                    select(Tracks.album_id)
-                    .where(or_(Tracks.artist_id == id, Tracks.albumartist_id == id))
+                    select(Track.album_id)
+                    .where(or_(Track.artist_id == id, Track.albumartist_id == id))
                 )
                 tracks_data = track_query.mappings().all()
 
@@ -265,13 +269,13 @@ class Library:
                     
                     album_from_tracks_query = await conn.execute(
                         select(
-                            Albums.album,
-                            Albums.album_id,
-                            Albums.albumartist_id,
-                            Albums.year,
+                            Album.album,
+                            Album.album_id,
+                            Album.albumartist_id,
+                            Album.year,
                         )
-                        .where(Albums.album_id.in_(album_ids))
-                        .order_by(Albums.year.asc())
+                        .where(Album.album_id.in_(album_ids))
+                        .order_by(Album.year.asc())
                     )
                     
                     albums_data = album_from_tracks_query.mappings().all()
@@ -282,8 +286,8 @@ class Library:
                         
                         # 앨범 albumartist_id 이용하여 아티스트 조회
                         artist_query = await conn.execute(
-                            select(Artists.artist)
-                            .where(Artists.artist_id == album['albumartist_id'])
+                            select(Artist.artist)
+                            .where(Artist.artist_id == album['albumartist_id'])
                         )
                         artist_data = artist_query.mappings().first()
 
@@ -357,24 +361,24 @@ class LibraryScan:
                 # Query to handle albums, excluding "Unknown Album"
                 db_query = (
                     select(
-                        Tracks.album,
-                        Tracks.album_id,
-                        Tracks.albumartist,
-                        Tracks.albumartist_id,
-                        Tracks.disc_total,
-                        Tracks.track_total,
-                        Tracks.year,
-                        func.sum(Tracks.duration).label('duration_total'),
-                        func.sum(Tracks.filesize).label('filesize_total'),
+                        Track.album,
+                        Track.album_id,
+                        Track.albumartist,
+                        Track.albumartist_id,
+                        Track.disc_total,
+                        Track.track_total,
+                        Track.year,
+                        func.sum(Track.duration).label('duration_total'),
+                        func.sum(Track.filesize).label('filesize_total'),
                     )
                     .where(
-                        Tracks.album_id != '',
+                        Track.album_id != '',
                     )
                     .group_by(
-                        Tracks.album,
-                        Tracks.album_id,
-                        Tracks.albumartist,
-                        Tracks.track_total,
+                        Track.album,
+                        Track.album_id,
+                        Track.albumartist,
+                        Track.track_total,
                     )
                 )
 
@@ -398,19 +402,19 @@ class LibraryScan:
                 # Handle albums with "Unknown Album"
                 unknown_query = (
                     select(
-                        Tracks.album,
-                        Tracks.album_id,
-                        Tracks.artist,
-                        Tracks.disc_total,
-                        Tracks.track_total,
-                        Tracks.year,
-                        func.sum(Tracks.duration).label('duration_total'),
-                        func.sum(Tracks.filesize).label('filesize_total'),
+                        Track.album,
+                        Track.album_id,
+                        Track.artist,
+                        Track.disc_total,
+                        Track.track_total,
+                        Track.year,
+                        func.sum(Track.duration).label('duration_total'),
+                        func.sum(Track.filesize).label('filesize_total'),
                     )
-                    .where(Tracks.album == '')
+                    .where(Track.album == '')
                     .group_by(
-                        Tracks.artist,
-                        Tracks.directory,
+                        Track.artist,
+                        Track.directory,
                     )
                 )
 
@@ -434,11 +438,11 @@ class LibraryScan:
                 await conn.commit()
 
                 # Remove albums that no longer have tracks
-                albums_query = select(Albums.album_id)
+                albums_query = select(Album.album_id)
                 result = await conn.execute(albums_query)
                 album_hash = {row.album_id for row in result}
 
-                tracks_query = select(Tracks.album_id).distinct()
+                tracks_query = select(Track.album_id).distinct()
                 result = await conn.execute(tracks_query)
                 track_hash = {row.album_id for row in result}
 
@@ -462,12 +466,12 @@ class LibraryScan:
             async with session() as conn:
                 db_query = (
                     select(
-                        Tracks.albumartist,
-                        Tracks.albumartist_id,
-                        Tracks.artist,
-                        Tracks.artist_id,
+                        Track.albumartist,
+                        Track.albumartist_id,
+                        Track.artist,
+                        Track.artist_id,
                     )
-                    .distinct(Tracks.artist, Tracks.albumartist)
+                    .distinct(Track.artist, Track.albumartist)
                 )
 
                 db_result = await conn.execute(db_query)
@@ -496,14 +500,14 @@ class LibraryScan:
                 await conn.commit()
 
                 # Remove artists that no longer have albums
-                artists_query = select(Artists.artist_id)
+                artists_query = select(Artist.artist_id)
                 result = await conn.execute(artists_query)
                 artist_hash = {row.artist_id for row in result}
 
                 track_artists_query = (
-                    select(Tracks.artist_id).distinct()
+                    select(Track.artist_id).distinct()
                     .union_all(
-                        select(Tracks.albumartist_id).distinct()
+                        select(Track.albumartist_id).distinct()
                     )
                 )
                 result = await conn.execute(track_artists_query)
@@ -528,7 +532,7 @@ class LibraryRepo:
     async def insert_track(conn: AsyncSession, tags: dict) -> bool:
         try:
             await conn.execute(
-                insert(Tracks).values(**tags)
+                insert(Track).values(**tags)
             )
             return True
         
@@ -541,7 +545,7 @@ class LibraryRepo:
     async def insert_album(conn: AsyncSession, tags: dict) -> bool:
         try:
             await conn.execute(
-                Insert(Albums).values(**tags)
+                Insert(Album).values(**tags)
                 .on_conflict_do_nothing()
             )
             return True
@@ -552,10 +556,24 @@ class LibraryRepo:
 
 
     @staticmethod
+    async def insert_artist(conn: AsyncSession, tags: dict) -> bool:
+        try:
+            await conn.execute(
+                Insert(Artist).values(**tags)
+                .on_conflict_do_nothing()
+            )
+            return True
+        
+        except OperationalError as error:
+            logs.error("LibraryRepo: Failed to insert artist, %s", error)
+            raise
+
+
+    @staticmethod
     async def delete_track(conn: AsyncSession, path: str) -> bool:
         try:
             await conn.execute(
-                delete(Tracks).where(Tracks.filepath == path)
+                delete(Track).where(Track.filepath == path)
             )
             return True
         
@@ -568,7 +586,7 @@ class LibraryRepo:
     async def delete_album(conn: AsyncSession, hash: str) -> bool:
         try:
             await conn.execute(
-                delete(Albums).where(Albums.album_id == hash)
+                delete(Album).where(Album.album_id == hash)
             )
             return True
         
@@ -578,24 +596,10 @@ class LibraryRepo:
 
 
     @staticmethod
-    async def insert_artist(conn: AsyncSession, tags: dict) -> bool:
-        try:
-            await conn.execute(
-                Insert(Artists).values(**tags)
-                .on_conflict_do_nothing()
-            )
-            return True
-        
-        except OperationalError as error:
-            logs.error("LibraryRepo: Failed to insert artist, %s", error)
-            raise
-
-
-    @staticmethod
     async def delete_artist(conn: AsyncSession, hash: str) -> bool:
         try:
             await conn.execute(
-                delete(Artists).where(Artists.artist_id == hash)
+                delete(Artist).where(Artist.artist_id == hash)
             )
             return True
         

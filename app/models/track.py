@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, Text, func
 from pydantic import BaseModel, Field
-from core.database import Base
+from services.database import Base
 from datetime import datetime
 
-
-class Tracks(Base):
+class Track(Base):
     __tablename__ = 'tracks'
 
     album: str = Column(String, ForeignKey('albums.album'), nullable=False)
@@ -43,22 +42,22 @@ class Tracks(Base):
     year: int = Column(Integer, nullable=False)
 
 
-class TracksList(BaseModel):
+class TrackList(BaseModel):
     album: str = Field(examples=['내꺼 하는 법 (How to be mine)'])
     album_id: str = Field(examples=['816f92318525756fa1d95bf9382fbccb'])
     artist: str = Field(examples=['아야츠노 유니'])
     artist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
-    duration: float = Field(examples=['132.613333333333'])
+    duration: float = Field(examples=[132.613333333333])
     title: str = Field(examples=['내꺼 하는 법 (How to Be Mine)'])
     track_id: str = Field(examples=['8c2275ee99b8adfabf88f2e1c937e888'])
 
 
-class TracksListResponse(BaseModel):
-    list: list[TracksList]
-    total: int = Field(examples=['1'])
+class TrackListResponse(BaseModel):
+    list: list[TrackList]
+    total: int = Field(examples=[1])
 
 
-class TracksItemResponse(BaseModel):
+class TrackItemResponse(BaseModel):
     album: str = Field(examples=['내꺼 하는 법 (How to be mine)'])
     album_id: str = Field(examples=['816f92318525756fa1d95bf9382fbccb'])
     albumartist: str = Field(examples=['아야츠노 유니'])
@@ -66,10 +65,10 @@ class TracksItemResponse(BaseModel):
     artist: str = Field(examples=['아야츠노 유니'])
     artist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
     artwork_id: str = Field(examples=[''])
-    bitdepth: int = Field(examples=['16'])
-    bitrate: float = Field(examples=['1002.7874924592801'])
-    channels: int = Field(examples=['2'])
-    compilation: bool = Field(examples=['false'])
+    bitdepth: int = Field(examples=[16])
+    bitrate: float = Field(examples=[1002.7874924592801])
+    channels: int = Field(examples=[2])
+    compilation: bool = Field(examples=[False])
     comment: str = Field(examples=[''])
     composer: str = Field(examples=[''])
     content_type: str = Field(examples=['audio/x-flac'])
@@ -77,19 +76,19 @@ class TracksItemResponse(BaseModel):
     date: str = Field(examples=['2023-07-20'])
     director: str = Field(examples=[''])
     directory: str = Field(examples=[''])
-    duration: float = Field(examples=['132.61333333333334'])
-    disc_number: int = Field(examples=['1'])
-    disc_total: int = Field(examples=['1'])
+    duration: float = Field(examples=[132.61333333333334])
+    disc_number: int = Field(examples=[1])
+    disc_total: int = Field(examples=[1])
     filepath: str = Field(examples=[''])
-    filesize: int = Field(examples=['16622874'])
+    filesize: int = Field(examples=[16622874])
     genre: str = Field(examples=[''])
     isrc: str = Field(examples=['ZZA0P2308956'])
     label: str = Field(examples=[''])
     lyrics: str = Field(examples=[''])
-    samplerate: int = Field(examples=['44100'])
+    samplerate: int = Field(examples=[44100])
     title: str = Field(examples=['내꺼 하는 법 (How to Be Mine)'])
     track_id: str = Field(examples=['8c2275ee99b8adfabf88f2e1c937e888'])
-    track_number: int = Field(examples=['1'])
-    track_total: int = Field(examples=['2'])
+    track_number: int = Field(examples=[1])
+    track_total: int = Field(examples=[2])
     updated_at: datetime = Field(examples=['2024-01-01T00:00:00.000000'])
-    year: int = Field(examples=['2023'])
+    year: int = Field(examples=[2023])

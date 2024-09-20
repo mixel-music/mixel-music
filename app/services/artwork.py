@@ -1,6 +1,6 @@
 from models import *
-from core.library import *
-from core.config import Config
+from services.library import *
+from services.config import Config
 from tools.convert_value import *
 from tools.path_handler import *
 from tools.tags_handler import *
@@ -39,8 +39,8 @@ class ArtworkService:
     async def init_artwork(hash: str) -> tuple[bytes | None, str] | None:
         try:
             async with session() as conn:
-                query = select(Tracks.filepath).where(
-                    or_(Tracks.album_id == hash, Tracks.track_id == hash)
+                query = select(Track.filepath).where(
+                    or_(Track.album_id == hash, Track.track_id == hash)
                 )
 
                 result = await conn.execute(query)

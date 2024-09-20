@@ -6,10 +6,10 @@ import asyncio
 
 from tools.path_handler import create_dir
 from api import albums, artists, tracks, artworks, streaming
-from core.scanner import find_changes, watch_change
-from core.config import Config
-from core.database import *
-from core.logger import *
+from services.scanner import scanner, tracker
+from services.config import Config
+from services.database import *
+from services.logger import *
 
 @asynccontextmanager
 async def init(app: FastAPI):
@@ -17,8 +17,8 @@ async def init(app: FastAPI):
     log = log_file_handler()
     await connect_database()
 
-    asyncio.create_task(find_changes())
-    asyncio.create_task(watch_change())
+    asyncio.create_task(scanner())
+    asyncio.create_task(tracker())
 
     try:
         yield

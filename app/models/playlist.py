@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, func
 from pydantic import BaseModel, Field
-from core.database import Base
+from services.database import Base
 
-
-class Playlists(Base):
+class Playlist(Base):
     __tablename__ = 'playlists'
 
     playlist_id: str = Column(String, primary_key=True, nullable=False)
@@ -13,7 +12,7 @@ class Playlists(Base):
     updated_at: DateTime = Column(DateTime, nullable=False)
 
 
-class PlaylistsData(Base):
+class PlaylistData(Base):
     __tablename__ = 'playlists_data'
 
     playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)

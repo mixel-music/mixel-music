@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, func
 from pydantic import BaseModel, Field
-from core.database import Base
+from services.database import Base
 
-
-class Artworks(Base):
+class Artwork(Base):
     __tablename__ = 'artworks'
     
     artwork_id: str = Column(String, primary_key=True, nullable=False)

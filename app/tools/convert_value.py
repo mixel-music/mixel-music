@@ -2,8 +2,8 @@ import hashlib
 import mimetypes
 
 from models import *
-from core.logger import *
-from core.database import *
+from services.logger import *
+from services.database import *
 from tools.path_handler import *
 
 def get_mime(path: str) -> list[str]:
@@ -28,7 +28,7 @@ async def hash_track_to_album(hash: str) -> str:
     try:
         async with session() as conn:
             result = await conn.execute(
-                select(Tracks.album_id).where(Tracks.track_id == hash)
+                select(Track.album_id).where(Track.track_id == hash)
             )
             row = result.scalars().first()
         
@@ -43,7 +43,7 @@ async def hash_track_to_path(hash: str) -> str:
     try:
         async with session() as conn:
             result = await conn.execute(
-                select(Tracks.filepath).where(Tracks.track_id == hash)
+                select(Track.filepath).where(Track.track_id == hash)
             )
             row = result.scalars().first()
 

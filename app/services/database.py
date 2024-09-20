@@ -3,7 +3,7 @@ from sqlalchemy.exc import OperationalError, SQLAlchemyError, DatabaseError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.dialects.sqlite import Insert
-from core.config import Config
+from services.config import Config
 
 engine = create_async_engine(Config.DBURL, echo=Config.DBECHO)
 session = sessionmaker(

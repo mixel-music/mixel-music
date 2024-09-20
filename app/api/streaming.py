@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Header, status, Response, HTTPException
-from core.library import *
+from services.library import *
 
 router = APIRouter(prefix = '/api')
 
-@router.get('/streaming/{hash}')
-async def api_streaming(hash: str, range: str = Header(None)) -> Response:
+@router.get('/streaming/{id}', summary="Streaming")
+async def api_streaming(id: str, range: str = Header(None)) -> Response:
     try:
-        content, headers = await Library.streaming(hash, range)
+        content, headers = await Library.streaming(id, range)
 
         if content:
             return Response(
