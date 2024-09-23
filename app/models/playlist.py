@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, func
 from pydantic import BaseModel, Field
-from services.database import Base
+from core.database import Base
 
 class Playlist(Base):
     __tablename__ = 'playlists'

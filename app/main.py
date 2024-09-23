@@ -7,9 +7,9 @@ import asyncio
 from tools.path_handler import create_dir
 from api import albums, artists, tracks, artworks, streaming
 from services.scanner import scanner, tracker
-from services.config import Config
-from services.database import *
-from services.logger import *
+from core.config import Config
+from core.database import *
+from core.logging import *
 
 @asynccontextmanager
 async def init(app: FastAPI):

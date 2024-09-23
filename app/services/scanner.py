@@ -2,16 +2,18 @@ from watchfiles import Change, awatch
 from sqlalchemy import select
 import asyncio
 
-from services.logger import *
-from services.library import *
-from services.database import *
-from services.config import Config
-from models import Track
+from core.config import Config
+from core.database import *
+from core.logging import *
+from services.library_scan import *
+from services.library_task import *
 from tools.path_handler import *
+
 
 async def scanner() -> None:
     """
     It retrieves all track information from the database and checks if the files actually exist with matching sizes.
+    
     If a file doesn't exist or the size differs, it is removed from the database; otherwise, it is excluded from the library scan.
     """
 

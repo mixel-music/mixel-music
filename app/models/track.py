@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, Text, func
+from sqlalchemy import (
+    Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, Text, func
+)
 from pydantic import BaseModel, Field
-from services.database import Base
+from core.database import Base
 from datetime import datetime
 
 class Track(Base):
@@ -57,7 +59,7 @@ class TrackListResponse(BaseModel):
     total: int = Field(examples=[1])
 
 
-class TrackItemResponse(BaseModel):
+class TrackItem(BaseModel):
     album: str = Field(examples=['내꺼 하는 법 (How to be mine)'])
     album_id: str = Field(examples=['816f92318525756fa1d95bf9382fbccb'])
     albumartist: str = Field(examples=['아야츠노 유니'])
@@ -92,3 +94,7 @@ class TrackItemResponse(BaseModel):
     track_total: int = Field(examples=[2])
     updated_at: datetime = Field(examples=['2024-01-01T00:00:00.000000'])
     year: int = Field(examples=[2023])
+
+
+class TrackItemResponse(TrackItem):
+    pass

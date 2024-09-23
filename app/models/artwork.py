@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, func
 from pydantic import BaseModel, Field
-from services.database import Base
+from core.database import Base
 
 class Artwork(Base):
     __tablename__ = 'artworks'

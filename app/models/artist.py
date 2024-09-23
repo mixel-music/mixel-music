@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from pydantic import BaseModel, Field
-from services.database import Base
+from core.database import Base
 
 class Artist(Base):
     __tablename__ = 'artists'
@@ -19,10 +19,20 @@ class ArtistListResponse(BaseModel):
     total: int = Field(examples=[1])
 
 
-class ArtistItemResponse(BaseModel):
+class ArtistItem(BaseModel):
     artist: str = Field(examples=['아야츠노 유니'])
     artist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
-    albums: list[dict] = Field(
+
+
+class ArtistAlbum(BaseModel):
+    album: str = Field(examples=["내꺼 하는 법 (How to be mine)"])
+    album_id: str = Field(examples=["816f92318525756fa1d95bf9382fbccb"])
+    albumartist_id: str = Field(examples=["6eced76df3a9d6f115dc10818f1bd25c"])
+    year: int = Field(examples=[2023])
+
+
+class ArtistItemResponse(ArtistItem):
+    albums: list[ArtistAlbum] = Field(
         examples=[
             [
                 {

@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
-from services.config import Config
+from core.config import Config
 import logging
 
 install(word_wrap=True)

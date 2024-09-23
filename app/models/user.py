@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, JSON, Text, func
+from sqlalchemy import (
+    Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, JSON, Text, func
+)
 from pydantic import BaseModel, Field
-from services.database import Base
+from core.database import Base
 
 class User(Base):
     __tablename__ = 'users'
