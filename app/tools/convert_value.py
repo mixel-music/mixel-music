@@ -1,9 +1,8 @@
 import hashlib
 import mimetypes
-
-from core.models import *
-from core.logger import *
 from core.database import *
+from core.logging import *
+from models import *
 from tools.path_handler import *
 
 def get_mime(path: str) -> list[str]:
@@ -23,36 +22,6 @@ def hash_str(*args) -> str:
     except ValueError:
         return ''
 
-
-async def hash_track_to_album(hash: str) -> str:
-    try:
-        async with session() as conn:
-            result = await conn.execute(
-                select(Tracks.album_id).where(Tracks.track_id == hash)
-            )
-            row = result.scalars().first()
-        
-        return row if row else ''
-
-    except Exception as error:
-        logs.error("Failed to get albumhash, %s", error)
-        return ''
-    
-    
-async def hash_track_to_path(hash: str) -> str:
-    try:
-        async with session() as conn:
-            result = await conn.execute(
-                select(Tracks.filepath).where(Tracks.track_id == hash)
-            )
-            row = result.scalars().first()
-
-        return row if row else ''
-    
-    except Exception as error:
-        logs.error("Failed to get track's path, %s", error)
-        return ''
-    
 
 def safe_list(extra, key, default=''):
     extra = dict(extra)

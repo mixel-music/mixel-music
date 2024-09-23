@@ -1,12 +1,10 @@
-from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 from tools.path_handler import *
-from datetime import datetime
 import logging
 
 class Config(BaseSettings):
     APPNAME: str = 'mixel-music'
-    VERSION: str = '0.8.1'
+    VERSION: str = '0.10.0'
     HOST: str = '0.0.0.0'
     PORT: int = 2843
 

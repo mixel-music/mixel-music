@@ -44,7 +44,7 @@
 <style>
   .grid-item {
     white-space: nowrap;
-    margin-bottom: var(--space-s);
+    margin-bottom: var(--space-m);
   }
 
   .item-body {

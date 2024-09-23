@@ -1,9 +1,8 @@
 from tinytag import TinyTag
 from datetime import datetime
 import re
-from types import SimpleNamespace
 
-from core.logger import *
+from core.logging import *
 from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime, safe_list
 

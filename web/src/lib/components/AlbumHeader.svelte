@@ -96,6 +96,7 @@
     width: 100%;
     gap: var(--space-m);
     flex-direction: row;
+    margin-top: var(--space-xs);
     margin-bottom: var(--space-l);
   }
 
@@ -116,7 +117,7 @@
   }
 
   .title {
-    font-size: clamp(1rem, 2vw, 2rem);
+    font-size: clamp(1rem, 2vw, 2.25rem);
     font-weight: 700;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -124,7 +125,7 @@
 
   .artist {
     color: var(--dark-text-sub);
-    font-size: 110%;
+    font-size: 115%;
   }
 
   .detail {

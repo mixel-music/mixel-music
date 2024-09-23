@@ -18,7 +18,7 @@
     { 
       delay: 10,
       duration: 600,
-      x: document.querySelector('.player-queue').clientWidth + 30,
+      x: document.querySelector('.player-queue').clientWidth + 20,
       opacity: 1,
       easing: cubicOut
     }
@@ -56,7 +56,12 @@
             {convertDateTime(trk.duration)}
           </span>
 
-          <JustButton width="21px" height="32px">
+          <JustButton
+            width="21px"
+            height="32px"
+            on:click={(event) => PlayerService.delTrack(index)}
+            title
+          >
             <Icon icon="iconoir:xmark" width="21" height="21" />
           </JustButton>
         </div>
@@ -74,7 +79,7 @@
     right: var(--space-m);
     flex-direction: column;
     flex-shrink: 0;
-    width: 500px;
+    width: 410px;
     height: calc(100% - 96px - calc(var(--space-m)* 2));
     box-shadow: 0 0 0 1px var(--dark-border) inset;
     background-color: var(--dark-queue);
