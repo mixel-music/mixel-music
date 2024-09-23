@@ -12,20 +12,6 @@ class LibraryRepo:
         self.conn = conn
 
 
-    async def get_path_by_track_id(self, track_id: str) -> str:
-        try:
-            result = await self.conn.execute(
-                select(Track.filepath).where(Track.track_id == track_id)
-            )
-
-            row = result.scalars().first()
-            return row if row else ''
-        
-        except Exception as error:
-            logs.error("Failed to fetch. %s", error)
-            return ''
-
-
     async def get_track_list(self, page: int, item: int) -> TrackList:
         track_list = []
         total = 0
@@ -222,6 +208,27 @@ class LibraryRepo:
 
         return artist_info
     
+
+    async def get_scan_result(self):
+        track_info = await self.conn.execute(select(Track.filepath, Track.filesize))
+        track_info = track_info.all()
+
+        return track_info
+    
+    
+    async def get_path_by_track_id(self, track_id: str) -> str:
+        try:
+            result = await self.conn.execute(
+                select(Track.filepath).where(Track.track_id == track_id)
+            )
+
+            row = result.scalars().first()
+            return row if row else ''
+        
+        except Exception as error:
+            logs.error("Failed to fetch. %s", error)
+            return ''
+
 
     async def insert_track(self, track_data: TrackItem) -> None:
         try:

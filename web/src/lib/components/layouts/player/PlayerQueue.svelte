@@ -1,10 +1,10 @@
 <script lang="ts">
   import Artwork from "$lib/components/elements/ArtworkImage.svelte";
   import PlayerService from "$lib/stores/stores";
-  import { convertDateTime, getArtistLink, getArtwork } from "$lib/tools";
+  import { convertDateTime, getArtistLink, getArtwork, handleClick } from "$lib/tools";
   import { isQueueOpen } from "$lib/stores/layout";
   import { cubicOut } from "svelte/easing";
-  import { fly } from "svelte/transition";
+  import { fly, fade } from "svelte/transition";
   import { _ } from "svelte-i18n";
   import JustButton from "$lib/components/elements/JustButton.svelte";
   import Icon from "@iconify/svelte";
@@ -25,7 +25,7 @@
   }>
     <!-- <span class="title">{$_('player.queue')}</span> -->
     {#each lists.lists as trk, index}
-      <div class="track">
+      <div transition:fade={{ delay: 10, duration: 70 }} class="track">
         <Artwork
           src={trk.album === ''
             ? getArtwork(trk.track_id, 128)

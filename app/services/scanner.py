@@ -13,15 +13,14 @@ from tools.path_handler import *
 async def scanner() -> None:
     """
     It retrieves all track information from the database and checks if the files actually exist with matching sizes.
-    
+
     If a file doesn't exist or the size differs, it is removed from the database; otherwise, it is excluded from the library scan.
     """
 
     path_props, tasks = {}, []
     
     async with session() as conn:
-        track_info = await conn.execute(select(Track.filepath, Track.filesize))
-        track_info = track_info.all()
+        track_info = await LibraryRepo(conn).get_scan_result()
 
     if track_info:
         for path_data, size_data in track_info:
@@ -34,28 +33,28 @@ async def scanner() -> None:
 
         await asyncio.gather(*tasks)
 
-    await library_scanner(property=path_props)
+    await library_scanner(props=path_props)
     asyncio.create_task(LibraryScan.perform_all())
 
 
-async def library_scanner(property: dict, path = None) -> None:
+async def library_scanner(props: dict, path = None) -> None:
     if path is None: path = Config.LIBRARYDIR
     queue, tasks = [path], []
 
     while queue:
         current_path = queue.pop(0)
         for path in current_path.iterdir():
-            str_path_val = str_path(path)
+            path_value = str_path(path)
 
             if path.is_dir():
-                property[str_path_val] = 'd' # 'DIR'
+                props[path_value] = 'd' # 'DIR'
                 queue.append(path)
 
-            elif is_music_file(str_path_val):
-                if property.get(str_path_val) == 'p':
-                    property.pop(str_path_val, None)
+            elif is_music_file(path_value):
+                if props.get(path_value) == 'p':
+                    props.pop(path_value, None)
                 else:
-                    tasks.append(LibraryTask(str_path_val).create_track())
+                    tasks.append(LibraryTask(path_value).create_track())
 
     await asyncio.gather(*tasks)
 
