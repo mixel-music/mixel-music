@@ -5,6 +5,7 @@ from core.logging import *
 from models import *
 from tools.path_handler import *
 
+
 def get_mime(path: str) -> list[str]:
     try:
         type = mimetypes.guess_type(get_path(path), strict=True)

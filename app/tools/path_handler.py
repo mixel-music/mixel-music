@@ -15,6 +15,7 @@ def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> 
         rel (bool, optional): Relative path, defaults to False.
         create_dir (bool, optional): Create the directory if it doesn't exist, defaults to False.
     """
+    
     home = ROOTDIR
 
     if create_dir:
@@ -34,6 +35,7 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
         *args (str | Path, optional): Directory or filename.
         rel (bool, optional): Relative path, defaults to True.
     """
+
     home = ROOTDIR
 
     for arg in args: home = home / arg
@@ -42,7 +44,7 @@ def str_path(*args: str | Path, rel: bool = True) -> str:
     return home.as_posix()
 
 
-def get_filename(*args: str | Path) -> list[str, str, str]:
+def get_filename(*args: str | Path) -> tuple[str, str, str]:
     home = ROOTDIR
 
     for arg in args: home = home / arg
@@ -57,7 +59,7 @@ def get_filename(*args: str | Path) -> list[str, str, str]:
     return [name, stem, suffix.lower()]
 
 
-def is_music_file(path: str) -> bool:
+def is_supported_file(path: str) -> bool:
     if get_path(path).suffix in TinyTag.SUPPORTED_FILE_EXTENSIONS:
         return True
     else:
@@ -70,10 +72,9 @@ def create_dir(Config: BaseSettings) -> None:
     Config.ARTWORKDIR.mkdir(exist_ok=True)
 
 
-def is_hidden_file(name: str) -> bool:
+def is_excluded_file(name: str) -> bool:
     """
-        Check if a file should be excluded based on its name.
-        도대체 왜 시스템이 멋대로 아트워크 캐시를 생성하는 걸까요?
+    Check if a file should be excluded based on its name.
     """
 
     patterns = [
@@ -88,4 +89,5 @@ def is_hidden_file(name: str) -> bool:
     for pattern in patterns:
         if re.search(pattern, name, re.IGNORECASE):
             return True
+        
     return False

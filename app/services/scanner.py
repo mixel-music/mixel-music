@@ -1,5 +1,4 @@
 from watchfiles import Change, awatch
-from sqlalchemy import select
 import asyncio
 
 from core.config import Config
@@ -19,8 +18,9 @@ async def scanner() -> None:
 
     path_props, tasks = {}, []
     
-    async with session() as conn:
-        track_info = await LibraryRepo(conn).get_scan_result()
+    async with db_conn() as conn:
+        repo = LibraryRepo(conn)
+        track_info = await repo.get_scan_info()
 
     if track_info:
         for path_data, size_data in track_info:
@@ -50,7 +50,7 @@ async def library_scanner(props: dict, path = None) -> None:
                 props[path_value] = 'd' # 'DIR'
                 queue.append(path)
 
-            elif is_music_file(path_value):
+            elif is_supported_file(path_value):
                 if props.get(path_value) == 'p':
                     props.pop(path_value, None)
                 else:
@@ -72,7 +72,7 @@ async def tracker() -> None:
         for event_type, event_path in event_handler:
             str_path_val = str_path(event_path)
 
-            if is_music_file(str_path_val):
+            if is_supported_file(str_path_val):
                 instance = LibraryTask(str_path_val)
 
                 if event_type == Change.added:
