@@ -1,3 +1,5 @@
+from fastapi import HTTPException, status
+from sqlalchemy.exc import NoResultFound
 import aiofiles
 from core.logging import *
 from models.album import AlbumItemResponse, AlbumList
@@ -15,13 +17,16 @@ class LibraryService:
     async def get_track_list(self, page: int, item: int) -> TrackList:
         offset = item * (page - 1)
         track_list, total = await self.repo.get_track_list(offset, item)
-
+        
         return {'list': track_list, 'total': total}
 
 
     async def get_track_info(self, track_id: str) -> TrackItemResponse:
-        return await self.repo.get_track_info(track_id)
-
+        try:
+            return await self.repo.get_track_info(track_id)
+        except NoResultFound:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        
 
     async def get_album_list(self, page: int, item: int) -> AlbumList:
         offset = item * (page - 1)
@@ -31,8 +36,10 @@ class LibraryService:
 
 
     async def get_album_info(self, album_id: str) -> AlbumItemResponse:
-        album_info = await self.repo.get_album_info(album_id)
-        return album_info
+        try:
+            return await self.repo.get_album_info(album_id)
+        except NoResultFound:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
     async def get_artist_list(self, page: int, item: int) -> ArtistList:
@@ -43,13 +50,18 @@ class LibraryService:
 
 
     async def get_artist_info(self, artist_id: str) -> ArtistItemResponse:
-        return await self.repo.get_artist_info(artist_id)
+        try:
+            return await self.repo.get_artist_info(artist_id)
+        except NoResultFound:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
 
     async def streaming(self, track_id: str, range: str):
-        path = await self.repo.get_path_by_track_id(track_id)
-        track_info = await self.repo.get_track_info(track_id)
-        if not track_info: return
+        try:
+            path = await self.repo.get_path_by_track_id(track_id)
+            track_info = await self.repo.get_track_info(track_id)
+        except:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
         track_mime = track_info['content_type']
         track_size = track_info['filesize']

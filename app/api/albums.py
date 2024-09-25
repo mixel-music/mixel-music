@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Depends, HTTPException, status
 from models.album import AlbumListResponse, AlbumItemResponse
+from sqlalchemy.exc import NoResultFound
 from core.depends import get_service
 
 router = APIRouter(prefix='/api')
@@ -12,7 +13,7 @@ router = APIRouter(prefix='/api')
 async def api_album_list(
     page: int = Query(1, ge=1),
     item: int = Query(40, ge=1),
-    service=Depends(get_service)
+    service: get_service = Depends()
 ) -> AlbumListResponse:
     
     album_list = await service.get_album_list(page, item)
@@ -26,7 +27,7 @@ async def api_album_list(
 )
 async def api_album_item(
     album_id: str,
-    service=Depends(get_service)
+    service: get_service = Depends()
 ) -> AlbumItemResponse:
     
     album_info = await service.get_album_info(album_id)

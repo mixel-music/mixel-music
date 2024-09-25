@@ -11,8 +11,8 @@ router = APIRouter(prefix='/api')
 @router.get('/artworks/{id}', summary="Artwork")
 async def api_artworks(
     id: str,
-    size: int=Query(300, ge=0),
-    repo=Depends(get_repo)
+    size: int = Query(300, ge=0),
+    repo: get_repo = Depends()
 ) -> FileResponse:
     
     service = ArtworkService(repo)

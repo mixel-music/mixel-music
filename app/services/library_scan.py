@@ -110,7 +110,7 @@ class LibraryScan:
 
             for album_id in orphan_albums:
                 logs.debug("Removing Album... (%s)", album_id)
-                await LibraryRepo(conn).delete_album(conn, album_id)
+                await LibraryRepo(conn).delete_album(album_id)
 
 
     @staticmethod

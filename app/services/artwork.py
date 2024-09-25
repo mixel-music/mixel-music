@@ -36,10 +36,11 @@ class ArtworkService:
 
 
     async def init_artwork(self, id: str) -> tuple[bytes | None, str] | None:
-        data = await self.repo.get_item_path(id)
-
-        if data:
+        try:
+            data = await self.repo.get_item_path(id)
             artwork_path = get_path(data.get('filepath')).parent
+        except:
+            return None
 
         async def read_artwork_file(filepath) -> bytes:
             async with aiofiles.open(filepath, 'rb') as f:

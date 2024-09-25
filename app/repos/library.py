@@ -42,8 +42,12 @@ class LibraryRepo:
         db_query = await self.conn.execute(
             select(Track.__table__).where(Track.track_id == track_id)
         )
-        track_info = dict(db_query.mappings().first())
-        return track_info
+        
+        try:
+            track_info = dict(db_query.mappings().first())
+            return track_info
+        except:
+            raise NoResultFound
 
 
     async def get_album_list(self, page: int, item: int) -> AlbumList:
@@ -90,26 +94,26 @@ class LibraryRepo:
             )
             .where(Album.album_id == album_id)
         )
-        album_row = album_query.mappings().first()
 
-        if album_row:
-            album_info = dict(album_row)
+        try:
+            album_info = dict(album_query.mappings().first())
+        except:
+            raise NoResultFound
 
-            # 트랙 정보 가져오기
-            track_query = await self.conn.execute(
-                select(
-                    Track.artist,
-                    Track.artist_id,
-                    Track.comment,
-                    Track.duration,
-                    Track.title,
-                    Track.track_id,
-                    Track.track_number,
-                )
-                .where(Track.album_id == album_id)
-                .order_by(Track.track_number.asc())
+        track_query = await self.conn.execute(
+            select(
+                Track.artist,
+                Track.artist_id,
+                Track.comment,
+                Track.duration,
+                Track.title,
+                Track.track_id,
+                Track.track_number,
             )
-            album_info['tracks'] = [dict(row) for row in track_query.mappings().all()]
+            .where(Track.album_id == album_id)
+            .order_by(Track.track_number.asc())
+        )
+        album_info['tracks'] = [dict(row) for row in track_query.mappings().all()]
 
         return album_info
 
@@ -170,6 +174,8 @@ class LibraryRepo:
                         'artist_id': artist_id,
                         'albums': albums_data
                     }
+        else:
+            raise NoResultFound
 
         return artist_info
     

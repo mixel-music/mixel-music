@@ -19,7 +19,7 @@
           {#if showArtwork}
             <img
               loading={lazyload ? 'lazy' : null}
-              src={getArtwork(src, 500)} {alt} on:error={() => showArtwork = !showArtwork}
+              src={getArtwork(src, 300)} {alt} on:error={() => showArtwork = !showArtwork}
             >
           {/if}
         </a>
