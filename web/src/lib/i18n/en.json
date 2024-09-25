@@ -42,7 +42,7 @@
     "controls.play": "Play",
     "controls.shuffle": "Shuffle",
     "controls.download": "Download",
-    "controls.info": "Info",
+    "controls.album_info": "Album Info",
     "controls.favorite": "Favorite",
 
     "info.track": "{track_total} Track",

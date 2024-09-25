@@ -1,36 +1,8 @@
-import PlayerService from "$lib/stores/stores";
-import { _ } from "svelte-i18n";
-
-interface HandleTrackItem {
-  album: string
-  album_id: string
-  artist: string
-  artist_id: string
-  duration: number
-  title: string
-  track_id: string
-}
-
 export function getArtwork(hash: string, size: number): string {
   let artwork: string =
     `http://localhost:2843/api/artworks/${hash}?size=${size.toString()}`;
 
   return artwork;
-}
-
-export function handleClick(item: HandleTrackItem, play: boolean = false) {
-  PlayerService.addTrack({
-    album: item.album,
-    album_id: item.album_id,
-    artist: item.artist,
-    artist_id: item.artist_id,
-    duration: item.duration,
-    title: item.title,
-    track_id: item.track_id,
-  }, play ? 0 : null);
-
-  if (play)
-    PlayerService.setTrack(0);
 }
 
 export function getAlbumLink(hash: string): string {

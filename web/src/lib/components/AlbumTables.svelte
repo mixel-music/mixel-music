@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { AlbumItem } from "$lib/interface";
   import { 
-    handleClick,
     getArtistLink,
     convertDateTime
   } from "$lib/tools";
@@ -12,6 +11,7 @@
   import TableBodyItem from "./elements/TableBodyItem.svelte";
   import TableMenu from "./elements/TableMenu.svelte";
   import { _ } from 'svelte-i18n'
+  import PlayerService from "$lib/stores/stores";
 
   export let list: AlbumItem;
 </script>
@@ -35,16 +35,19 @@
       <TableBodyItem size='xl'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->
-        <a on:click={() => 
-          handleClick({
-            album: list.album,
-            album_id: list.album_id,
-            artist: item.artist,
-            artist_id: item.artist_id,
-            duration: item.duration,
-            title: item.title,
-            track_id: item.track_id,
-          }, true)}
+        <a on:click={() =>
+          PlayerService.addTrack(
+            [{
+              album: list.album,
+              album_id: list.album_id,
+              artist: item.artist,
+              artist_id: item.artist_id,
+              duration: item.duration,
+              title: item.title,
+              track_id: item.track_id,
+            }]
+          , true)
+        }
         on:keydown>
           {item.title}
         </a>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Artwork from "$lib/components/elements/ArtworkImage.svelte";
   import PlayerService from "$lib/stores/stores";
-  import { convertDateTime, getArtistLink, getArtwork, handleClick } from "$lib/tools";
+  import { convertDateTime, getArtistLink, getArtwork } from "$lib/tools";
   import { isQueueOpen } from "$lib/stores/layout";
   import { cubicOut } from "svelte/easing";
   import { fly, fade } from "svelte/transition";
@@ -41,9 +41,11 @@
           <!-- svelte-ignore a11y-missing-attribute -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <span class="text normal">
+            <a class="text normal" on:click={() =>
+              PlayerService.setTrack(index)
+            }>
                 {trk.title}
-            </span>
+            </a>
             <span class="text-sub normal small">
               <a href="{getArtistLink(trk.artist_id)}">
                 {trk.artist}

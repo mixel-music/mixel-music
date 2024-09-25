@@ -29,6 +29,11 @@
     year={data.item.year != 0 ? data.item.year : $_('unknown_year')}
   />
 
-  <ControlsBar />
+  <ControlsBar tracks={data.item.tracks.map(track => ({
+    ...track,
+    album: data.item.album,
+    album_id: data.item.album_id
+  }))} />
+  
   <AlbumTables list={data.item} />
 {/if}

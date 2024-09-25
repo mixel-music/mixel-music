@@ -84,25 +84,23 @@ function InitPlayerService() {
     }
   };
 
-  const addTrack = (track: TrackList, index?: number) => {
+  const addTrack = (tracks: TrackList[], play: boolean = false, index?: number) => {
     update(state => {
       const newLists = [...state.lists];
 
+      if (play) index = 0;
       if (typeof index === 'number' && index >= 0 && index <= newLists.length) {
-        newLists.splice(index, 0, track);
+        newLists.splice(index, 0, ...tracks);
       }
       else {
-        newLists.push(track);
+        newLists.push(...tracks);
       }
 
       console.debug(newLists);
       return { ...state, lists: newLists };
     });
 
-    if (PlayerService.getState().lists.length === 1) {
-      setTrack(0);
-      // 이것도 스토어만 업데이트하는 방향으로 가던가 메서드에서 재생 여부를 제어하던가
-    }
+    if (play || tracks.length === 1) setTrack(0);
   };
 
   const delTrack = (index?: number) => {
