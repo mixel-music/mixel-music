@@ -18,7 +18,7 @@
 <PageTitle title={$_(data.title)} />
 
 {#if data.list}
-  <ControlsBar />
+  <ControlsBar tracks={data.list.list} />
   <TrackTables list={data.list.list} />
 
   {#if data.list.total > data.item}

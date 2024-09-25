@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Artwork from "$lib/components/elements/ArtworkImage.svelte";
+  import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
   import PlayerService from "$lib/stores/stores";
   import { convertDateTime, getArtistLink, getArtwork } from "$lib/tools";
   import { isQueueOpen } from "$lib/stores/layout";
@@ -26,7 +26,7 @@
     <!-- <span class="title">{$_('player.queue')}</span> -->
     {#each lists.lists as trk, index}
       <div transition:fade={{ delay: 10, duration: 70 }} class="track">
-        <Artwork
+        <ArtworkImage
           src={trk.album === ''
             ? getArtwork(trk.track_id, 128)
             : trk.album_id && getArtwork(trk.album_id, 128)
@@ -124,6 +124,10 @@
     margin-left: auto;
     align-items: center;
     gap: var(--space-xs);
+  }
+
+  a {
+    width: auto;
   }
 
   /* .title {

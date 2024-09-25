@@ -13,6 +13,7 @@
   {#if showArtwork}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <img
+      loading="lazy"
       {src}
       {alt}
       {width}
@@ -23,7 +24,6 @@
       on:mouseleave
       on:error={() => showArtwork = !showArtwork}
       class:full={FullCover}
-      loading="lazy"
     />
   {/if}
 </div>
