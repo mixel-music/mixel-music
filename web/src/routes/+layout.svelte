@@ -1,15 +1,14 @@
 <script lang="ts">
   import './style.css';
   import { onDestroy } from 'svelte';
-  
+  import { afterNavigate } from '$app/navigation';
+  import { page } from '$app/stores';
+
   import Sidebar from '$lib/components/layouts/sidebar/Sidebar.svelte';
   import Navbar from '$lib/components/layouts/navbar/Navbar.svelte';
   import Player from '$lib/components/layouts/player/Player.svelte';
   import PlayerQueue from '$lib/components/layouts/player/PlayerQueue.svelte';
   import PlayerService from '$lib/stores/stores';
-
-  import { afterNavigate } from '$app/navigation';
-  import { page } from '$app/stores';
 
   let previousPathname: string | null = null;
 
@@ -32,9 +31,7 @@
   })
 </script>
 
-<svelte:window
-
-/>
+<svelte:window />
 
 <div id="app">
   <Sidebar />

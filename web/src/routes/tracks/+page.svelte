@@ -1,11 +1,10 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
   import { getNextPage, getPrevPage } from '$lib/tools';
-  import RoundButton from '$lib/components/elements/RoundButton.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import TrackTables from '$lib/components/TrackTables.svelte';
   import ControlsBar from '$lib/components/ControlsBar.svelte';
+  import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
 
   export let data: PageData;
@@ -23,19 +22,23 @@
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <RoundButton href={getPrevPage(data.page, data.item)} preload="hover">
-        <Icon icon='iconoir:nav-arrow-left' />
-      </RoundButton>
-
-      <RoundButton preload="hover" href={
-        getNextPage(
+      <Button
+        button='round'
+        preload='hover'
+        iconName='iconoir:nav-arrow-left'
+        href={getPrevPage(data.page, data.item)}
+      />
+      
+      <Button
+        button='round'
+        preload='hover'
+        iconName='iconoir:nav-arrow-right'
+        href={getNextPage(
           data.page,
           data.item,
           data.list.total
-        )
-      }>
-        <Icon icon='iconoir:nav-arrow-right' />
-      </RoundButton>
+        )}
+      />
     </div>
   {/if}
 {/if}

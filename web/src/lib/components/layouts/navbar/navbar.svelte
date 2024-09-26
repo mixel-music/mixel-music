@@ -1,19 +1,22 @@
 <script lang="ts">
-  import RoundButton from '$lib/components/elements/RoundButton.svelte';
   import Dropdown from '$lib/components/elements/Dropdown.svelte';
   import TextBox from '$lib/components/elements/Textbox.svelte';
-  import Icon from '@iconify/svelte';
+  import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
 </script>
 
 <nav>
   <div>
-    <RoundButton on:click={() => history.back()}>
-      <Icon icon="iconoir:nav-arrow-left" />
-    </RoundButton>
-    <RoundButton on:click={() => history.forward()}>
-      <Icon icon="iconoir:nav-arrow-right" />
-    </RoundButton>
+    <Button
+      button='round'
+      iconName='iconoir:nav-arrow-left'
+      on:click={() => history.back()}
+    />
+    <Button
+      button='round'
+      iconName='iconoir:nav-arrow-right'
+      on:click={() => history.forward()}
+    />
   </div>
 
   <div>
@@ -23,12 +26,8 @@
       width="290px"
       placeholder={$_('navbar.search')}
     />
-    <RoundButton>
-      <Icon icon="iconoir:refresh" />
-    </RoundButton>
-    <RoundButton>
-      <Icon icon="iconoir:user" />
-    </RoundButton>
+    <Button button='round' iconName='iconoir:refresh' />
+    <Button button='round' iconName='iconoir:user' />
   </div>
 </nav>
 

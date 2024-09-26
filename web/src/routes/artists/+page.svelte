@@ -1,11 +1,10 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
   import { getArtistLink, getNextPage, getPrevPage } from '$lib/tools';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
-  import RoundButton from '$lib/components/elements/RoundButton.svelte';
+  import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
 
   export let data: PageData;
@@ -49,24 +48,33 @@
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <RoundButton preload="hover" href={getPrevPage(data.page, data.item)}>
-        <Icon icon='iconoir:nav-arrow-left' />
-      </RoundButton>
-      <RoundButton preload="hover" href={
-        getNextPage(
+      <Button
+        button='round'
+        preload='hover'
+        iconName='iconoir:nav-arrow-left'
+        href={getPrevPage(data.page, data.item)}
+      />
+      
+      <Button
+        button='round'
+        preload='hover'
+        iconName='iconoir:nav-arrow-right'
+        href={getNextPage(
           data.page,
           data.item,
           data.list.total
-        )
-      }>
-        <Icon icon='iconoir:nav-arrow-right' />
-      </RoundButton>
+        )}
+      />
     </div>
   {/if}
 {/if}
 
 <style>
-  div {
+  .info-card {
     text-align: center;
+  }
+
+  a {
+    display: unset;
   }
 </style>

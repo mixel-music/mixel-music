@@ -13,16 +13,16 @@
 
   --table-padding: 16px 8px;
   --font-family:
-    Pretendard Variable,
-    Pretendard,
-    -apple-system,
-    BlinkMacSystemFont,
-    Noto Sans KR,
-    Segoe UI,
-    Apple SD Gothic Neo,
-    Helvetica Neue,
-    Arial,
-    sans-serif;
+      Pretendard Variable,
+      Pretendard,
+      -apple-system,
+      BlinkMacSystemFont,
+      Noto Sans KR,
+      Segoe UI,
+      Apple SD Gothic Neo,
+      Helvetica Neue,
+      Arial,
+      sans-serif;
 
   --black-1: rgb(18, 18, 18);
   --black-1a: rgb(18, 18, 18, 0.95);
@@ -83,10 +83,6 @@
 
 html {
   font-family: var(--font-family);
-  scrollbar-gutter: stable;
-  scroll-behavior: smooth;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -208,6 +204,10 @@ img {
 
 .info-card {
   padding-top: var(--space-s);
+}
+
+.info-card a {
+  display: grid;
 }
 
 .normal {

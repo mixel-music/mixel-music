@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
   import {
     getAlbumLink,
@@ -7,10 +6,10 @@
     getNextPage,
     getPrevPage,
   } from '$lib/tools';
-  import RoundButton from '$lib/components/elements/RoundButton.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
+  import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
 
   export let data: PageData;
@@ -56,20 +55,23 @@
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>
-      <RoundButton href={getPrevPage(data.page, data.item)} preload="hover">
-        <Icon icon='iconoir:nav-arrow-left' />
-      </RoundButton>
+      <Button
+        button='round'
+        preload='hover'
+        iconName='iconoir:nav-arrow-left'
+        href={getPrevPage(data.page, data.item)}
+      />
       
-      <RoundButton
+      <Button
+        button='round'
+        preload='hover'
+        iconName='iconoir:nav-arrow-right'
         href={getNextPage(
           data.page,
           data.item,
           data.list.total
         )}
-        preload="hover"
-      >
-        <Icon icon='iconoir:nav-arrow-right' />
-      </RoundButton>
+      />
     </div>
   {/if}
 {/if}

@@ -1,20 +1,20 @@
 <script lang="ts">
-  import Icon from "@iconify/svelte";
-  import SquareButton from "./elements/SquareButton.svelte";
-  import { _ } from 'svelte-i18n'
-  import RoundButton from "./elements/RoundButton.svelte";
   import type { TrackList } from "$lib/interface";
   import PlayerService from "$lib/stores/stores";
+  import Button from "./elements/Button.svelte";
+  import { _ } from 'svelte-i18n'
 
   export let tracks: TrackList[];
 </script>
 
 <div class="controls-bar">
   <div>
-    <SquareButton
+    <Button
+      button='square'
       width='150px'
       height='50px'
       title={$_('controls.play')}
+      iconName='iconoir:play-solid'
       on:click={() =>
         PlayerService.addTrack(
           tracks.map(track => ({
@@ -29,46 +29,37 @@
         , true)
       }
     >
-      <Icon icon="iconoir:play-solid" />
       {$_('controls.play')}
-    </SquareButton>
+    </Button>
 
-    <SquareButton
+    <Button
+      button='square'
       width='150px'
       height='50px'
       title={$_('controls.shuffle')}
+      iconName='iconoir:shuffle'
     >
-    <Icon icon="iconoir:shuffle" />
       {$_('controls.shuffle')}
-    </SquareButton>
+    </Button>
   </div>
   <div>
-    <RoundButton
+    <Button
+      button='round'
       width="50px"
-      height="50px"
       title={$_('controls.favorite')}
-    >
-      <Icon icon="iconoir:heart" width="21" height="21" />
-    </RoundButton>
+      iconName='iconoir:heart'
+      iconSize='21'
+    />
     
-    <SquareButton
+    <Button
+      button='square'
       width='150px'
       height='50px'
       title={$_('controls.album_info')}
+      iconName='iconoir:info-circle-solid'
     >
-    <Icon icon="iconoir:info-circle-solid" />
       {$_('controls.album_info')}
-    </SquareButton>
-
-    <!-- <SquareButton
-      href='.'
-      width='140px'
-      height='50px'
-      title={$_('controls.download')}
-    >
-    <Icon icon="iconoir:download" />
-      {$_('controls.download')}
-    </SquareButton> -->
+    </Button>
   </div>
 </div>
 

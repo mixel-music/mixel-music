@@ -10,8 +10,8 @@
   import TableBody from "./elements/TableBody.svelte";
   import TableBodyItem from "./elements/TableBodyItem.svelte";
   import TableMenu from "./elements/TableMenu.svelte";
-  import { _ } from 'svelte-i18n'
   import PlayerService from "$lib/stores/stores";
+  import { _ } from 'svelte-i18n'
 
   export let list: AlbumItem;
 </script>

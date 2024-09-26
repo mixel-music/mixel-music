@@ -1,13 +1,12 @@
 <script lang="ts">
   import ArtworkImage from "$lib/components/elements/ArtworkImage.svelte";
   import PlayerService from "$lib/stores/stores";
+  import Button from "$lib/components/elements/Button.svelte";
   import { convertDateTime, getArtistLink, getArtwork } from "$lib/tools";
   import { isQueueOpen } from "$lib/stores/layout";
-  import { cubicOut } from "svelte/easing";
   import { fly, fade } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import { _ } from "svelte-i18n";
-  import JustButton from "$lib/components/elements/JustButton.svelte";
-  import Icon from "@iconify/svelte";
 
   $: lists = $PlayerService;
 </script>
@@ -58,14 +57,14 @@
             {convertDateTime(trk.duration)}
           </span>
 
-          <JustButton
-            width="21px"
-            height="32px"
-            on:click={(event) => PlayerService.delTrack(index)}
-            title
-          >
-            <Icon icon="iconoir:xmark" width="21" height="21" />
-          </JustButton>
+          <Button
+            button='custom'
+            width='21px'
+            height='32px'
+            iconSize='21'
+            iconName='iconoir:xmark'
+            on:click={() => PlayerService.delTrack(index)}
+          />
         </div>
       </div>
     {/each}
