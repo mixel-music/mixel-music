@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4  # 리포지토리 전체를 루트 디렉터리에 체크아웃
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4  # 프로젝트 루트에서 Node.js 설정
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache-dependency-path: docs/package-lock.json
