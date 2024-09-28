@@ -8,26 +8,29 @@ on:
 jobs:
   build:
     name: Build Docusaurus
-    working-directory: ./docs
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4  # 리포지토리 전체를 루트 디렉터리에 체크아웃
+
+      - uses: actions/setup-node@v4  # 프로젝트 루트에서 Node.js 설정
         with:
           node-version: 18
+          cache-dependency-path: docs/package-lock.json
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+        working-directory: ./docs
+
       - name: Build website
         run: npm run build
+        working-directory: ./docs
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          path: docs/build
 
   deploy:
     name: Deploy to GitHub Pages
@@ -42,6 +45,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
