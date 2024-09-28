@@ -29,8 +29,8 @@
   <ArtworkImage
     src={artwork}
     alt={album}
-    width={230}
-    height={230}
+    width={256}
+    height={256}
     WrapCover
     FullCover
   />
@@ -117,7 +117,7 @@
   }
 
   .title {
-    font-size: clamp(1rem, 2vw, 2.25rem);
+    font-size: clamp(1rem, 4vw, 2.5rem);
     font-weight: 700;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -125,7 +125,7 @@
 
   .artist {
     color: var(--dark-text-sub);
-    font-size: 115%;
+    font-size: 110%;
   }
 
   .detail {

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/logo.svg" width="115">
+  <img src="static/logo.svg" width="115">
   <h3 align="center">mixel-music</h3>
 </p>
 
@@ -14,6 +14,6 @@
   * So there may be many areas that need improvement. Feedback is always welcome.
 
 ## Screenshots
-<img src=".github/albums-list-1620-864-75-55.png">
+<img src="static/album-list.png">
 
-<img src=".github/albums-info-1620-864-75-55.png">
+<img src="static/album-info.png">
