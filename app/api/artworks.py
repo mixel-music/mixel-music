@@ -16,25 +16,24 @@ async def api_artworks(
 ) -> FileResponse:
     
     service = ArtworkService(repo)
-    path = await service.get_artwork(id, size)
 
+    path = await service.get_artwork(id, size)
     if path:
         return FileResponse(path)
-    else:
-        data = await service.init_artwork(id)
-        if data:
-            with Image.open(io.BytesIO(data)) as img:
-                format = img.format.lower()
-                img.thumbnail([size, size], Image.Resampling.LANCZOS)
-                
-                buffer = io.BytesIO()
-                img.save(buffer, format)
-                buffer.seek(0)
+    
+    data = await service.init_artwork(id)
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-                loop = asyncio.get_running_loop()
-                await loop.run_in_executor(None, service.save_artwork, img, id, size, format)
+    loop = asyncio.get_running_loop()
+    img = await loop.run_in_executor(service.executor, Image.open, io.BytesIO(data))
+    format = img.format.lower()
 
-                return StreamingResponse(buffer, media_type=f'image/{format}')
-        else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        
+    await loop.run_in_executor(service.executor, img.thumbnail, [size, size], Image.Resampling.LANCZOS)
+
+    buffer = io.BytesIO()
+    img.save(buffer, format)
+    buffer.seek(0)
+
+    await loop.run_in_executor(service.executor, service.save_artwork, img, id, size, format)
+    return StreamingResponse(buffer, media_type=f'image/{format}')

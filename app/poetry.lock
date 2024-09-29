@@ -688,6 +688,17 @@ reference = "69cc78ce28e8386f74ce337fa6b767a5c39d7312"
 resolved_reference = "69cc78ce28e8386f74ce337fa6b767a5c39d7312"
 
 [[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -815,4 +826,4 @@ anyio = ">=3.0.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "1c03c1eaa783d38a2aec5d0fa5c345465874343ae1a8bf4b3e0f189a1570aa76"
+content-hash = "1b4c0fa74e14f0c6632e680d8eb48d3c5bf6b15e3bc4641dafa155816055e922"

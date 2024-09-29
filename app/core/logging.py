@@ -16,10 +16,10 @@ print_handler = RichHandler(
     rich_tracebacks=True
 )
 
-uvicorn_logger = logging.getLogger("uvicorn")
-uvicorn_access_logger = logging.getLogger("uvicorn.access")
-fastapi_logger = logging.getLogger("fastapi")
-logs = logging.getLogger(Config.APPNAME)
+uvicorn_logger = logging.getLogger('uvicorn')
+uvicorn_access_logger = logging.getLogger('uvicorn.access')
+fastapi_logger = logging.getLogger('fastapi')
+logs = logging.getLogger('mixel-music')
 
 uvicorn_logger.setLevel(Config.LOGLEVEL)
 uvicorn_access_logger.setLevel(Config.LOGLEVEL)

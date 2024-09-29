@@ -3,8 +3,6 @@ from tools.path_handler import *
 import logging
 
 class Config(BaseSettings):
-    APPNAME: str = 'mixel-music'
-    VERSION: str = '0.12.0'
     HOST: str = '0.0.0.0'
     PORT: int = 2843
     DATADIR: Path = get_path('data')
@@ -13,7 +11,7 @@ class Config(BaseSettings):
     LIBRARYDIR: Path = get_path('library')
     ARTWORKFORMAT: str = 'webp'
     ARTWORKCACHING: bool = True
-    ARTWORKQUALITY: int = 100
+    ARTWORKQUALITY: int = 80
     ARTWORKTARGETS: set = {
         '.png',
         '.jpg',

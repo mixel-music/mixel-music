@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 import asyncio
+import toml
 
 from tools.path_handler import create_dir
 from api import albums, artists, tracks, artworks, streaming
@@ -10,6 +11,10 @@ from services.scanner import scanner, tracker
 from core.config import Config
 from core.database import *
 from core.logging import *
+
+with open('pyproject.toml') as f:
+    pyproject = toml.load(f)
+    VERSION = pyproject['tool']['poetry']['version']
 
 @asynccontextmanager
 async def init(app: FastAPI):
@@ -34,9 +39,9 @@ async def init(app: FastAPI):
                 logs.error(f"Error During Shutdown, {result}")
 
 app = FastAPI(
+    title='mixel-music',
     debug=Config.DEBUG,
-    title=Config.APPNAME,
-    version=Config.VERSION,
+    version=VERSION,
     lifespan=init,
 )
 
