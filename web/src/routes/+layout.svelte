@@ -31,8 +31,6 @@
   })
 </script>
 
-<svelte:window />
-
 <div id="app">
   <Sidebar />
 

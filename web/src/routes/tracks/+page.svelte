@@ -2,8 +2,8 @@
   import type { PageData } from './$types';
   import { getNextPage, getPrevPage } from '$lib/tools';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
-  import TrackTables from '$lib/components/TrackTables.svelte';
   import ControlsBar from '$lib/components/ControlsBar.svelte';
+  import TrackTable from '$lib/components/TrackTable.svelte';
   import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
 
@@ -18,7 +18,7 @@
 
 {#if data.list}
   <ControlsBar tracks={data.list.list} />
-  <TrackTables list={data.list.list} />
+  <TrackTable list={data.list.list} />
 
   {#if data.list.total > data.item}
     <div class='bottom-ctl'>

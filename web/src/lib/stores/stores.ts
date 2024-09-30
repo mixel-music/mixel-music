@@ -100,7 +100,7 @@ function InitPlayerService() {
       return { ...state, lists: newLists };
     });
 
-    if (play || tracks.length === 1) setTrack(0);
+    if (play || PlayerService.getLists().length === 1) setTrack(0);
   };
 
   const delTrack = (index?: number) => {

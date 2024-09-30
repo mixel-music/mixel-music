@@ -6,7 +6,7 @@ from models import *
 from tools.path_handler import *
 
 
-def get_mime(path: str) -> list[str]:
+def get_mime(path: str) -> str:
     try:
         type = mimetypes.guess_type(get_path(path), strict=True)
         if type:
@@ -24,8 +24,9 @@ def hash_str(*args) -> str:
         return ''
 
 
-def safe_list(extra, key, default=''):
+def safe_list(extra, key, default='') -> str:
     extra = dict(extra)
+    
     try:
         value = extra.get(key, [default])
         return value[0] if value else default

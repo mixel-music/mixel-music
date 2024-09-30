@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import AlbumTables from '$lib/components/AlbumTables.svelte';
   import AlbumHeader from '$lib/components/AlbumHeader.svelte';
   import ControlsBar from '$lib/components/ControlsBar.svelte';
+  import AlbumTable from '$lib/components/AlbumTable.svelte';
   import { _ } from 'svelte-i18n';
 
   export let data: PageData;
@@ -35,5 +35,5 @@
     album_id: data.item.album_id
   }))} />
   
-  <AlbumTables list={data.item} />
+  <AlbumTable list={data.item} />
 {/if}
