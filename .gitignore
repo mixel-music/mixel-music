@@ -9,10 +9,8 @@ test
 .DS_Store
 .svelte-kit
 .vscode
-.test
-.temp
-.venv
 
+build
 node_modules
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
