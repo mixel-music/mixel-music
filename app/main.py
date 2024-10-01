@@ -43,6 +43,7 @@ app = FastAPI(
     debug=Config.DEBUG,
     version=VERSION,
     lifespan=init,
+    docs_url=None,
 )
 
 app.add_middleware(
@@ -52,6 +53,29 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.openapi.docs import get_swagger_ui_html
+from tools.path_handler import get_path
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_docs() -> HTMLResponse:
+    """
+    Apply favicon and dark theme for swagger docs.
+    """
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=f"{app.title} - Swagger UI",
+        swagger_css_url="/static/dark.css",
+        swagger_favicon_url="/static/favicon.ico"
+    )
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon() -> FileResponse:
+    return FileResponse(get_path('app', 'static', 'favicon.ico'))
 
 app.include_router(albums.router)
 app.include_router(artists.router)
