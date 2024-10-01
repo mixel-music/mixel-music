@@ -177,6 +177,22 @@ img {
   color: transparent;
 }
 
+#contents {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* width: min(1600px, 100%); */
+  backdrop-filter: blur(12px);
+  padding: var(--space-m) var(--space-xl);
+  padding-top: 0;
+}
+
+@media screen and (max-width: 1960px) {
+  #contents {
+    padding: 0 min(64px, 3%);
+  }
+}
+
 .text {
   display: block;
   font-size: 95%;

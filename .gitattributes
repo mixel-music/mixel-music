@@ -1,14 +1,6 @@
-*          text eol=lf
-*.doc      diff=astextplain
-*.DOC      diff=astextplain
-*.docx     diff=astextplain
-*.DOCX     diff=astextplain
-*.pdf      diff=astextplain
-*.PDF      diff=astextplain
+*          text=auto
 *.md       text diff=markdown
 *.mdx      text diff=markdown
-*.tex      text diff=tex
-*.csv      text eol=crlf
 *.png      binary
 *.jpg      binary
 *.jpeg     binary
@@ -27,11 +19,9 @@
 *.yml      text
 *.7z       binary
 *.gz       binary
-*.lz       binary
-*.lzma     binary
 *.rar      binary
 *.tar      binary
 *.tgz      binary
 *.xz       binary
 *.zip      binary
-app/static/* linguist-detectable=false
+assets/*   linguist-detectable=false

@@ -56,10 +56,10 @@ app.add_middleware(
 
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.openapi.docs import get_swagger_ui_html
-from tools.path_handler import get_path
 from fastapi.staticfiles import StaticFiles
+from tools.path_handler import get_path
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/assets", StaticFiles(directory=get_path('assets')), name="assets")
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_docs() -> HTMLResponse:
@@ -68,14 +68,14 @@ async def custom_swagger_docs() -> HTMLResponse:
     """
     return get_swagger_ui_html(
         openapi_url=app.openapi_url,
-        title=f"{app.title} - Swagger UI",
-        swagger_css_url="/static/dark.css",
-        swagger_favicon_url="/static/favicon.ico"
+        title=f'API • {app.title}',
+        swagger_css_url='/assets/dark.css',
+        swagger_favicon_url='/favicon.ico',
     )
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon() -> FileResponse:
-    return FileResponse(get_path('app', 'static', 'favicon.ico'))
+    return FileResponse(get_path('assets', 'favicon.ico'))
 
 app.include_router(albums.router)
 app.include_router(artists.router)

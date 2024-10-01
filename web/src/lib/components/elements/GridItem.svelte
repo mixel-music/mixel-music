@@ -78,7 +78,6 @@
     width: 100%;
     height: 100%;
     display: block;
-    /* object-fit: scale-down; */
     object-fit: scale-down;
     aspect-ratio: 1/1;
     border-radius: var(--radius-s);

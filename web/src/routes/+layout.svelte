@@ -4,10 +4,9 @@
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
 
-  import Sidebar from '$lib/components/layouts/sidebar/Sidebar.svelte';
-  import Navbar from '$lib/components/layouts/navbar/Navbar.svelte';
-  import Player from '$lib/components/layouts/player/Player.svelte';
-  import PlayerQueue from '$lib/components/layouts/player/PlayerQueue.svelte';
+  import Sidebar from "$lib/components/layouts/sidebar/Sidebar.svelte";
+  import PlayerQueue from "$lib/components/layouts/player/PlayerQueue.svelte";
+  import Player from "$lib/components/layouts/player/Player.svelte";
   import PlayerService from '$lib/stores/stores';
 
   let previousPathname: string | null = null;
@@ -35,10 +34,7 @@
   <Sidebar />
 
   <div>
-    <div id="contents">
-      <Navbar />
-      <slot />
-    </div>
+    <slot />
   </div>
 
   <PlayerQueue />
@@ -57,6 +53,7 @@
   #app > div {
     width: 100%;
     margin-bottom: 96px;
+    position: relative;
     overflow-y: scroll;
     user-select: none;
     display: flex;
@@ -67,20 +64,5 @@
 
   #app > div:hover {
     outline: none;
-  }
-
-  #app > div > div {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    /* width: min(1600px, 100%); */
-    padding: var(--space-m) var(--space-xl);
-    padding-top: 0
-  }
-
-  @media screen and (max-width: 1960px) {
-    #app > div > div {
-      padding: 0 min(64px, 3%);
-    }
   }
 </style>

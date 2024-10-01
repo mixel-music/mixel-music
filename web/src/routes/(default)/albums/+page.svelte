@@ -1,9 +1,14 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getArtistLink, getNextPage, getPrevPage } from '$lib/tools';
+  import {
+    getAlbumLink,
+    getArtistLink,
+    getNextPage,
+    getPrevPage,
+  } from '$lib/tools';
+  import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
-  import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
 
@@ -23,17 +28,19 @@
 
 {#if data.list}
   <GridWrap>
-    {#each data.list.list as artist}
+    {#each data.list.list as album (album.album_id)}
       <GridItem
-        href='{getArtistLink(artist.artist_id)}'
-        src=''
-        alt={artist.artist}
+        href={getAlbumLink(album.album_id)}
+        src={album.album_id}
+        alt={album.album ? album.album : $_('unknown_album')}
         lazyload
-        round
       >
         <div class="info-card">
-          <a href='{getArtistLink(artist.artist_id)}'>
-            <span class="text">{artist.artist}</span>
+          <a href='{getAlbumLink(album.album_id)}'>
+            <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
+          </a>
+          <a href='{getArtistLink(album.albumartist_id)}'>
+            <span class="text-sub">{album.albumartist}</span>
           </a>
         </div>
       </GridItem>
@@ -68,13 +75,3 @@
     </div>
   {/if}
 {/if}
-
-<style>
-  .info-card {
-    text-align: center;
-  }
-
-  a {
-    display: unset;
-  }
-</style>

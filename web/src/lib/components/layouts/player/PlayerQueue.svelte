@@ -128,10 +128,4 @@
   a {
     width: auto;
   }
-
-  /* .title {
-    font-weight: 500;
-    font-size: 130%;
-    padding: var(--space-xs) 0;
-  } */
 </style>
