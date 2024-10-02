@@ -34,3 +34,13 @@ class LibraryTask:
                 repo = LibraryRepo(conn)
                 await repo.delete_track(self.path)
                 logs.debug(f"Track removed: {self.path}")
+
+
+    async def update_track(self) -> None:
+        async with semaphore:
+            async with db_conn() as conn:
+                repo = LibraryRepo(conn)
+                await repo.delete_track(self.path)
+                await self.create_track()
+
+                logs.debug(f"Track recreated: {self.path}")

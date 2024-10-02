@@ -79,8 +79,8 @@ async def tracker() -> None:
                     tasks.append(instance.create_track())
                 elif event_type == Change.deleted:
                     tasks.append(instance.remove_track())
-                # elif event_type == Change.modified:
-                #     tasks.append(instance.update_track()) TODO
+                elif event_type == Change.modified:
+                    tasks.append(instance.update_track())
 
         await asyncio.gather(*tasks)
         asyncio.create_task(LibraryScan.perform_all())
