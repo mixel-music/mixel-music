@@ -10,7 +10,7 @@ from PIL import Image
 class ArtworkService:
     def __init__(self, repo: LibraryRepo) -> None:
         self.repo = repo
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = ThreadPoolExecutor(max_workers=20)
 
 
     def convert_hash(self, id: str, size: int) -> Path:

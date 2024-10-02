@@ -2,10 +2,10 @@ import { getArtistItem } from '$lib/requests';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params }) => {
-  const hash: string = params.hash
+  const artistId: string = params.artistId
 
   try {
-    const data = await getArtistItem(fetch, hash);
+    const data = await getArtistItem(fetch, artistId);
 
     return {
       item: data.item!,

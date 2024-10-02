@@ -1,18 +1,18 @@
 <script lang="ts">
   import { getArtwork } from "$lib/tools";
-  export let artworkSrc: string;
+  export let albumId: string;
 </script>
 
 <div
   class="album-wrap"
-  style:background-image="url('{getArtwork(artworkSrc, 500)}')"
+  style:background-image="url('{getArtwork(albumId, 500)}')"
 />
 
 <style>
   .album-wrap {
     position: absolute;
     width: 100%;
-    height: 51dvh;
+    height: 55dvh;
     z-index: -1;
     background-size: cover;
     background-position-y: center;

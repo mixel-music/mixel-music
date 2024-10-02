@@ -28,9 +28,9 @@ export async function getTrackList(fetch: typeof window.fetch, page: number, ite
   }
 }
 
-export async function getTrackItem(fetch: typeof window.fetch, hash: string) {
+export async function getTrackItem(fetch: typeof window.fetch, trackId: string) {
   try {
-    const getTrackItem = await fetch(`http://localhost:2843/api/tracks/${hash}`);
+    const getTrackItem = await fetch(`http://localhost:2843/api/tracks/${trackId}`);
 
     if (!getTrackItem.ok) {
       throw new Error(getTrackItem.statusText);
@@ -68,9 +68,9 @@ export async function getAlbumList(fetch: typeof window.fetch, page: number, ite
   }
 }
 
-export async function getAlbumItem(fetch: typeof window.fetch, hash: string) {
+export async function getAlbumItem(fetch: typeof window.fetch, albumId: string) {
   try {
-    const getAlbumItem = await fetch(`http://localhost:2843/api/albums/${hash}`);
+    const getAlbumItem = await fetch(`http://localhost:2843/api/albums/${albumId}`);
 
     if (!getAlbumItem.ok) {
       throw new Error(getAlbumItem.statusText);
@@ -108,9 +108,9 @@ export async function getArtistList(fetch: typeof window.fetch, page: number, it
   }
 }
 
-export async function getArtistItem(fetch: typeof window.fetch, hash: string) {
+export async function getArtistItem(fetch: typeof window.fetch, artistId: string) {
   try {
-    const getArtistItem = await fetch(`http://localhost:2843/api/artists/${hash}`);
+    const getArtistItem = await fetch(`http://localhost:2843/api/artists/${artistId}`);
 
     if (!getArtistItem.ok) {
       throw new Error(getArtistItem.statusText);

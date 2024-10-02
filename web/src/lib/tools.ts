@@ -1,18 +1,15 @@
-export function getArtwork(hash: string, size: number): string {
-  let artwork: string =
-    `http://localhost:2843/api/artworks/${hash}?size=${size.toString()}`;
+import { goto } from "$app/navigation";
 
-  return artwork;
+export const getArtwork = (id: string, size: number): string => {
+  return `http://localhost:2843/api/artworks/${id}?size=${size.toString()}`;
 }
 
-export function getAlbumLink(hash: string): string {
-  let album: string = `/albums/${hash}`;
-  return album;
+export const getAlbumLink = (albumId: string): string => {
+  return `/albums/${albumId}`;
 }
 
-export function getArtistLink(hash: string): string {
-  let artist: string = `/artists/${hash}`;
-  return artist;
+export const getArtistLink = (artistId: string): string => {
+  return `/artists/${artistId}`;
 }
 
 export function getNextPage(page: number = 1, item: number = 40, total: number = 0): string {
