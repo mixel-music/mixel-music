@@ -72,7 +72,7 @@ async def custom_swagger_docs() -> HTMLResponse:
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon() -> FileResponse:
-    return FileResponse(get_path('app', 'favicon.ico'))
+    return FileResponse(get_path('assets', 'favicon.ico'))
 
 app.include_router(albums.router)
 app.include_router(artists.router)

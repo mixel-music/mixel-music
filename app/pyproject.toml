@@ -1,7 +1,6 @@
 [tool.poetry]
 name = "mixel-music"
 version = "0.14.0"
-readme = "../README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
