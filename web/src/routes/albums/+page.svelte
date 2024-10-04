@@ -1,22 +1,44 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import type { AlbumListResponse } from '$lib/interface';
   import {
+    removeLinkParams,
+    getPaginatedList,
     getAlbumLink,
     getArtistLink,
-    getNextPage,
-    getPrevPage,
   } from '$lib/tools';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
   import Button from '$lib/components/elements/Button.svelte';
-  import { _ } from 'svelte-i18n'
+  import { _ } from 'svelte-i18n';
 
   export let data: PageData;
+  let albumList: AlbumListResponse = data.list;
+  let currentPage = data.page;
+  
+  $: emptySlots = albumList?.list.length < 8 ? 8 - albumList.list.length : 0;
 
-  let emptySlots = 0;
-  if (data.list?.list && data.list.list.length < 8) {
-    emptySlots = 8 - data.list.list.length;
+  async function changePage(direction: 'next' | 'prev') {
+    const itemsPerPage = 48;
+
+    const { newPage, response } = await getPaginatedList(
+      fetch,
+      direction,
+      'album',
+      currentPage,
+      itemsPerPage,
+      data.list.total,
+    );
+
+    currentPage = newPage;
+    if (response && response.list) {
+      albumList = response.list;
+    }
+
+    removeLinkParams(
+      { page: currentPage.toString(), item: itemsPerPage.toString() }
+    );
   }
 </script>
 
@@ -26,9 +48,9 @@
 
 <PageTitle title={$_(data.title)} />
 
-{#if data.list}
+{#if albumList.list}
   <GridWrap>
-    {#each data.list.list as album (album.album_id)}
+    {#each albumList.list as album (album.album_id)}
       <GridItem
         href={getAlbumLink(album.album_id)}
         src={album.album_id}
@@ -59,18 +81,14 @@
         button='round'
         preload='hover'
         iconName='iconoir:nav-arrow-left'
-        href={getPrevPage(data.page, data.item)}
+        on:click={() => changePage('prev')}
       />
       
       <Button
         button='round'
         preload='hover'
         iconName='iconoir:nav-arrow-right'
-        href={getNextPage(
-          data.page,
-          data.item,
-          data.list.total
-        )}
+        on:click={() => changePage('next')}
       />
     </div>
   {/if}

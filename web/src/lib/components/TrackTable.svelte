@@ -12,7 +12,7 @@
   import TableBodyItem from "./elements/TableBodyItem.svelte";
   import TableMenu from "./elements/TableMenu.svelte";
   import PlayerService from "$lib/stores/stores";
-  import { _ } from 'svelte-i18n'
+  import { _ } from 'svelte-i18n';
 
   export let list: TrackList[];
 </script>

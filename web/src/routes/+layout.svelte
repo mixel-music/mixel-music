@@ -3,12 +3,11 @@
   import { onDestroy } from 'svelte';
   import { page } from '$app/stores';
   import { afterNavigate } from '$app/navigation';
-
+  import AlbumWrap from '$lib/components/AlbumWrap.svelte';
   import Sidebar from "$lib/components/layouts/sidebar/Sidebar.svelte";
   import Navbar from '$lib/components/layouts/navbar/Navbar.svelte';
   import Player from "$lib/components/layouts/player/Player.svelte";
   import PlayerQueue from "$lib/components/layouts/player/PlayerQueue.svelte";
-  import AlbumWrap from '$lib/components/AlbumWrap.svelte';
   import PlayerService from '$lib/stores/stores';
 
   $: albumId = $page.params.albumId;
@@ -16,11 +15,11 @@
 
   afterNavigate(() => {
     const currentPathname = $page.url.pathname;
-
+    
     if (previousPathname == null || currentPathname !== previousPathname) {
       document.getElementById("contents")?.scrollIntoView({
         block: "start",
-        inline: "nearest"
+        inline: "nearest",
       });
     }
 

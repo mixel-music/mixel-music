@@ -17,7 +17,7 @@ with open('pyproject.toml') as f:
     VERSION = pyproject['tool']['poetry']['version']
 
 @asynccontextmanager
-async def init(app: FastAPI):
+async def lifespan(app: FastAPI):
     create_dir(Config)
     log = log_file_handler()
     await connect_database()
@@ -42,17 +42,18 @@ app = FastAPI(
     title='mixel-music',
     debug=Config.DEBUG,
     version=VERSION,
-    lifespan=init,
+    lifespan=lifespan,
     docs_url=None,
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+if Config.DEBUG:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.openapi.docs import get_swagger_ui_html

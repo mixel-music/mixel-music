@@ -1,13 +1,19 @@
 import type {
-  AlbumItem,
-  TrackItem,
-  ArtistItem,
   AlbumListResponse,
   TrackListResponse,
-  ArtistListResponse
+  ArtistListResponse,
+  TrackItemResponse,
+  AlbumItemResponse,
+  ArtistItemResponse
 } from "./interface";
 
-export async function getTrackList(fetch: typeof window.fetch, page: number, item: number) {
+
+export async function getTrackList(
+  fetch: typeof window.fetch,
+  page: number,
+  item: number,
+): Promise<{list: TrackListResponse;}> {
+
   try {
     const getTrackList = await fetch(`http://localhost:2843/api/tracks?page=${page}&item=${item}`);
 
@@ -21,14 +27,20 @@ export async function getTrackList(fetch: typeof window.fetch, page: number, ite
       list,
     };
   }
+  
   catch (error) {
     return {
       list: null,
     }
   }
-}
+};
 
-export async function getTrackItem(fetch: typeof window.fetch, trackId: string) {
+
+export async function getTrackItem(
+  fetch: typeof window.fetch,
+  trackId: string,
+): Promise<{item: TrackItemResponse;}> {
+  
   try {
     const getTrackItem = await fetch(`http://localhost:2843/api/tracks/${trackId}`);
 
@@ -36,18 +48,25 @@ export async function getTrackItem(fetch: typeof window.fetch, trackId: string) 
       throw new Error(getTrackItem.statusText);
     }
 
-    const item: TrackItem = await getTrackItem.json();
+    const item: TrackItemResponse = await getTrackItem.json();
 
     return {
       item,
     };
   }
+
   catch (error) {
     throw error;
   }
-}
+};
 
-export async function getAlbumList(fetch: typeof window.fetch, page: number, item: number) {
+
+export async function getAlbumList(
+  fetch: typeof window.fetch,
+  page: number,
+  item: number,
+): Promise<{list: AlbumListResponse;}> {
+
   try {
     const getAlbumList = await fetch(`http://localhost:2843/api/albums?page=${page}&item=${item}`);
 
@@ -61,14 +80,20 @@ export async function getAlbumList(fetch: typeof window.fetch, page: number, ite
       list,
     };
   }
+
   catch (error) {
     return {
       list: null,
     }
   }
-}
+};
 
-export async function getAlbumItem(fetch: typeof window.fetch, albumId: string) {
+
+export async function getAlbumItem(
+  fetch: typeof window.fetch,
+  albumId: string,
+): Promise<{item: AlbumItemResponse;}> {
+
   try {
     const getAlbumItem = await fetch(`http://localhost:2843/api/albums/${albumId}`);
 
@@ -76,18 +101,25 @@ export async function getAlbumItem(fetch: typeof window.fetch, albumId: string) 
       throw new Error(getAlbumItem.statusText);
     }
 
-    const item: AlbumItem = await getAlbumItem.json();
+    const item: AlbumItemResponse = await getAlbumItem.json();
 
     return {
       item,
     };
   }
+
   catch (error) {
     throw error;
   }
-}
+};
 
-export async function getArtistList(fetch: typeof window.fetch, page: number, item: number) {
+
+export async function getArtistList(
+  fetch: typeof window.fetch,
+  page: number,
+  item: number,
+): Promise<{list: ArtistListResponse;}> {
+
   try {
     const getArtistList = await fetch(`http://localhost:2843/api/artists?page=${page}&item=${item}`);
 
@@ -101,14 +133,20 @@ export async function getArtistList(fetch: typeof window.fetch, page: number, it
       list,
     };
   }
+
   catch (error) {
     return {
       list: null,
     }
   }
-}
+};
 
-export async function getArtistItem(fetch: typeof window.fetch, artistId: string) {
+
+export async function getArtistItem(
+  fetch: typeof window.fetch,
+  artistId: string,
+): Promise<{item: ArtistItemResponse;}> {
+
   try {
     const getArtistItem = await fetch(`http://localhost:2843/api/artists/${artistId}`);
 
@@ -116,13 +154,14 @@ export async function getArtistItem(fetch: typeof window.fetch, artistId: string
       throw new Error(getArtistItem.statusText);
     }
 
-    const item: ArtistItem = await getArtistItem.json();
+    const item: ArtistItemResponse = await getArtistItem.json();
 
     return {
       item,
     };
   }
+
   catch (error) {
     throw error;
   }
-}
+};
