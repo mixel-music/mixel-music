@@ -10,12 +10,12 @@ router = APIRouter(prefix='/api')
     response_model=ArtistListResponse
 )
 async def api_artist_list(
-    page: int = Query(1, ge=1),
-    item: int = Query(40, ge=1),
+    start: int = Query(1, ge=1),
+    end: int = Query(40, ge=1),
     service: get_service = Depends()
 ) -> ArtistListResponse:
 
-    artist_list = await service.get_artist_list(page, item)
+    artist_list = await service.get_artist_list(start, end)
     return artist_list
 
 

@@ -8,11 +8,11 @@ from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime, safe_list
 
 artist_patterns = {
-    'bracket': re.compile(r'\s*\([^)]*[:;,][^)]*\)'),
     'details': re.compile(r'\s*feat\.?\s.*'),
-    'year_month_day': re.compile(r'^(\d{4})[-., ]?(\d{1,2})[-., ]?(\d{1,2})$'),  # YYYY-MM-DD, YYYY.MM.DD, YYYYMMDD, etc.
-    'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),                      # YYYY-MM, YYYY.MM, YYYYMM, etc.
-    'year': re.compile(r'^(\d{4})$')                                             # YYYY only
+    'bracket': re.compile(r'\s*\([^)]*[:;,][^)]*\)'),
+    'year_month_day': re.compile(r'^(\d{4})[-., ]?(\d{1,2})[-., ]?(\d{1,2})$'),
+    'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),
+    'year': re.compile(r'^(\d{4})$'),
 }
 
 def convert_date(date_input) -> tuple[str, int]:

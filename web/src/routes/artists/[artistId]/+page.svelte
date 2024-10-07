@@ -7,13 +7,8 @@
   import { _ } from 'svelte-i18n'
 
   export let data: PageData;
-
-  let emptySlots = 0;
-  $: { 
-    if (data.item?.albums && data.item.albums.length < 8) {
-      emptySlots = 8 - data.item.albums.length;
-    }
-  }
+  let startNumber: number = 1;
+  let endNumber: number = 2;
 </script>
 
 <svelte:head>
@@ -23,29 +18,27 @@
 <PageTitle title={data.item.artist} />
 
 {#if data.item}
-  <GridWrap>
-    {#each data.item.albums as album}
-      <GridItem
-        href={getAlbumLink(album.album_id)}
-        src={album.album_id}
-        alt={album.album}
-        lazyload
-      >
-        <div class="info-card">
-          <a href='{getAlbumLink(album.album_id)}'>
-            <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
-          </a>
-          <span class="text-sub">
-            {album.year != 0 ? $_('info.year',{values:{year:album.year}}) : $_('unknown_year')}
-          </span>
-        </div>
-      </GridItem>
-    {/each}
-
-    {#if emptySlots > 0}
-      {#each Array(emptySlots) as _}
-        <GridItem Empty />
-      {/each}
-    {/if}
+  <GridWrap
+    items={data.item.albums}
+    bind:startNumber={startNumber}
+    bind:endNumber={endNumber}
+  >
+    <GridItem
+      let:item
+      slot="GridItem"
+      href={getAlbumLink(item.album_id)}
+      src={item.album_id}
+      alt={item.album}
+      lazyload
+    >
+      <div class="info-card">
+        <a href='{getAlbumLink(item.album_id)}'>
+          <span class="text">{item.album ? item.album : $_('unknown_album')}</span>
+        </a>
+        <span class="text-sub">
+          {item.year != 0 ? $_('info.year',{values: {year: item.year}}) : $_('unknown_year')}
+        </span>
+      </div>
+    </GridItem>
   </GridWrap>
 {/if}

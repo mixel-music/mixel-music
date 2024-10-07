@@ -14,29 +14,30 @@
 
   export let data: PageData;
   let artistList: ArtistListResponse = data.list;
-  let currentPage = data.page;
+  let startNumber: number = data.start;
+  let endNumber: number = data.end
   
-  $: emptySlots = artistList?.list.length < 8 ? 8 - artistList.list.length : 0;
-
   async function changePage(direction: 'next' | 'prev') {
-    const itemsPerPage = 48;
-
-    const { newPage, response } = await getPaginatedList(
+    const { newStart, newEnd, response } = await getPaginatedList(
       fetch,
       direction,
       'artist',
-      currentPage,
-      itemsPerPage,
       data.list.total,
+      startNumber,
+      40,
     );
 
-    currentPage = newPage;
-    if (response && response.list) {
-      artistList = response.list;
+    startNumber = newStart;
+    endNumber = newEnd;
+    console.debug(startNumber, endNumber);
+
+    if (response) {
+      artistList = { list: [...response.list.list], total: response.list.total };
+      console.debug(artistList);
     }
 
     removeLinkParams(
-      { page: currentPage.toString(), item: itemsPerPage.toString() }
+      { start: startNumber.toString(), end: (endNumber).toString() }
     );
   }
 </script>
@@ -47,53 +48,48 @@
 
 <PageTitle title={$_(data.title)} />
 
-{#if artistList.list}
-  <GridWrap>
-    {#each artistList.list as artist}
-      <GridItem
-        href='{getArtistLink(artist.artist_id)}'
-        src=''
-        alt={artist.artist}
-        lazyload
-        round
-      >
-        <div class="info-card">
-          <a href='{getArtistLink(artist.artist_id)}'>
-            <span class="text">{artist.artist}</span>
-          </a>
-        </div>
-      </GridItem>
-    {/each}
-
-    {#if emptySlots > 0}
-      {#each Array(emptySlots) as _}
-        <GridItem Empty />
-      {/each}
-    {/if}
-  </GridWrap>
-
-  {#if data.list.total > data.item}
-    <div class='bottom-ctl'>
-      <Button
-        button='round'
-        preload='hover'
-        iconName='iconoir:nav-arrow-left'
-        on:click={() => changePage('prev')}
-      />
-      
-      <Button
-        button='round'
-        preload='hover'
-        iconName='iconoir:nav-arrow-right'
-        on:click={() => changePage('next')}
-      />
+<GridWrap
+  items={artistList.list}
+  bind:startNumber={startNumber}
+  bind:endNumber={endNumber}
+>
+  <GridItem
+    let:item
+    slot="GridItem"
+    href={getArtistLink(item.artist_id)}
+    alt={item.artist}
+    lazyload
+    round
+  >
+    <div class="info-card">
+      <a href='{getArtistLink(item.artist_id)}'>
+        <span class="text">{item.artist}</span>
+      </a>
     </div>
-  {/if}
-{/if}
+  </GridItem>
+</GridWrap>
+
+<div class='bottom-ctl'>
+  <Button
+    button='round'
+    preload='hover'
+    iconName='iconoir:nav-arrow-left'
+    on:click={() => changePage('prev')}
+  />
+  
+  <Button
+    button='round'
+    preload='hover'
+    iconName='iconoir:nav-arrow-right'
+    disabled={data.end + (data.end - data.start) >= data.list.total}
+    on:click={() => changePage('next')}
+  />
+</div>
 
 <style>
   .info-card {
-    text-align: center;
+    display: flex;
+    justify-content: center;
   }
 
   a {

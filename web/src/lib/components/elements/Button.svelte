@@ -5,6 +5,7 @@
   export let href: string | undefined = undefined;
   export let title: string | undefined = undefined;
   export let button: string = '';
+  export let state: string = 'normal';
   export let iconName: string = '';
   export let iconSize: string = '';
   export let width: string = '42px';
@@ -17,6 +18,7 @@
   class:round={button == 'round'}
   class:square={button == 'square'}
   class:custom={button == 'custom'}
+  class:acrylic={state == 'acrylic'}
   data-sveltekit-preload-data={preload}
   type={href ? undefined : type}
   this={href ? 'a' : 'button'}
@@ -84,6 +86,12 @@
     text-decoration: none;
     font-size: 24px;
     border: none;
+  }
+
+  .acrylic {
+    box-shadow: 0 0 0 1px var(--dark-border) inset;
+    background-color: var(--dark-queue);
+    backdrop-filter: blur(64px);
   }
 
   a:hover, button:hover {

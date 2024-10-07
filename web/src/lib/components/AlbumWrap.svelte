@@ -12,7 +12,7 @@
   .album-wrap {
     position: absolute;
     width: 100%;
-    height: 55dvh;
+    height: 50dvh;
     z-index: -1;
     background-size: cover;
     background-position-y: center;

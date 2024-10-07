@@ -1,9 +1,42 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import GridItem from "./GridItem.svelte";
 
+  export let items = [];
+  export let startNumber = 0;
+  export let endNumber = 40;
+  let gridContainer;
+  let itemsPerPage;
+
+  $: startNumber, endNumber;
+  $: displayedItems = items.slice(0, itemsPerPage);
+  $: emptySlots = items.length < 8 ? 8 - items.length : 0;
+
+  function updateGridColumns() {
+    if (gridContainer) {
+      const computedStyle = window.getComputedStyle(gridContainer);
+      const columns = computedStyle.getPropertyValue('grid-template-columns').split(' ').length;
+      itemsPerPage = columns * 5;
+    }
+  }
+
+  onMount(() => {
+    updateGridColumns();
+    window.addEventListener('resize', updateGridColumns);
+    return () => window.removeEventListener('resize', updateGridColumns);
+  });
 </script>
 
-<div>
-  <slot />
+<div bind:this={gridContainer}>
+  {#each displayedItems as item}
+    <slot name="GridItem" {item}></slot>
+  {/each}
+
+  {#if emptySlots > 0}
+    {#each Array(emptySlots) as _}
+      <GridItem Empty />
+    {/each}
+  {/if}
 </div>
 
 <style>
@@ -22,7 +55,13 @@
 
   @media screen and (max-width: 1560px) {
     div {
-      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      grid-template-columns: repeat(5, minmax(180px, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 1360px) {
+    div {
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
     }
   }
 
@@ -32,21 +71,9 @@
     }
   }
 
-  @media screen and (max-width: 960px) {
+  @media screen and (max-width: 860px) {
     div {
       grid-template-columns: repeat(2, minmax(160px, 1fr));
     }
   }
-
-  /* @media screen and (max-width: 1560px) {
-    div {
-      grid-template-columns: repeat(5, minmax(180px, 1fr));
-    }
-  } */
-
-  /* @media screen and (max-width: 1360px) {
-    div {
-      grid-template-columns: repeat(4, minmax(180px, 1fr));
-    }
-  } */
 </style>

@@ -5,6 +5,7 @@
   export let height: string | number | undefined = undefined;
   export let FullCover: boolean = false;
   export let WrapCover: boolean = false;
+  export let lazyload: boolean = true;
   
   $: showArtwork = true;
 </script>
@@ -13,7 +14,7 @@
   {#if showArtwork}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <img
-      loading="lazy"
+      loading={lazyload ? "lazy" : "eager"}
       {src}
       {alt}
       {width}

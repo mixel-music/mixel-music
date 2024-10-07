@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Query, Depends, HTTPException, status
+from fastapi import APIRouter, Query, Depends
 from models.track import TrackListResponse, TrackItemResponse
-from sqlalchemy.exc import NoResultFound
 from core.depends import get_service
 
 router = APIRouter(prefix='/api')
@@ -11,12 +10,12 @@ router = APIRouter(prefix='/api')
     response_model=TrackListResponse
 )
 async def api_track_list(
-    page: int = Query(1, ge=1),
-    item: int = Query(40, ge=1),
+    start: int = Query(1, ge=1),
+    end: int = Query(40, ge=1),
     service: get_service = Depends()
 ) -> TrackListResponse:
     
-    track_list = await service.get_track_list(page, item)
+    track_list = await service.get_track_list(start, end)
     return track_list
 
 

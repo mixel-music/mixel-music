@@ -4,7 +4,7 @@
   import Button from "./elements/Button.svelte";
   import { _ } from 'svelte-i18n'
 
-  export let tracks: TrackList[];
+  export let trackItems: TrackList[];
 </script>
 
 <div class="controls-bar">
@@ -17,7 +17,7 @@
       iconName='iconoir:play-solid'
       on:click={() =>
         PlayerService.addTrack(
-          tracks.map(track => ({
+          trackItems.map(track => ({
             album: track.album,
             album_id: track.album_id,
             artist: track.artist,
@@ -43,31 +43,15 @@
     </Button>
   </div>
   <div>
-    <Button
-      button='round'
-      width="50px"
-      title={$_('controls.favorite')}
-      iconName='iconoir:heart'
-      iconSize='21'
-    />
-    
-    <Button
-      button='square'
-      width='150px'
-      height='50px'
-      title={$_('controls.album_info')}
-      iconName='iconoir:info-circle-solid'
-    >
-      {$_('controls.album_info')}
-    </Button>
+
   </div>
 </div>
 
 <style>
   .controls-bar {
     display: flex;
-    margin-bottom: var(--space-l);
     justify-content: space-between;
+    align-items: flex-end;
   }
 
   .controls-bar > div {

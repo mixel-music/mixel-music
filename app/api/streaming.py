@@ -1,6 +1,4 @@
-from fastapi import (
-    APIRouter, Header, status, Response, HTTPException, Depends
-)
+from fastapi import APIRouter, Header, status, Response, Depends
 from core.depends import get_service
 
 router = APIRouter(prefix='/api')

@@ -15,29 +15,30 @@
 
   export let data: PageData;
   let albumList: AlbumListResponse = data.list;
-  let currentPage = data.page;
-  
-  $: emptySlots = albumList?.list.length < 8 ? 8 - albumList.list.length : 0;
+  let startNumber: number = data.start;
+  let endNumber: number = data.end
 
   async function changePage(direction: 'next' | 'prev') {
-    const itemsPerPage = 48;
-
-    const { newPage, response } = await getPaginatedList(
+    const { newStart, newEnd, response } = await getPaginatedList(
       fetch,
       direction,
       'album',
-      currentPage,
-      itemsPerPage,
       data.list.total,
+      startNumber,
+      40,
     );
 
-    currentPage = newPage;
-    if (response && response.list) {
-      albumList = response.list;
+    startNumber = newStart;
+    endNumber = newEnd;
+    console.debug(startNumber, endNumber);
+
+    if (response) {
+      albumList = { list: [...response.list.list], total: response.list.total };
+      console.debug(albumList);
     }
 
     removeLinkParams(
-      { page: currentPage.toString(), item: itemsPerPage.toString() }
+      { start: startNumber.toString(), end: (endNumber).toString() }
     );
   }
 </script>
@@ -48,48 +49,43 @@
 
 <PageTitle title={$_(data.title)} />
 
-{#if albumList.list}
-  <GridWrap>
-    {#each albumList.list as album (album.album_id)}
-      <GridItem
-        href={getAlbumLink(album.album_id)}
-        src={album.album_id}
-        alt={album.album ? album.album : $_('unknown_album')}
-        lazyload
-      >
-        <div class="info-card">
-          <a href='{getAlbumLink(album.album_id)}'>
-            <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
-          </a>
-          <a href='{getArtistLink(album.albumartist_id)}'>
-            <span class="text-sub">{album.albumartist}</span>
-          </a>
-        </div>
-      </GridItem>
-    {/each}
-
-    {#if emptySlots > 0}
-      {#each Array(emptySlots) as _}
-        <GridItem Empty />
-      {/each}
-    {/if}
-  </GridWrap>
-
-  {#if data.list.total > data.item}
-    <div class='bottom-ctl'>
-      <Button
-        button='round'
-        preload='hover'
-        iconName='iconoir:nav-arrow-left'
-        on:click={() => changePage('prev')}
-      />
-      
-      <Button
-        button='round'
-        preload='hover'
-        iconName='iconoir:nav-arrow-right'
-        on:click={() => changePage('next')}
-      />
+<GridWrap
+  items={albumList.list}
+  bind:startNumber={startNumber}
+  bind:endNumber={endNumber}
+>
+  <GridItem
+    let:item
+    slot="GridItem"
+    href={getAlbumLink(item.album_id)}
+    src={item.album_id}
+    alt={item.album ? item.album : $_('unknown_album')}
+    lazyload
+  >
+    <div class="info-card">
+      <a href={getAlbumLink(item.album_id)}>
+        <span class="text">{item.album ? item.album : $_('unknown_album')}</span>
+      </a>
+      <a href={getArtistLink(item.albumartist_id)}>
+        <span class="text-sub">{item.albumartist}</span>
+      </a>
     </div>
-  {/if}
-{/if}
+  </GridItem>
+</GridWrap>
+
+<div class='bottom-ctl'>
+  <Button
+    button='round'
+    preload='hover'
+    iconName='iconoir:nav-arrow-left'
+    on:click={() => changePage('prev')}
+  />
+  
+  <Button
+    button='round'
+    preload='hover'
+    iconName='iconoir:nav-arrow-right'
+    disabled={data.end + (data.end - data.start) >= data.list.total}
+    on:click={() => changePage('next')}
+  />
+</div>

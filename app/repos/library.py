@@ -5,6 +5,7 @@ from models import *
 from models.album import AlbumItem, AlbumItemResponse, AlbumList
 from models.artist import ArtistItem, ArtistItemResponse, ArtistList
 from models.track import TrackItem, TrackItemResponse, TrackList
+from typing import Any, Dict, List, Tuple
 
 
 class LibraryRepo:
@@ -12,8 +13,12 @@ class LibraryRepo:
         self.conn = conn
 
 
-    async def get_track_list(self, page: int, item: int) -> TrackList:
-        track_list, total = [], 0
+    async def get_track_list(
+        self,
+        start: int,
+        end: int
+    ) -> Tuple[List[Dict[str, Any]], int]:
+        
         db_query = await self.conn.execute(
             select(
                 Track.album,
@@ -25,8 +30,8 @@ class LibraryRepo:
                 Track.track_id,
             )
             .order_by(Track.title.asc())
-            .offset(page)
-            .limit(item)
+            .offset(start - 1)
+            .limit(end - (start - 1))
         )
         track_list = [dict(row) for row in db_query.mappings().all()]
 
@@ -37,12 +42,15 @@ class LibraryRepo:
         return track_list, total
     
 
-    async def get_track_info(self, track_id: str) -> TrackItemResponse:
+    async def get_track_info(
+        self,
+        track_id: str
+    ) -> Dict[str, Any]:
+        
         track_info = {}
         db_query = await self.conn.execute(
             select(Track.__table__).where(Track.track_id == track_id)
         )
-        
         try:
             track_info = dict(db_query.mappings().first())
             return track_info
@@ -50,8 +58,12 @@ class LibraryRepo:
             raise NoResultFound
 
 
-    async def get_album_list(self, page: int, item: int) -> AlbumList:
-        album_list, total = [], 0
+    async def get_album_list(
+        self,
+        start: int,
+        end: int
+    ) -> Tuple[List[Dict[str, Any]], int]:
+        
         album_query = await self.conn.execute(
             select(
                 Album.album,
@@ -67,8 +79,8 @@ class LibraryRepo:
                 )
             )
             .order_by(Album.album.asc())
-            .offset(page)
-            .limit(item)
+            .offset(start - 1)
+            .limit(end - (start - 1))
         )
         album_list = [dict(row) for row in album_query.mappings().all()]
 
@@ -79,7 +91,11 @@ class LibraryRepo:
         return album_list, total
     
 
-    async def get_album_info(self, album_id: str) -> AlbumItemResponse:
+    async def get_album_info(
+        self,
+        album_id: str,
+    ) -> Dict[str, List[Dict[str, Any] | None] | Any]:
+        
         album_info = {}
         album_query = await self.conn.execute(
             select(
@@ -118,10 +134,17 @@ class LibraryRepo:
         return album_info
 
 
-    async def get_artist_list(self, page: int, item: int) -> ArtistList:
-        artist_list, total = [], 0
+    async def get_artist_list(
+        self,
+        start: int,
+        end: int,
+    ) -> Tuple[List[Dict[str, Any]], int]:
+        
         db_query = await self.conn.execute(
-            select(Artist.__table__).order_by(Artist.artist.asc()).offset(page).limit(item)
+            select(Artist.__table__)
+            .order_by(Artist.artist.asc())
+            .offset(start - 1)
+            .limit(end - (start - 1))
         )
         artist_list = [dict(row) for row in db_query.mappings().all()]
 
@@ -133,7 +156,11 @@ class LibraryRepo:
         return artist_list, total
 
 
-    async def get_artist_info(self, artist_id: str) -> ArtistItemResponse:
+    async def get_artist_info(
+        self,
+        artist_id: str
+    ) -> Dict[str, List[Dict[str, Any]] | Any]:
+        
         artist_info = {}
         track_query = await self.conn.execute(
             select(Track.album_id)

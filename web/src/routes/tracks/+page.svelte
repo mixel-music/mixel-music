@@ -13,26 +13,30 @@
 
   export let data: PageData;
   let trackList: TrackListResponse = data.list;
-  let currentPage = data.page;
+  let startNumber: number = data.start;
+  let endNumber: number = data.end
 
   async function changePage(direction: 'next' | 'prev') {
-    const itemsPerPage = 48;
-    const { newPage, response } = await getPaginatedList(
+    const { newStart, newEnd, response } = await getPaginatedList(
       fetch,
       direction,
       'track',
-      currentPage,
-      itemsPerPage,
       data.list.total,
+      startNumber,
+      40,
     );
 
-    currentPage = newPage;
-    if (response && response.list) {
-      trackList = response.list;
+    startNumber = newStart;
+    endNumber = newEnd;
+    console.debug(startNumber, endNumber);
+
+    if (response) {
+      trackList = { list: [...response.list.list], total: response.list.total };
+      console.debug(trackList);
     }
 
     removeLinkParams(
-      { page: currentPage.toString(), item: itemsPerPage.toString() }
+      { start: startNumber.toString(), end: (endNumber).toString() }
     );
   }
 </script>
@@ -44,24 +48,26 @@
 <PageTitle title={$_(data.title)} />
 
 {#if data.list}
-  <ControlsBar tracks={trackList.list} />
+  <div style="margin-bottom: var(--space-s);">
+    <ControlsBar trackItems={trackList.list} />
+  </div>
+
   <TrackTable list={trackList.list} />
 
-  {#if data.list.total > data.item}
-    <div class='bottom-ctl'>
-      <Button
-        button='round'
-        preload='hover'
-        iconName='iconoir:nav-arrow-left'
-        on:click={() => changePage('prev')}
-      />
-      
-      <Button
-        button='round'
-        preload='hover'
-        iconName='iconoir:nav-arrow-right'
-        on:click={() => changePage('next')}
-      />
-    </div>
-  {/if}
+  <div class='bottom-ctl'>
+    <Button
+      button='round'
+      preload='hover'
+      iconName='iconoir:nav-arrow-left'
+      on:click={() => changePage('prev')}
+    />
+    
+    <Button
+      button='round'
+      preload='hover'
+      iconName='iconoir:nav-arrow-right'
+      disabled={data.end + (data.end - data.start) >= data.list.total}
+      on:click={() => changePage('next')}
+    />
+  </div>
 {/if}

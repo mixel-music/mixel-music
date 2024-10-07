@@ -1,5 +1,7 @@
 <script lang="ts">
+  import type { TrackList } from "$lib/interface";
   import ArtworkImage from "./elements/ArtworkImage.svelte";
+  import ControlsBar from "./ControlsBar.svelte";
   import { 
     getArtistLink,
     getArtwork,
@@ -7,21 +9,21 @@
     convertFileSize,
   } from "$lib/tools";
   import { _ } from "svelte-i18n";
-
   export let album: string;
-  export let album_id: string;
-  export let albumartist: string;
-  export let albumartist_id: string;
+  export let albumId: string;
+  export let albumArtist: string;
+  export let albumArtistId: string;
   export let comment: string = '';
-  export let duration_total: number;
-  export let filesize_total: number;
-  export let track_total: number;
+  export let durationTotal: number;
+  export let fileSizeTotal: number;
+  export let trackTotal: number;
   export let year: number | string;
+  export let trackItems: TrackList[] | undefined = undefined;
 
-  $: strLength = convertDateTime(duration_total);
-  $: artwork = getArtwork(album_id, 500);
-  $: {year != 0 ? $_('info.year',{values:{year:year}})  : $_('unknown_year') };
-  $: strSize = convertFileSize(filesize_total);
+  $: strLength = convertDateTime(durationTotal);
+  $: strSize = convertFileSize(fileSizeTotal);
+  $: artwork = getArtwork(albumId, 500);
+  $: {year != 0 ? $_('info.year',{values: {year: year}})  : $_('unknown_year') };
 </script>
 
 <div class="album-header">
@@ -32,26 +34,33 @@
     height={256}
     WrapCover
     FullCover
+    lazyload={false}
   />
 
   <div class="album-details">
-    <span class="title">{album ? album : $_('unknown_album')}</span>
-    {#if albumartist}
-      <a href={getArtistLink(albumartist_id)}>
-        <span class="artist">{albumartist}</span>
-      </a>
-    {/if}
-
     <div>
-      <span class="detail">
-        {#if track_total === 1} {$_('info.track',{values:{track_total:track_total}})}
-        {:else} {$_('info.tracks',{values:{track_total:track_total}})} {/if}
+      <span class="title">{album ? album : $_('unknown_album')}</span>
+      {#if albumArtist}
+        <a href={getArtistLink(albumArtistId)}>
+          <span class="artist">{albumArtist}</span>
+        </a>
+      {/if}
 
-        ({strLength}) · {year} · {strSize}
-      </span>
+      <div>
+        <span class="detail">
+          {#if trackTotal === 1} {$_('info.track',{values: {track_total: trackTotal}})}
+          {:else} {$_('info.tracks',{values: {track_total: trackTotal}})} {/if}
 
-      <span class="detail">{comment}</span>
+          ({strLength}) · {year} · {strSize}
+        </span>
+
+        <span class="detail">{comment}</span>
+      </div>
     </div>
+
+    {#if trackItems}
+      <ControlsBar {trackItems} />
+    {/if}
   </div>
 </div>
 
@@ -72,17 +81,22 @@
   .album-details {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     width: 100%;
   }
 
-  .album-details div {
+  .album-details > div {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .album-details > div > div {
     margin-top: var(--space-s);
-    width: fit-content;
   }
 
   .title {
-    font-size: clamp(1rem, 4vw, 2.5rem);
+    font-size: clamp(1rem, 3vw, 2.3rem);
     font-weight: 700;
     text-overflow: ellipsis;
     overflow: hidden;

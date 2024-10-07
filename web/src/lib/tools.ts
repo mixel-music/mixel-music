@@ -14,7 +14,6 @@ export const getArtistLink = (artistId: string): string => {
 
 
 import { getAlbumList, getArtistList, getTrackList } from "./requests";
-import type { AlbumListResponse, ArtistListResponse, TrackListResponse } from "./interface";
 import { replaceState } from "$app/navigation";
 
 type pageDirection = 'next' | 'prev';
@@ -24,34 +23,60 @@ export async function getPaginatedList(
   fetch: typeof window.fetch,
   direction: pageDirection,
   dataType: pageDataTypes,
-  currentPage: number,
-  itemsPerPage: number,
-  totalItems: number,
+  total: number,
+  start: number,
+  count: number,
 ) {
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  let newPage = direction === 'next'
-    ? Math.min(currentPage + 1, totalPages)
-    : Math.max(currentPage - 1, 1);
+  let newStart, newEnd;
   let response;
 
-  switch (dataType) {
-    case 'album':
-      response = await getAlbumList(fetch, newPage, itemsPerPage);
-      break;
-    case 'artist':
-      response = await getArtistList(fetch, newPage, itemsPerPage);
-      break;
-    case 'track':
-      response = await getTrackList(fetch, newPage, itemsPerPage);
-      break;
-      
-    default:
-      throw new Error('Invalid data type');
-  }
+  if (direction === 'next') {
+    newStart = Math.min(start + count, total);
+    newEnd = Math.min(newStart + count, total);
 
-  return { newPage, response };
+    if (newStart >= total - (total % count)) {
+        newStart = total - (total % count) + 1;
+        newEnd = total;
+    }
+
+    switch (dataType) {
+      case 'album':
+        response = await getAlbumList(fetch, newStart, newEnd);
+        break;
+      case 'artist':
+        response = await getArtistList(fetch, newStart, newEnd);
+        break;
+      case 'track':
+        response = await getTrackList(fetch, newStart, newEnd);
+        break;
+      default:
+        throw new Error('Invalid data type');
+    }
+  } else {
+      newStart = Math.max(start - 40, 1);
+      newEnd = newStart + 40;
+
+      if (newStart === 1) {
+          newEnd = Math.min(40, total);
+      }
+
+      switch (dataType) {
+        case 'album':
+          response = await getAlbumList(fetch, newStart, newEnd);
+          break;
+        case 'artist':
+          response = await getArtistList(fetch, newStart, newEnd);
+          break;
+        case 'track':
+          response = await getTrackList(fetch, newStart, newEnd);
+          break;
+        default:
+          throw new Error('Invalid data type');
+      }
+  } 
+
+  return { newStart, newEnd, response };
 };
 
 

@@ -1,10 +1,8 @@
+import aiofiles
+from typing import Any, Dict, List, Tuple
 from fastapi import HTTPException, status
 from sqlalchemy.exc import NoResultFound
-import aiofiles
 from core.logging import *
-from models.album import AlbumItemResponse, AlbumList
-from models.artist import ArtistItemResponse, ArtistList
-from models.track import TrackItemResponse, TrackList
 from repos.library import *
 from tools.path_handler import *
 
@@ -14,49 +12,75 @@ class LibraryService:
         self.repo = repo
 
 
-    async def get_track_list(self, page: int, item: int) -> TrackList:
-        offset = item * (page - 1)
-        track_list, total = await self.repo.get_track_list(offset, item)
+    async def get_track_list(
+        self,
+        start: int,
+        end: int,
+    ) -> Dict[str, List[Dict[str, Any]] | int]:
         
+        track_list, total = await self.repo.get_track_list(start, end)        
         return {'list': track_list, 'total': total}
 
 
-    async def get_track_info(self, track_id: str) -> TrackItemResponse:
+    async def get_track_info(
+        self,
+        track_id: str
+    ) -> Dict[str, Any]:
+        
         try:
             return await self.repo.get_track_info(track_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         
 
-    async def get_album_list(self, page: int, item: int) -> AlbumList:
-        offset = item * (page - 1)
-        album_list, total = await self.repo.get_album_list(offset, item)
-
+    async def get_album_list(
+        self,
+        start: int,
+        end: int,
+    ) -> Dict[str, List[Dict[str, Any]] | int]:
+        
+        album_list, total = await self.repo.get_album_list(start, end)
         return {'list': album_list, 'total': total}
 
 
-    async def get_album_info(self, album_id: str) -> AlbumItemResponse:
+    async def get_album_info(
+        self,
+        album_id: str
+    ) -> Dict[str, List[Dict[str, Any] | None] | Any]:
+        
         try:
             return await self.repo.get_album_info(album_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-    async def get_artist_list(self, page: int, item: int) -> ArtistList:
-        offset = item * (page - 1)
-        artist_list, total = await self.repo.get_artist_list(offset, item)
-
+    async def get_artist_list(
+        self,
+        start: int,
+        end: int,
+    ) -> Dict[str, List[Dict[str, Any]] | int]:
+        
+        artist_list, total = await self.repo.get_artist_list(start, end)
         return {'list': artist_list, 'total': total}
 
 
-    async def get_artist_info(self, artist_id: str) -> ArtistItemResponse:
+    async def get_artist_info(
+        self,
+        artist_id: str
+    ) -> Dict[str, List[Dict[str, Any]] | Any]:
+        
         try:
             return await self.repo.get_artist_info(artist_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
 
-    async def streaming(self, track_id: str, range: str):
+    async def streaming(
+        self,
+        track_id: str,
+        range: str
+    ) -> Tuple[bytes, Dict[str, Any]]:
+        
         try:
             path = await self.repo.get_path_by_track_id(track_id)
             track_info = await self.repo.get_track_info(track_id)

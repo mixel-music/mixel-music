@@ -5,7 +5,7 @@
 </script>
 
 <li>
-  <a data-sveltekit-preload-data="hover" {href}>
+  <a {href}>
     {#if icon}
       <span>
         <Icon {icon} width="24" height="24" />

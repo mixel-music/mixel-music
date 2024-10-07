@@ -10,12 +10,12 @@ import type {
 
 export async function getTrackList(
   fetch: typeof window.fetch,
-  page: number,
-  item: number,
+  start: number,
+  end: number,
 ): Promise<{list: TrackListResponse;}> {
 
   try {
-    const getTrackList = await fetch(`http://localhost:2843/api/tracks?page=${page}&item=${item}`);
+    const getTrackList = await fetch(`http://localhost:2843/api/tracks?start=${start}&end=${end}`);
 
     if (!getTrackList.ok) {
       throw new Error(getTrackList.statusText);
@@ -63,12 +63,12 @@ export async function getTrackItem(
 
 export async function getAlbumList(
   fetch: typeof window.fetch,
-  page: number,
-  item: number,
+  start: number,
+  end: number,
 ): Promise<{list: AlbumListResponse;}> {
 
   try {
-    const getAlbumList = await fetch(`http://localhost:2843/api/albums?page=${page}&item=${item}`);
+    const getAlbumList = await fetch(`http://localhost:2843/api/albums?start=${start}&end=${end}`);
 
     if (!getAlbumList.ok) {
       throw new Error(getAlbumList.statusText);
@@ -116,12 +116,12 @@ export async function getAlbumItem(
 
 export async function getArtistList(
   fetch: typeof window.fetch,
-  page: number,
-  item: number,
+  start: number,
+  end: number,
 ): Promise<{list: ArtistListResponse;}> {
 
   try {
-    const getArtistList = await fetch(`http://localhost:2843/api/artists?page=${page}&item=${item}`);
+    const getArtistList = await fetch(`http://localhost:2843/api/artists?start=${start}&end=${end}`);
 
     if (!getArtistList.ok) {
       throw new Error(getArtistList.statusText);

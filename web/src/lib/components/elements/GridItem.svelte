@@ -15,7 +15,12 @@
   <div class="grid-item">
     {#if src}
       <div class="item-body {round ? 'round' : ''}">
-        <a tabindex="-1" {href} on:click>
+        <a
+          data-sveltekit-preload-data
+          tabindex="-1"
+          on:click
+          {href}
+          >
           {#if showArtwork}
             <img
               loading={lazyload ? 'lazy' : null}
