@@ -18,11 +18,7 @@
 <PageTitle title={data.item.artist} />
 
 {#if data.item}
-  <GridWrap
-    items={data.item.albums}
-    bind:startNumber={startNumber}
-    bind:endNumber={endNumber}
-  >
+  <GridWrap items={data.item.albums}>
     <GridItem
       let:item
       slot="GridItem"

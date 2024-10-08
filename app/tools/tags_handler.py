@@ -1,9 +1,9 @@
 from tinytag import TinyTag
 from datetime import datetime
+from typing import Any
 import re
 
 from core.logging import *
-from models.track import TrackItem
 from tools.path_handler import *
 from tools.convert_value import hash_str, get_mime, safe_list
 
@@ -54,7 +54,7 @@ def convert_artist(data: str) -> str:
         return ''
 
 
-def extract_tags(path: str) -> TrackItem:
+def extract_tags(path: str) -> dict[str, Any]:
     path, real_path = str_path(path), get_path(path)
     
     try:

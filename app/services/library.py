@@ -1,5 +1,5 @@
 import aiofiles
-from typing import Any, Dict, List, Tuple
+from typing import Any
 from fastapi import HTTPException, status
 from sqlalchemy.exc import NoResultFound
 from core.logging import *
@@ -16,7 +16,7 @@ class LibraryService:
         self,
         start: int,
         end: int,
-    ) -> Dict[str, List[Dict[str, Any]] | int]:
+    ) -> dict[str, list[dict[str, Any]] | int]:
         
         track_list, total = await self.repo.get_track_list(start, end)        
         return {'list': track_list, 'total': total}
@@ -25,7 +25,7 @@ class LibraryService:
     async def get_track_info(
         self,
         track_id: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         
         try:
             return await self.repo.get_track_info(track_id)
@@ -37,7 +37,7 @@ class LibraryService:
         self,
         start: int,
         end: int,
-    ) -> Dict[str, List[Dict[str, Any]] | int]:
+    ) -> dict[str, list[dict[str, Any]] | int]:
         
         album_list, total = await self.repo.get_album_list(start, end)
         return {'list': album_list, 'total': total}
@@ -46,7 +46,7 @@ class LibraryService:
     async def get_album_info(
         self,
         album_id: str
-    ) -> Dict[str, List[Dict[str, Any] | None] | Any]:
+    ) -> dict[str, list[dict[str, Any] | None] | Any]:
         
         try:
             return await self.repo.get_album_info(album_id)
@@ -58,7 +58,7 @@ class LibraryService:
         self,
         start: int,
         end: int,
-    ) -> Dict[str, List[Dict[str, Any]] | int]:
+    ) -> dict[str, list[dict[str, Any]] | int]:
         
         artist_list, total = await self.repo.get_artist_list(start, end)
         return {'list': artist_list, 'total': total}
@@ -67,7 +67,7 @@ class LibraryService:
     async def get_artist_info(
         self,
         artist_id: str
-    ) -> Dict[str, List[Dict[str, Any]] | Any]:
+    ) -> dict[str, list[dict[str, Any]] | Any]:
         
         try:
             return await self.repo.get_artist_info(artist_id)
@@ -79,7 +79,7 @@ class LibraryService:
         self,
         track_id: str,
         range: str
-    ) -> Tuple[bytes, Dict[str, Any]]:
+    ) -> tuple[bytes, dict[str, Any]]:
         
         try:
             path = await self.repo.get_path_by_track_id(track_id)

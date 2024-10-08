@@ -1,19 +1,10 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { AlbumListResponse } from '$lib/interface';
   import AlbumHeader from '$lib/components/AlbumHeader.svelte';
   import AlbumTable from '$lib/components/AlbumTable.svelte';
   import { _ } from 'svelte-i18n';
-  import { getAlbumLink, getArtistLink } from '$lib/tools';
-
-  import GridWrap from '$lib/components/elements/GridWrap.svelte';
-  import GridItem from '$lib/components/elements/GridItem.svelte';
-  import PageTitle from '$lib/components/elements/PageTitle.svelte';
 
   export let data: PageData;
-  let albumList: AlbumListResponse = data;
-
-  $: emptySlots = albumList?.list.length < 6 ? 6 - albumList.list.length : 0;
 </script>
 
 <svelte:head>
@@ -43,37 +34,4 @@
   />
   
   <AlbumTable list={data.item} />
-{/if}
-
-{#if albumList.list}
-  {#if albumList.list.length > 1}
-    <PageTitle title="More Albums" size="l" />
-    <GridWrap>
-      {#each albumList.list as album (album.album_id)}
-        {#if album.album_id != data.item.album_id}
-          <GridItem
-            href={getAlbumLink(album.album_id)}
-            src={album.album_id}
-            alt={album.album ? album.album : $_('unknown_album')}
-            lazyload
-          >
-            <div class="info-card">
-              <a href={getAlbumLink(album.album_id)}>
-                <span class="text">{album.album ? album.album : $_('unknown_album')}</span>
-              </a>
-              <a href={getArtistLink(album.albumartist_id)}>
-                <span class="text-sub">{data.item.albumartist}</span>
-              </a>
-            </div>
-          </GridItem>
-        {/if}
-      {/each}
-
-    {#if emptySlots > 0}
-      {#each Array(emptySlots) as _}
-        <GridItem Empty />
-      {/each}
-    {/if}
-  </GridWrap>
-  {/if}
 {/if}

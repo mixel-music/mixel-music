@@ -13,69 +13,47 @@ export const getArtistLink = (artistId: string): string => {
 };
 
 
-import { getAlbumList, getArtistList, getTrackList } from "./requests";
 import { replaceState } from "$app/navigation";
+import { getAlbumList, getArtistList, getTrackList } from "./requests";
 
-type pageDirection = 'next' | 'prev';
-type pageDataTypes = 'album' | 'artist' | 'track';
+type PageDirection = 'next' | 'prev';
+type PageDataTypes = 'album' | 'artist' | 'track';
 
 export async function getPaginatedList(
   fetch: typeof window.fetch,
-  direction: pageDirection,
-  dataType: pageDataTypes,
+  direction: PageDirection,
+  dataType: PageDataTypes,
   total: number,
   start: number,
   count: number,
 ) {
-
-  let newStart, newEnd;
-  let response;
-
-  if (direction === 'next') {
-    newStart = Math.min(start + count, total);
-    newEnd = Math.min(newStart + count, total);
-
-    if (newStart >= total - (total % count)) {
-        newStart = total - (total % count) + 1;
-        newEnd = total;
-    }
-
-    switch (dataType) {
+  const getList = (type: PageDataTypes) => {
+    switch (type) {
       case 'album':
-        response = await getAlbumList(fetch, newStart, newEnd);
-        break;
+        return getAlbumList;
       case 'artist':
-        response = await getArtistList(fetch, newStart, newEnd);
-        break;
+        return getArtistList;
       case 'track':
-        response = await getTrackList(fetch, newStart, newEnd);
-        break;
+        return getTrackList;
       default:
         throw new Error('Invalid data type');
     }
-  } else {
-      newStart = Math.max(start - 40, 1);
-      newEnd = newStart + 40;
+  };
 
-      if (newStart === 1) {
-          newEnd = Math.min(40, total);
-      }
+  const fetchList = getList(dataType);
+  let newStart: number;
+  let newEnd: number;
 
-      switch (dataType) {
-        case 'album':
-          response = await getAlbumList(fetch, newStart, newEnd);
-          break;
-        case 'artist':
-          response = await getArtistList(fetch, newStart, newEnd);
-          break;
-        case 'track':
-          response = await getTrackList(fetch, newStart, newEnd);
-          break;
-        default:
-          throw new Error('Invalid data type');
-      }
-  } 
+  if (direction === 'next') {
+    newStart = Math.min(start + count + 1, total);
+    newEnd = Math.min(newStart + count, total);
+  }
+  else {
+    newStart = Math.max(start - count - 1, 1);
+    newEnd = Math.min(newStart + count, total);
+  }
 
+  const response = await fetchList(fetch, newStart, newEnd);
   return { newStart, newEnd, response };
 };
 

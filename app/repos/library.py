@@ -2,10 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection
 from sqlalchemy import select, func, or_, join
 from core.database import *
 from models import *
-from models.album import AlbumItem, AlbumItemResponse, AlbumList
-from models.artist import ArtistItem, ArtistItemResponse, ArtistList
-from models.track import TrackItem, TrackItemResponse, TrackList
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 
 class LibraryRepo:
@@ -17,7 +14,7 @@ class LibraryRepo:
         self,
         start: int,
         end: int
-    ) -> Tuple[List[Dict[str, Any]], int]:
+    ) -> tuple[list[dict[str, Any]], int]:
         
         db_query = await self.conn.execute(
             select(
@@ -45,7 +42,7 @@ class LibraryRepo:
     async def get_track_info(
         self,
         track_id: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         
         track_info = {}
         db_query = await self.conn.execute(
@@ -62,7 +59,7 @@ class LibraryRepo:
         self,
         start: int,
         end: int
-    ) -> Tuple[List[Dict[str, Any]], int]:
+    ) -> tuple[list[dict[str, Any]], int]:
         
         album_query = await self.conn.execute(
             select(
@@ -94,7 +91,7 @@ class LibraryRepo:
     async def get_album_info(
         self,
         album_id: str,
-    ) -> Dict[str, List[Dict[str, Any] | None] | Any]:
+    ) -> dict[str, list[dict[str, Any] | None] | Any]:
         
         album_info = {}
         album_query = await self.conn.execute(
@@ -130,7 +127,6 @@ class LibraryRepo:
             .order_by(Track.track_number.asc())
         )
         album_info['tracks'] = [dict(row) for row in track_query.mappings().all()]
-
         return album_info
 
 
@@ -138,7 +134,7 @@ class LibraryRepo:
         self,
         start: int,
         end: int,
-    ) -> Tuple[List[Dict[str, Any]], int]:
+    ) -> tuple[list[dict[str, Any]], int]:
         
         db_query = await self.conn.execute(
             select(Artist.__table__)
@@ -152,14 +148,13 @@ class LibraryRepo:
             select(func.count()).select_from(Artist)
         )
         total = total_query.scalar_one()
-
         return artist_list, total
 
 
     async def get_artist_info(
         self,
         artist_id: str
-    ) -> Dict[str, List[Dict[str, Any]] | Any]:
+    ) -> dict[str, list[dict[str, Any]] | Any]:
         
         artist_info = {}
         track_query = await self.conn.execute(
@@ -207,14 +202,14 @@ class LibraryRepo:
         return artist_info
     
 
-    async def get_scan_info(self):
+    async def get_scan_info(self) -> Any:
         result = await self.conn.execute(select(Track.filepath, Track.filesize))
         result = result.all()
 
         return result
     
 
-    async def get_item_path(self, id: str):
+    async def get_item_path(self, id: str) -> dict[Any, Any]:
         result = await self.conn.execute(
             select(Track.filepath)
             .where(
@@ -235,18 +230,19 @@ class LibraryRepo:
         return row if row else ''
 
 
-    async def insert_track(self, track_data: TrackItem) -> None:
-        track = Track(**track_data)
-        self.conn.add(track)
+    async def insert_track(self, track_data: dict[str, Any]) -> None:
+        await self.conn.execute(
+            insert(Track).values(**track_data)
+        )
 
 
-    async def insert_album(self, album_data: AlbumItem) -> None:
+    async def insert_album(self, album_data: dict[str, Any]) -> None:
         await self.conn.execute(
             Insert(Album).values(**album_data).on_conflict_do_nothing()
         )
 
 
-    async def insert_artist(self, artist_data: ArtistItem) -> None:
+    async def insert_artist(self, artist_data: dict[str, Any]) -> None:
         await self.conn.execute(
             Insert(Artist).values(**artist_data).on_conflict_do_nothing()
         )

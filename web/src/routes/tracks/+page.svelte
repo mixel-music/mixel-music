@@ -23,7 +23,7 @@
       'track',
       data.list.total,
       startNumber,
-      40,
+      39,
     );
 
     startNumber = newStart;

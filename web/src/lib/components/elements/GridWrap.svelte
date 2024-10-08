@@ -1,30 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import GridItem from "./GridItem.svelte";
-
   export let items = [];
-  export let startNumber = 0;
-  export let endNumber = 40;
   let gridContainer;
   let itemsPerPage;
 
-  $: startNumber, endNumber;
   $: displayedItems = items.slice(0, itemsPerPage);
   $: emptySlots = items.length < 8 ? 8 - items.length : 0;
-
-  function updateGridColumns() {
-    if (gridContainer) {
-      const computedStyle = window.getComputedStyle(gridContainer);
-      const columns = computedStyle.getPropertyValue('grid-template-columns').split(' ').length;
-      itemsPerPage = columns * 5;
-    }
-  }
-
-  onMount(() => {
-    updateGridColumns();
-    window.addEventListener('resize', updateGridColumns);
-    return () => window.removeEventListener('resize', updateGridColumns);
-  });
 </script>
 
 <div bind:this={gridContainer}>

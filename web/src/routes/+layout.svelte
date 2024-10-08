@@ -34,7 +34,7 @@
 <div id="app">
   <Sidebar />
 
-  <div>
+  <div id="wrap">
     {#if albumId}
       <AlbumWrap {albumId} />
     {/if}
