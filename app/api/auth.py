@@ -5,7 +5,7 @@ from services.auth import AuthService
 
 router = APIRouter(prefix='/api')
 
-@router.post("/signup", summary="Signup")
+@router.post("/signup", summary="Sign up")
 async def api_signup(
     user_data: UserItem,
     service: get_user_service = Depends(),
@@ -14,7 +14,7 @@ async def api_signup(
     await service.create_user(user_data)
 
 
-@router.post("/signin", summary="Signin")
+@router.post("/signin", summary="Sign in")
 async def api_signin(
     data: UserSignin,
     response: Response,
