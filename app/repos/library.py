@@ -48,10 +48,11 @@ class LibraryRepo:
         db_query = await self.conn.execute(
             select(Track.__table__).where(Track.track_id == track_id)
         )
-        try:
-            track_info = dict(db_query.mappings().first())
-            return track_info
-        except:
+        track_info = db_query.mappings().first()
+
+        if track_info:
+            return dict(track_info)
+        else:
             raise NoResultFound
 
 
@@ -107,10 +108,11 @@ class LibraryRepo:
             )
             .where(Album.album_id == album_id)
         )
-
-        try:
-            album_info = dict(album_query.mappings().first())
-        except:
+        
+        album_info = album_query.mappings().first()
+        if album_info:
+            album_info = dict(album_info)
+        else:
             raise NoResultFound
 
         track_query = await self.conn.execute(

@@ -15,37 +15,37 @@ class Album(Base):
 
 
 class AlbumList(BaseModel):
-    album: str = Field(examples=['내꺼 하는 법 (How to be mine)'])
-    album_id: str = Field(examples=['816f92318525756fa1d95bf9382fbccb'])
-    albumartist: str = Field(examples=['아야츠노 유니'])
-    albumartist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
-    year: int = Field(examples=[2023])
+    album: str = Field(example='내꺼 하는 법 (How to be mine)')
+    album_id: str = Field(example='816f92318525756fa1d95bf9382fbccb')
+    albumartist: str = Field(example='아야츠노 유니')
+    albumartist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
+    year: int = Field(example=2023)
 
 
 class AlbumListResponse(BaseModel):
     list: list[AlbumList]
-    total: int = Field(examples=[1])
+    total: int = Field(example=1)
 
 
 class AlbumItem(BaseModel):
-    album: str = Field(examples=['내꺼 하는 법 (How to be mine)'])
-    album_id: str = Field(examples=['816f92318525756fa1d95bf9382fbccb'])
-    albumartist: str = Field(examples=['아야츠노 유니'])
-    albumartist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
-    disc_total: int = Field(examples=[1])
-    duration_total: float = Field(examples=[265.2266666666667])
-    filesize_total: int = Field(examples=[31173874])
-    year: int = Field(examples=[2023])
+    album: str = Field(example='내꺼 하는 법 (How to be mine)')
+    album_id: str = Field(example='816f92318525756fa1d95bf9382fbccb')
+    albumartist: str = Field(example='아야츠노 유니')
+    albumartist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
+    disc_total: int = Field(example=1)
+    duration_total: float = Field(example=265.2266666666667)
+    filesize_total: int = Field(example=31173874)
+    year: int = Field(example=2023)
 
 
 class AlbumTrack(BaseModel):
-    artist: str = Field(examples=['아야츠노 유니'])
-    artist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
-    comment: str = Field(examples=[''])
-    duration: float = Field(examples=[132.61333333333334])
-    title: str = Field(examples=['내꺼 하는 법 (How to Be Mine)'])
-    track_id: str = Field(examples=['8c2275ee99b8adfabf88f2e1c937e888'])
-    track_number: int = Field(examples=[1])
+    artist: str = Field(example='아야츠노 유니')
+    artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
+    comment: str = Field(example='')
+    duration: float = Field(example=132.61333333333334)
+    title: str = Field(example='내꺼 하는 법 (How to Be Mine)')
+    track_id: str = Field(example='8c2275ee99b8adfabf88f2e1c937e888')
+    track_number: int = Field(example=1)
 
 
 class AlbumItemResponse(AlbumItem):

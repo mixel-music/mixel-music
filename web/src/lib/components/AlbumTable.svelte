@@ -20,7 +20,7 @@
   <TableHead>
     <TableHeadItem size='xs'>#</TableHeadItem>
     <TableHeadItem size='xl'>{$_('label.title')}</TableHeadItem>
-    <TableHeadItem size='m'>{$_('label.artist')}</TableHeadItem>
+    <TableHeadItem size='l'>{$_('label.artist')}</TableHeadItem>
     <TableHeadItem size="s">{$_('label.time')}</TableHeadItem>
     <TableHeadItem size="xs"></TableHeadItem>
   </TableHead>
@@ -53,7 +53,7 @@
         </a>
       </TableBodyItem>
 
-      <TableBodyItem size='m'>
+      <TableBodyItem size='l'>
         <a href='{getArtistLink(item.artist_id)}'>
           {item.artist}
         </a>
