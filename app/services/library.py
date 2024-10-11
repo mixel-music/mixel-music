@@ -1,10 +1,10 @@
 import aiofiles
 from typing import Any
 from fastapi import HTTPException, status
-from sqlalchemy.exc import NoResultFound
-from core.logging import *
-from repos.library import *
-from tools.path_handler import *
+from core.database import NoResultFound
+from core.logging import logs
+from repos.library import LibraryRepo
+from tools.path_handler import get_path
 
 
 class LibraryService:
@@ -12,75 +12,52 @@ class LibraryService:
         self.repo = repo
 
 
-    async def get_track_list(
-        self,
-        start: int,
-        end: int,
-    ) -> dict[str, list[dict[str, Any]] | int]:
-        
-        track_list, total = await self.repo.get_track_list(start, end)        
-        return {'list': track_list, 'total': total}
+    async def get_track_list(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
+        track_list, total = await self.repo.get_track_list(start, end)
+        return {
+            "list": track_list,
+            "total": total
+        }
 
 
-    async def get_track_info(
-        self,
-        track_id: str
-    ) -> dict[str, Any]:
-        
+    async def get_track_item(self, track_id: str) -> dict[str, Any]:
         try:
-            return await self.repo.get_track_info(track_id)
+            return await self.repo.get_track_item(track_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         
 
-    async def get_album_list(
-        self,
-        start: int,
-        end: int,
-    ) -> dict[str, list[dict[str, Any]] | int]:
-        
+    async def get_album_list(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
         album_list, total = await self.repo.get_album_list(start, end)
-        return {'list': album_list, 'total': total}
+        return {
+            "list": album_list,
+            "total": total
+        }
 
 
-    async def get_album_info(
-        self,
-        album_id: str
-    ) -> dict[str, list[dict[str, Any] | None] | Any]:
-        
+    async def get_album_item(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
         try:
-            return await self.repo.get_album_info(album_id)
+            return await self.repo.get_album_item(album_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-    async def get_artist_list(
-        self,
-        start: int,
-        end: int,
-    ) -> dict[str, list[dict[str, Any]] | int]:
-        
+    async def get_artist_list(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
         artist_list, total = await self.repo.get_artist_list(start, end)
-        return {'list': artist_list, 'total': total}
+        return {
+            "list": artist_list,
+            "total": total
+        }
 
 
-    async def get_artist_info(
-        self,
-        artist_id: str
-    ) -> dict[str, list[dict[str, Any]] | Any]:
-        
+    async def get_artist_item(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
         try:
-            return await self.repo.get_artist_info(artist_id)
+            return await self.repo.get_artist_item(artist_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
 
-    async def streaming(
-        self,
-        track_id: str,
-        range: str
-    ) -> tuple[bytes, dict[str, Any]]:
-        
+    async def streaming(self, track_id: str, range: str) -> tuple[bytes, dict[str, Any]]:
         try:
             path = await self.repo.get_path_by_track_id(track_id)
             track_info = await self.repo.get_track_info(track_id)
@@ -109,10 +86,10 @@ class LibraryService:
             await track_file.seek(track_start)
             data = await track_file.read(track_end - track_start + 1)
             headers = {
-                'Content-Range': f'bytes {track_start}-{track_end}/{track_size}',
-                'Accept-Ranges': 'bytes',
-                'Content-Length': str(track_end - track_start + 1),
-                'Content-Type': track_mime
+                "Content-Range": f"bytes {track_start}-{track_end}/{track_size}",
+                "Accept-Ranges": "bytes",
+                "Content-Length": str(track_end - track_start + 1),
+                "Content-Type": track_mime
             }
 
             return data, headers

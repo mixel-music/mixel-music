@@ -1,5 +1,29 @@
+export async function apiFetch(
+  fetch: typeof window.fetch,
+  url: string,
+  options = {}
+) {
+
+  const response = await fetch(url, {
+    ...options,
+    credentials: 'include',
+  });
+
+  if (response.status === 401) {
+    window.location.href = '/signin';
+  }
+
+  return response;
+}
+
+
+export function handleLogout(fetch: typeof window.fetch): void {
+  postLogout(fetch);
+};
+
+
 export const getArtwork = (id: string, size: number): string => {
-  return `http://localhost:2843/api/artworks/${id}?size=${size.toString()}`;
+  return `http://localhost:2843/api/library/artworks/${id}?size=${size.toString()}`;
 };
 
 
@@ -14,7 +38,7 @@ export const getArtistLink = (artistId: string): string => {
 
 
 import { replaceState } from "$app/navigation";
-import { getAlbumList, getArtistList, getTrackList } from "./requests";
+import { getAlbumList, getArtistList, getTrackList, postLogout } from "./requests";
 
 type PageDirection = 'next' | 'prev';
 type PageDataTypes = 'album' | 'artist' | 'track';

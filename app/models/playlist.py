@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, func
-from pydantic import BaseModel, Field
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from datetime import datetime
+from pydantic import BaseModel
 from core.database import Base
+
 
 class Playlist(Base):
     __tablename__ = 'playlists'
@@ -18,3 +20,17 @@ class PlaylistData(Base):
     playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
     track_id: str = Column(String, ForeignKey('tracks.track_id'), nullable=False)
     added_at: DateTime = Column(DateTime, nullable=False)
+
+
+class PlaylistItem(BaseModel):
+    playlist_id: str
+    playlist_name: str
+    playlist_user: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class PlaylistDataItem(BaseModel):
+    playlist_id: str
+    track_id: str
+    added_at: datetime

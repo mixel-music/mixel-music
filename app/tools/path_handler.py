@@ -1,7 +1,6 @@
-from pathlib import Path
-from tinytag import TinyTag
-from pydantic_settings import BaseSettings
 import re
+from pathlib import Path
+from pydantic_settings import BaseSettings
 
 ROOTDIR: Path = (Path.cwd().resolve()).parent
 
@@ -60,6 +59,8 @@ def get_filename(*args: str | Path) -> tuple[str, str, str]:
 
 
 def is_supported_file(path: str) -> bool:
+    from tinytag import TinyTag
+
     if get_path(path).suffix in TinyTag.SUPPORTED_FILE_EXTENSIONS:
         return True
     else:

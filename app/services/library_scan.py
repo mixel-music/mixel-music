@@ -1,10 +1,8 @@
 import asyncio
-from models import *
-from core.database import *
-from core.logging import *
-from tools.convert_value import *
-from tools.path_handler import *
-from repos.library import *
+from models import Album, Artist, Track
+from core.database import db_conn, select, func
+from core.logging import logs
+from repos.library import LibraryRepo
 
 
 class LibraryScan:

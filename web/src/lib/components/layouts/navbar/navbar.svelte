@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Dropdown from '$lib/components/elements/Dropdown.svelte';
   import TextBox from '$lib/components/elements/Textbox.svelte';
   import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n'
+  import UserDropdown from '$lib/components/UserDropdown.svelte';
 </script>
 
 <nav>
@@ -27,7 +27,8 @@
       placeholder={$_('navbar.search')}
     />
     <Button button='round' iconName='iconoir:refresh' />
-    <Button button='round' iconName='iconoir:user' />
+
+    <UserDropdown />
   </div>
 </nav>
 

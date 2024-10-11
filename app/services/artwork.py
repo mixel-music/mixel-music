@@ -1,11 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor
 import asyncio
-from core.config import Config
-from services.library import *
-from tools.path_handler import *
-from tools.tags_handler import *
 from PIL import Image
-
+from concurrent.futures import ThreadPoolExecutor
+from core.config import Config
+from repos.library import LibraryRepo
+from tools.path_handler import str_path, get_path, is_excluded_file, Path
+from tools.tags_handler import extract_artwork
 
 class ArtworkService:
     def __init__(self, repo: LibraryRepo) -> None:
@@ -13,11 +12,27 @@ class ArtworkService:
         self.executor = ThreadPoolExecutor(max_workers=20)
 
 
-    def convert_hash(self, id: str, size: int) -> Path:
+    def convert_hash(
+        self,
+        id: str,
+        size: int
+    ) -> Path:
+        
         if size:
-            return get_path(Config.ARTWORKDIR, f'{id[:2]}', f'{id[2:4]}', f'{id[4:6]}', f'{size}.{Config.ARTWORKFORMAT}')
+            return get_path(
+                Config.ARTWORKDIR,
+                f'{id[:2]}',
+                f'{id[2:4]}',
+                f'{id[4:6]}',
+                f'{size}.{Config.ARTWORKFORMAT}'
+            )
         else:
-            return get_path(f'{id[:2]}', f'{id[2:4]}', f'{id[4:6]}', f'{size}')
+            return get_path(
+                f'{id[:2]}',
+                f'{id[2:4]}',
+                f'{id[4:6]}',
+                f'{size}'
+            )
         
 
     def read_artwork_file(self, filepath: str) -> bytes:
@@ -46,10 +61,19 @@ class ArtworkService:
             if fs.is_file() and fs.suffix.lower() in Config.ARTWORKTARGETS and not is_excluded_file(fs.name):
                 return await loop.run_in_executor(self.executor, self.read_artwork_file, fs)
 
-        return await loop.run_in_executor(self.executor, extract_artwork, data.get('filepath'))
+        return await loop.run_in_executor(
+            self.executor, extract_artwork, data.get('filepath')
+        )
 
 
-    def save_artwork(self, data: Image.Image, id: str, size: int, type: str = Config.ARTWORKFORMAT) -> None:
+    def save_artwork(
+        self,
+        data: Image.Image,
+        id: str,
+        size: int,
+        type: str = Config.ARTWORKFORMAT
+    ) -> None:
+        
         img_name = str_path(
             get_path(self.convert_hash(id, size), create_dir=True),
             rel=False,

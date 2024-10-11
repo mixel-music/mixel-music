@@ -1,21 +1,23 @@
-from sqlalchemy.ext.asyncio import AsyncConnection
-from sqlalchemy import select, func, or_, join
-from core.database import *
-from models import *
+from core.database import (
+    AsyncConnection,
+    select,
+    insert,
+    Insert,
+    delete,
+    NoResultFound,
+    or_,
+    join,
+    func,
+)
+from models import Album, Artist, Track
 from typing import Any
-
 
 class LibraryRepo:
     def __init__(self, conn: AsyncConnection) -> None:
         self.conn = conn
 
 
-    async def get_track_list(
-        self,
-        start: int,
-        end: int
-    ) -> tuple[list[dict[str, Any]], int]:
-        
+    async def get_track_list(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
         db_query = await self.conn.execute(
             select(
                 Track.album,
@@ -39,28 +41,20 @@ class LibraryRepo:
         return track_list, total
     
 
-    async def get_track_info(
-        self,
-        track_id: str
-    ) -> dict[str, Any]:
-        
-        track_info = {}
+    async def get_track_item(self, track_id: str) -> dict[str, Any]:
+        track_item = {}
         db_query = await self.conn.execute(
             select(Track.__table__).where(Track.track_id == track_id)
         )
-        try:
-            track_info = dict(db_query.mappings().first())
-            return track_info
-        except:
+        track_item = db_query.mappings().first()
+
+        if track_item:
+            return dict(track_item)
+        else:
             raise NoResultFound
 
 
-    async def get_album_list(
-        self,
-        start: int,
-        end: int
-    ) -> tuple[list[dict[str, Any]], int]:
-        
+    async def get_album_list(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
         album_query = await self.conn.execute(
             select(
                 Album.album,
@@ -88,12 +82,8 @@ class LibraryRepo:
         return album_list, total
     
 
-    async def get_album_info(
-        self,
-        album_id: str,
-    ) -> dict[str, list[dict[str, Any] | None] | Any]:
-        
-        album_info = {}
+    async def get_album_item(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
+        album_item = {}
         album_query = await self.conn.execute(
             select(
                 Album.__table__,
@@ -107,10 +97,11 @@ class LibraryRepo:
             )
             .where(Album.album_id == album_id)
         )
-
-        try:
-            album_info = dict(album_query.mappings().first())
-        except:
+        
+        album_item = album_query.mappings().first()
+        if album_item:
+            album_item = dict(album_item)
+        else:
             raise NoResultFound
 
         track_query = await self.conn.execute(
@@ -126,16 +117,11 @@ class LibraryRepo:
             .where(Track.album_id == album_id)
             .order_by(Track.track_number.asc())
         )
-        album_info['tracks'] = [dict(row) for row in track_query.mappings().all()]
-        return album_info
+        album_item['tracks'] = [dict(row) for row in track_query.mappings().all()]
+        return album_item
 
 
-    async def get_artist_list(
-        self,
-        start: int,
-        end: int,
-    ) -> tuple[list[dict[str, Any]], int]:
-        
+    async def get_artist_list(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
         db_query = await self.conn.execute(
             select(Artist.__table__)
             .order_by(Artist.artist.asc())
@@ -151,12 +137,8 @@ class LibraryRepo:
         return artist_list, total
 
 
-    async def get_artist_info(
-        self,
-        artist_id: str
-    ) -> dict[str, list[dict[str, Any]] | Any]:
-        
-        artist_info = {}
+    async def get_artist_item(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
+        artist_item = {}
         track_query = await self.conn.execute(
             select(Track.album_id)
             .where(or_(Track.artist_id == artist_id, Track.albumartist_id == artist_id))
@@ -191,7 +173,7 @@ class LibraryRepo:
                 artist_data = artist_query.mappings().first()
 
                 if artist_data:
-                    artist_info = {
+                    artist_item = {
                         'artist': artist_data['artist'],
                         'artist_id': artist_id,
                         'albums': albums_data
@@ -199,7 +181,7 @@ class LibraryRepo:
         else:
             raise NoResultFound
 
-        return artist_info
+        return artist_item
     
 
     async def get_scan_info(self) -> Any:

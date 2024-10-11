@@ -1,15 +1,14 @@
-from concurrent.futures import ThreadPoolExecutor
 import asyncio
-from models import *
-from core.database import *
-from core.logging import *
-from tools.path_handler import *
-from tools.tags_handler import *
-from repos.library import *
+from concurrent.futures import ThreadPoolExecutor
+from core.database import db_conn
+from core.logging import logs
+from repos.library import LibraryRepo
+from tools.tags_handler import extract_tags
 
-semaphore = asyncio.Semaphore(5)
 
 class LibraryTask:
+    semaphore = asyncio.Semaphore(5)
+
     def __init__(self, path: str) -> None:
         self.path = path
         self.tags = {}
@@ -21,7 +20,7 @@ class LibraryTask:
             self.tags = await loop.run_in_executor(executor, extract_tags, self.path)
 
         if self.tags:
-            async with semaphore:
+            async with self.semaphore:
                 async with db_conn() as conn:
                     repo = LibraryRepo(conn)
                     await repo.insert_track(self.tags)
@@ -29,7 +28,7 @@ class LibraryTask:
 
 
     async def remove_track(self) -> None:
-        async with semaphore:
+        async with self.semaphore:
             async with db_conn() as conn:
                 repo = LibraryRepo(conn)
                 await repo.delete_track(self.path)
@@ -37,7 +36,7 @@ class LibraryTask:
 
 
     async def update_track(self) -> None:
-        async with semaphore:
+        async with self.semaphore:
             async with db_conn() as conn:
                 repo = LibraryRepo(conn)
                 await repo.delete_track(self.path)
