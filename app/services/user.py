@@ -13,15 +13,20 @@ class UserService:
         self.repo = repo
 
 
-    async def get_user_info(self):
+    @staticmethod
+    async def hash_password(password: str) -> str:
         pass
 
 
-    async def get_user_data(self):
+    async def get_user_info(self, user_id: str):
         pass
 
 
-    async def get_all_users(self):
+    async def get_user_data(self, user_id: str):
+        pass
+
+
+    async def get_all_users(self, user_id: str):
         pass
 
 
@@ -29,11 +34,11 @@ class UserService:
         return await self.repo.get_user_count()
 
 
-    async def update_profile_pic(self):
+    async def update_profile_pic(self, user_id: str):
         pass
 
 
-    async def update_preferences(self):
+    async def update_preferences(self, user_id: str):
         pass
 
 

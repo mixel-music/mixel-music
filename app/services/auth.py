@@ -2,7 +2,6 @@ import uuid
 import diskcache as dc
 from typing import Any, Optional
 from fastapi import HTTPException, status
-from sqlalchemy.exc import NoResultFound
 from core.logging import *
 from repos.library import *
 from tools.path_handler import *
@@ -32,7 +31,7 @@ class AuthService:
     
 
     @classmethod
-    async def get_username(cls, session_id: Optional[str]):
+    def get_username(cls, session_id: Optional[str]):
         if session_id in cls.session_storage:
             return cls.session_storage.get(session_id)
         

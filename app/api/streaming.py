@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Header, status, Response, Depends
-from core.depends import get_library_service
+from core.depends import get_library_service, get_current_user
 
 router = APIRouter(prefix='/api')
 
@@ -7,6 +7,7 @@ router = APIRouter(prefix='/api')
 async def api_streaming(
     track_id: str,
     range: str = Header(None),
+    auth: get_current_user = Depends(),
     service: get_library_service = Depends(),
 ) -> Response:
 

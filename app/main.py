@@ -7,7 +7,7 @@ import asyncio
 import toml
 
 from api import (
-    albums, artists, tracks, artworks, streaming, auth
+    albums, artists, artworks, auth, ping, streaming, tracks
 )
 from core.config import *
 from core.database import *
@@ -63,10 +63,6 @@ if Config.DEBUG:
         allow_headers=["*"],
     )
 
-from starlette.middleware.sessions import SessionMiddleware
-app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
-
-# app.middleware("http")(security_middleware)
 
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.openapi.docs import get_swagger_ui_html
@@ -96,6 +92,8 @@ app.include_router(artists.router, tags=['Library'])
 app.include_router(artworks.router, tags=['Library'])
 app.include_router(streaming.router, tags=['Library'])
 app.include_router(tracks.router, tags=['Library'])
+
+app.include_router(ping.router, tags=['Server'])
 app.include_router(auth.router, tags=['Auth'])
 
 

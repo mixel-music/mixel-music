@@ -28,8 +28,9 @@ async def api_signin(
         value=session_id,
         httponly=True,
         secure=False,
-        samesite="Lax",
-        max_age=60 * 60 * 24 * 28
+        samesite='lax',
+        # samesite="Lax",
+        max_age=60 * 60 * 24 * 28,
     )
 
 

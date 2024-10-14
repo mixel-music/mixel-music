@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException, status, Depends
 from fastapi.responses import FileResponse, StreamingResponse
+from core.depends import get_library_repo, get_current_user
 from services.artwork import ArtworkService
-from core.depends import get_library_repo
 from PIL import Image
 import asyncio
 import io
@@ -12,6 +12,7 @@ router = APIRouter(prefix='/api')
 async def api_artworks(
     id: str,
     size: int = Query(300, ge=0),
+    auth: get_current_user = Depends(),
     repo: get_library_repo = Depends(),
 ) -> FileResponse:
     
