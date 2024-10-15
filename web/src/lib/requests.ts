@@ -6,6 +6,7 @@ import type {
   AlbumItemResponse,
   ArtistItemResponse
 } from "./interface";
+import { apiFetch } from "./tools";
 
 
 export async function getTrackList(
@@ -15,10 +16,8 @@ export async function getTrackList(
 ): Promise<{list: TrackListResponse;}> {
 
   try {
-    const getTrackList = await fetch(
-      `http://localhost:2843/api/tracks?start=${start}&end=${end}`,
-      { credentials: 'include' }
-    );
+    const getTrackList = await apiFetch(fetch,
+      `http://localhost:2843/api/tracks?start=${start}&end=${end}`);
 
     if (!getTrackList.ok) {
       throw new Error(getTrackList.statusText);
@@ -45,10 +44,8 @@ export async function getTrackItem(
 ): Promise<{item: TrackItemResponse;}> {
   
   try {
-    const getTrackItem = await fetch(
-      `http://localhost:2843/api/tracks/${trackId}`,
-      { credentials: 'include' }
-    );
+    const getTrackItem = await apiFetch(fetch,
+      `http://localhost:2843/api/tracks/${trackId}`);
 
     if (!getTrackItem.ok) {
       throw new Error(getTrackItem.statusText);
@@ -74,10 +71,8 @@ export async function getAlbumList(
 ): Promise<{list: AlbumListResponse;}> {
 
   try {
-    const getAlbumList = await fetch(
-      `http://localhost:2843/api/albums?start=${start}&end=${end}`,
-      { credentials: 'include' }
-    );
+    const getAlbumList = await apiFetch(fetch,
+      `http://localhost:2843/api/albums?start=${start}&end=${end}`);
 
     if (!getAlbumList.ok) {
       throw new Error(getAlbumList.statusText);
@@ -104,10 +99,8 @@ export async function getAlbumItem(
 ): Promise<{item: AlbumItemResponse;}> {
 
   try {
-    const getAlbumItem = await fetch(
-      `http://localhost:2843/api/albums/${albumId}`,
-      { credentials: 'include' }
-    );
+    const getAlbumItem = await apiFetch(fetch,
+      `http://localhost:2843/api/albums/${albumId}`);
 
     if (!getAlbumItem.ok) {
       throw new Error(getAlbumItem.statusText);
@@ -133,10 +126,8 @@ export async function getArtistList(
 ): Promise<{list: ArtistListResponse;}> {
 
   try {
-    const getArtistList = await fetch(
-      `http://localhost:2843/api/artists?start=${start}&end=${end}`,
-      { credentials: 'include' }
-    );
+    const getArtistList = await apiFetch(fetch,
+      `http://localhost:2843/api/artists?start=${start}&end=${end}`);
 
     if (!getArtistList.ok) {
       throw new Error(getArtistList.statusText);
@@ -163,10 +154,8 @@ export async function getArtistItem(
 ): Promise<{item: ArtistItemResponse;}> {
 
   try {
-    const getArtistItem = await fetch(
-      `http://localhost:2843/api/artists/${artistId}`,
-      { credentials: 'include' }
-    );
+    const getArtistItem = await apiFetch(fetch,
+      `http://localhost:2843/api/artists/${artistId}`);
 
     if (!getArtistItem.ok) {
       throw new Error(getArtistItem.statusText);

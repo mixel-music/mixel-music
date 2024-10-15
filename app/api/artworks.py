@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, HTTPException, status, Depends
 from fastapi.responses import FileResponse, StreamingResponse
-from core.depends import get_library_repo, get_current_user
+from core.depends import get_library_repo
 from services.artwork import ArtworkService
 from PIL import Image
 import asyncio
@@ -8,11 +8,23 @@ import io
 
 router = APIRouter(prefix='/api')
 
-@router.get('/artworks/{id}', summary="Artwork")
+@router.get(
+    '/artworks/{id}',
+    summary="Artwork",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {
+                "image/*": {},
+            }
+        },
+        404: {},
+        500: {}
+    }
+)
 async def api_artworks(
     id: str,
     size: int = Query(300, ge=0),
-    auth: get_current_user = Depends(),
     repo: get_library_repo = Depends(),
 ) -> FileResponse:
     

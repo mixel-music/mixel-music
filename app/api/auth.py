@@ -29,7 +29,6 @@ async def api_signin(
         httponly=True,
         secure=False,
         samesite='lax',
-        # samesite="Lax",
         max_age=60 * 60 * 24 * 28,
     )
 

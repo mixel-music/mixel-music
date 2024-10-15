@@ -1,20 +1,35 @@
-from fastapi import Request
+from fastapi import Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
+from services.auth import AuthService
 
-async def security_middleware(request: Request, call_next):
-    response = await call_next(request)
-    
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Referrer-Policy"] = "no-referrer"
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
-    if "session_id" in request.cookies:
-        response.set_cookie(
-            key="session_id",
-            value=request.cookies["session_id"],
-            httponly=True,
-            # secure=True,
-            samesite="Lax",
-        )
+class SessionMiddleware(BaseHTTPMiddleware):
+    async def dispatch(
+        self, request: Request,
+        call_next
+    ) -> Response:
         
-    return response
+        if not request.url.path.startswith('/api') \
+            or request.url.path.startswith('/api/signup') \
+            or request.url.path.startswith('/api/signin') \
+            or request.url.path.startswith('/api/logout') \
+            or request.url.path.startswith('/api/ping'):
+
+            return await call_next(request)
+
+        session_id = request.cookies.get("session")
+
+        if not session_id:
+            response = Response(status_code=401)
+            response.delete_cookie("session")
+            return response
+
+        username = AuthService().get_username(session_id)
+
+        if not username:
+            response = Response(status_code=401)
+            response.delete_cookie("session")
+            return response
+
+        response = await call_next(request)
+        return response

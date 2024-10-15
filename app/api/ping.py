@@ -9,7 +9,8 @@ router = APIRouter(prefix='/api')
     responses={
         200: {
             "content": {"text/plain": {"example": "pong"}}
-        }
+        },
+        500: {}
     }
 )
 async def api_ping() -> None:
