@@ -1,15 +1,15 @@
 import uuid
 import diskcache as dc
 from typing import Any, Optional
-from fastapi import HTTPException, status
+from core.config import *
 from core.logging import *
 from repos.library import *
-from tools.path_handler import *
+from tools.path_handler import get_path
 
 
 class AuthService:
-    session_storage = dc.Cache()
-
+    session_storage = dc.Cache(get_path(Config.DATADIR))
+    
     def __init__(self) -> None:
         pass
 
@@ -31,7 +31,7 @@ class AuthService:
     
 
     @classmethod
-    def get_username(cls, session_id: Optional[str]):
+    def get_username(cls, session_id: Optional[str]) -> tuple[str | Any]:
         if session_id in cls.session_storage:
             return cls.session_storage.get(session_id)
         

@@ -2,7 +2,14 @@ from fastapi import APIRouter, Query, Depends
 from models.artist import ArtistListResponse, ArtistItemResponse
 from core.depends import get_library_service
 
-router = APIRouter(prefix='/api')
+router = APIRouter(
+    prefix='/api',
+    responses={
+        401: {},
+        404: {},
+        500: {},
+    },
+)
 
 @router.get(
     '/artists',
@@ -22,7 +29,6 @@ async def api_artist_list(
 @router.get(
     '/artists/{artist_id}',
     summary="Artist Item",
-    responses={404: {}, 500: {}},
     response_model=ArtistItemResponse,
 )
 async def api_artist_item(

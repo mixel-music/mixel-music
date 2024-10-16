@@ -7,15 +7,10 @@ router = APIRouter(prefix='/api')
     '/streaming/{track_id}',
     summary="Streaming",
     responses={
-        200: {},
+        206: {},
         401: {},
-        206: {
-            "content": {
-                "audio/*": {},
-            }
-        },
         404: {},
-        500: {}
+        500: {},
     },
 )
 async def api_streaming(

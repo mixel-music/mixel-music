@@ -6,21 +6,18 @@ from PIL import Image
 import asyncio
 import io
 
-router = APIRouter(prefix='/api')
+router = APIRouter(
+    prefix='/api',
+    responses={
+        401: {},
+        404: {},
+        500: {},
+    }
+)
 
 @router.get(
     '/artworks/{id}',
     summary="Artwork",
-    response_class=FileResponse,
-    responses={
-        200: {
-            "content": {
-                "image/*": {},
-            }
-        },
-        404: {},
-        500: {}
-    }
 )
 async def api_artworks(
     id: str,

@@ -3,7 +3,14 @@ from models.user import UserItem, UserSignin
 from core.depends import get_user_service
 from services.auth import AuthService
 
-router = APIRouter(prefix='/api')
+router = APIRouter(
+    prefix='/api',
+    responses={
+        400: {},
+        401: {},
+        500: {},
+    }
+)
 
 @router.post("/signup", summary="Sign up")
 async def api_signup(

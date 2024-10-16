@@ -1,5 +1,3 @@
-import { goto } from '$app/navigation';
-
 export async function apiFetch(
   fetch: typeof window.fetch,
   url: string,
@@ -12,8 +10,7 @@ export async function apiFetch(
   });
 
   if (response.status === 401) {
-    await goto('/signin');
-    return null;
+    window.location.href = '/signin';
   }
 
   return response;
