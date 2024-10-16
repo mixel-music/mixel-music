@@ -10,25 +10,25 @@ class Artist(Base):
 
 
 class ArtistList(BaseModel):
-    artist: str = Field(examples=['아야츠노 유니'])
-    artist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
+    artist: str = Field(example='아야츠노 유니')
+    artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
 
 
 class ArtistListResponse(BaseModel):
     list: list[ArtistList]
-    total: int = Field(examples=[1])
+    total: int = Field(example=1)
 
 
 class ArtistItem(BaseModel):
-    artist: str = Field(examples=['아야츠노 유니'])
-    artist_id: str = Field(examples=['6eced76df3a9d6f115dc10818f1bd25c'])
+    artist: str = Field(example='아야츠노 유니')
+    artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
 
 
 class ArtistAlbum(BaseModel):
-    album: str = Field(examples=["내꺼 하는 법 (How to be mine)"])
-    album_id: str = Field(examples=["816f92318525756fa1d95bf9382fbccb"])
-    albumartist_id: str = Field(examples=["6eced76df3a9d6f115dc10818f1bd25c"])
-    year: int = Field(examples=[2023])
+    album: str = Field(example="내꺼 하는 법 (How to be mine)")
+    album_id: str = Field(example="816f92318525756fa1d95bf9382fbccb")
+    albumartist_id: str = Field(example="6eced76df3a9d6f115dc10818f1bd25c")
+    year: int = Field(example=2023)
 
 
 class ArtistItemResponse(ArtistItem):

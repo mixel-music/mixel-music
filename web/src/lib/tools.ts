@@ -1,3 +1,22 @@
+export async function apiFetch(
+  fetch: typeof window.fetch,
+  url: string,
+  options = {}
+) {
+
+  const response = await fetch(url, {
+    ...options,
+    credentials: 'include',
+  });
+
+  if (response.status === 401) {
+    window.location.href = '/signin';
+  }
+
+  return response;
+}
+
+
 export const getArtwork = (id: string, size: number): string => {
   return `http://localhost:2843/api/artworks/${id}?size=${size.toString()}`;
 };

@@ -1,23 +1,30 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Any
 import uvicorn
 import asyncio
 import toml
-
-from tools.path_handler import create_dir
-from api import albums, artists, tracks, artworks, streaming
-from services.scanner import scanner, tracker
-from core.config import Config
+from api import (
+    albums, artists, artworks, auth, ping, streaming, tracks
+)
+from core.config import *
 from core.database import *
 from core.logging import *
+from core.middleware import *
+from services.scanner import scanner, tracker
+from tools.path_handler import create_dir, get_path
+
 
 with open('pyproject.toml') as f:
     pyproject = toml.load(f)
     VERSION = pyproject['tool']['poetry']['version']
 
+
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
     create_dir(Config)
     log = log_file_handler()
     await connect_database()
@@ -38,6 +45,7 @@ async def lifespan(app: FastAPI):
             if isinstance(result, Exception) and not isinstance(result, asyncio.CancelledError):
                 logs.error(f"Error During Shutdown, {result}")
 
+
 app = FastAPI(
     title='mixel-music',
     debug=Config.DEBUG,
@@ -45,6 +53,8 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url=None,
 )
+
+app.add_middleware(SessionMiddleware)
 
 if Config.DEBUG:
     app.add_middleware(
@@ -55,31 +65,31 @@ if Config.DEBUG:
         allow_headers=["*"],
     )
 
-from fastapi.responses import FileResponse, HTMLResponse
-from fastapi.openapi.docs import get_swagger_ui_html
-from tools.path_handler import get_path
+    @app.get("/docs", include_in_schema=False)
+    async def custom_swagger_docs() -> HTMLResponse:
+        """
+        Apply favicon and dark theme for swagger docs.
+        """
+        return get_swagger_ui_html(
+            openapi_url=app.openapi_url,
+            title=f'API • {app.title}',
+            swagger_css_url='https://cdn.jsdelivr.net/gh/mixel-music/swagger-ui-dark/dark.css',
+            swagger_favicon_url='/favicon.ico',
+        )
 
-@app.get("/docs", include_in_schema=False)
-async def custom_swagger_docs() -> HTMLResponse:
-    """
-    Apply favicon and dark theme for swagger docs.
-    """
-    return get_swagger_ui_html(
-        openapi_url=app.openapi_url,
-        title=f'API • {app.title}',
-        swagger_css_url='https://cdn.jsdelivr.net/gh/mixel-music/swagger-ui-dark/dark.css',
-        swagger_favicon_url='/favicon.ico',
-    )
+    @app.get('/favicon.ico', include_in_schema=False)
+    async def favicon() -> FileResponse:
+        return FileResponse(get_path('assets', 'favicon.ico'))
 
-@app.get('/favicon.ico', include_in_schema=False)
-async def favicon() -> FileResponse:
-    return FileResponse(get_path('assets', 'favicon.ico'))
 
-app.include_router(albums.router)
-app.include_router(artists.router)
-app.include_router(artworks.router)
-app.include_router(streaming.router)
-app.include_router(tracks.router)
+app.include_router(albums.router, tags=['Library'])
+app.include_router(artists.router, tags=['Library'])
+app.include_router(artworks.router, tags=['Library'])
+app.include_router(streaming.router, tags=['Library'])
+app.include_router(tracks.router, tags=['Library'])
+app.include_router(ping.router, tags=['Server'])
+app.include_router(auth.router, tags=['Auth'])
+
 
 if __name__ == "__main__":
     uvicorn.run(
