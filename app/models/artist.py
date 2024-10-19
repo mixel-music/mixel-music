@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
 from pydantic import BaseModel, Field
 from core.database import Base
+
 
 class Artist(Base):
     __tablename__ = 'artists'

@@ -47,5 +47,10 @@
 
     "info.track": "{track_total} Track",
     "info.tracks": "{track_total} Tracks",
-    "info.year": "{year}"
+    "info.year": "{year}",
+
+    "email": "Email",
+    "signin": "Sign In",
+    "logout": "Logout",
+    "password": "Password"
 }

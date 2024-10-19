@@ -2,18 +2,9 @@ from fastapi import APIRouter, Query, Depends
 from models.track import TrackListResponse, TrackItemResponse
 from core.depends import get_library_service
 
-router = APIRouter(
-    prefix='/api',
-    responses={
-        401: {},
-        404: {},
-        500: {},
-    },
-)
+router = APIRouter()
 
-@router.get(
-    '/tracks',
-    summary="Track List",
+@router.get('/tracks',
     response_model=TrackListResponse,
 )
 async def api_track_list(
@@ -26,9 +17,7 @@ async def api_track_list(
     return track_list
 
 
-@router.get(
-    '/tracks/{track_id}',
-    summary="Track Item",
+@router.get('/tracks/{track_id}',
     response_model=TrackItemResponse,
 )
 async def api_track_item(

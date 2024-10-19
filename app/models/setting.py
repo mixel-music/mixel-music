@@ -4,5 +4,6 @@ from sqlalchemy import (
 from pydantic import BaseModel, Field
 from core.database import Base
 
+
 # class Setting(Base):
 #     __tablename__ = 'settings'

@@ -1,9 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncConnection
-from sqlalchemy import select, func, or_, join
-from core.database import *
-from models import *
 from typing import Any
-
+from models import User, UserItem
+from core.database import (
+    AsyncConnection, select, insert, update, delete, func
+)
 
 class UserRepo:
     def __init__(self, conn: AsyncConnection) -> None:
@@ -28,11 +27,11 @@ class UserRepo:
         return True if result else False
 
 
-    async def get_user_info(self):
+    async def get_user_info(self) -> None:
         pass
 
 
-    async def get_user_data(self):
+    async def get_user_data(self) -> None:
         pass
 
 

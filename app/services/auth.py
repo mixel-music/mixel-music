@@ -1,14 +1,12 @@
 import uuid
-import diskcache as dc
+import diskcache
 from typing import Any, Optional
-from core.config import *
-from core.logging import *
-from repos.library import *
+from core.config import Config
 from tools.path_handler import get_path
 
 
 class AuthService:
-    session_storage = dc.Cache(get_path(Config.DATADIR))
+    session_storage = diskcache.Cache(get_path(Config.DATADIR))
     
     def __init__(self) -> None:
         pass

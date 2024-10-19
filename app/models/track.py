@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from core.database import Base
 from datetime import datetime
 
+
 class Track(Base):
     __tablename__ = 'tracks'
 
@@ -14,7 +15,6 @@ class Track(Base):
     albumartist_id: str = Column(String(32), nullable=False)
     artist: str = Column(String, nullable=False)
     artist_id: str = Column(String(32), nullable=False)
-    artwork_id: str = Column(String(32), nullable=False)
     bitdepth: int = Column(Integer, nullable=False)
     bitrate: float = Column(REAL, nullable=False)
     channels: int = Column(Integer, nullable=False)
@@ -66,7 +66,6 @@ class TrackItem(BaseModel):
     albumartist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
     artist: str = Field(example='아야츠노 유니')
     artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    artwork_id: str = Field(example='')
     bitdepth: int = Field(example=16)
     bitrate: float = Field(example=1002.7874924592801)
     channels: int = Field(example=2)

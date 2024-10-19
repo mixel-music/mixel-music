@@ -1,18 +1,9 @@
 from fastapi import APIRouter, Header, status, Response, Depends
 from core.depends import get_library_service
 
-router = APIRouter(prefix='/api')
+router = APIRouter()
 
-@router.get(
-    '/streaming/{track_id}',
-    summary="Streaming",
-    responses={
-        206: {},
-        401: {},
-        404: {},
-        500: {},
-    },
-)
+@router.get('/streaming/{track_id}')
 async def api_streaming(
     track_id: str,
     range: str = Header(None),

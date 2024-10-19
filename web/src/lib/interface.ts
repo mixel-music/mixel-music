@@ -22,7 +22,6 @@ export interface TrackItem {
   albumartist_id: string;
   artist: string;
   artist_id: string;
-  artwork_id?: string;
   bitdepth: number;
   bitrate: number;
   channels: number;
@@ -146,4 +145,6 @@ export interface PlayerState {
 };
 
 
-export interface PlayerStore extends PlayerState, TrackList {}
+export interface PlayerStore extends PlayerState, TrackList {
+  artwork?: string;
+}

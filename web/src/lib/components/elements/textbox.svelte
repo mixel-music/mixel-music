@@ -5,20 +5,49 @@
   export let disabled: boolean = false;
   export let width: string = '100%';
   export let value: string = '';
+  export let autocomplete: string | undefined = undefined;
+  export let required: boolean = false;
 </script>
 
-<input
-  {type}
-  {name}
-  {value}
-  {disabled}
-  {placeholder}
-  style:width={width}
-/>
+{#if type === 'password'}
+  <input
+    {name}
+    type="password"
+    bind:value
+    {placeholder}
+    {autocomplete}
+    style:width={width}
+    {disabled}
+    {required}
+  />
+{:else if type === 'email'}
+  <input
+    {name}
+    type="email"
+    bind:value
+    {placeholder}
+    {autocomplete}
+    style:width={width}
+    {disabled}
+    {required}
+  />
+{:else}
+  <input
+    {name}
+    type="text"
+    bind:value
+    {placeholder}
+    {autocomplete}
+    style:width={width}
+    {disabled}
+    {required}
+  />
+{/if}
+
 
 <style>
   input {
-    height: 100%;
+    display: block;
     padding: 12px;
     background-color: var(--dark-element);
     border: 1px solid var(--dark-border);

@@ -30,7 +30,7 @@
 </div>
 
 <style>
-    #app {
+  #app {
     width: 100%;
     display: flex;
     height: 100dvh;

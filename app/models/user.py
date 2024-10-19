@@ -6,6 +6,7 @@ from core.database import Base
 from datetime import datetime
 from typing import Optional
 
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -28,15 +29,10 @@ class UserData(Base):
 
 class UserItem(BaseModel):
     user_id: str = Field(eaxmple='7f11c509-68c1-42ed-a4f4-449d59652b3a')
-    username: str = Field(example='admin')
-    password: str = Field()
+    username: str = Field(example='user')
+    password: str = Field(example='foobar')
     email: Optional[str] = Field(default='')
     group: Optional[str] = Field(example='normal', default='normal')
-
-
-class UserSignin(BaseModel):
-    username: str = Field(example='admin')
-    password: str = Field()
 
 
 class UserDataItem(BaseModel):
@@ -45,3 +41,8 @@ class UserDataItem(BaseModel):
     created_at: datetime = Field(example='2024-01-01T00:00:00.000000')
     profile_pic: str = Field(example='')
     preferences: str = Field(example='')
+
+
+class UserSignin(BaseModel):
+    username: str = Field(example='user')
+    password: str = Field(example='foobar')

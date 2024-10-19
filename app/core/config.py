@@ -1,8 +1,9 @@
 from pydantic_settings import BaseSettings
-from tools.path_handler import *
+from tools.path_handler import get_path, str_path, Path
 import logging
 
-class Config(BaseSettings):
+
+class ConfigData(BaseSettings):
     HOST: str = '0.0.0.0'
     PORT: int = 2843
     DATADIR: Path = get_path('data')
@@ -24,4 +25,4 @@ class Config(BaseSettings):
     DBURL: str = "sqlite+aiosqlite:///" \
         + str_path(DATADIR, 'database.db', rel=False)
     
-Config = Config()
+Config = ConfigData()

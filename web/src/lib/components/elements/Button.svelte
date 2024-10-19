@@ -8,7 +8,7 @@
   export let state: string = 'normal';
   export let iconName: string = '';
   export let iconSize: string = '';
-  export let width: string = '42px';
+  export let width: string = '';
   export let height: string = '42px';
   export let preload: string = 'false';
 </script>
@@ -37,9 +37,7 @@
     />
   {/if}
 
-  {#if button != 'round'}
-    <slot />
-  {/if}
+  <slot />
 </svelte:element>
 
 <style>
@@ -55,7 +53,7 @@
     font-size: 18px;
 
     border-radius: var(--radius-l);
-    padding: var(--space-xs);
+    padding: calc(var(--space-xs) + 3px);
     text-decoration: none;
   }
 
@@ -68,7 +66,6 @@
     border: 1px solid var(--dark-border);
     transition: 0.2s ease;
     font-weight: 500;
-    font-size: 16px;
 
     border-radius: var(--radius-s);
     padding: var(--space-xs);
@@ -84,7 +81,6 @@
     background-color: transparent;
     transition: 0.2s ease;
     text-decoration: none;
-    font-size: 24px;
     border: none;
   }
 

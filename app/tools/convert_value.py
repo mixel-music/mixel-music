@@ -1,14 +1,9 @@
 import hashlib
 import mimetypes
-from core.database import *
-from core.logging import *
-from models import *
-from tools.path_handler import *
-
 
 def get_mime(path: str) -> str:
     try:
-        type = mimetypes.guess_type(get_path(path), strict=True)
+        type = mimetypes.guess_type(path, strict=True)
         if type:
             return type[0]
         else:

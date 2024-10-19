@@ -1,15 +1,17 @@
+from fastapi import HTTPException
 from sqlalchemy import text, func, select, insert, update, delete, or_, and_, join
 from sqlalchemy.exc import OperationalError, SQLAlchemyError, DatabaseError, NoResultFound
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncConnection
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.dialects.sqlite import Insert
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 from core.config import Config
-from core.logging import *
-from fastapi import HTTPException
+from core.logging import logs
 
 Base = declarative_base()
 engine = create_async_engine(Config.DBURL, echo=Config.DBECHO)
+
 session = sessionmaker(
     class_=AsyncSession,
     autocommit=False,
@@ -18,7 +20,7 @@ session = sessionmaker(
 )
 
 @asynccontextmanager
-async def db_conn():
+async def db_conn() -> AsyncGenerator[AsyncSession, None]:
     async with session() as conn:
         try:
             yield conn

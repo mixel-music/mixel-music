@@ -1,11 +1,10 @@
-from tinytag import TinyTag
-from datetime import datetime
-from typing import Any
 import re
-
-from core.logging import *
-from tools.path_handler import *
-from tools.convert_value import hash_str, get_mime, safe_list
+from datetime import datetime
+from tinytag import TinyTag
+from typing import Any
+from core.logging import logs
+from tools.path_handler import get_path, str_path
+from tools.convert_value import hash_str, safe_list, get_mime
 
 artist_patterns = {
     'details': re.compile(r'\s*feat\.?\s.*'),
@@ -88,7 +87,6 @@ def extract_tags(path: str) -> dict[str, Any]:
             'albumartist_id': albumartist_id,
             'artist': tags.artist or '',
             'artist_id': hash_str(convert_artist(tags.artist.lower())) or '',
-            'artwork_id': '',
             'bitdepth': tags.bitdepth or 0,
             'bitrate': tags.bitrate or 0.0,
             'channels': tags.channels or 0,

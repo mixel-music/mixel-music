@@ -9,6 +9,31 @@ import type {
 import { apiFetch } from "./tools";
 
 
+export async function postLogout(fetch: typeof window.fetch): Promise<void> {
+  try {
+    const postLogout = await fetch(
+      `http://localhost:2843/api/auth/logout`,
+      {
+        method: 'POST',
+        credentials: 'include',
+      }
+    );
+
+    if (!postLogout.ok) {
+      throw new Error(postLogout.statusText);
+    }
+
+    window.location.href = '/signin';
+
+  }
+
+  catch (error) {
+    console.error('Logout failed:', error);
+    throw new Error('Failed to log out');
+  }
+}
+
+
 export async function getTrackList(
   fetch: typeof window.fetch,
   start: number,
@@ -17,7 +42,7 @@ export async function getTrackList(
 
   try {
     const getTrackList = await apiFetch(fetch,
-      `http://localhost:2843/api/tracks?start=${start}&end=${end}`);
+      `http://localhost:2843/api/library/tracks?start=${start}&end=${end}`);
 
     if (!getTrackList.ok) {
       throw new Error(getTrackList.statusText);
@@ -45,7 +70,7 @@ export async function getTrackItem(
   
   try {
     const getTrackItem = await apiFetch(fetch,
-      `http://localhost:2843/api/tracks/${trackId}`);
+      `http://localhost:2843/api/library/tracks/${trackId}`);
 
     if (!getTrackItem.ok) {
       throw new Error(getTrackItem.statusText);
@@ -72,7 +97,7 @@ export async function getAlbumList(
 
   try {
     const getAlbumList = await apiFetch(fetch,
-      `http://localhost:2843/api/albums?start=${start}&end=${end}`);
+      `http://localhost:2843/api/library/albums?start=${start}&end=${end}`);
 
     if (!getAlbumList.ok) {
       throw new Error(getAlbumList.statusText);
@@ -100,7 +125,7 @@ export async function getAlbumItem(
 
   try {
     const getAlbumItem = await apiFetch(fetch,
-      `http://localhost:2843/api/albums/${albumId}`);
+      `http://localhost:2843/api/library/albums/${albumId}`);
 
     if (!getAlbumItem.ok) {
       throw new Error(getAlbumItem.statusText);
@@ -127,7 +152,7 @@ export async function getArtistList(
 
   try {
     const getArtistList = await apiFetch(fetch,
-      `http://localhost:2843/api/artists?start=${start}&end=${end}`);
+      `http://localhost:2843/api/library/artists?start=${start}&end=${end}`);
 
     if (!getArtistList.ok) {
       throw new Error(getArtistList.statusText);
@@ -155,7 +180,7 @@ export async function getArtistItem(
 
   try {
     const getArtistItem = await apiFetch(fetch,
-      `http://localhost:2843/api/artists/${artistId}`);
+      `http://localhost:2843/api/library/artists/${artistId}`);
 
     if (!getArtistItem.ok) {
       throw new Error(getArtistItem.statusText);

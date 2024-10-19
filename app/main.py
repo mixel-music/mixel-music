@@ -7,13 +7,12 @@ from typing import AsyncGenerator, Any
 import uvicorn
 import asyncio
 import toml
-from api import (
-    albums, artists, artworks, auth, ping, streaming, tracks
-)
-from core.config import *
-from core.database import *
-from core.logging import *
-from core.middleware import *
+
+from api import api_router
+from core.config import Config
+from core.database import connect_database, disconnect_database
+from core.logging import log_file_handler, logs
+from core.middleware import CustomSessionMiddleware
 from services.scanner import scanner, tracker
 from tools.path_handler import create_dir, get_path
 
@@ -54,7 +53,6 @@ app = FastAPI(
     docs_url=None,
 )
 
-app.add_middleware(SessionMiddleware)
 
 if Config.DEBUG:
     app.add_middleware(
@@ -82,13 +80,8 @@ if Config.DEBUG:
         return FileResponse(get_path('assets', 'favicon.ico'))
 
 
-app.include_router(albums.router, tags=['Library'])
-app.include_router(artists.router, tags=['Library'])
-app.include_router(artworks.router, tags=['Library'])
-app.include_router(streaming.router, tags=['Library'])
-app.include_router(tracks.router, tags=['Library'])
-app.include_router(ping.router, tags=['Server'])
-app.include_router(auth.router, tags=['Auth'])
+app.add_middleware(CustomSessionMiddleware)
+app.include_router(api_router)
 
 
 if __name__ == "__main__":

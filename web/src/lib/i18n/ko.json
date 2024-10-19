@@ -47,5 +47,10 @@
 
     "info.track": "트랙 {track_total}개",
     "info.tracks": "트랙 {track_total}개",
-    "info.year": "{year}년"
+    "info.year": "{year}년",
+
+    "email": "이메일",
+    "signin": "로그인",
+    "logout": "로그아웃",
+    "password": "비밀번호"
 }

@@ -140,7 +140,7 @@ function InitPlayerService() {
       console.debug(`setTrack called with ${index}`);
 
       if (track) {
-        audio.src = `http://localhost:2843/api/streaming/${track.track_id}`;
+        audio.src = `http://localhost:2843/api/library/streaming/${track.track_id}`;
         audio.load();
 
         audio.onloadedmetadata = (): void => {
