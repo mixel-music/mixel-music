@@ -33,4 +33,5 @@ from models.user import (
     UserItem,
     UserDataItem,
     UserSignin,
+    UserSignup,
 )

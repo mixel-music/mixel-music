@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import (
     Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, JSON, Text, func
 )
@@ -28,21 +29,27 @@ class UserData(Base):
 
 
 class UserItem(BaseModel):
-    user_id: str = Field(eaxmple='7f11c509-68c1-42ed-a4f4-449d59652b3a')
+    user_id: str = Field(example='7f11c509-68c1-42ed-a4f4-449d59652b3a')
     username: str = Field(example='user')
     password: str = Field(example='foobar')
     email: Optional[str] = Field(default='')
-    group: Optional[str] = Field(example='normal', default='normal')
+    group: Optional[str] = Field(default='normal')
 
 
 class UserDataItem(BaseModel):
     user_id: str = Field(example='7f11c509-68c1-42ed-a4f4-449d59652b3a')
     last_login: datetime = Field(example='2024-01-01T00:00:00.000000')
     created_at: datetime = Field(example='2024-01-01T00:00:00.000000')
-    profile_pic: str = Field(example='')
-    preferences: str = Field(example='')
+    profile_pic: str = Field()
+    preferences: str = Field()
 
 
 class UserSignin(BaseModel):
     username: str = Field(example='user')
     password: str = Field(example='foobar')
+
+
+class UserSignup(BaseModel):
+    username: str = Field(example='user')
+    password: str = Field(example='foobar')
+    email: Optional[str] = Field(default='')

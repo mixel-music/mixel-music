@@ -1,5 +1,5 @@
 from typing import Any
-from models import User, UserItem
+from models import User
 from core.database import (
     AsyncConnection, select, insert, update, delete, func
 )
@@ -9,22 +9,22 @@ class UserRepo:
         self.conn = conn
 
 
-    async def is_user_exist(self, user_id: str) -> bool:
+    async def is_user_exist(self, email: str) -> bool:
+        if not email: return False
+
         query = await self.conn.execute(
-            select(User).where(User.user_id == user_id)
+            select(User).where(User.email == email)
         )
         result = query.mappings().first()
         return True if result else False
     
 
-    async def is_user_match(self, username: str, password: str) -> bool:
+    async def get_password(self, username: str) -> str | None:
         query = await self.conn.execute(
-            select(User).where(
-                (User.username == username) & (User.password == password)
-            )
+            select(User.password).where(User.username == username)
         )
         result = query.mappings().first()
-        return True if result else False
+        return None if result is None else result.get('password')
 
 
     async def get_user_info(self) -> None:
@@ -49,15 +49,15 @@ class UserRepo:
         return total
 
     
-    async def create_user(self, user_data: UserItem) -> None:
+    async def create_user(self, user_data: dict[str, Any]) -> None:
         await self.conn.execute(
-            insert(User).values(**user_data.model_dump())
+            insert(User).values(**user_data)
         )
 
 
-    async def update_user(self, user_data: UserItem) -> None:
+    async def update_user(self, user_data: dict[str, Any]) -> None:
         await self.conn.execute(
-            update(User).values(**user_data.model_dump())
+            update(User).values(**user_data)
         )
 
     

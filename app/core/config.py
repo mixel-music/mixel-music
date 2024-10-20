@@ -1,18 +1,21 @@
+import os
+import logging
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 from tools.path_handler import get_path, str_path, Path
-import logging
 
+load_dotenv()
 
 class ConfigData(BaseSettings):
-    HOST: str = '0.0.0.0'
-    PORT: int = 2843
+    HOST: str = str(os.getenv('HOST'))
+    PORT: int = int(os.getenv('PORT'))
     DATADIR: Path = get_path('data')
     LOGPATH: Path = get_path(DATADIR, 'mixel-music.log')
     ARTWORKDIR: Path = get_path(DATADIR, 'artworks')
     LIBRARYDIR: Path = get_path('library')
     ARTWORKFORMAT: str = 'webp'
-    ARTWORKCACHING: bool = True
-    ARTWORKQUALITY: int = 80
+    ARTWORKCACHING: bool = os.getenv('ARTWORKCACHING').lower() in ['true', '1', 'yes']
+    ARTWORKQUALITY: int = int(os.getenv('ARTWORKQUALITY'))
     ARTWORKTARGETS: set = {
         '.png',
         '.jpg',
