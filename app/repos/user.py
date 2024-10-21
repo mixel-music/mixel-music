@@ -19,9 +19,9 @@ class UserRepo:
         return True if result else False
     
 
-    async def get_password(self, username: str) -> str | None:
+    async def get_password(self, email: str) -> str | None:
         query = await self.conn.execute(
-            select(User.password).where(User.username == username)
+            select(User.password).where(User.email == email)
         )
         result = query.mappings().first()
         return None if result is None else result.get('password')
@@ -36,17 +36,14 @@ class UserRepo:
 
 
     async def get_all_users(self) -> dict[str, Any]:
-        query = await self.conn.execute(select(User.__table__))
-        result = query.mappings().first()
-        return dict(result or {})
+        users_query = await self.conn.execute(select(User.__table__))
+        users = users_query.mappings().all()
 
-
-    async def get_user_count(self) -> int:
-        query = await self.conn.execute(
+        total_query = await self.conn.execute(
             select(func.count()).select_from(User)
         )
-        total = query.scalar_one()
-        return total
+        total_query = total_query.scalar_one()
+        return users, total_query
 
     
     async def create_user(self, user_data: dict[str, Any]) -> None:

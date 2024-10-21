@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, Depends
-from models.album import AlbumListResponse, AlbumItemResponse
+from models import AlbumListResponse, AlbumItemResponse
 from core.depends import get_library_service
 
 router = APIRouter()

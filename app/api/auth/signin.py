@@ -1,22 +1,21 @@
-from fastapi import Depends, Response, APIRouter, HTTPException, status
+from fastapi import Depends, Response, APIRouter
 from core.depends import get_user_service
-from models.user import UserSignin
+from models.user import UserSigninForm
 from services.auth import AuthService
 
 router = APIRouter()
 
 @router.post("/signin")
 async def api_signin(
-    data: UserSignin,
-    response: Response,
+    res: Response,
+    form: UserSigninForm,
     service: get_user_service = Depends(),
 ) -> None:
     
-    check_user = await service.check_credential(data.username, data.password)
-    if not check_user: raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    session_id = AuthService.create_session(data.username)
+    await service.check_credential(form.email, form.password)
+    session_id = AuthService.create_session(form.email)
 
-    response.set_cookie(
+    res.set_cookie(
         key="session",
         value=session_id,
         httponly=True,

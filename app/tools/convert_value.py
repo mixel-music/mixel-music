@@ -1,10 +1,16 @@
+import re
 import hashlib
 import mimetypes
-from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
-from core.logging import logs
 
-ph = PasswordHasher()
+
+tag_patterns = {
+    'details': re.compile(r'\s*feat\.?\s.*'),
+    'bracket': re.compile(r'\s*\([^)]*[:;,][^)]*\)'),
+    'year_month_day': re.compile(r'^(\d{4})[-., ]?(\d{1,2})[-., ]?(\d{1,2})$'),
+    'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),
+    'year': re.compile(r'^(\d{4})$'),
+}
+
 
 def get_mime(path: str) -> str:
     try:
@@ -34,21 +40,41 @@ def safe_list(extra, key, default='') -> str:
         return ''
 
 
-def hash_password(password: str) -> str:
-    return ph.hash(password)
-
-
-def verify_password(hash: str, password: str) -> tuple[bool, str | None]:
+def convert_date(date: int | str) -> tuple[str, int]:
     try:
-        ph.verify(hash, password)
+        if isinstance(date, int):
+            date = str(date)
+    
+        match = tag_patterns['year_month_day'].match(date)
+        if match:
+            year, month, day = match.groups()
+            month = month.zfill(2)
+            day = day.zfill(2)
 
-        if ph.check_needs_rehash(hash):
-            logs.debug("hash_password: needs rehash")
-            new_password = ph.hash(password)
-            
-            return True, new_password
+            return f"{year}-{month}-{day}", year
+
+        match = tag_patterns['year_month'].match(date)
+        if match:
+            year, month = match.groups()
+            month = month.zfill(2)
+
+            return f"{year}-{month}", year
+
+        match = tag_patterns['year'].match(date)
+        if match:
+            year = match.group(1)
+            return year, year
         
-        return True, None
+    except:
+        return '', 0
 
-    except VerifyMismatchError:
-        return False, None
+
+def convert_artist(name: str) -> str:
+    try:
+        artist_value = tag_patterns['bracket'].sub('', name)
+        artist_value = tag_patterns['details'].sub('', name)
+
+        return artist_value
+    
+    except:
+        return ''

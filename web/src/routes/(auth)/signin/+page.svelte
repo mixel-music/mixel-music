@@ -3,13 +3,13 @@
   import { _ } from "svelte-i18n";
   import logo from '$lib/assets/logo.svg';
 
-  $: username = '';
+  $: email = '';
   $: password = '';
 
   let isInputFilled: boolean = false;
   
   $: {
-    if (username && password) {
+    if (email && password) {
       isInputFilled = true;
     }
     else {
@@ -26,7 +26,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
         credentials: 'include'
       });
 
@@ -59,7 +59,8 @@
 
   <form on:submit={handleSubmit}>
     <input
-      bind:value={username}
+      type="email"
+      bind:value={email}
       placeholder={$_('email')}
       autocomplete="email"
       required

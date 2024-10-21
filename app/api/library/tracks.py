@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, Depends
-from models.track import TrackListResponse, TrackItemResponse
+from models import TrackListResponse, TrackItemResponse
 from core.depends import get_library_service
 
 router = APIRouter()

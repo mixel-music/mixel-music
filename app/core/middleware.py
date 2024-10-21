@@ -4,11 +4,7 @@ from services.auth import AuthService
 
 
 class CustomSessionMiddleware(BaseHTTPMiddleware):
-    async def dispatch(
-        self, request: Request,
-        call_next
-    ) -> Response:
-        
+    async def dispatch(self, request: Request, call_next) -> Response:
         allowed = [
             "/api/auth/signup",
             "/api/auth/signin",
@@ -28,7 +24,7 @@ class CustomSessionMiddleware(BaseHTTPMiddleware):
             response.delete_cookie("session")
             return response
 
-        username = AuthService().get_username(session_id)
+        username = AuthService.get_user_id(session_id)
 
         if not username:
             response = Response(status_code=401)
