@@ -1,57 +1,14 @@
-from tinytag import TinyTag
 from datetime import datetime
+from tinytag import TinyTag
 from typing import Any
-import re
-
-from core.logging import *
-from tools.path_handler import *
-from tools.convert_value import hash_str, get_mime, safe_list
-
-artist_patterns = {
-    'details': re.compile(r'\s*feat\.?\s.*'),
-    'bracket': re.compile(r'\s*\([^)]*[:;,][^)]*\)'),
-    'year_month_day': re.compile(r'^(\d{4})[-., ]?(\d{1,2})[-., ]?(\d{1,2})$'),
-    'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),
-    'year': re.compile(r'^(\d{4})$'),
-}
-
-def convert_date(date_input) -> tuple[str, int]:
-    try:
-        if isinstance(date_input, int):
-            date_input = str(date_input)
-    
-        match = artist_patterns['year_month_day'].match(date_input)
-        if match:
-            year, month, day = match.groups()
-            month = month.zfill(2)
-            day = day.zfill(2)
-
-            return f"{year}-{month}-{day}", year
-
-        match = artist_patterns['year_month'].match(date_input)
-        if match:
-            year, month = match.groups()
-            month = month.zfill(2)
-
-            return f"{year}-{month}", year
-
-        match = artist_patterns['year'].match(date_input)
-        if match:
-            year = match.group(1)
-            return year, year
-    except:
-        return '', 0
-
-
-def convert_artist(data: str) -> str:
-    try:
-        artist_value = artist_patterns['bracket'].sub('', data)
-        artist_value = artist_patterns['details'].sub('', data)
-
-        return artist_value
-    
-    except:
-        return ''
+from tools.path_handler import get_path, str_path
+from tools.convert_value import (
+    hash_str,
+    get_mime,
+    safe_list,
+    convert_date,
+    convert_artist,
+)
 
 
 def extract_tags(path: str) -> dict[str, Any]:
@@ -88,7 +45,6 @@ def extract_tags(path: str) -> dict[str, Any]:
             'albumartist_id': albumartist_id,
             'artist': tags.artist or '',
             'artist_id': hash_str(convert_artist(tags.artist.lower())) or '',
-            'artwork_id': '',
             'bitdepth': tags.bitdepth or 0,
             'bitrate': tags.bitrate or 0.0,
             'channels': tags.channels or 0,
@@ -120,8 +76,7 @@ def extract_tags(path: str) -> dict[str, Any]:
 
         return track_dict
     
-    except Exception as error:
-        logs.error('Failed to extract, %s', error)
+    except:
         return {}
 
 

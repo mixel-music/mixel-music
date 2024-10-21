@@ -5,6 +5,7 @@
   --space-s: 16px;
   --space-m: 21px;
   --space-l: 32px;
+  --space-sl: 48px;
   --space-xl: 64px;
 
   --radius-s: 0.2em;
@@ -25,17 +26,17 @@
       sans-serif;
 
   --black-1: rgb(18, 18, 18);
-  --black-1a: rgb(18, 18, 18, 0.95);
+  --black-1a: rgb(18, 18, 18, 0.995);
   --black-2: rgb(22, 22, 22);
-  --black-2a: rgb(22, 22, 22, 0.95);
+  --black-2a: rgb(22, 22, 22, 0.995);
   --black-3: rgb(26, 26, 26);
-  --black-3a: rgb(26, 26, 26, 0.95);
+  --black-3a: rgb(26, 26, 26, 0.995);
   --black-4: rgb(32, 32, 32);
-  --black-4a: rgb(32, 32, 32, 0.95);
+  --black-4a: rgb(32, 32, 32, 0.995);
   --black-5: rgb(46, 46, 46);
-  --black-5a: rgb(24, 24, 24, 0.95);
+  --black-5a: rgb(24, 24, 24, 0.995);
   --black-6: rgb(86, 86, 86);
-  --black-6a: rgb(86, 86, 86, 0.95);
+  --black-6a: rgb(86, 86, 86, 0.995);
 
   --white-1: rgb(242, 242, 242);
   --white-1a: rgb(242, 242, 242,  0.95);
@@ -56,6 +57,7 @@
   --dark-player: var(--black-2a);
   --dark-element: var(--black-2);
   --dark-queue: var(--black-3a);
+  --dark-content: var(--black-2a);
 
   --dark-range: var(--black-5);
   --dark-range-now: var(--white-4);
