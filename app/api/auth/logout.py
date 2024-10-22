@@ -4,7 +4,7 @@ from services.auth import AuthService
 router = APIRouter()
 
 @router.post('/logout')
-async def api_logout(
+async def api_post_logout(
     request: Request,
     response: Response,
 ) -> None:

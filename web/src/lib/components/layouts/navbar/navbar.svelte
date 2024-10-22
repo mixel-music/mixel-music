@@ -1,10 +1,8 @@
 <script lang="ts">
-  import Dropdown from '$lib/components/elements/Dropdown.svelte';
   import TextBox from '$lib/components/elements/Textbox.svelte';
   import Button from '$lib/components/elements/Button.svelte';
-  import DropdownItem from '$lib/components/elements/DropdownItem.svelte';
-  import { handleLogout } from '$lib/tools';
   import { _ } from 'svelte-i18n'
+  import UserDropdown from '$lib/components/UserDropdown.svelte';
 </script>
 
 <nav>
@@ -30,33 +28,7 @@
     />
     <Button button='round' iconName='iconoir:refresh' />
 
-    <Dropdown
-      dropdownWidth='300px'
-      dropdownOpenIcon='iconoir:user'
-    >
-    
-      <DropdownItem
-        icon="iconoir:log-out"
-        on:click={() => handleLogout(window.fetch)}
-      >
-        {$_('logout')}
-      </DropdownItem>
-
-      <DropdownItem
-        icon="iconoir:log-out"
-        on:click={() => handleLogout(window.fetch)}
-      >
-        {$_('logout')}
-      </DropdownItem>
-
-      <DropdownItem
-        icon="iconoir:log-out"
-        on:click={() => handleLogout(window.fetch)}
-      >
-        {$_('logout')}
-      </DropdownItem>
-
-    </Dropdown>
+    <UserDropdown />
   </div>
 </nav>
 

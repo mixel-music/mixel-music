@@ -5,7 +5,7 @@ from models.user import UserSignupForm
 router = APIRouter()
 
 @router.post('/signup')
-async def api_signup(
+async def api_post_signup(
     form: UserSignupForm,
     service: get_user_service = Depends(),
 ) -> None:

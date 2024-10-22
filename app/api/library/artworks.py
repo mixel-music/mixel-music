@@ -9,7 +9,7 @@ import io
 router = APIRouter()
 
 @router.get('/artworks/{id}')
-async def api_artworks(
+async def api_get_artwork(
     id: str,
     size: int = Query(300, ge=0),
     repo: get_library_repo = Depends(),

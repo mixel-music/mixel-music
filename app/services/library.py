@@ -20,9 +20,9 @@ class LibraryService:
         }
 
 
-    async def get_track_info(self, track_id: str) -> dict[str, Any]:
+    async def get_track_item(self, track_id: str) -> dict[str, Any]:
         try:
-            return await self.repo.get_track_info(track_id)
+            return await self.repo.get_track_item(track_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         
@@ -35,9 +35,9 @@ class LibraryService:
         }
 
 
-    async def get_album_info(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
+    async def get_album_item(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
         try:
-            return await self.repo.get_album_info(album_id)
+            return await self.repo.get_album_item(album_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -50,9 +50,9 @@ class LibraryService:
         }
 
 
-    async def get_artist_info(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
+    async def get_artist_item(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
         try:
-            return await self.repo.get_artist_info(artist_id)
+            return await self.repo.get_artist_item(artist_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
@@ -86,10 +86,10 @@ class LibraryService:
             await track_file.seek(track_start)
             data = await track_file.read(track_end - track_start + 1)
             headers = {
-                'Content-Range': f'bytes {track_start}-{track_end}/{track_size}',
-                'Accept-Ranges': 'bytes',
-                'Content-Length': str(track_end - track_start + 1),
-                'Content-Type': track_mime
+                "Content-Range": f"bytes {track_start}-{track_end}/{track_size}",
+                "Accept-Ranges": "bytes",
+                "Content-Length": str(track_end - track_start + 1),
+                "Content-Type": track_mime
             }
 
             return data, headers

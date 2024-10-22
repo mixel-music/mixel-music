@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
-from pydantic import BaseModel, Field
-from core.database import Base
 from datetime import datetime
+from pydantic import BaseModel
+from core.database import Base
 
 
 class Playlist(Base):
@@ -23,14 +23,14 @@ class PlaylistData(Base):
 
 
 class PlaylistItem(BaseModel):
-    playlist_id: str = Field()
-    playlist_name: str = Field()
-    playlist_user: str = Field()
-    created_at: datetime = Field()
-    updated_at: datetime = Field()
+    playlist_id: str
+    playlist_name: str
+    playlist_user: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class PlaylistDataItem(BaseModel):
-    playlist_id: str = Field()
-    track_id: str = Field()
-    added_at: datetime = Field()
+    playlist_id: str
+    track_id: str
+    added_at: datetime

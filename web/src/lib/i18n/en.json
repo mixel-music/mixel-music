@@ -52,5 +52,8 @@
     "email": "Email",
     "signin": "Sign In",
     "logout": "Logout",
-    "password": "Password"
+    "password": "Password",
+
+    "settings.user": "User Settings",
+    "settings.server": "Server Settings"
 }

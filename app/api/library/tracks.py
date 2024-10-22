@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, Depends
-from models import TrackListResponse, TrackItemResponse
+from models.track import TrackListResponse, TrackItemResponse
 from core.depends import get_library_service
 
 router = APIRouter()
@@ -7,7 +7,7 @@ router = APIRouter()
 @router.get('/tracks',
     response_model=TrackListResponse,
 )
-async def api_track_list(
+async def api_get_track_list(
     start: int = Query(1, ge=1),
     end: int = Query(40, ge=1),
     service: get_library_service = Depends(),
@@ -20,10 +20,10 @@ async def api_track_list(
 @router.get('/tracks/{track_id}',
     response_model=TrackItemResponse,
 )
-async def api_track_item(
+async def api_get_track_item(
     track_id: str,
     service: get_library_service = Depends(),
 ) -> TrackItemResponse:
     
-    track_info = await service.get_track_info(track_id)
-    return track_info
+    track_item = await service.get_track_item(track_id)
+    return track_item

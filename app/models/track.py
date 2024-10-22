@@ -1,9 +1,9 @@
 from sqlalchemy import (
     Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, Text, func
 )
-from pydantic import BaseModel, Field
-from core.database import Base
 from datetime import datetime
+from pydantic import BaseModel
+from core.database import Base
 
 
 class Track(Base):
@@ -45,54 +45,54 @@ class Track(Base):
 
 
 class TrackList(BaseModel):
-    album: str = Field(example='내꺼 하는 법 (How to be mine)')
-    album_id: str = Field(example='816f92318525756fa1d95bf9382fbccb')
-    artist: str = Field(example='아야츠노 유니')
-    artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    duration: float = Field(example=132.613333333333)
-    title: str = Field(example='내꺼 하는 법 (How to Be Mine)')
-    track_id: str = Field(example='8c2275ee99b8adfabf88f2e1c937e888')
+    album: str
+    album_id: str
+    artist: str
+    artist_id: str
+    duration: float
+    title: str
+    track_id: str
 
 
 class TrackListResponse(BaseModel):
     list: list[TrackList]
-    total: int = Field(example=1)
+    total: int
 
 
 class TrackItem(BaseModel):
-    album: str = Field(example='내꺼 하는 법 (How to be mine)')
-    album_id: str = Field(example='816f92318525756fa1d95bf9382fbccb')
-    albumartist: str = Field(example='아야츠노 유니')
-    albumartist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    artist: str = Field(example='아야츠노 유니')
-    artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    bitdepth: int = Field(example=16)
-    bitrate: float = Field(example=1002.7874924592801)
-    channels: int = Field(example=2)
-    compilation: bool = Field(example=False)
-    comment: str = Field(example='')
-    composer: str = Field(example='')
-    content_type: str = Field(example='audio/x-flac')
-    created_at: datetime = Field(example='2024-01-01T00:00:00.000000')
-    date: str = Field(example='2023-07-20')
-    director: str = Field(example='')
-    directory: str = Field(example='')
-    duration: float = Field(example=132.61333333333334)
-    disc_number: int = Field(example=1)
-    disc_total: int = Field(example=1)
-    filepath: str = Field(example='')
-    filesize: int = Field(example=16622874)
-    genre: str = Field(example='')
-    isrc: str = Field(example='ZZA0P2308956')
-    label: str = Field(example='')
-    lyrics: str = Field(example='')
-    samplerate: int = Field(example=44100)
-    title: str = Field(example='내꺼 하는 법 (How to Be Mine)')
-    track_id: str = Field(example='8c2275ee99b8adfabf88f2e1c937e888')
-    track_number: int = Field(example=1)
-    track_total: int = Field(example=2)
-    updated_at: datetime = Field(example='2024-01-01T00:00:00.000000')
-    year: int = Field(example=2023)
+    album: str
+    album_id: str
+    albumartist: str
+    albumartist_id: str
+    artist: str
+    artist_id: str
+    bitdepth: int
+    bitrate: float
+    channels: int
+    compilation: bool
+    comment: str
+    composer: str
+    content_type: str
+    created_at: datetime
+    date: str
+    director: str
+    directory: str
+    duration: float
+    disc_number: int
+    disc_total: int
+    filepath: str
+    filesize: int
+    genre: str
+    isrc: str
+    label: str
+    lyrics: str
+    samplerate: int
+    title: str
+    track_id: str
+    track_number: int
+    track_total: int
+    updated_at: datetime
+    year: int
 
 
 class TrackItemResponse(TrackItem):

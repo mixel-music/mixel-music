@@ -1,11 +1,11 @@
-from enum import Enum
 from sqlalchemy import (
     Column, Integer, String, DateTime, Boolean, REAL, JSON, func
 )
-from pydantic import BaseModel, Field, EmailStr
-from core.database import Base
-from datetime import datetime
+from enum import Enum
 from typing import Optional
+from datetime import datetime
+from pydantic import BaseModel, EmailStr
+from core.database import Base
 
 
 class User(Base):
@@ -29,48 +29,47 @@ class UserGroupEnum(str, Enum):
 
 
 class UserList(BaseModel):
-    user_id: str = Field(example='7f11c509-68c1-42ed-a4f4-449d59652b3a')
-    group: UserGroupEnum = Field(default=UserGroupEnum.user)
-    email: EmailStr = Field()
-    username: str = Field()
-    last_login: Optional[datetime] = Field(datetime(1970, 1, 1))
-    created_at: datetime = Field(example='2024-01-01T00:00:00.000000')
-    profile_pic: Optional[str] = Field(default='')
+    user_id: str
+    group: UserGroupEnum = UserGroupEnum.user
+    email: EmailStr
+    username: str
+    last_login: Optional[datetime] = datetime(1970, 1, 1)
+    created_at: datetime
 
 
 class UserListResponse(BaseModel):
     list: list[UserList]
-    total: int = Field(example=1)
+    total: int
 
 
 class UserItem(BaseModel):
-    user_id: str = Field(example='7f11c509-68c1-42ed-a4f4-449d59652b3a')
-    group: UserGroupEnum = Field(default=UserGroupEnum.user)
-    email: EmailStr = Field()
-    username: str = Field()
-    password: str = Field()
-    last_login: Optional[datetime] = Field(datetime(1970, 1, 1))
-    created_at: datetime = Field(example='2024-01-01T00:00:00.000000')
-    profile_pic: Optional[str] = Field(default='')
-    preferences: Optional[dict] = Field(default={})
+    user_id: str
+    group: UserGroupEnum = UserGroupEnum.user
+    email: EmailStr
+    username: str
+    password: str
+    last_login: Optional[datetime] = datetime(1970, 1, 1)
+    created_at: datetime
+    profile_pic: Optional[str] = ''
+    preferences: Optional[dict] = {}
 
 
 class UserItemResponse(BaseModel):
-    user_id: str = Field(example='7f11c509-68c1-42ed-a4f4-449d59652b3a')
-    group: UserGroupEnum = Field(default=UserGroupEnum.user)
-    email: EmailStr = Field()
-    username: str = Field()
-    last_login: Optional[datetime] = Field(datetime(1970, 1, 1))
-    created_at: datetime = Field(example='2024-01-01T00:00:00.000000')
-    profile_pic: Optional[str] = Field(default='')
+    user_id: str
+    group: UserGroupEnum = UserGroupEnum.user
+    email: EmailStr
+    username: str
+    last_login: Optional[datetime] = datetime(1970, 1, 1)
+    created_at: datetime
+    profile_pic: Optional[str] = ''
 
 
 class UserSigninForm(BaseModel):
-    email: EmailStr = Field()
-    password: str = Field()
+    email: EmailStr
+    password: str
 
 
 class UserSignupForm(BaseModel):
-    email: EmailStr = Field()
-    username: str = Field()
-    password: str = Field()
+    email: EmailStr
+    username: str
+    password: str

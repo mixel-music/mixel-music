@@ -4,7 +4,7 @@ from core.depends import get_library_service
 router = APIRouter()
 
 @router.get('/streaming/{track_id}')
-async def api_streaming(
+async def api_get_streaming(
     track_id: str,
     range: str = Header(None),
     service: get_library_service = Depends(),

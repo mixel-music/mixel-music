@@ -6,20 +6,21 @@ from services.auth import AuthService
 router = APIRouter()
 
 @router.post("/signin")
-async def api_signin(
-    res: Response,
+async def api_post_signin(
+    response: Response,
     form: UserSigninForm,
     service: get_user_service = Depends(),
 ) -> None:
     
-    await service.check_credential(form.email, form.password)
-    session_id = AuthService.create_session(form.email)
+    user_id = await service.check_credential(form.email, form.password)
+    session_id = AuthService.create_session(user_id)
+    await service.user_login(form.email)
 
-    res.set_cookie(
+    response.set_cookie(
         key="session",
         value=session_id,
         httponly=True,
         secure=False,
-        samesite='lax',
+        samesite="lax",
         max_age=60 * 60 * 24 * 28,
     )

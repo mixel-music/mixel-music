@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, REAL
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from core.database import Base
 
 
@@ -16,37 +16,37 @@ class Album(Base):
 
 
 class AlbumList(BaseModel):
-    album: str = Field(example='내꺼 하는 법 (How to be mine)')
-    album_id: str = Field(example='816f92318525756fa1d95bf9382fbccb')
-    albumartist: str = Field(example='아야츠노 유니')
-    albumartist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    year: int = Field(example=2023)
+    album: str
+    album_id: str
+    albumartist: str
+    albumartist_id: str
+    year: int
 
 
 class AlbumListResponse(BaseModel):
     list: list[AlbumList]
-    total: int = Field(example=1)
+    total: int
 
 
 class AlbumItem(BaseModel):
-    album: str = Field(example='내꺼 하는 법 (How to be mine)')
-    album_id: str = Field(example='816f92318525756fa1d95bf9382fbccb')
-    albumartist: str = Field(example='아야츠노 유니')
-    albumartist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    disc_total: int = Field(example=1)
-    duration_total: float = Field(example=265.2266666666667)
-    filesize_total: int = Field(example=31173874)
-    year: int = Field(example=2023)
+    album: str
+    album_id: str
+    albumartist: str
+    albumartist_id: str
+    disc_total: int
+    duration_total: float
+    filesize_total: int
+    year: int
 
 
 class AlbumTrack(BaseModel):
-    artist: str = Field(example='아야츠노 유니')
-    artist_id: str = Field(example='6eced76df3a9d6f115dc10818f1bd25c')
-    comment: str = Field(example='')
-    duration: float = Field(example=132.61333333333334)
-    title: str = Field(example='내꺼 하는 법 (How to Be Mine)')
-    track_id: str = Field(example='8c2275ee99b8adfabf88f2e1c937e888')
-    track_number: int = Field(example=1)
+    artist: str
+    artist_id: str
+    comment: str
+    duration: float
+    title: str
+    track_id: str
+    track_number: int
 
 
 class AlbumItemResponse(AlbumItem):
