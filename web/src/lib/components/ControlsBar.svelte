@@ -32,7 +32,7 @@
       {$_('controls.play')}
     </Button>
 
-    <!-- <Button
+    <Button
       button='square'
       width='150px'
       height='50px'
@@ -40,7 +40,7 @@
       iconName='iconoir:shuffle'
     >
       {$_('controls.shuffle')}
-    </Button> -->
+    </Button>
   </div>
 </div>
 

@@ -7,7 +7,6 @@
   import { fly, fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { _ } from "svelte-i18n";
-
   import { onMount, onDestroy } from "svelte";
 
   $: lists = $PlayerService;
@@ -61,20 +60,20 @@
           <!-- svelte-ignore a11y-missing-attribute -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <a class="text normal" on:click={() =>
-              PlayerService.setTrack(index)
-            }>
-                {trk.title}
+          <a class="text bold" on:click={() =>
+            PlayerService.setTrack(index)
+          }>
+              {trk.title}
+          </a>
+          <span class="text-sub">
+            <a href="{getArtistLink(trk.artist_id)}">
+              {trk.artist}
             </a>
-            <span class="text-sub normal small">
-              <a href="{getArtistLink(trk.artist_id)}">
-                {trk.artist}
-              </a>
-            </span>
+          </span>
         </div>
 
         <div class="right">
-          <span class="text-sub small">
+          <span class="text-sub">
             {convertDateTime(trk.duration)}
           </span>
 
@@ -126,26 +125,10 @@
     overflow: hidden;
   }
 
-  .normal {
-    display: block;
-    font-size: 100%;
-    line-height: normal;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  .small {
-    font-size: 90%;
-  }
-
   .right {
     display: inline-flex;
     margin-left: auto;
     align-items: center;
     gap: var(--space-xs);
-  }
-
-  a {
-    width: auto;
   }
 </style>

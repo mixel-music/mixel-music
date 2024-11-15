@@ -9,7 +9,7 @@
   export let iconName: string = '';
   export let iconSize: string = '';
   export let width: string = '';
-  export let height: string = '42px';
+  export let height: string = '';
   export let preload: string = 'false';
 </script>
 
@@ -79,10 +79,17 @@
     align-items: center;
     justify-content: center;
     color: var(--dark-text-sub);
+    padding: 0;
+    font-size: 16px;
+    width: 100%;
     background-color: transparent;
     transition: 0.2s ease;
     text-decoration: none;
     border: none;
+  }
+
+  .custom:focus {
+    outline: none;
   }
 
   .acrylic {

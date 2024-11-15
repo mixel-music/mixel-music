@@ -60,10 +60,3 @@
     </GridItem>
   </GridWrap>
 </InfiniteScroll>
-
-<style>
-  a {
-    display: unset;
-    text-align: center;
-  }
-</style>

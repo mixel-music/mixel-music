@@ -10,8 +10,8 @@
   import TableHeadItem from "./elements/TableHeadItem.svelte";
   import TableBody from "./elements/TableBody.svelte";
   import TableBodyItem from "./elements/TableBodyItem.svelte";
-  import TableMenu from "./elements/TableMenu.svelte";
   import PlayerService from "$lib/stores/stores";
+  import TrackDropdown from "./TrackDropdown.svelte";
   import { _ } from 'svelte-i18n';
 
   export let tracks: Tracks[];
@@ -48,20 +48,27 @@
           {item.title}
         </a>
       </TableBodyItem>
+
       <TableBodyItem size="l">
         <a href='{getAlbumLink(item.album_id)}'>
           {item.album ? item.album : $_('unknown_album')}
         </a>
       </TableBodyItem>
+
       <TableBodyItem size='l'>
         <a href='{getArtistLink(item.artist_id)}'>
           {item.artist}
         </a>
       </TableBodyItem>
-      <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
-      <TableBodyItem size='xs'>
-        <TableMenu />
+
+      <TableBodyItem size='s'>
+        {convertDateTime(item.duration)}
       </TableBodyItem>
+
+      <TableBodyItem size='xs'>
+        <TrackDropdown track={item} />
+      </TableBodyItem>
+
     </TableBody>
   {/each}
 </Table>

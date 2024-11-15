@@ -9,8 +9,8 @@
   import TableHeadItem from "./elements/TableHeadItem.svelte";
   import TableBody from "./elements/TableBody.svelte";
   import TableBodyItem from "./elements/TableBodyItem.svelte";
-  import TableMenu from "./elements/TableMenu.svelte";
   import PlayerService from "$lib/stores/stores";
+  import TrackDropdown from "./TrackDropdown.svelte";
   import { _ } from 'svelte-i18n';
 
   export let list: AlbumResponse;
@@ -64,8 +64,18 @@
       </TableBodyItem>
       
       <TableBodyItem size='xs'>
-        <TableMenu />
+        <TrackDropdown track={{
+            album: list.album,
+            album_id: list.album_id,
+            artist: item.artist,
+            artist_id: item.artist_id,
+            duration: item.duration,
+            title: item.title,
+            track_id: item.track_id
+          }}
+        />
       </TableBodyItem>
+
     </TableBody>
   {/each}
 

@@ -8,9 +8,11 @@
     l: 3,
     xl: 5
   }[size] || 1;
+
+  $: additionalStyle = size === 'xs' ? 'text-overflow: clip;' : '';
 </script>
 
-<div style={`flex: ${flexSize};`}>
+<div style={`flex: ${flexSize}; ${additionalStyle}`}>
   <slot />
 </div>
 
