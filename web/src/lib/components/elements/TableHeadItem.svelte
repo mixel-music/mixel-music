@@ -2,7 +2,7 @@
   export let size = 'm';
 
   $: flexSize = {
-    xs: 0.2,
+    xs: 0.1,
     s: 1,
     m: 2,
     l: 3,
@@ -16,13 +16,11 @@
 
 <style>
   div {
+    font-size: 75%;
     font-weight: bold;
     color: var(--dark-text-sub);
-    font-size: 75%;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    display: flex;
-    padding: var(--table-padding);
-    text-align: left;
+    padding: var(--table-pad);
   }
 </style>

@@ -38,7 +38,7 @@ export const getArtistLink = (artistId: string): string => {
 
 
 import { replaceState } from "$app/navigation";
-import { getAlbumList, getArtistList, getTrackList, postLogout } from "./requests";
+import { getAlbums, getArtists, getTracks, postLogout } from "./requests";
 
 type PageDirection = 'next' | 'prev';
 type PageDataTypes = 'album' | 'artist' | 'track';
@@ -54,11 +54,11 @@ export async function getPaginatedList(
   const getList = (type: PageDataTypes) => {
     switch (type) {
       case 'album':
-        return getAlbumList;
+        return getAlbums;
       case 'artist':
-        return getArtistList;
+        return getArtists;
       case 'track':
-        return getTrackList;
+        return getTracks;
       default:
         throw new Error('Invalid data type');
     }

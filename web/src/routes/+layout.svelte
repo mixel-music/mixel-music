@@ -34,7 +34,5 @@
     width: 100%;
     display: flex;
     height: 100dvh;
-    flex-direction: row;
-    box-sizing: border-box;
   }
 </style>

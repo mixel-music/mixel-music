@@ -2,7 +2,7 @@
   export let size = 'm';
 
   $: flexSize = {
-    xs: 0.2,
+    xs: 0.1,
     s: 1,
     m: 2,
     l: 3,
@@ -16,7 +16,7 @@
 
 <style>
   div {
-    padding: var(--table-padding);
+    padding: var(--table-pad);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

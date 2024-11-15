@@ -10,27 +10,27 @@ class Artist(Base):
     artist_id: str = Column(String(32), primary_key=True, nullable=False)
 
 
-class ArtistList(BaseModel):
+class ArtistModel(BaseModel):
     artist: str
     artist_id: str
 
 
-class ArtistListResponse(BaseModel):
-    list: list[ArtistList]
-    total: int
-
-
-class ArtistItem(BaseModel):
-    artist: str
-    artist_id: str
-
-
-class ArtistAlbum(BaseModel):
+class ArtistAlbumModel(BaseModel):
     album: str
     album_id: str
     albumartist_id: str
     year: int
 
 
-class ArtistItemResponse(ArtistItem):
-    albums: list[ArtistAlbum]
+class ArtistsModel(BaseModel):
+    artist: str
+    artist_id: str
+
+
+class ArtistResponseModel(ArtistModel):
+    albums: list[ArtistAlbumModel]
+
+
+class ArtistsResponseModel(BaseModel):
+    artists: list[ArtistsModel]
+    total: int

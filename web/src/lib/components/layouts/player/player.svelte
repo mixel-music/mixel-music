@@ -108,8 +108,9 @@
       /> -->
     
       <PlayerButton
-        on:click={() => {
-          $isQueueOpen = !$isQueueOpen
+        on:click={(event) => {
+          event.stopPropagation();
+          $isQueueOpen = !$isQueueOpen;
         }}
         alt={$_('player.queue')}
         icon="iconoir:playlist"
@@ -176,5 +177,60 @@
   .player-volume:hover input {
     opacity: 1;
     transition: all 0.2s ease;
+  }
+
+  input[type='range'] {
+    appearance: none;
+    cursor: pointer;
+    overflow: hidden;
+    width: 550px;
+    appearance: none;
+    background-color: var(--dark-range);
+    border-radius: var(--radius-s);
+    height: 3.5px;
+    margin-left: 0.5px;
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    appearance: none;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    width: 0;
+    height: 0;
+    appearance: none;
+    box-sizing: content-box;
+    background-color: var(--dark-range-now);
+    box-shadow: -550px 0 0 550px var(--dark-range-now);
+  }
+
+  input[type="range"]::-moz-range-track {
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    appearance: none;
+  }
+
+  input[type="range"]::-moz-range-progress {
+    height: 100%;
+    appearance: none;
+    box-sizing: content-box;
+    background-color: var(--dark-range-now);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    appearance: none;
   }
 </style>

@@ -2,7 +2,6 @@
   import Button from "./Button.svelte";
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
-  import { cubicOut } from "svelte/easing";
 
   let isDropdownOpen = false;
   export let dropdownWidth: string = '0px';
@@ -55,7 +54,7 @@
 <style>
   .dropdown-content {
     padding: 12px 0;
-    background-color: var(--black-2a);
+    background-color: var(--black-3a);
     box-shadow: 0 0 0 1px var(--dark-border) inset;
     backdrop-filter: blur(64px);
     border-radius: var(--radius-m);

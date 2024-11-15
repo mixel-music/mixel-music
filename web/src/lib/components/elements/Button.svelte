@@ -66,6 +66,7 @@
     border: 1px solid var(--dark-border);
     transition: 0.2s ease;
     font-weight: 500;
+    font-size: 15px;
 
     border-radius: var(--radius-s);
     padding: var(--space-xs);

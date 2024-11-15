@@ -1,3 +1,4 @@
+from typing import Literal
 from fastapi import APIRouter
 from fastapi.responses import PlainTextResponse
 
@@ -11,5 +12,5 @@ router = APIRouter()
         },
     }
 )
-async def api_ping() -> None:
+async def api_get_ping() -> Literal['pong']:
     return 'pong'

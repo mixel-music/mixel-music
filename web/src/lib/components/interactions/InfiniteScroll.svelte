@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   
-  export let threshold: number = 100;
+  export let threshold: number = 50;
   const dispatch = createEventDispatcher();
   let contentContainer: HTMLElement;
 

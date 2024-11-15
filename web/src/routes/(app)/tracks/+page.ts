@@ -1,4 +1,4 @@
-import { getTrackList } from '$lib/requests';
+import { getTracks } from '$lib/requests';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, url }) => {
@@ -6,10 +6,10 @@ export const load: PageLoad = async ({ fetch, url }) => {
   const end = parseInt(url.searchParams.get('end') ?? '40', 10);
 
   try {
-    const data = await getTrackList(fetch, start, end);
+    const data = await getTracks(fetch, start, end);
 
     return {
-      list: data.list,
+      tracks: data.response,
       title: 'tracks.title',
       start: start,
       end: end,

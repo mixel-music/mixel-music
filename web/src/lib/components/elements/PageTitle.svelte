@@ -16,8 +16,7 @@
 
 <style>
   div {
-    margin-top: var(--space-l);
-    margin-bottom: var(--space-m);
+    margin: var(--space-m) 0;
   }
 
   .xl {

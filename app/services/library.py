@@ -12,47 +12,47 @@ class LibraryService:
         self.repo = repo
 
 
-    async def get_track_list(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
-        track_list, total = await self.repo.get_track_list(start, end)
+    async def get_tracks(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
+        tracks, total = await self.repo.get_tracks(start, end)
         return {
-            "list": track_list,
+            "tracks": tracks,
             "total": total
         }
 
 
-    async def get_track_item(self, track_id: str) -> dict[str, Any]:
+    async def get_track(self, track_id: str) -> dict[str, Any]:
         try:
-            return await self.repo.get_track_item(track_id)
+            return await self.repo.get_track(track_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         
 
-    async def get_album_list(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
-        album_list, total = await self.repo.get_album_list(start, end)
+    async def get_albums(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
+        albums, total = await self.repo.get_albums(start, end)
         return {
-            "list": album_list,
+            "albums": albums,
             "total": total
         }
 
 
-    async def get_album_item(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
+    async def get_album(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
         try:
-            return await self.repo.get_album_item(album_id)
+            return await self.repo.get_album(album_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-    async def get_artist_list(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
-        artist_list, total = await self.repo.get_artist_list(start, end)
+    async def get_artists(self, start: int, end: int) -> dict[str, list[dict[str, Any]] | int]:
+        artists, total = await self.repo.get_artists(start, end)
         return {
-            "list": artist_list,
+            "artists": artists,
             "total": total
         }
 
 
-    async def get_artist_item(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
+    async def get_artist(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
         try:
-            return await self.repo.get_artist_item(artist_id)
+            return await self.repo.get_artist(artist_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
@@ -60,7 +60,7 @@ class LibraryService:
     async def streaming(self, track_id: str, range: str) -> tuple[bytes, dict[str, Any]]:
         try:
             path = await self.repo.get_path_by_track_id(track_id)
-            track_info = await self.repo.get_track_info(track_id)
+            track_info = await self.repo.get_track(track_id)
         except:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 

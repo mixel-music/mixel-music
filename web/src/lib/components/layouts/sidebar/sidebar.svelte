@@ -9,9 +9,11 @@
     <SidebarItem href='/'>
       {$_('sidebar.home')}
     </SidebarItem>
+
     <SidebarItem href='/'>
       {$_('sidebar.search')}
     </SidebarItem>
+
     <SidebarItem href='/'>
       {$_('sidebar.my_mix')}
     </SidebarItem>
@@ -21,9 +23,11 @@
     <SidebarItem href='/albums' icon='iconoir:compact-disc'>
       {$_('sidebar.library.albums')}
     </SidebarItem>
+
     <SidebarItem href='/artists' icon='iconoir:microphone'>
       {$_('sidebar.library.artists')}
     </SidebarItem>
+    
     <SidebarItem href='/tracks' icon='iconoir:music-double-note'>
       {$_('sidebar.library.tracks')}
     </SidebarItem>
@@ -41,9 +45,8 @@
     z-index: 0;
     width: 240px;
     flex-shrink: 0;
-    min-height: 100dvh;
-    padding: var(--space-m);
     background-color: var(--dark-sidebar);
     border-right: 1px solid var(--dark-border);
+    padding: var(--space-m) 0;
   }
 </style>

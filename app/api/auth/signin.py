@@ -1,6 +1,6 @@
 from fastapi import Depends, Response, APIRouter
 from core.depends import get_user_service
-from models.user import UserSigninForm
+from models.user import UserSigninModel
 from services.auth import AuthService
 
 router = APIRouter()
@@ -8,7 +8,7 @@ router = APIRouter()
 @router.post("/signin")
 async def api_post_signin(
     response: Response,
-    form: UserSigninForm,
+    form: UserSigninModel,
     service: get_user_service = Depends(),
 ) -> None:
     

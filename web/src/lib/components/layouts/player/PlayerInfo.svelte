@@ -25,7 +25,7 @@
     />
 
     <div>
-      <span class="text">{trk.title}</span>
+      <span class="text bold">{trk.title}</span>
       <span class="text-sub">
         <a href="{getArtistLink(trk.artist_id)}">
           {trk.artist}
@@ -46,7 +46,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-s);
-    line-height: 100%;
   }
 
   .player-info div {

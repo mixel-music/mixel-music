@@ -1,6 +1,6 @@
 import { getArtwork } from "$lib/tools";
 import { writable, get } from "svelte/store";
-import type { PlayerStore, TrackList } from "$lib/interface";
+import type { PlayerStore, Tracks } from "$lib/interface";
 
 function InitPlayerService() {
   const DefaultValues: PlayerStore = {
@@ -51,7 +51,7 @@ function InitPlayerService() {
     }
   };
 
-  const updateTrack = (track: TrackList) => {
+  const updateTrack = (track: Tracks) => {
     update(state => ({
       ...state,
       track_id: track.track_id,
@@ -84,7 +84,7 @@ function InitPlayerService() {
     }
   };
 
-  const addTrack = (tracks: TrackList[], play: boolean = false, index?: number) => {
+  const addTrack = (tracks: Tracks[], play: boolean = false, index?: number) => {
     update(state => {
       const newLists = [...state.lists];
 

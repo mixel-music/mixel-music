@@ -1,6 +1,4 @@
-from sqlalchemy import (
-    Column, Integer, String, DateTime, Boolean, REAL, JSON, func
-)
+from sqlalchemy import Column, String, DateTime, JSON
 from enum import Enum
 from typing import Optional
 from datetime import datetime
@@ -12,64 +10,58 @@ class User(Base):
     __tablename__ = 'users'
 
     user_id: str = Column(String, primary_key=True, nullable=False)
-    group: str = Column(String, nullable=False)
     email: str = Column(String, nullable=False)
     username: str = Column(String, nullable=False)
     password: str = Column(String, nullable=False)
     last_login: DateTime = Column(DateTime, nullable=False)
     created_at: DateTime = Column(DateTime, nullable=False)
-    profile_pic: str = Column(String, nullable=False)
+    role: str = Column(String, nullable=False)
+    profile_img: str = Column(String, nullable=False)
     preferences: str = Column(JSON, nullable=False)
 
 
-class UserGroupEnum(str, Enum):
-    admin = 'admin'
-    guest = 'guest'
-    user = 'user'
+class UserRoleEnum(str, Enum):
+    USER = 'user'
+    ADMIN = 'admin'
+    GUEST = 'guest'
 
 
-class UserList(BaseModel):
+class UserModel(BaseModel):
     user_id: str
-    group: UserGroupEnum = UserGroupEnum.user
-    email: EmailStr
-    username: str
-    last_login: Optional[datetime] = datetime(1970, 1, 1)
-    created_at: datetime
-
-
-class UserListResponse(BaseModel):
-    list: list[UserList]
-    total: int
-
-
-class UserItem(BaseModel):
-    user_id: str
-    group: UserGroupEnum = UserGroupEnum.user
     email: EmailStr
     username: str
     password: str
     last_login: Optional[datetime] = datetime(1970, 1, 1)
     created_at: datetime
-    profile_pic: Optional[str] = ''
+    role: UserRoleEnum = UserRoleEnum.USER
+    profile_img: Optional[str] = ''
     preferences: Optional[dict] = {}
 
 
-class UserItemResponse(BaseModel):
-    user_id: str
-    group: UserGroupEnum = UserGroupEnum.user
+class UserCreateModel(BaseModel):
     email: EmailStr
     username: str
-    last_login: Optional[datetime] = datetime(1970, 1, 1)
-    created_at: datetime
-    profile_pic: Optional[str] = ''
+    password: str
 
 
-class UserSigninForm(BaseModel):
+class UserUpdateModel(BaseModel):
+    group: Optional[UserRoleEnum] = None
+    email: Optional[EmailStr] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+    profile_img: Optional[str] = None
+    preferences: Optional[dict] = None
+
+
+class UserSigninModel(BaseModel):
     email: EmailStr
     password: str
 
 
-class UserSignupForm(BaseModel):
-    email: EmailStr
-    username: str
-    password: str
+class UserResponseModel(UserModel):
+    pass
+
+
+class UsersResponseModel(BaseModel):
+    users: list[UserResponseModel]
+    total: int

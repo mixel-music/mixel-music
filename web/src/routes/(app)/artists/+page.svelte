@@ -1,31 +1,32 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { ArtistListResponse } from '$lib/interface';
-  import { getPaginatedList, getAlbumLink, getArtistLink } from '$lib/tools';
+  import type { ArtistsResponse } from '$lib/interface';
+  import { getPaginatedList, getArtistLink } from '$lib/tools';
   import InfiniteScroll from '$lib/components/interactions/InfiniteScroll.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
   import GridItem from '$lib/components/elements/GridItem.svelte';
+  import GridItemDetail from '$lib/components/elements/GridItemDetail.svelte';
   import { _ } from 'svelte-i18n';
 
   export let data: PageData;
-  let artistList: ArtistListResponse = data.list;
+  let artists: ArtistsResponse = data.artists;
   let startNumber = data.start;
   let loading = false;
   
   async function loadMoreArtists() {
-    if (loading || (startNumber + 39) >= artistList.total) return;
+    if (loading || (startNumber + 39) >= artists.total) return;
     loading = true;
 
     const { newStart, response } = await getPaginatedList(
-      fetch, 'next', 'artist', artistList.total, startNumber, 39,
+      fetch, 'next', 'artist', artists.total, startNumber, 39,
     );
 
     startNumber = newStart;
     if (response) {
-      artistList = {
-        list: [...artistList.list, ...response.list.list],
-        total: response.list.total,
+      artists = {
+        artists: [...artists.artists, ...response.response.artists],
+        total: response.response.total,
       };
     }
 
@@ -40,7 +41,7 @@
 <PageTitle title={$_(data.title)} />
 
 <InfiniteScroll threshold={100} on:loadMore={loadMoreArtists}>
-  <GridWrap items={artistList.list}>
+  <GridWrap items={artists.artists}>
     <GridItem
       let:item
       slot="GridItem"
@@ -49,11 +50,13 @@
       lazyload
       round
     >
-      <div class="info-card">
-        <a href='{getArtistLink(item.artist_id)}'>
-          <span class="text">{item.artist}</span>
-        </a>
-      </div>
+      <GridItemDetail
+        center
+        title={item.artist}
+        titleHref={getArtistLink(item.artist_id)}
+        sub={item.albumartist}
+        subHref={getArtistLink(item.albumartist_id)}
+      />
     </GridItem>
   </GridWrap>
 </InfiniteScroll>

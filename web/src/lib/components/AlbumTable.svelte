@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AlbumItemResponse } from "$lib/interface";
+  import type { AlbumResponse } from "$lib/interface";
   import { 
     getArtistLink,
     convertDateTime
@@ -13,7 +13,7 @@
   import PlayerService from "$lib/stores/stores";
   import { _ } from 'svelte-i18n';
 
-  export let list: AlbumItemResponse;
+  export let list: AlbumResponse;
 </script>
 
 <Table>
@@ -59,7 +59,10 @@
         </a>
       </TableBodyItem>
 
-      <TableBodyItem size='s'>{convertDateTime(item.duration)}</TableBodyItem>
+      <TableBodyItem size='s'>
+        {convertDateTime(item.duration)}
+      </TableBodyItem>
+      
       <TableBodyItem size='xs'>
         <TableMenu />
       </TableBodyItem>

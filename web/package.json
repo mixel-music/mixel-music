@@ -25,5 +25,10 @@
 		"unplugin-icons": "^0.19.2",
 		"vite": "^5.0.3"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"blurhash": "^2.0.5",
+		"color.js": "^1.2.0",
+		"colorthief": "^2.6.0"
+	}
 }

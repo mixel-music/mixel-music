@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrackList } from "$lib/interface";
+  import type { Tracks } from "$lib/interface";
   import ArtworkImage from "./elements/ArtworkImage.svelte";
   import ControlsBar from "./ControlsBar.svelte";
   import { 
@@ -18,12 +18,11 @@
   export let fileSizeTotal: number;
   export let trackTotal: number;
   export let year: number | string;
-  export let trackItems: TrackList[] | undefined = undefined;
+  export let tracks: Tracks[] | undefined = undefined;
 
   $: strLength = convertDateTime(durationTotal);
   $: strSize = convertFileSize(fileSizeTotal);
   $: artwork = getArtwork(albumId, 500);
-  $: {year != 0 ? $_('info.year',{values: {year: year}})  : $_('unknown_year') };
 </script>
 
 <div class="album-header">
@@ -39,28 +38,29 @@
 
   <div class="album-details">
     <div>
-      <span class="title">{album ? album : $_('unknown_album')}</span>
+      <span class="title">
+        {album ? album : $_('unknown_album')}
+      </span>
+
       {#if albumArtist}
         <a href={getArtistLink(albumArtistId)}>
-          <span class="artist">{albumArtist}</span>
+          <span class="artist">
+            {albumArtist}
+          </span>
         </a>
       {/if}
 
-      <div>
+      <!-- <div>
         <span class="detail">
-          {#if trackTotal === 1} {$_('info.track',{values: {track_total: trackTotal}})}
-          {:else} {$_('info.tracks',{values: {track_total: trackTotal}})} {/if}
+          {year != 0 ? $_('info.year',{values: {year: year}}) : $_('unknown_year')}
+      </div> -->
 
-          ({strLength}) · {year} · {strSize}
-        </span>
-
-        <span class="detail">{comment}</span>
-      </div>
     </div>
 
-    {#if trackItems}
-      <ControlsBar {trackItems} />
-    {/if}
+      {#if tracks}
+        <ControlsBar {tracks} />
+      {/if}
+
   </div>
 </div>
 
@@ -68,48 +68,40 @@
   .album-header {
     display: flex;
     width: 100%;
-    gap: var(--space-m);
+    gap: var(--space-l);
     flex-direction: row;
-    margin-top: var(--space-xs);
     margin-bottom: var(--space-l);
   }
 
-  .album-header span {
-    width: fit-content;
-  }
-
   .album-details {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    gap: var(--space-xs);
   }
 
   .album-details > div {
     display: flex;
     height: 100%;
     flex-direction: column;
-    justify-content: center;
-  }
-
-  .album-details > div > div {
-    margin-top: var(--space-s);
+    justify-content: flex-end;
   }
 
   .title {
-    font-size: clamp(1rem, 3vw, 2.3rem);
-    font-weight: 700;
+    font-size: clamp(1rem, 3vw, 2rem);
+    font-weight: bold;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
   .artist {
     color: var(--dark-text-sub);
-    font-size: 110%;
+    font-size: clamp(1rem, 3vw, 2rem);
   }
 
   .detail {
     color: var(--dark-text-sub);
-    font-size: 80%;
+    font-size: 85%;
     line-height: 1rem;
     letter-spacing: 0;
     display: block;

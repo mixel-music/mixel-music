@@ -7,36 +7,23 @@
   --space-l: 32px;
   --space-sl: 48px;
   --space-xl: 64px;
-
   --radius-s: 0.2em;
-  --radius-m: 0.4em;
+  --radius-m: 0.5em;
   --radius-l: 50%;
-
-  --table-padding: 16px 8px;
-  --font-family:
-      Pretendard Variable,
-      Pretendard,
-      -apple-system,
-      BlinkMacSystemFont,
-      Noto Sans KR,
-      Segoe UI,
-      Apple SD Gothic Neo,
-      Helvetica Neue,
-      Arial,
-      sans-serif;
+  --table-pad: 16px 8px;
 
   --black-1: rgb(18, 18, 18);
-  --black-1a: rgb(18, 18, 18, 0.995);
+  --black-1a: rgb(18, 18, 18, 0.95);
   --black-2: rgb(22, 22, 22);
-  --black-2a: rgb(22, 22, 22, 0.995);
+  --black-2a: rgb(22, 22, 22, 0.95);
   --black-3: rgb(26, 26, 26);
-  --black-3a: rgb(26, 26, 26, 0.995);
+  --black-3a: rgb(26, 26, 26, 0.95);
   --black-4: rgb(32, 32, 32);
-  --black-4a: rgb(32, 32, 32, 0.995);
+  --black-4a: rgb(32, 32, 32, 0.95);
   --black-5: rgb(46, 46, 46);
-  --black-5a: rgb(24, 24, 24, 0.995);
+  --black-5a: rgb(24, 24, 24, 0.95);
   --black-6: rgb(86, 86, 86);
-  --black-6a: rgb(86, 86, 86, 0.995);
+  --black-6a: rgb(86, 86, 86, 0.95);
 
   --white-1: rgb(242, 242, 242);
   --white-1a: rgb(242, 242, 242,  0.95);
@@ -58,16 +45,64 @@
   --dark-element: var(--black-2);
   --dark-queue: var(--black-3a);
   --dark-content: var(--black-2a);
-
   --dark-range: var(--black-5);
   --dark-range-now: var(--white-4);
   --dark-text: var(--white-4);
   --dark-text-sub: var(--white-5);
-
   --dark-focus: var(--white-6);
   --dark-hover: var(--white-6);
   --dark-disabled: var(--black-6);
   --dark-active: var(--white-4);
+}
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
 }
 
 * {
@@ -76,20 +111,27 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  font-family:
+    Pretendard Variable,
+    Pretendard,
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    Noto Sans KR,
+    Segoe UI,
+    Apple SD Gothic Neo,
+    Helvetica Neue,
+    Arial,
+    sans-serif;
 }
 
 *:focus {
   outline: 1px dotted var(--dark-focus);
   border-radius: var(--radius-m);
+  outline-offset: -1px;
 }
 
 html {
-  font-family: var(--font-family);
-}
-
-body {
-  overflow-x: hidden;
-  background-color: var(--dark-body);
   color: var(--dark-text);
   font-size: 15.5px;
   letter-spacing: -0.1px;
@@ -97,133 +139,46 @@ body {
   word-wrap: break-word;
 }
 
-button {
-  cursor: pointer;
-}
-
-button:disabled {
-  color: var(--dark-disabled);
+body {
+  overflow-x: hidden;
+  background-color: var(--dark-body);
 }
 
 a {
   color: unset;
   text-decoration: none;
   cursor: pointer;
+  display: inline;
   width: fit-content;
 }
 
-a:hover {
+a:hover, a:focus {
   text-decoration: underline;
-}
-
-a:active, a:focus {
   outline: none;
 }
 
-input[type='range'] {
-  appearance: none;
+button {
   cursor: pointer;
-  overflow: hidden;
-  width: 550px;
-  appearance: none;
-  background-color: var(--dark-range);
-  border-radius: var(--radius-s);
-  height: 3.5px;
-  margin-left: 0.5px;
-}
-
-input[type='range']::-webkit-slider-runnable-track {
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  border: none;
-  appearance: none;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  width: 0;
-  height: 0;
-  appearance: none;
-  box-sizing: content-box;
-  background-color: var(--dark-range-now);
-  box-shadow: -550px 0 0 550px var(--dark-range-now);
-}
-
-input[type="range"]::-moz-range-track {
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  border: none;
-  appearance: none;
-}
-
-input[type="range"]::-moz-range-progress {
-  height: 100%;
-  appearance: none;
-  box-sizing: content-box;
-  background-color: var(--dark-range-now);
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  border: none;
-  appearance: none;
-}
-
-img {
-  color: transparent;
 }
 
 .text {
+  width: auto;
   display: block;
-  font-size: 95%;
-  font-weight: 600;
   text-overflow: ellipsis;
   overflow: hidden;
-  line-height: 150%;
+  outline: none;
+  font-size: 95%;
 }
 
 .text-sub {
-  display: block;
   color: var(--dark-text-sub);
-  font-size: 80%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  line-height: 150%;
-}
-
-.bottom-ctl {
-  gap: 12px;
-  display: flex;
-  justify-content: flex-end;
-  margin: var(--space-m) 0;
-}
-
-.info-card {
-  padding-top: var(--space-s);
-}
-
-.info-card a {
-  display: grid;
+  font-size: 82.5%;
 }
 
 .normal {
-  display: unset;
-  font-size: 100%;
-  text-overflow: unset;
-  overflow: unset;
-  line-height: normal;
+  font-size: 95%;
 }
 
-.big {
-  font-size: 110%;
-}
-
-.small {
-  font-size: 80%;
+.bold {
+  font-weight: 600;
 }

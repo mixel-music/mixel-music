@@ -1,4 +1,4 @@
-export interface TrackList {
+export interface Tracks {
   album: string;
   album_id: string;
   artist: string;
@@ -9,13 +9,13 @@ export interface TrackList {
 };
 
 
-export interface TrackListResponse {
-  list: TrackList[];
+export interface TracksResponse {
+  tracks: Tracks[];
   total: number;
 };
 
 
-export interface TrackItem {
+export interface Track {
   album: string;
   album_id: string;
   albumartist: string;
@@ -52,12 +52,10 @@ export interface TrackItem {
 };
 
 
-export interface TrackItemResponse extends TrackItem {
-  
-};
+export interface TrackResponse extends Track {};
 
 
-export interface AlbumList {
+export interface Albums {
   album: string;
   album_id: string;
   albumartist: string;
@@ -66,13 +64,13 @@ export interface AlbumList {
 };
 
 
-export interface AlbumListResponse {
-  list: AlbumList[]
+export interface AlbumsResponse {
+  albums: Albums[]
   total: number;
 };
 
 
-export interface AlbumItem {
+export interface Album {
   album: string;
   album_id: string;
   albumartist: string;
@@ -95,24 +93,24 @@ export interface AlbumTrack {
 };
 
 
-export interface AlbumItemResponse extends AlbumItem {
+export interface AlbumResponse extends Album {
   tracks: AlbumTrack[];
 };
 
 
-export interface ArtistList {
+export interface Artists {
   artist: string;
   artist_id: string;
 };
 
 
-export interface ArtistListResponse {
-  list: ArtistList[];
+export interface ArtistsResponse {
+  artists: Artists[];
   total: number;
 };
 
 
-export interface ArtistItem {
+export interface Artist {
   artist: string;
   artist_id: string;
 };
@@ -126,14 +124,14 @@ export interface ArtistAlbum {
 };
 
 
-export interface ArtistItemResponse extends ArtistItem {
+export interface ArtistResponse extends Artist {
   albums: ArtistAlbum[];
 };
 
 
 export interface PlayerState {
   index: number;
-  lists: TrackList[];
+  lists: Tracks[];
   isLoaded: boolean;
   isPlaying: boolean;
   currentTime: number;
@@ -145,6 +143,6 @@ export interface PlayerState {
 };
 
 
-export interface PlayerStore extends PlayerState, TrackList {
+export interface PlayerStore extends PlayerState, Tracks {
   artwork?: string;
 }

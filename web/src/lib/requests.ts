@@ -1,15 +1,18 @@
 import type {
-  AlbumListResponse,
-  TrackListResponse,
-  ArtistListResponse,
-  TrackItemResponse,
-  AlbumItemResponse,
-  ArtistItemResponse
+  AlbumsResponse,
+  AlbumResponse,
+  TracksResponse,
+  TrackResponse,
+  ArtistsResponse,
+  ArtistResponse,
 } from "./interface";
 import { apiFetch } from "./tools";
 
 
-export async function postLogout(fetch: typeof window.fetch): Promise<void> {
+export async function postLogout(
+  fetch: typeof window.fetch
+): Promise<void> {
+  
   try {
     const postLogout = await fetch(
       `http://localhost:2843/api/auth/logout`,
@@ -34,52 +37,55 @@ export async function postLogout(fetch: typeof window.fetch): Promise<void> {
 }
 
 
-export async function getTrackList(
+export async function getTracks(
   fetch: typeof window.fetch,
   start: number,
   end: number,
-): Promise<{list: TrackListResponse;}> {
+): Promise<{response: TracksResponse;}> {
 
   try {
-    const getTrackList = await apiFetch(fetch,
+    const fetchTracks = await apiFetch(fetch,
       `http://localhost:2843/api/library/tracks?start=${start}&end=${end}`);
 
-    if (!getTrackList.ok) {
-      throw new Error(getTrackList.statusText);
+    if (!fetchTracks.ok) {
+      throw new Error(fetchTracks.statusText);
     }
 
-    const list: TrackListResponse = await getTrackList.json();
+    const response: TracksResponse = await fetchTracks.json();
 
     return {
-      list,
+      response,
     };
   }
   
   catch (error) {
     return {
-      list: null,
+      response: {
+        "tracks": [],
+        "total": 0,
+      },
     }
   }
 };
 
 
-export async function getTrackItem(
+export async function getTrack(
   fetch: typeof window.fetch,
   trackId: string,
-): Promise<{item: TrackItemResponse;}> {
+): Promise<{response: TrackResponse;}> {
   
   try {
-    const getTrackItem = await apiFetch(fetch,
+    const fetchTrack = await apiFetch(fetch,
       `http://localhost:2843/api/library/tracks/${trackId}`);
 
-    if (!getTrackItem.ok) {
-      throw new Error(getTrackItem.statusText);
+    if (!fetchTrack.ok) {
+      throw new Error(fetchTrack.statusText);
     }
 
-    const item: TrackItemResponse = await getTrackItem.json();
+    const response: TrackResponse = await fetchTrack.json();
 
     return {
-      item,
+      response,
     };
   }
 
@@ -89,52 +95,55 @@ export async function getTrackItem(
 };
 
 
-export async function getAlbumList(
+export async function getAlbums(
   fetch: typeof window.fetch,
   start: number,
   end: number,
-): Promise<{list: AlbumListResponse;}> {
+): Promise<{response: AlbumsResponse;}> {
 
   try {
-    const getAlbumList = await apiFetch(fetch,
+    const fetchAlbums = await apiFetch(fetch,
       `http://localhost:2843/api/library/albums?start=${start}&end=${end}`);
 
-    if (!getAlbumList.ok) {
-      throw new Error(getAlbumList.statusText);
+    if (!fetchAlbums.ok) {
+      throw new Error(fetchAlbums.statusText);
     }
 
-    const list: AlbumListResponse = await getAlbumList.json();
+    const response: AlbumsResponse = await fetchAlbums.json();
 
     return {
-      list,
+      response,
     };
   }
 
   catch (error) {
     return {
-      list: null,
+      response: {
+        "albums": [],
+        "total": 0,
+      },
     }
   }
 };
 
 
-export async function getAlbumItem(
+export async function getAlbum(
   fetch: typeof window.fetch,
   albumId: string,
-): Promise<{item: AlbumItemResponse;}> {
+): Promise<{response: AlbumResponse;}> {
 
   try {
-    const getAlbumItem = await apiFetch(fetch,
+    const fetchAlbum = await apiFetch(fetch,
       `http://localhost:2843/api/library/albums/${albumId}`);
 
-    if (!getAlbumItem.ok) {
-      throw new Error(getAlbumItem.statusText);
+    if (!fetchAlbum.ok) {
+      throw new Error(fetchAlbum.statusText);
     }
 
-    const item: AlbumItemResponse = await getAlbumItem.json();
+    const response: AlbumResponse = await fetchAlbum.json();
 
     return {
-      item,
+      response,
     };
   }
 
@@ -144,52 +153,55 @@ export async function getAlbumItem(
 };
 
 
-export async function getArtistList(
+export async function getArtists(
   fetch: typeof window.fetch,
   start: number,
   end: number,
-): Promise<{list: ArtistListResponse;}> {
+): Promise<{response: ArtistsResponse;}> {
 
   try {
-    const getArtistList = await apiFetch(fetch,
+    const fetchArtists = await apiFetch(fetch,
       `http://localhost:2843/api/library/artists?start=${start}&end=${end}`);
 
-    if (!getArtistList.ok) {
-      throw new Error(getArtistList.statusText);
+    if (!fetchArtists.ok) {
+      throw new Error(fetchArtists.statusText);
     }
 
-    const list: ArtistListResponse = await getArtistList.json();
+    const response: ArtistsResponse = await fetchArtists.json();
 
     return {
-      list,
+      response,
     };
   }
 
   catch (error) {
     return {
-      list: null,
+      response: {
+        "artists": [],
+        "total": 0,
+      },
     }
   }
 };
 
 
-export async function getArtistItem(
+export async function getArtist(
   fetch: typeof window.fetch,
   artistId: string,
-): Promise<{item: ArtistItemResponse;}> {
+): Promise<{response: ArtistResponse;}> {
 
   try {
-    const getArtistItem = await apiFetch(fetch,
+    const fetchArtist = await apiFetch(fetch,
       `http://localhost:2843/api/library/artists/${artistId}`);
 
-    if (!getArtistItem.ok) {
-      throw new Error(getArtistItem.statusText);
+    if (!fetchArtist.ok) {
+      throw new Error(fetchArtist.statusText);
     }
 
-    const item: ArtistItemResponse = await getArtistItem.json();
+    const response: ArtistResponse = await fetchArtist.json();
 
     return {
-      item,
+      response,
     };
   }
 

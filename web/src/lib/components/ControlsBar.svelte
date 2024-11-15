@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { TrackList } from "$lib/interface";
+  import type { Tracks } from "$lib/interface";
   import PlayerService from "$lib/stores/stores";
   import Button from "./elements/Button.svelte";
   import { _ } from 'svelte-i18n'
 
-  export let trackItems: TrackList[];
+  export let tracks: Tracks[];
 </script>
 
 <div class="controls-bar">
@@ -17,7 +17,7 @@
       iconName='iconoir:play-solid'
       on:click={() =>
         PlayerService.addTrack(
-          trackItems.map(track => ({
+          tracks.map(track => ({
             album: track.album,
             album_id: track.album_id,
             artist: track.artist,
@@ -32,7 +32,7 @@
       {$_('controls.play')}
     </Button>
 
-    <Button
+    <!-- <Button
       button='square'
       width='150px'
       height='50px'
@@ -40,10 +40,7 @@
       iconName='iconoir:shuffle'
     >
       {$_('controls.shuffle')}
-    </Button>
-  </div>
-  <div>
-
+    </Button> -->
   </div>
 </div>
 

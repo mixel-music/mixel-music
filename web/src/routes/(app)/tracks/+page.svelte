@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import type { TrackListResponse } from '$lib/interface';
+  import type { TracksResponse } from '$lib/interface';
   import {
     removeLinkParams,
     getPaginatedList,
@@ -12,7 +12,7 @@
   import { _ } from 'svelte-i18n';
 
   export let data: PageData;
-  let trackList: TrackListResponse = data.list;
+  let tracks: TracksResponse = data.tracks;
   let startNumber: number = data.start;
   let endNumber: number = data.end
 
@@ -21,7 +21,7 @@
       fetch,
       direction,
       'track',
-      data.list.total,
+      data.tracks.total,
       startNumber,
       39,
     );
@@ -31,8 +31,7 @@
     console.debug(startNumber, endNumber);
 
     if (response) {
-      trackList = { list: [...response.list.list], total: response.list.total };
-      console.debug(trackList);
+      tracks = { tracks: [...response.response.tracks], total: response.response.total };
     }
 
     removeLinkParams(
@@ -47,12 +46,12 @@
 
 <PageTitle title={$_(data.title)} />
 
-{#if data.list}
+{#if data.tracks}
   <div style="margin-bottom: var(--space-s);">
-    <ControlsBar trackItems={trackList.list} />
+    <ControlsBar tracks={tracks.tracks} />
   </div>
 
-  <TrackTable list={trackList.list} />
+  <TrackTable tracks={tracks.tracks} />
 
   <div class='bottom-ctl'>
     <Button
@@ -66,8 +65,17 @@
       button='round'
       preload='hover'
       iconName='iconoir:nav-arrow-right'
-      disabled={data.end + (data.end - data.start) >= data.list.total}
+      disabled={data.end + (data.end - data.start) >= data.tracks.total}
       on:click={() => changePage('next')}
     />
   </div>
 {/if}
+
+<style>
+  .bottom-ctl {
+    gap: 12px;
+    display: flex;
+    justify-content: flex-end;
+    margin: var(--space-m) 0;
+  }
+</style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrackList } from "$lib/interface";
+  import type { Tracks } from "$lib/interface";
   import {
     getAlbumLink,
     getArtistLink,
@@ -14,21 +14,21 @@
   import PlayerService from "$lib/stores/stores";
   import { _ } from 'svelte-i18n';
 
-  export let list: TrackList[];
+  export let tracks: Tracks[];
 </script>
 
 <Table>
   <TableHead>
-    <TableHeadItem size='l'>{$_('label.title')}</TableHeadItem>
-    <TableHeadItem size='m'>{$_('label.album')}</TableHeadItem>
-    <TableHeadItem size='m'>{$_('label.artist')}</TableHeadItem>
+    <TableHeadItem size='xl'>{$_('label.title')}</TableHeadItem>
+    <TableHeadItem size='l'>{$_('label.album')}</TableHeadItem>
+    <TableHeadItem size='l'>{$_('label.artist')}</TableHeadItem>
     <TableHeadItem size="s">{$_('label.time')}</TableHeadItem>
     <TableHeadItem size="xs"></TableHeadItem>
   </TableHead>
 
-  {#each list as item}
+  {#each tracks as item}
     <TableBody>
-      <TableBodyItem size='l'>
+      <TableBodyItem size='xl'>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <!-- svelte-ignore a11y-missing-attribute -->
         <a on:click={() =>
@@ -48,12 +48,12 @@
           {item.title}
         </a>
       </TableBodyItem>
-      <TableBodyItem size="m">
+      <TableBodyItem size="l">
         <a href='{getAlbumLink(item.album_id)}'>
           {item.album ? item.album : $_('unknown_album')}
         </a>
       </TableBodyItem>
-      <TableBodyItem size='m'>
+      <TableBodyItem size='l'>
         <a href='{getArtistLink(item.artist_id)}'>
           {item.artist}
         </a>

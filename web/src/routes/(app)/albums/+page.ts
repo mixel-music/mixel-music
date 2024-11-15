@@ -1,4 +1,4 @@
-import { getAlbumList } from '$lib/requests';
+import { getAlbums } from '$lib/requests';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, url }) => {
@@ -6,10 +6,10 @@ export const load: PageLoad = async ({ fetch, url }) => {
   const end = parseInt(url.searchParams.get('end') ?? '40', 10);
 
   try {
-    const data = await getAlbumList(fetch, start, end);
+    const data = await getAlbums(fetch, start, end);
 
     return {
-      list: data.list,
+      albums: data.response,
       title: 'albums.title',
       start: start,
       end: end,

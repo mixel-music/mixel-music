@@ -44,22 +44,7 @@ class Track(Base):
     year: int = Column(Integer, nullable=False)
 
 
-class TrackList(BaseModel):
-    album: str
-    album_id: str
-    artist: str
-    artist_id: str
-    duration: float
-    title: str
-    track_id: str
-
-
-class TrackListResponse(BaseModel):
-    list: list[TrackList]
-    total: int
-
-
-class TrackItem(BaseModel):
+class TrackModel(BaseModel):
     album: str
     album_id: str
     albumartist: str
@@ -95,5 +80,20 @@ class TrackItem(BaseModel):
     year: int
 
 
-class TrackItemResponse(TrackItem):
+class TracksModel(BaseModel):
+    album: str
+    album_id: str
+    artist: str
+    artist_id: str
+    duration: float
+    title: str
+    track_id: str
+
+
+class TrackResponseModel(TrackModel):
     pass
+
+
+class TracksResponseModel(BaseModel):
+    tracks: list[TracksModel]
+    total: int

@@ -32,25 +32,14 @@
     margin-bottom: 96px;
     position: relative;
     overflow-y: scroll;
-    user-select: none;
     display: flex;
     flex-direction: column;
-    align-content: center;
     flex-wrap: wrap;
   }
 
-  #wrap:hover {
-    outline: none;
-  }
-
   #contents {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    /* width: min(1600px, 100%); */
-    backdrop-filter: blur(12px);
-    padding: var(--space-m) var(--space-xl);
-    padding-top: 0;
+    padding: 0 72px;
+    padding-bottom: 46px;
   }
 
   @media screen and (max-width: 1960px) {

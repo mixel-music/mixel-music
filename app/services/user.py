@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from typing import Any
 from core.database import NoResultFound
-from models.user import UserItem, UserSignupForm
+from models.user import UserModel, UserCreateModel, UserUpdateModel
 from repos.user import UserRepo
 from services.auth import AuthService
 
@@ -13,17 +13,17 @@ class UserService:
         self.repo = repo
 
 
-    async def get_user_list(self) -> dict[str, list[dict[str, Any]] | int]:
-        user_list, total = await self.repo.get_user_list()
+    async def get_users(self) -> dict[str, list[dict[str, Any]] | int]:
+        users, total = await self.repo.get_users()
         return {
-            "list": user_list,
+            "users": users,
             "total": total
         }
 
 
-    async def get_user_item(self, user_id: str) -> None:
+    async def get_user(self, user_id: str) -> None:
         try:
-            return await self.repo.get_user_item(user_id)
+            return await self.repo.get_user(user_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -41,7 +41,7 @@ class UserService:
         await self.repo.update_user(user_id, {"last_login": datetime.now()})
 
     
-    async def create_user(self, data: UserSignupForm) -> None:
+    async def create_user(self, data: UserCreateModel) -> None:
         check_user = await self.repo.is_user_exist(data.email)
         if check_user:
             raise HTTPException(
@@ -49,7 +49,7 @@ class UserService:
                 detail="User already exists"
             )
 
-        user_item = UserItem(
+        user_item = UserModel(
             user_id=str(uuid.uuid4()),
             email=data.email,
             username=data.username,
@@ -60,10 +60,10 @@ class UserService:
         await self.repo.create_user(user_item.model_dump())
 
 
-    async def update_user(self, user_id: str, user_data: dict[str, Any]) -> None:
+    async def update_user(self, user_id: str, user_data: UserUpdateModel) -> None:
         check_user = await self.repo.is_user_exist(user_id)
         if not check_user: raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-        await self.repo.update_user(user_id, user_data)
+        await self.repo.update_user(user_id, user_data.model_dump(exclude_unset=True))
 
 
     async def delete_user(self, user_id: str) -> None:

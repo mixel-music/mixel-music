@@ -15,20 +15,7 @@ class Album(Base):
     year: int = Column(String, nullable=False)
 
 
-class AlbumList(BaseModel):
-    album: str
-    album_id: str
-    albumartist: str
-    albumartist_id: str
-    year: int
-
-
-class AlbumListResponse(BaseModel):
-    list: list[AlbumList]
-    total: int
-
-
-class AlbumItem(BaseModel):
+class AlbumModel(BaseModel):
     album: str
     album_id: str
     albumartist: str
@@ -39,7 +26,7 @@ class AlbumItem(BaseModel):
     year: int
 
 
-class AlbumTrack(BaseModel):
+class AlbumTrackModel(BaseModel):
     artist: str
     artist_id: str
     comment: str
@@ -49,5 +36,18 @@ class AlbumTrack(BaseModel):
     track_number: int
 
 
-class AlbumItemResponse(AlbumItem):
-    tracks: list[AlbumTrack]
+class AlbumsModel(BaseModel):
+    album: str
+    album_id: str
+    albumartist: str
+    albumartist_id: str
+    year: int
+
+
+class AlbumResponseModel(AlbumModel):
+    tracks: list[AlbumTrackModel]
+
+
+class AlbumsResponseModel(BaseModel):
+    albums: list[AlbumsModel]
+    total: int

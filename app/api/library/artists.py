@@ -1,29 +1,25 @@
 from fastapi import APIRouter, Query, Depends
-from models.artist import ArtistListResponse, ArtistItemResponse
+from models.artist import ArtistsResponseModel, ArtistResponseModel
 from core.depends import get_library_service
 
 router = APIRouter()
 
-@router.get('/artists',
-    response_model=ArtistListResponse,
-)
-async def api_get_artist_list(
+@router.get('/artists', response_model=ArtistsResponseModel)
+async def api_get_artists(
     start: int = Query(1, ge=1),
     end: int = Query(40, ge=1),
     service: get_library_service = Depends(),
-) -> ArtistListResponse:
+) -> ArtistsResponseModel:
 
-    artist_list = await service.get_artist_list(start, end)
-    return artist_list
+    artists = await service.get_artists(start, end)
+    return artists
 
 
-@router.get('/artists/{artist_id}',
-    response_model=ArtistItemResponse,
-)
-async def api_get_artist_item(
+@router.get('/artists/{artist_id}', response_model=ArtistResponseModel)
+async def api_get_artist(
     artist_id: str,
     service: get_library_service = Depends(),
-) -> ArtistItemResponse:
+) -> ArtistResponseModel:
     
-    artist_item = await service.get_artist_item(artist_id)
-    return artist_item
+    artist = await service.get_artist(artist_id)
+    return artist

@@ -1,29 +1,25 @@
 from fastapi import APIRouter, Query, Depends
-from models.album import AlbumListResponse, AlbumItemResponse
+from models.album import AlbumsResponseModel, AlbumResponseModel
 from core.depends import get_library_service
 
 router = APIRouter()
 
-@router.get('/albums',
-    response_model=AlbumListResponse,
-)
-async def api_get_album_list(
+@router.get('/albums', response_model=AlbumsResponseModel)
+async def api_get_albums(
     start: int = Query(1, ge=1),
     end: int = Query(40, ge=1),
     service: get_library_service = Depends(),
-) -> AlbumListResponse:
+) -> AlbumsResponseModel:
     
-    album_list = await service.get_album_list(start, end)
-    return album_list
+    albums = await service.get_albums(start, end)
+    return albums
 
 
-@router.get('/albums/{album_id}',
-    response_model=AlbumItemResponse,
-)
-async def api_get_album_item(
+@router.get('/albums/{album_id}', response_model=AlbumResponseModel)
+async def api_get_album(
     album_id: str,
     service: get_library_service = Depends(),
-) -> AlbumItemResponse:
+) -> AlbumResponseModel:
     
-    album_item = await service.get_album_item(album_id)
-    return album_item
+    album = await service.get_album(album_id)
+    return album

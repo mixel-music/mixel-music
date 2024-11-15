@@ -1,18 +1,71 @@
 <script lang="ts">
-  import { getArtwork } from "$lib/tools";
+  import { getArtwork } from '$lib/tools';
+  import { encode, decode } from 'blurhash';
+  import { writable } from "svelte/store";
+  import { onMount } from "svelte";
+
   export let albumId: string;
+  export let blurhashBackground = writable<string | null>(null);
+
+  let imageUrl = getArtwork(albumId, 500);
+
+  async function generateBlurhash(image: HTMLImageElement) {
+    const width = 32;
+    const height = 32;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(image, 0, 0, width, height);
+    const imageData = ctx?.getImageData(0, 0, width, height);
+
+    if (imageData) {
+      const blurhash = encode(imageData.data, imageData.width, imageData.height, 4, 4);
+      const pixels = decode(blurhash, width, height);
+      const decodedCanvas = document.createElement('canvas');
+
+      decodedCanvas.width = width;
+      decodedCanvas.height = height;
+
+      const decodedCtx = decodedCanvas.getContext('2d');
+
+      if (decodedCtx) {
+        const decodedImageData = decodedCtx.createImageData(width, height);
+        decodedImageData.data.set(pixels);
+        decodedCtx.putImageData(decodedImageData, 0, 0);
+
+        const dataUrl = decodedCanvas.toDataURL();
+        blurhashBackground.set(dataUrl);
+      }
+    }
+  }
+
+  onMount(async () => {
+    try {
+      const img = new Image();
+      img.crossOrigin = "use-credentials";
+      img.src = imageUrl;
+      img.onload = () => {
+        generateBlurhash(img);
+      };
+    } catch (error) {
+      console.error('Error generating Blurhash:', error);
+    }
+  });
 </script>
 
 <div
   class="album-wrap"
-  style:background-image="url('{getArtwork(albumId, 500)}')"
+  style="background-image: url({$blurhashBackground})"
 />
 
 <style>
   .album-wrap {
     position: absolute;
     width: 100%;
-    height: 50dvh;
+    height: 45dvh;
     z-index: -1;
     background-size: cover;
     background-position-y: center;

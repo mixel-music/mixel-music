@@ -37,7 +37,7 @@ class UserRepo:
         return None if result is None else result.get('password')
 
 
-    async def get_user_list(self) -> dict[str, Any]:
+    async def get_users(self) -> dict[str, Any]:
         users_query = await self.conn.execute(select(User.__table__))
         users = users_query.mappings().all()
 
@@ -48,7 +48,7 @@ class UserRepo:
         return users, total_query
 
 
-    async def get_user_item(self, user_id: str) -> dict[str, Any]:
+    async def get_user(self, user_id: str) -> dict[str, Any]:
         user_item = {}
         db_query = await self.conn.execute(
             select(User.__table__).where(User.user_id == user_id)

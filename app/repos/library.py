@@ -17,7 +17,7 @@ class LibraryRepo:
         self.conn = conn
 
 
-    async def get_track_list(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
+    async def get_tracks(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
         db_query = await self.conn.execute(
             select(
                 Track.album,
@@ -41,7 +41,7 @@ class LibraryRepo:
         return track_list, total
     
 
-    async def get_track_item(self, track_id: str) -> dict[str, Any]:
+    async def get_track(self, track_id: str) -> dict[str, Any]:
         track_item = {}
         db_query = await self.conn.execute(
             select(Track.__table__).where(Track.track_id == track_id)
@@ -54,7 +54,7 @@ class LibraryRepo:
             raise NoResultFound
 
 
-    async def get_album_list(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
+    async def get_albums(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
         album_query = await self.conn.execute(
             select(
                 Album.album,
@@ -82,7 +82,7 @@ class LibraryRepo:
         return album_list, total
     
 
-    async def get_album_item(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
+    async def get_album(self, album_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
         album_item = {}
         album_query = await self.conn.execute(
             select(
@@ -121,7 +121,7 @@ class LibraryRepo:
         return album_item
 
 
-    async def get_artist_list(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
+    async def get_artists(self, start: int, end: int) -> tuple[list[dict[str, Any]], int]:
         db_query = await self.conn.execute(
             select(Artist.__table__)
             .order_by(Artist.artist.asc())
@@ -137,7 +137,7 @@ class LibraryRepo:
         return artist_list, total
 
 
-    async def get_artist_item(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
+    async def get_artist(self, artist_id: str) -> dict[str, list[dict[str, Any]] | Any]:
         artist_item = {}
         track_query = await self.conn.execute(
             select(Track.album_id)

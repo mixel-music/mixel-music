@@ -34,7 +34,7 @@
     aspect-ratio: 1/1;
     display: inline-flex;
     background-color: var(--dark-element);
-    box-shadow: 0 0 0 1px var(--dark-border) inset;
+    border: 1px solid var(--dark-border);
     border-radius: var(--radius-s);
   }
 

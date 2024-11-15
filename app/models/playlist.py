@@ -22,7 +22,7 @@ class PlaylistData(Base):
     added_at: DateTime = Column(DateTime, nullable=False)
 
 
-class PlaylistItem(BaseModel):
+class PlaylistModel(BaseModel):
     playlist_id: str
     playlist_name: str
     playlist_user: str
@@ -30,7 +30,7 @@ class PlaylistItem(BaseModel):
     updated_at: datetime
 
 
-class PlaylistDataItem(BaseModel):
+class PlaylistDataModel(BaseModel):
     playlist_id: str
     track_id: str
     added_at: datetime

@@ -8,11 +8,32 @@
   import { cubicOut } from "svelte/easing";
   import { _ } from "svelte-i18n";
 
+  import { onMount, onDestroy } from "svelte";
+
   $: lists = $PlayerService;
+  let playerQueueElement;
+
+  export const handlePlayerQueueClick = () => {
+    $isQueueOpen = !$isQueueOpen;
+  };
+
+  const handleClickOutside = (event) => {
+    if (playerQueueElement && !playerQueueElement.contains(event.target)) {
+      $isQueueOpen = false;
+    }
+  };
+
+  onMount(() => {
+    document.addEventListener("click", handleClickOutside);
+  });
+
+  onDestroy(() => {
+    document.removeEventListener("click", handleClickOutside);
+  });
 </script>
 
 {#if $isQueueOpen}
-  <div class="player-queue"
+  <div bind:this={playerQueueElement} class="player-queue"
   transition:fly={
     { 
       delay: 10,
@@ -24,7 +45,7 @@
   }>
     <!-- <span class="title">{$_('player.queue')}</span> -->
     {#each lists.lists as trk, index}
-      <div transition:fade={{ delay: 10, duration: 70 }} class="track">
+      <div in:fade={{ duration: 100 }} out:fade={{ duration: 100 }} class="track">
         <ArtworkImage
           src={trk.album === ''
             ? getArtwork(trk.track_id, 128)
@@ -76,19 +97,18 @@
     z-index: 0;
     display: flex;
     position: fixed;
-    top: var(--space-m);
-    right: var(--space-m);
+    top: var(--space-s);
+    right: var(--space-s);
     flex-direction: column;
     flex-shrink: 0;
-    width: 450px;
-    height: calc(100% - 96px - calc(var(--space-m)* 2));
+    width: 400px;
+    height: calc(100% - 96px - calc(var(--space-s)* 2));
     box-shadow: 0 0 0 1px var(--dark-border) inset;
     background-color: var(--dark-queue);
     border-radius: var(--radius-m);
     gap: var(--space-m);
     overflow-y: scroll;
     padding: var(--space-s);
-    padding-top: var(--space-m);
     backdrop-filter: blur(64px);
   }
 

@@ -47,6 +47,10 @@
 {/if}
 
 <style>
+  a {
+    width: 100%;
+  }
+
   .grid-item {
     white-space: nowrap;
     margin-bottom: var(--space-m);
@@ -65,24 +69,11 @@
     visibility: hidden;
   }
 
-  .round {
+  .round, .round:focus {
     border-radius: var(--radius-l);
-  }
-
-  .round *:focus {
-    border-radius: var(--radius-l);
-  }
-
-  a {
-    display: block;
-    width: 100%;
-    height: 100%;
   }
 
   img {
-    width: 100%;
-    height: 100%;
-    display: block;
     object-fit: scale-down;
     aspect-ratio: 1/1;
     border-radius: var(--radius-s);

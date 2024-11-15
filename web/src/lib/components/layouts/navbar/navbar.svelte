@@ -34,21 +34,15 @@
 
 <style>
   nav {
-    position: sticky;
-    max-width: 100%;
     top: 0;
-
     display: flex;
-    align-items: center;
+    position: sticky;
     justify-content: space-between;
     padding: var(--space-m) 0;
-    padding-bottom: var(--space-m);
   }
 
   div {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     gap: 12px;
   }
 </style>

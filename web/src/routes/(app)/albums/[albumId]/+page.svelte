@@ -9,29 +9,29 @@
 
 <svelte:head>
   <title>
-    {data.item.album
-      ? data.item.album : $_('unknown_album')
-    } / {data.item.albumartist} • mixel-music
+    {data.album.album
+      ? data.album.album : $_('unknown_album')
+    } / {data.album.albumartist} • mixel-music
   </title>
 </svelte:head>
 
-{#if data.item}
+{#if data.album}
   <AlbumHeader
-    album={data.item.album}
-    albumId={data.item.album_id}
-    albumArtist={data.item.albumartist}
-    albumArtistId={data.item.albumartist_id}
-    comment={data.item.tracks[0].comment}
-    durationTotal={data.item.duration_total}
-    fileSizeTotal={data.item.filesize_total}
-    trackTotal={data.item.tracks.length}
-    year={data.item.year != 0 ? data.item.year : $_('unknown_year')}
-    trackItems={data.item.tracks.map(track => ({
+    album={data.album.album}
+    albumId={data.album.album_id}
+    albumArtist={data.album.albumartist}
+    albumArtistId={data.album.albumartist_id}
+    comment={data.album.tracks[0].comment}
+    durationTotal={data.album.duration_total}
+    fileSizeTotal={data.album.filesize_total}
+    trackTotal={data.album.tracks.length}
+    year={data.album.year != 0 ? data.album.year : 0}
+    tracks={data.album.tracks.map(track => ({
       ...track,
-      album: data.item.album,
-      album_id: data.item.album_id}
+      album: data.album.album,
+      album_id: data.album.album_id}
     ))}
   />
   
-  <AlbumTable list={data.item} />
+  <AlbumTable list={data.album} />
 {/if}
