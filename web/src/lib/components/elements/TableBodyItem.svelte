@@ -9,7 +9,7 @@
     xl: 5
   }[size] || 1;
 
-  $: additionalStyle = size === 'xs' ? 'text-overflow: clip;' : '';
+  $: additionalStyle = size === 'xs' ? 'text-overflow: clip; max-height: 50px;' : '';
 </script>
 
 <div style={`flex: ${flexSize}; ${additionalStyle}`}>

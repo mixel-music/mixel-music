@@ -6,7 +6,7 @@ from tools.path_handler import get_filename, get_path
 router = APIRouter()
 
 @router.get("/download/{track_id}")
-async def api_get_streaming(
+async def api_get_download(
     track_id: str,
     service: get_library_repo = Depends(),
 ) -> FileResponse:
