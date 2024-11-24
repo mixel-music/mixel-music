@@ -30,6 +30,7 @@
     "label.album": "Album",
     "label.albumartist": "Album Artist",
     "label.time": "Time",
+    "label.count": "",
 
     "albums.title": "Albums",
     "artists.title": "Artists",

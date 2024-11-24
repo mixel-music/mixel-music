@@ -11,12 +11,11 @@
 
 <Dropdown
   dropdownStyle='custom'
-  dropdownWidth='200px'
   dropdownOpenIcon='iconoir:more-horiz'
 >
 
   <DropdownItem
-    icon="iconoir:play-solid"
+    icon="iconoir:play"
     on:click={() =>
       PlayerService.addTrack(
         [{

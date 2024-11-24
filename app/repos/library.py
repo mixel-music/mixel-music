@@ -167,7 +167,7 @@ class LibraryRepo:
                 
                 # 앨범 albumartist_id 이용하여 아티스트 조회
                 artist_query = await self.conn.execute(
-                    select(Artist.artist)
+                    select(Artist.__table__)
                     .where(Artist.artist_id == album['albumartist_id'])
                 )
                 artist_data = artist_query.mappings().first()
@@ -176,6 +176,10 @@ class LibraryRepo:
                     artist_item = {
                         'artist': artist_data['artist'],
                         'artist_id': artist_id,
+                        'album_total': artist_data['album_total'],
+                        'track_total': artist_data['track_total'],
+                        'duration_total': artist_data['duration_total'],
+                        'filesize_total': artist_data['filesize_total'],
                         'albums': albums_data
                     }
         else:

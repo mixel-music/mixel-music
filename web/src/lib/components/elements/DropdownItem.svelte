@@ -30,6 +30,7 @@
     width: 100%;
     font-size: 15px;
     padding: 6px 12px;
+    padding-right: 18px;
     border-radius: var(--radius-m);
     text-decoration: none;
   }

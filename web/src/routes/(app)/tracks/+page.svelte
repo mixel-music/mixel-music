@@ -28,10 +28,12 @@
 
     startNumber = newStart;
     endNumber = newEnd;
-    console.debug(startNumber, endNumber);
 
     if (response) {
-      tracks = { tracks: [...response.response.tracks], total: response.response.total };
+      tracks = {
+        tracks: [...response.response.tracks],
+        total: response.response.total
+      };
     }
 
     removeLinkParams(

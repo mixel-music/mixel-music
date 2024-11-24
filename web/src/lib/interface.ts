@@ -101,6 +101,10 @@ export interface AlbumResponse extends Album {
 export interface Artists {
   artist: string;
   artist_id: string;
+  album_total: number;
+  track_total: number;
+  duration_total: number;
+  filesize_total: number;
 };
 
 
@@ -113,6 +117,10 @@ export interface ArtistsResponse {
 export interface Artist {
   artist: string;
   artist_id: string;
+  album_total: number;
+  track_total: number;
+  duration_total: number;
+  filesize_total: number;
 };
 
 

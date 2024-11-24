@@ -48,8 +48,9 @@
     object-fit: cover;
   }
 
-  .wrap {
+  /* .wrap {
+    border: none;
     box-shadow: 0 0 0 1px #ffffff0c inset;
     background-color: #1818184f;
-  }
+  } */
 </style>

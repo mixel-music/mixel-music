@@ -20,7 +20,7 @@
 <Table>
   <TableHead>
     <TableHeadItem size='xl'>{$_('label.title')}</TableHeadItem>
-    <TableHeadItem size='l'>{$_('label.album')}</TableHeadItem>
+    <TableHeadItem size='xl'>{$_('label.album')}</TableHeadItem>
     <TableHeadItem size='l'>{$_('label.artist')}</TableHeadItem>
     <TableHeadItem size="s">{$_('label.time')}</TableHeadItem>
     <TableHeadItem size="xs"></TableHeadItem>
@@ -49,7 +49,7 @@
         </a>
       </TableBodyItem>
 
-      <TableBodyItem size="l">
+      <TableBodyItem size="xl">
         <a href='{getAlbumLink(item.album_id)}'>
           {item.album ? item.album : $_('unknown_album')}
         </a>

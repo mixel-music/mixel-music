@@ -32,7 +32,6 @@
     width={256}
     height={256}
     WrapCover
-    FullCover
     lazyload={false}
   />
 

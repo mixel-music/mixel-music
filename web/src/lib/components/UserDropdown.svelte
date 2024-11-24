@@ -6,7 +6,6 @@
 </script>
 
 <Dropdown
-  dropdownWidth='300px'
   dropdownOpenIcon='iconoir:user'
 >
 

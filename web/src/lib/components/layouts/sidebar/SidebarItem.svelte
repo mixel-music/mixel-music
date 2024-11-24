@@ -52,6 +52,7 @@
     color: var(--dark-text-sub);
     align-items: center;
     justify-content: center;
+    margin-left: 2px;
   }
 
   /* li {

@@ -5,7 +5,7 @@
 
   let isDropdownOpen = false;
   export let dropdownStyle: string = 'round';
-  export let dropdownWidth: string = '0px';
+  export let dropdownWidth: string = '';
   export let dropdownOpenIcon: string | undefined = undefined;
   export let dropdownCloseIcon: string | undefined = undefined;
 
@@ -60,7 +60,7 @@
     style="
       position: fixed;
       width: {dropdownWidth};
-      top: calc({dropdownPosition.top}px + var(--space-s));
+      top: calc({dropdownPosition.top}px + var(--space-xs));
       right: calc({dropdownPosition.right}px + 80px);"
     in:fade={{ duration: 100 }}
     out:fade={{ duration: 100 }}

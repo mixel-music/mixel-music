@@ -1,36 +1,43 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import type { ArtistsResponse } from '$lib/interface';
-  import { getPaginatedList, getArtistLink } from '$lib/tools';
-  import InfiniteScroll from '$lib/components/interactions/InfiniteScroll.svelte';
+  import {
+    removeLinkParams,
+    getPaginatedList,
+  } from '$lib/tools';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
-  import GridWrap from '$lib/components/elements/GridWrap.svelte';
-  import GridItem from '$lib/components/elements/GridItem.svelte';
-  import GridItemDetail from '$lib/components/elements/GridItemDetail.svelte';
+  import ArtistTable from '$lib/components/ArtistTable.svelte';
+  import Button from '$lib/components/elements/Button.svelte';
   import { _ } from 'svelte-i18n';
 
   export let data: PageData;
   let artists: ArtistsResponse = data.artists;
-  let startNumber = data.start;
-  let loading = false;
-  
-  async function loadMoreArtists() {
-    if (loading || (startNumber + 39) >= artists.total) return;
-    loading = true;
+  let startNumber: number = data.start;
+  let endNumber: number = data.end
 
-    const { newStart, response } = await getPaginatedList(
-      fetch, 'next', 'artist', artists.total, startNumber, 39,
+  async function changePage(direction: 'next' | 'prev') {
+    const { newStart, newEnd, response } = await getPaginatedList(
+      fetch,
+      direction,
+      'artist',
+      data.artists.total,
+      startNumber,
+      39,
     );
 
     startNumber = newStart;
+    endNumber = newEnd;
+
     if (response) {
       artists = {
-        artists: [...artists.artists, ...response.response.artists],
+        artists: [...response.response.artists],
         total: response.response.total,
       };
     }
 
-    loading = false;
+    removeLinkParams(
+      { start: startNumber.toString(), end: (endNumber).toString() }
+    );
   }
 </script>
 
@@ -40,23 +47,32 @@
 
 <PageTitle title={$_(data.title)} />
 
-<InfiniteScroll threshold={100} on:loadMore={loadMoreArtists}>
-  <GridWrap items={artists.artists}>
-    <GridItem
-      let:item
-      slot="GridItem"
-      href={getArtistLink(item.artist_id)}
-      alt={item.artist}
-      lazyload
-      round
-    >
-      <GridItemDetail
-        center
-        title={item.artist}
-        titleHref={getArtistLink(item.artist_id)}
-        sub={item.albumartist}
-        subHref={getArtistLink(item.albumartist_id)}
-      />
-    </GridItem>
-  </GridWrap>
-</InfiniteScroll>
+{#if data.artists}
+  <ArtistTable artists={artists.artists} />
+
+  <div class='bottom-ctl'>
+    <Button
+      button='round'
+      preload='hover'
+      iconName='iconoir:nav-arrow-left'
+      on:click={() => changePage('prev')}
+    />
+    
+    <Button
+      button='round'
+      preload='hover'
+      iconName='iconoir:nav-arrow-right'
+      disabled={data.end + (data.end - data.start) >= data.artists.total}
+      on:click={() => changePage('next')}
+    />
+  </div>
+{/if}
+
+<style>
+  .bottom-ctl {
+    gap: 12px;
+    display: flex;
+    justify-content: flex-end;
+    margin: var(--space-m) 0;
+  }
+</style>

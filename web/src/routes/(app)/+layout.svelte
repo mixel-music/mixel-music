@@ -40,6 +40,7 @@
   #contents {
     padding: 0 72px;
     padding-bottom: 46px;
+    backdrop-filter: blur(46px);
   }
 
   @media screen and (max-width: 1960px) {

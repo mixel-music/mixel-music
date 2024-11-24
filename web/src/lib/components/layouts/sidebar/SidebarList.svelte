@@ -13,7 +13,7 @@
     color: var(--dark-text-sub);
     content: attr(title);
     margin-top: var(--space-l);
-    margin-left: var(--space-s);
+    margin-left: var(--space-m);
     margin-bottom: var(--space-xs);
   }
 

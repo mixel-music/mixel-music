@@ -1,6 +1,6 @@
 import asyncio
 from models import Album, Artist, Track
-from core.database import db_conn, select, func
+from core.database import db_conn, select, func, exists
 from core.logging import logs
 from repos.library import LibraryRepo
 
@@ -8,15 +8,15 @@ from repos.library import LibraryRepo
 class LibraryScan:
     @staticmethod
     async def perform_all() -> None:
-        alb = asyncio.create_task(LibraryScan.perform_albums())
-        art = asyncio.create_task(LibraryScan.perform_artists())
-        await alb, art
+        await asyncio.gather(
+            LibraryScan.perform_albums(),
+            LibraryScan.perform_artists()
+        )
 
 
     @staticmethod
     async def perform_albums() -> None:
         async with db_conn() as conn:
-            # Query to handle albums, excluding "Unknown Album"
             db_query = (
                 select(
                     Track.album,
@@ -43,7 +43,6 @@ class LibraryScan:
             db_result = await conn.execute(db_query)
             albums_data = db_result.all()
 
-            # Insert each album data
             for alb in albums_data:
                 album_data = {
                     'album': alb.album,
@@ -57,7 +56,6 @@ class LibraryScan:
 
                 await LibraryRepo(conn).insert_album(album_data)
 
-            # Handle albums with "Unknown Album"
             unknown_query = (
                 select(
                     Track.album,
@@ -79,7 +77,6 @@ class LibraryScan:
             unknown_result = await conn.execute(unknown_query)
             unknown_albums_data = unknown_result.all()
 
-            # Insert each unknown album
             for alb in unknown_albums_data:
                 album_data = {
                     'album': alb.album,
@@ -94,7 +91,6 @@ class LibraryScan:
                 await LibraryRepo(conn).insert_album(album_data)
 
         async with db_conn() as conn:
-            # Remove albums that no longer have tracks
             albums_query = select(Album.album_id)
             result = await conn.execute(albums_query)
             album_hash = {row.album_id for row in result}
@@ -103,7 +99,6 @@ class LibraryScan:
             result = await conn.execute(tracks_query)
             track_hash = {row.album_id for row in result}
 
-            # Find albums present in Albums but not in Tracks
             orphan_albums = album_hash - track_hash
 
             for album_id in orphan_albums:
@@ -116,54 +111,45 @@ class LibraryScan:
         async with db_conn() as conn:
             db_query = (
                 select(
-                    Track.albumartist,
-                    Track.albumartist_id,
-                    Track.artist,
-                    Track.artist_id,
+                    Track.albumartist_id.label('albumartist_id'),
+                    Track.albumartist.label('albumartist'),
+                    func.count(Track.track_id).label('track_total'),
+                    func.count(func.distinct(Track.album_id)).label('album_total'),
+                    func.sum(Track.duration).label('duration_total'),
+                    func.sum(Track.filesize).label('filesize_total'),
                 )
-                .distinct(Track.artist, Track.albumartist)
+                .where(Track.albumartist != '')
+                .group_by(Track.albumartist_id, Track.albumartist)
             )
 
             db_result = await conn.execute(db_query)
             artists_data = db_result.all()
 
-            for track in artists_data:
-                # Initialize a set to avoid duplicating artists
-                artists_to_insert = set()
+            for art in artists_data:
+                artist_data = {
+                    'artist': art.albumartist,
+                    'artist_id': art.albumartist_id,
+                    'album_total': art.album_total,
+                    'track_total': art.track_total,
+                    'duration_total': art.duration_total,
+                    'filesize_total': art.filesize_total,
+                }
 
-                # If artist and albumartist are different, insert both
-                if track.artist_id != track.albumartist_id:
-                    artists_to_insert.add((track.artist, track.artist_id))
-                    artists_to_insert.add((track.albumartist, track.albumartist_id))
-                else:
-                    # If artist and albumartist are the same, insert only one
-                    artists_to_insert.add((track.artist, track.artist_id))
-
-                # Insert each unique artist/albumartist into the database
-                for artist_name, artist_id in artists_to_insert:
-                    artist_data = {
-                        'artist': artist_name,
-                        'artist_id': artist_id,
-                    }
-                    await LibraryRepo(conn).insert_artist(artist_data)
+                await LibraryRepo(conn).insert_artist(artist_data)
 
         async with db_conn() as conn:
-            # Remove artists that no longer have albums
-            artists_query = select(Artist.artist_id)
-            result = await conn.execute(artists_query)
-            artist_hash = {row.artist_id for row in result}
-
-            track_artists_query = (
-                select(Track.artist_id).distinct()
-                .union_all(
-                    select(Track.albumartist_id).distinct()
+            orphan_albumartists_query = (
+                select(Artist.artist_id)
+                .where(
+                    ~exists(
+                        select(1)
+                        .where(Track.albumartist_id == Artist.artist_id)
+                    )
                 )
             )
-            result = await conn.execute(track_artists_query)
-            track_artist_ids = {row.artist_id for row in result}
 
-            orphan_artists = artist_hash - track_artist_ids
+            result = await conn.execute(orphan_albumartists_query)
+            orphan_albumartists = [row[0] for row in result]
 
-            for artist_id in orphan_artists:
-                logs.debug("Removing Artist... (%s)", artist_id)
-                await LibraryRepo(conn).delete_artist(artist_id)
+            if orphan_albumartists:
+                await LibraryRepo(conn).delete_artist(orphan_albumartists)

@@ -38,7 +38,7 @@
     display: flex;
     position: sticky;
     justify-content: space-between;
-    padding: var(--space-m) 0;
+    padding: var(--space-l) 0;
   }
 
   div {

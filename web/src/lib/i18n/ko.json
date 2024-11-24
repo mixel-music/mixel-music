@@ -30,6 +30,7 @@
     "label.album": "앨범",
     "label.albumartist": "앨범 아티스트",
     "label.time": "길이",
+    "label.count": "개",
 
     "albums.title": "앨범",
     "artists.title": "아티스트",
