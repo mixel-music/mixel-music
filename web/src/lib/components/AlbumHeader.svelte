@@ -2,26 +2,14 @@
   import type { Tracks } from "$lib/interface";
   import ArtworkImage from "./elements/ArtworkImage.svelte";
   import ControlsBar from "./ControlsBar.svelte";
-  import { 
-    getArtistLink,
-    getArtwork,
-    convertDateTime,
-    convertFileSize,
-  } from "$lib/tools";
+  import { getArtistLink, getArtwork } from "$lib/tools";
   import { _ } from "svelte-i18n";
   export let album: string;
   export let albumId: string;
   export let albumArtist: string;
   export let albumArtistId: string;
-  export let comment: string = '';
-  export let durationTotal: number;
-  export let fileSizeTotal: number;
-  export let trackTotal: number;
-  export let year: number | string;
   export let tracks: Tracks[] | undefined = undefined;
 
-  $: strLength = convertDateTime(durationTotal);
-  $: strSize = convertFileSize(fileSizeTotal);
   $: artwork = getArtwork(albumId, 500);
 </script>
 
@@ -29,8 +17,8 @@
   <ArtworkImage
     src={artwork}
     alt={album}
-    width={256}
-    height={256}
+    width={270}
+    height={270}
     WrapCover
     lazyload={false}
   />
@@ -96,13 +84,5 @@
   .artist {
     color: var(--dark-text-sub);
     font-size: clamp(1rem, 3vw, 2rem);
-  }
-
-  .detail {
-    color: var(--dark-text-sub);
-    font-size: 85%;
-    line-height: 1rem;
-    letter-spacing: 0;
-    display: block;
   }
 </style>

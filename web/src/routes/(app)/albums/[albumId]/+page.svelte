@@ -2,6 +2,7 @@
   import type { PageData } from './$types';
   import AlbumHeader from '$lib/components/AlbumHeader.svelte';
   import AlbumTable from '$lib/components/AlbumTable.svelte';
+  import AlbumFooter from '$lib/components/AlbumFooter.svelte';
   import { _ } from 'svelte-i18n';
 
   export let data: PageData;
@@ -21,11 +22,6 @@
     albumId={data.album.album_id}
     albumArtist={data.album.albumartist}
     albumArtistId={data.album.albumartist_id}
-    comment={data.album.tracks[0].comment}
-    durationTotal={data.album.duration_total}
-    fileSizeTotal={data.album.filesize_total}
-    trackTotal={data.album.tracks.length}
-    year={data.album.year != 0 ? data.album.year : 0}
     tracks={data.album.tracks.map(track => ({
       ...track,
       album: data.album.album,
@@ -34,4 +30,12 @@
   />
   
   <AlbumTable list={data.album} />
+
+  <AlbumFooter
+    comment={data.album.tracks[0].comment}
+    durationTotal={data.album.duration_total}
+    fileSizeTotal={data.album.filesize_total}
+    trackTotal={data.album.tracks.length}
+    year={data.album.year != 0 ? data.album.year : 0}
+  />
 {/if}
