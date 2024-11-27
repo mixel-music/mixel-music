@@ -19,12 +19,20 @@ def extract_tags(path: str) -> dict[str, Any]:
 
         date, year = convert_date(tags.year)
         if tags.album:
-            album_id = hash_str(
-                tags.album,
-                tags.albumartist or '',
-                tags.track_total or 0,
-                str_path(get_path(path).parent),
-            )
+            if tags.disc_total:
+                album_id = hash_str(
+                    tags.album,
+                    tags.albumartist or '',
+                    tags.disc_total,
+                    str_path(get_path(path).parent),
+                )
+            else:
+                album_id = hash_str(
+                    tags.album,
+                    tags.albumartist or '',
+                    tags.track_total or 0,
+                    str_path(get_path(path).parent),
+                )
         else:
             album_id = hash_str(
                 tags.artist,

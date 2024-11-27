@@ -4,6 +4,7 @@
   export let href: string | undefined = undefined;
 </script>
 
+
 <li>
   <a {href} on:click>
     {#if icon}
@@ -15,6 +16,7 @@
     <slot />
   </a>
 </li>
+
 
 <style>
   li {

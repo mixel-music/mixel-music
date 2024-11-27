@@ -4,6 +4,7 @@
   export let size: string = 'xl';
 </script>
 
+
 {#if title}
   <div
     style:display={ inline ? 'inline' : ''}
@@ -13,6 +14,7 @@
     <span>{title}</span>
   </div>
 {/if}
+
 
 <style>
   div {

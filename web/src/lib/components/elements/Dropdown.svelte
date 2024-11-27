@@ -12,6 +12,7 @@
   let dropdownElement;
   let buttonElement;
   let dropdownPosition = { top: 0, right: 0 };
+  let wrapElement;
 
   if (dropdownCloseIcon === undefined && dropdownOpenIcon) {
     dropdownCloseIcon = dropdownOpenIcon;
@@ -28,22 +29,39 @@
         right: window.scrollX,
       };
     }
+
+    // Add or remove overflow hidden to #wrap
+    if (wrapElement) {
+      wrapElement.style.overflow = isDropdownOpen ? 'hidden' : '';
+    }
   };
 
   const handleClickOutside = (event) => {
-    if (dropdownElement && !dropdownElement.contains(event.target) && !buttonElement.contains(event.target)) {
+    if (dropdownElement && !dropdownElement.contains(event.target)
+        && !buttonElement.contains(event.target)
+      ) {
       isDropdownOpen = false;
+
+      // Reset overflow when dropdown is closed
+      if (wrapElement) {
+        wrapElement.style.overflow = '';
+      }
     }
   };
 
   onMount(() => {
+    wrapElement = document.getElementById("wrap");
     document.addEventListener("click", handleClickOutside);
   });
 
   onDestroy(() => {
+    if (wrapElement) {
+      wrapElement.style.overflow = ''; // Reset on component unmount
+    }
     document.removeEventListener("click", handleClickOutside);
   });
 </script>
+
 
 <div bind:this={buttonElement} class="dropdown">
   <Button
@@ -58,10 +76,9 @@
     bind:this={dropdownElement}
     class="dropdown-content"
     style="
-      position: fixed;
       width: {dropdownWidth};
       top: calc({dropdownPosition.top}px + var(--space-xs));
-      right: calc({dropdownPosition.right}px + 80px);"
+    "
     in:fade={{ duration: 100 }}
     out:fade={{ duration: 100 }}
   >
@@ -69,16 +86,19 @@
   </div>
 {/if}
 
+
 <style>
   .dropdown {
     display: inline-block;
   }
 
   .dropdown-content {
+    position: absolute;
+    right: 0;
+
     padding: 12px 0;
-    background-color: var(--black-3a);
+    background-color: var(--black-3);
     box-shadow: 0 0 0 1px var(--dark-border) inset;
-    backdrop-filter: blur(64px);
     border-radius: var(--radius-m);
     z-index: 1000;
   }

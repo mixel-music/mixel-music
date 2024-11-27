@@ -5,10 +5,12 @@
   let imageUrl = getArtwork(albumId, 500);
 </script>
 
+
 <div
   class="album-wrap"
   style="background-image: url({imageUrl})"
 />
+
 
 <style>
   .album-wrap {

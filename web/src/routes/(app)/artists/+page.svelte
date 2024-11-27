@@ -41,6 +41,7 @@
   }
 </script>
 
+
 <svelte:head>
   <title>{$_(data.title)} • mixel-music</title>
 </svelte:head>
@@ -67,6 +68,7 @@
     />
   </div>
 {/if}
+
 
 <style>
   .bottom-ctl {
