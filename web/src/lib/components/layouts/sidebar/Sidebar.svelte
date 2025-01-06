@@ -4,20 +4,16 @@
   import { _ } from 'svelte-i18n';
   import { getPlaylists } from '../../../requests';
 
-  let isLoading = true;
   let playlists = [];
 
   async function fetchPlaylists() {
     try {
-        const { response } = await getPlaylists(window.fetch);
+        const { response } = await getPlaylists(window.fetch, 1, 40);
         playlists = response.playlists;
     }
     catch (error) {
       console.error('Failed to fetch playlists:', error);
       playlists = [];
-    }
-    finally {
-      isLoading = false;
     }
   }
   
@@ -59,20 +55,12 @@
         {$_('sidebar.playlists.create')}
       </SidebarItem>
 
-      {#if isLoading}
-        <SidebarItem href=''>
-          {$_('loading')}
-        </SidebarItem>
-      {:else if playlists.length > 0}
+      {#if playlists.length > 0}
         {#each playlists as playlist}
           <SidebarItem href={`/playlists/${playlist.playlist_id}`} icon='iconoir:music-note'>
             {playlist.playlist_name}
           </SidebarItem>
         {/each}
-      {:else}
-        <SidebarItem href='' icon='iconoir:music-note-off'>
-          {$_('sidebar.playlists.empty')}
-        </SidebarItem>
       {/if}
     </div>
   </SidebarList>

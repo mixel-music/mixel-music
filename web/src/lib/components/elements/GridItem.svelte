@@ -30,4 +30,9 @@
     white-space: nowrap;
     margin-bottom: var(--space-m);
   }
+
+  a {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
 </style>

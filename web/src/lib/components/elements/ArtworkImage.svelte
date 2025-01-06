@@ -43,6 +43,8 @@
     aspect-ratio: 1/1;
     border-radius: var(--radius-s);
     object-fit: scale-down;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   .full {

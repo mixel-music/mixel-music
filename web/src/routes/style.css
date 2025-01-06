@@ -150,8 +150,6 @@ a {
   cursor: pointer;
   display: inline;
   width: fit-content;
-  user-select: none;
-  -webkit-user-drag: none;
 }
 
 a:hover, a:focus {
@@ -185,4 +183,14 @@ button {
 
 .bold {
   font-weight: 600;
+}
+
+::selection {
+  color: var(--black-5);
+  background: var(--white-5);
+}
+
+input {
+  user-select: none;
+  -webkit-user-drag: none;
 }
