@@ -10,7 +10,8 @@ class LibraryScan:
     async def perform_all() -> None:
         await asyncio.gather(
             LibraryScan.perform_albums(),
-            LibraryScan.perform_artists()
+            LibraryScan.perform_artists(),
+            return_exceptions=True,
         )
 
 

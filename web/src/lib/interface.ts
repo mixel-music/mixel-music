@@ -22,6 +22,7 @@ export interface Track {
   albumartist_id: string;
   artist: string;
   artist_id: string;
+  barcode?: string;
   bitdepth: number;
   bitrate: number;
   channels: number;
@@ -29,6 +30,7 @@ export interface Track {
   comment?: string;
   composer?: string;
   content_type: string;
+  copyright?: string;
   created_at?: string;
   date?: string;
   director?: string;

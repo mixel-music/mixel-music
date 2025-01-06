@@ -15,6 +15,7 @@ class Track(Base):
     albumartist_id: str = Column(String(32), nullable=False)
     artist: str = Column(String, nullable=False)
     artist_id: str = Column(String(32), nullable=False)
+    barcode: str = Column(String, nullable=False)
     bitdepth: int = Column(Integer, nullable=False)
     bitrate: float = Column(REAL, nullable=False)
     channels: int = Column(Integer, nullable=False)
@@ -22,6 +23,7 @@ class Track(Base):
     comment: str = Column(String, nullable=False)
     composer: str = Column(String, nullable=False)
     content_type: str = Column(String, nullable=False)
+    copyright: str = Column(String, nullable=False)
     created_at: DateTime = Column(DateTime, default=func.now())
     date: str = Column(String, nullable=False)
     director: str = Column(String, nullable=False)
@@ -51,6 +53,7 @@ class TrackModel(BaseModel):
     albumartist_id: str
     artist: str
     artist_id: str
+    barcode: str
     bitdepth: int
     bitrate: float
     channels: int
@@ -58,6 +61,7 @@ class TrackModel(BaseModel):
     comment: str
     composer: str
     content_type: str
+    copyright: str
     created_at: datetime
     date: str
     director: str
