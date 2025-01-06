@@ -187,6 +187,32 @@ export async function getArtists(
 };
 
 
+export async function getArtist(
+  fetch: typeof window.fetch,
+  artistId: string,
+): Promise<{response: ArtistResponse;}> {
+
+  try {
+    const fetchArtist = await apiFetch(fetch,
+      `http://localhost:2843/api/library/artists/${artistId}`);
+
+    if (!fetchArtist.ok) {
+      throw new Error(fetchArtist.statusText);
+    }
+
+    const response: ArtistResponse = await fetchArtist.json();
+
+    return {
+      response,
+    };
+  }
+
+  catch (error) {
+    throw error;
+  }
+};
+
+
 export async function getPlaylists(
   fetch: typeof window.fetch,
   start: number,

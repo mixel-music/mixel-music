@@ -50,13 +50,13 @@ async def api_delete_user(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.get('/{user_id}/playlists', response_model=PlaylistsResponseModel)
-async def api_get_user_id_playlists(
-    user_id: str,
-    start: int = Query(1, ge=1),
-    end: int = Query(40, ge=1),
-    service: get_playlist_service = Depends(),
-) -> PlaylistsResponseModel:
+# @router.get('/{user_id}/playlists', response_model=PlaylistsResponseModel)
+# async def api_get_user_id_playlists(
+#     user_id: str,
+#     start: int = Query(1, ge=1),
+#     end: int = Query(40, ge=1),
+#     service: get_playlist_service = Depends(),
+# ) -> PlaylistsResponseModel:
     
-    playlists = await service.get_playlists(user_id, start, end)
-    return playlists
+#     playlists = await service.get_playlists(user_id, start, end)
+#     return playlists
