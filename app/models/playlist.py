@@ -40,6 +40,11 @@ class PlaylistDataModel(BaseModel):
     added_at: datetime
 
 
+class PlaylistCreateModel(BaseModel):
+    playlist_name: str
+    tracks: list[str]
+
+
 class PlaylistsResponseModel(BaseModel):
     playlists: list[PlaylistModel]
     total: int

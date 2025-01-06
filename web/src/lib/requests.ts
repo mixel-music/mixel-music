@@ -5,6 +5,8 @@ import type {
   TrackResponse,
   ArtistsResponse,
   ArtistResponse,
+  PlaylistsResponse,
+  PlaylistResponse,
 } from "./interface";
 import { apiFetch } from "./tools";
 
@@ -185,20 +187,21 @@ export async function getArtists(
 };
 
 
-export async function getArtist(
+export async function getPlaylists(
   fetch: typeof window.fetch,
-  artistId: string,
-): Promise<{response: ArtistResponse;}> {
+  start: number,
+  end: number,
+): Promise<{response: PlaylistsResponse;}> {
 
   try {
-    const fetchArtist = await apiFetch(fetch,
-      `http://localhost:2843/api/library/artists/${artistId}`);
+    const fetchArtists = await apiFetch(fetch,
+      `http://localhost:2843/api/playlists`);
 
-    if (!fetchArtist.ok) {
-      throw new Error(fetchArtist.statusText);
+    if (!fetchArtists.ok) {
+      throw new Error(fetchArtists.statusText);
     }
 
-    const response: ArtistResponse = await fetchArtist.json();
+    const response: PlaylistsResponse = await fetchArtists.json();
 
     return {
       response,
@@ -206,6 +209,11 @@ export async function getArtist(
   }
 
   catch (error) {
-    throw error;
+    return {
+      response: {
+        "playlists": [],
+        "total": 0,
+      },
+    }
   }
 };

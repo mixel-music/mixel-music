@@ -1,7 +1,10 @@
+import uuid
+from datetime import datetime
 from typing import Any
 from fastapi import HTTPException, status
 from core.database import NoResultFound
 from core.logging import logs
+from models.playlist import PlaylistModel, PlaylistCreateModel
 from repos.playlist import PlaylistRepo
 
 
@@ -23,6 +26,18 @@ class PlaylistService:
             return await self.repo.get_playlist(playlist_id, start, end)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+    async def create_playlist(self, data: PlaylistCreateModel, user_id) -> None:
+        playlist_item = PlaylistModel(
+            playlist_id=str(uuid.uuid4()),
+            playlist_name=data.playlist_name,
+            playlist_user=user_id,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+
+        await self.repo.create_playlist(playlist_item.model_dump())
 
 
     async def delete_playlist(self, playlist_id: str) -> None:

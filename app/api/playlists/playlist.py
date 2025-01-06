@@ -1,8 +1,23 @@
-from fastapi import APIRouter, Query, Depends, Response
-from models.playlist import PlaylistResponseModel
-from core.depends import get_playlist_service
+from fastapi import APIRouter, Query, Depends, Response, Request, status
+from models.playlist import PlaylistsResponseModel, PlaylistResponseModel, PlaylistCreateModel
+from services.auth import AuthService
+from core.depends import get_playlist_service, get_user_service
 
 router = APIRouter()
+
+
+@router.get('/', response_model=PlaylistsResponseModel)
+async def api_get_user_playlists(
+    request: Request,
+    response: Response,
+    start: int = Query(1, ge=1),
+    end: int = Query(40, ge=1),
+    service: get_playlist_service = Depends(),
+) -> PlaylistsResponseModel:
+
+    playlists = await service.get_playlists(AuthService.get_user_id(request.cookies.get('session')), start, end)
+    return playlists
+
 
 @router.get('/{playlist_id}', response_model=PlaylistResponseModel)
 async def api_get_playlist(
@@ -28,11 +43,13 @@ async def api_delete_playlist(
 
 @router.post('/')
 async def api_create_playlist(
+    request: Request,
+    response: Response,
+    form: PlaylistCreateModel,
     service: get_playlist_service = Depends(),
-):
-    
-    users = await service.get_users()
-    return users
+) -> None:
+
+    await service.create_playlist(form, AuthService.get_user_id(request.cookies.get('session')))
 
 
 @router.patch('/{playlist_id}')

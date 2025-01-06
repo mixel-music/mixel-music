@@ -1,5 +1,5 @@
 from typing import Any
-from models import Playlist
+from models import Playlist, PlaylistData, Track
 from models.playlist import (
     PlaylistModel,
     PlaylistDataModel
@@ -27,14 +27,14 @@ class PlaylistRepo:
             .order_by(Playlist.playlist_name.asc())
             .offset(start - 1)
             .limit(end - (start - 1))
-            .where(user_id == Playlist.playlist_user)
+            .where(Playlist.playlist_user == user_id)
         )
         playlist_list = [dict(row) for row in db_query.mappings().all()]
 
         total_query = await self.conn.execute(
             select(func.count())
             .select_from(Playlist)
-            .where(user_id == Playlist.playlist_user)
+            .where(Playlist.playlist_user == user_id)
         )
         total = total_query.scalar_one()
         return playlist_list, total
@@ -46,13 +46,12 @@ class PlaylistRepo:
             select(Playlist.__table__)
             .where(Playlist.playlist_id == playlist_id)
         )
-        
         playlist_item = playlist_query.mappings().first()
-        if playlist_item:
-            playlist_item = dict(playlist_item)
-        else:
+
+        if not playlist_item:
             raise NoResultFound
 
+        playlist_item = dict(playlist_item)
         track_query = await self.conn.execute(
             select(
                 Track.artist,
@@ -63,11 +62,22 @@ class PlaylistRepo:
                 Track.track_id,
                 Track.track_number,
             )
-            .where(PlaylistData.track_id == track_id)
+            .join(PlaylistData, PlaylistData.track_id == Track.track_id)
+            .where(PlaylistData.playlist_id == playlist_id)
             .order_by(Track.track_number.asc())
+            .offset(start)
+            .limit(end - start)
         )
+
         playlist_item['tracks'] = [dict(row) for row in track_query.mappings().all()]
+
         return playlist_item
+
+
+    async def create_playlist(self, playlist_data: dict[str, Any]) -> None:
+        await self.conn.execute(
+            insert(Playlist).values(**playlist_data)
+        )
 
 
     async def delete_playlist(self, playlist_id: str) -> None:

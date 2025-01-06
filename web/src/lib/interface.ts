@@ -153,4 +153,31 @@ export interface PlayerState {
 
 export interface PlayerStore extends PlayerState, Tracks {
   artwork?: string;
-}
+};
+
+
+export interface Playlist {
+  playlist_id: string;
+  playlist_name: string;
+  playlist_user: string;
+  created_at: string;
+  updated_at: string;
+};
+
+
+export interface PlaylistData {
+  playlist_id: string;
+  track_id: string;
+  added_at: string;
+};
+
+
+export interface PlaylistsResponse {
+  playlists: Playlist[];
+  total: number;
+};
+
+
+export interface PlaylistResponse {
+  tracks: AlbumTrack[];
+};
