@@ -14,14 +14,6 @@ class Playlist(Base):
     updated_at: DateTime = Column(DateTime, nullable=False)
 
 
-class PlaylistData(Base):
-    __tablename__ = 'playlists_data'
-
-    playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
-    track_id: str = Column(String, ForeignKey('tracks.track_id'), nullable=False)
-    added_at: DateTime = Column(DateTime, nullable=False)
-
-
 class PlaylistModel(BaseModel):
     playlist_id: str
     playlist_name: str
@@ -30,7 +22,20 @@ class PlaylistModel(BaseModel):
     updated_at: datetime
 
 
+class PlaylistData(Base):
+    __tablename__ = 'playlists_data'
+
+    playlist_id: str = Column(String, ForeignKey('playlists.playlist_id'), primary_key=True, nullable=False)
+    track_id: str = Column(String, ForeignKey('tracks.track_id'), nullable=False)
+    added_at: DateTime = Column(DateTime, nullable=False)
+
+
 class PlaylistDataModel(BaseModel):
     playlist_id: str
     track_id: str
     added_at: datetime
+
+
+class PlaylistsResponseModel(BaseModel):
+    playlists: list[PlaylistModel]
+    total: int
