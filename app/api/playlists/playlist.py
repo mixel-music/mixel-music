@@ -1,16 +1,29 @@
-from fastapi import APIRouter, Depends, Response, status
-from models.playlist import PlaylistsResponseModel
+from fastapi import APIRouter, Query, Depends, Response
+from models.playlist import PlaylistResponseModel
 from core.depends import get_playlist_service
 
 router = APIRouter()
 
-@router.get('/')
-async def api_get_playlists(
+@router.get('/{playlist_id}', response_model=PlaylistResponseModel)
+async def api_get_playlist(
+    playlist_id: str,
+    start: int = Query(1, ge=1),
+    end: int = Query(40, ge=1),
     service: get_playlist_service = Depends(),
-) -> PlaylistsResponseModel:
+) -> PlaylistResponseModel:
     
-    playlists = await service.get_playlists()
-    return playlists
+    playlist = await service.get_playlist(playlist_id, start, end)
+    return playlist
+
+
+@router.delete('/{playlist_id}')
+async def api_delete_playlist(
+    playlist_id: str,
+    service: get_playlist_service = Depends(),
+) -> None:
+    
+    await service.delete_playlist(playlist_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.post('/')
@@ -22,23 +35,8 @@ async def api_create_playlist(
     return users
 
 
-@router.get('/{playlist_id}')
-async def api_get_playlist(
+@router.patch('/{playlist_id}')
+async def api_patch_playlist(
 
 ):
     pass
-
-
-@router.put('/{playlist_id}')
-async def api_put_playlist(
-
-):
-    pass
-
-
-@router.delete('/{playlist_id}')
-async def api_delete_playlist(
-
-):
-    pass
-
