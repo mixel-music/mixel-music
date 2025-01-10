@@ -18,7 +18,7 @@
 
 <style>
   div {
-    margin-bottom: var(--space-l);
+    margin-bottom: 27px;
   }
 
   .xl {

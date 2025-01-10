@@ -36,12 +36,20 @@
   </SidebarList>
 
   <SidebarList name={$_('sidebar.library')}>
-    <SidebarItem href='/albums' icon='iconoir:compact-disc'>
-      {$_('sidebar.library.albums')}
+    <SidebarItem href='/playlists' icon='iconoir:playlist'>
+      {$_('sidebar.library.playlists')}
+    </SidebarItem>
+
+    <SidebarItem href='/recents' icon='iconoir:clock-rotate-right'>
+      {$_('sidebar.library.recent_played')}
     </SidebarItem>
 
     <SidebarItem href='/artists' icon='iconoir:microphone'>
       {$_('sidebar.library.artists')}
+    </SidebarItem>
+
+    <SidebarItem href='/albums' icon='iconoir:compact-disc'>
+      {$_('sidebar.library.albums')}
     </SidebarItem>
     
     <SidebarItem href='/tracks' icon='iconoir:music-double-note'>
@@ -51,7 +59,7 @@
 
   <SidebarList name={$_('sidebar.playlists')}>
     <div class="sidebar-playlist">
-      <SidebarItem href='' icon='iconoir:plus'>
+      <SidebarItem href='' icon='iconoir:plus-circle'>
         {$_('sidebar.playlists.create')}
       </SidebarItem>
 
@@ -78,7 +86,7 @@
 
   .sidebar-playlist {
     position: fixed;
-    height: calc(100dvh - 530px);
+    height: calc(100dvh - 530px - 100px);
     bottom: 96px;
     width: 240px;
     overflow: scroll;

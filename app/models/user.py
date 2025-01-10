@@ -14,7 +14,7 @@ class User(Base):
     username: str = Column(String, nullable=False)
     password: str = Column(String, nullable=False)
     last_login: DateTime = Column(DateTime, nullable=False)
-    created_at: DateTime = Column(DateTime, nullable=False)
+    created_at: DateTime = Column(DateTime, default=datetime.utcnow, nullable=False)
     role: str = Column(String, nullable=False)
     profile_img: str = Column(String, nullable=False)
     preferences: str = Column(JSON, nullable=False)
@@ -32,7 +32,7 @@ class UserModel(BaseModel):
     username: str
     password: str
     last_login: Optional[datetime] = datetime(1970, 1, 1)
-    created_at: datetime
+    created_at: Optional[datetime]
     role: UserRoleEnum = UserRoleEnum.USER
     profile_img: Optional[str] = ''
     preferences: Optional[dict] = {}

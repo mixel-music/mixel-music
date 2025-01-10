@@ -4,6 +4,7 @@ from sqlalchemy import (
 from datetime import datetime
 from pydantic import BaseModel
 from core.database import Base
+from typing import Optional
 
 
 class Track(Base):
@@ -24,7 +25,7 @@ class Track(Base):
     composer: str = Column(String, nullable=False)
     content_type: str = Column(String, nullable=False)
     copyright: str = Column(String, nullable=False)
-    created_at: DateTime = Column(DateTime, default=func.now())
+    created_at: DateTime = Column(DateTime, default=datetime.utcnow, nullable=False)
     date: str = Column(String, nullable=False)
     director: str = Column(String, nullable=False)
     directory: str = Column(String, nullable=False)
@@ -42,7 +43,7 @@ class Track(Base):
     track_id: str = Column(String(32), primary_key=True, nullable=False)
     track_number: int = Column(Integer, nullable=False)
     track_total: int = Column(Integer, nullable=False)
-    updated_at: DateTime = Column(DateTime, onupdate=func.now())
+    updated_at: DateTime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     year: int = Column(Integer, nullable=False)
 
 
@@ -62,7 +63,7 @@ class TrackModel(BaseModel):
     composer: str
     content_type: str
     copyright: str
-    created_at: datetime
+    created_at: Optional[datetime]
     date: str
     director: str
     directory: str
@@ -80,7 +81,7 @@ class TrackModel(BaseModel):
     track_id: str
     track_number: int
     track_total: int
-    updated_at: datetime
+    updated_at: Optional[datetime]
     year: int
 
 

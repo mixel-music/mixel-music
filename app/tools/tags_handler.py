@@ -62,7 +62,6 @@ def extract_tags(path: str) -> dict[str, Any]:
             'composer': tags.composer or '',
             'content_type': get_mime(path),
             'copyright': safe_list(tags.extra, 'copyright'),
-            'created_at': datetime.now(),
             'date': date,
             'director': safe_list(tags.extra, 'director'),
             'directory': str_path(get_path(path).parent),
@@ -80,7 +79,6 @@ def extract_tags(path: str) -> dict[str, Any]:
             'track_id': hash_str(path),
             'track_number': tags.track or 0,
             'track_total': tags.track_total or 0,
-            'updated_at': datetime.now(),
             'year': year,
         }
 

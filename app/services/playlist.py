@@ -29,15 +29,14 @@ class PlaylistService:
 
 
     async def create_playlist(self, data: PlaylistCreateModel, user_id) -> None:
-        playlist_item = PlaylistModel(
-            playlist_id=str(uuid.uuid4()),
-            playlist_name=data.playlist_name,
-            playlist_user=user_id,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-        )
+        playlist_item = {
+            "playlist_id": str(uuid.uuid4()),
+            "playlist_name": data.playlist_name,
+            "playlist_user": user_id,
+            "shared": data.shared,
+        }
 
-        await self.repo.create_playlist(playlist_item.model_dump())
+        await self.repo.create_playlist(playlist_item)
 
 
     async def delete_playlist(self, playlist_id: str) -> None:
