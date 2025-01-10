@@ -1,8 +1,8 @@
 from sqlalchemy import (
     Column, Integer, String, DateTime, Boolean, ForeignKey, REAL, Text, func
 )
-from datetime import datetime
-from pydantic import BaseModel
+from datetime import datetime, timezone
+from pydantic import BaseModel, Field
 from core.database import Base
 from typing import Optional
 
@@ -25,7 +25,11 @@ class Track(Base):
     composer: str = Column(String, nullable=False)
     content_type: str = Column(String, nullable=False)
     copyright: str = Column(String, nullable=False)
-    created_at: DateTime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: DateTime = Column(
+        DateTime,
+        default=datetime.now(timezone.utc),
+        nullable=False
+    )
     date: str = Column(String, nullable=False)
     director: str = Column(String, nullable=False)
     directory: str = Column(String, nullable=False)
@@ -43,7 +47,12 @@ class Track(Base):
     track_id: str = Column(String(32), primary_key=True, nullable=False)
     track_number: int = Column(Integer, nullable=False)
     track_total: int = Column(Integer, nullable=False)
-    updated_at: DateTime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    updated_at: DateTime = Column(
+        DateTime,
+        default=datetime.now(timezone.utc),
+        onupdate=datetime.now(timezone.utc),
+        nullable=False
+    )
     year: int = Column(Integer, nullable=False)
 
 
@@ -63,7 +72,9 @@ class TrackModel(BaseModel):
     composer: str
     content_type: str
     copyright: str
-    created_at: Optional[datetime]
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
     date: str
     director: str
     directory: str
@@ -81,7 +92,9 @@ class TrackModel(BaseModel):
     track_id: str
     track_number: int
     track_total: int
-    updated_at: Optional[datetime]
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
     year: int
 
 
