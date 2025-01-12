@@ -230,7 +230,12 @@ class LibraryRepo:
 
     async def insert_artist(self, artist_data: dict[str, Any]) -> None:
         await self.conn.execute(
-            Insert(Artist).values(**artist_data).on_conflict_do_nothing()
+            Insert(Artist)
+            .values(**artist_data)
+            .on_conflict_do_update(
+                index_elements=['artist_id'],
+                set_=artist_data
+            )
         )
 
 

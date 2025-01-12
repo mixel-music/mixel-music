@@ -17,12 +17,6 @@ class LibraryScan:
 
     @staticmethod
     async def perform_albums() -> None:
-        async with db_conn as conn:
-            pass
-
-
-    @staticmethod
-    async def perform_albums() -> None:
         async with db_conn() as conn:
             db_query = (
                 select(
@@ -118,8 +112,8 @@ class LibraryScan:
         async with db_conn() as conn:
             db_query = (
                 select(
-                    Track.albumartist_id.label('albumartist_id'),
-                    Track.albumartist.label('albumartist'),
+                    Track.albumartist_id,
+                    Track.albumartist,
                     func.count(Track.track_id).label('track_total'),
                     func.count(func.distinct(Track.album_id)).label('album_total'),
                     func.sum(Track.duration).label('duration_total'),
@@ -141,7 +135,8 @@ class LibraryScan:
                     'duration_total': art.duration_total,
                     'filesize_total': art.filesize_total,
                 }
-
+                
+                logs.debug(artist_data)
                 await LibraryRepo(conn).insert_artist(artist_data)
 
         async with db_conn() as conn:
@@ -159,4 +154,5 @@ class LibraryScan:
             orphan_albumartists = {row[0] for row in result}
 
             for artist_id in orphan_albumartists:
+                logs.debug("Removing Artist... (%s)", artist_id)
                 await LibraryRepo(conn).delete_artist(artist_id)
