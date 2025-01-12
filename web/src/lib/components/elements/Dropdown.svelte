@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from "./Button.svelte";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, tick } from "svelte";
   import { fade } from "svelte/transition";
 
   let isDropdownOpen = false;
@@ -18,46 +18,52 @@
     dropdownCloseIcon = dropdownOpenIcon;
   }
 
-  const calculateDropdownPosition = () => {
+  const calculateDropdownPosition = async () => {
+    await tick(); // DOM 업데이트 후 실행 보장
+
     if (!buttonElement || !dropdownElement) return;
 
+    // 버튼과 드롭다운의 위치 정보
     const buttonRect = buttonElement.getBoundingClientRect();
     const dropdownRect = dropdownElement.getBoundingClientRect();
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    // 화면 스크롤 보정
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
 
-    let left = buttonRect.left + window.scrollX;
-    let top = buttonRect.bottom + window.scrollY;
+    // 초기 위치 (버튼 아래 왼쪽)
+    let top = buttonRect.bottom + scrollY + 12;
+    let left = buttonRect.left + scrollX;
 
-    // Adjust `left` to keep the dropdown within the viewport
-    if (left + dropdownRect.width > viewportWidth) {
-      left = viewportWidth - dropdownRect.width - 10; // Add padding from the edge
-    }
-    if (left < 0) {
-      left = 10; // Add padding from the left edge
-    }
-
-    // Adjust `top` to keep the dropdown within the viewport
-    if (top + dropdownRect.height > viewportHeight + window.scrollY) {
-      top = buttonRect.top + window.scrollY - dropdownRect.height - 10; // Place above button
+    // 아래쪽 공간 부족 시 위로 이동
+    if (top + dropdownRect.height > scrollY + window.innerHeight) {
+      // top = dropdownElement.offsetTop + dropdownElement.scrollHeight;
+      top = buttonRect.top + scrollY - dropdownRect.height - 12;
     }
 
-    dropdownPosition = { top, left };
+    // 오른쪽 공간 부족 시 왼쪽으로 이동
+    if (left + dropdownRect.width > scrollX + window.innerWidth) {
+      left = buttonElement.offsetLeft - dropdownElement.offsetWidth + buttonRect.width;
+    }
+
+    // 최종 위치 설정
+    dropdownPosition = { 
+      top: Math.max(0, top), 
+      left: Math.max(0, left) 
+    };
   };
 
   const handleDropdownClick = () => {
     isDropdownOpen = !isDropdownOpen;
 
     if (isDropdownOpen) {
-      calculateDropdownPosition();
+      calculateDropdownPosition(); // 드롭다운 열릴 때 위치 계산
 
-      // Prevent background scrolling when dropdown is open
       if (wrapElement) {
         wrapElement.style.overflow = 'hidden';
       }
-    } else {
-      // Allow background scrolling when dropdown is closed
+    }
+    else {
       if (wrapElement) {
         wrapElement.style.overflow = '';
       }
@@ -69,15 +75,10 @@
       dropdownElement && !dropdownElement.contains(event.target as Node) &&
       buttonElement && !buttonElement.contains(event.target as Node)
     ) {
-      closeDropdown();
-    }
-  };
-
-  const closeDropdown = () => {
-    isDropdownOpen = false;
-
-    if (wrapElement) {
-      wrapElement.style.overflow = '';
+      if (wrapElement) {
+        wrapElement.style.overflow = '';
+      }
+      isDropdownOpen = false;
     }
   };
 
@@ -87,7 +88,6 @@
   });
 
   onDestroy(() => {
-    closeDropdown(); // Ensure cleanup
     document.removeEventListener("click", handleClickOutside);
   });
 </script>
@@ -108,9 +108,10 @@
     id="dropdown-menu"
     class="dropdown-content"
     style="
-      width: {dropdownWidth || 'auto'};
+      position: absolute;
       top: {dropdownPosition.top}px;
-      right: {dropdownPosition.left}px;
+      left: {dropdownPosition.left}px;
+      width: {dropdownWidth || 'max-content'};
     "
     in:fade={{ duration: 100 }}
     out:fade={{ duration: 100 }}
@@ -125,12 +126,11 @@
   }
 
   .dropdown-content {
-    position: absolute;
-    padding: 12px 0;
     background-color: var(--black-3);
     box-shadow: 0 0 0 1px var(--dark-border) inset;
     border-radius: var(--radius-m);
     z-index: 1000;
     overflow: hidden;
+    padding: 12px 0;
   }
 </style>
