@@ -40,10 +40,6 @@
       {$_('sidebar.library.playlists')}
     </SidebarItem>
 
-    <SidebarItem href='/recents' icon='iconoir:clock-rotate-right'>
-      {$_('sidebar.library.recent_played')}
-    </SidebarItem>
-
     <SidebarItem href='/artists' icon='iconoir:microphone'>
       {$_('sidebar.library.artists')}
     </SidebarItem>
@@ -86,7 +82,7 @@
 
   .sidebar-playlist {
     position: fixed;
-    height: calc(100dvh - 530px - 100px);
+    height: calc(100dvh - 530px - 100px + 50px);
     bottom: 96px;
     width: 240px;
     overflow: scroll;
