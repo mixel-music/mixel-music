@@ -10,7 +10,8 @@ class LibraryScan:
     async def perform_all() -> None:
         await asyncio.gather(
             LibraryScan.perform_albums(),
-            LibraryScan.perform_artists()
+            LibraryScan.perform_artists(),
+            return_exceptions=True,
         )
 
 
@@ -111,8 +112,8 @@ class LibraryScan:
         async with db_conn() as conn:
             db_query = (
                 select(
-                    Track.albumartist_id.label('albumartist_id'),
-                    Track.albumartist.label('albumartist'),
+                    Track.albumartist_id,
+                    Track.albumartist,
                     func.count(Track.track_id).label('track_total'),
                     func.count(func.distinct(Track.album_id)).label('album_total'),
                     func.sum(Track.duration).label('duration_total'),
@@ -134,7 +135,8 @@ class LibraryScan:
                     'duration_total': art.duration_total,
                     'filesize_total': art.filesize_total,
                 }
-
+                
+                logs.debug(artist_data)
                 await LibraryRepo(conn).insert_artist(artist_data)
 
         async with db_conn() as conn:
@@ -149,7 +151,8 @@ class LibraryScan:
             )
 
             result = await conn.execute(orphan_albumartists_query)
-            orphan_albumartists = [row[0] for row in result]
+            orphan_albumartists = {row[0] for row in result}
 
-            if orphan_albumartists:
-                await LibraryRepo(conn).delete_artist(orphan_albumartists)
+            for artist_id in orphan_albumartists:
+                logs.debug("Removing Artist... (%s)", artist_id)
+                await LibraryRepo(conn).delete_artist(artist_id)
