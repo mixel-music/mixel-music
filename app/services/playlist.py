@@ -21,9 +21,9 @@ class PlaylistService:
         }
 
     
-    async def get_playlist(self, playlist_id: str, start: int, end: int) -> dict[str, list[dict[str, Any] | None] | Any]:
+    async def get_playlist(self, playlist_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
         try:
-            return await self.repo.get_playlist(playlist_id, start, end)
+            return await self.repo.get_playlist(playlist_id)
         except NoResultFound:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 

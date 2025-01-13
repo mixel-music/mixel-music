@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 from core.database import Base
-from models.album import AlbumTrackModel
 from typing import Optional
 
 
@@ -51,10 +50,16 @@ class PlaylistData(Base):
         primary_key=True,
         nullable=False,
     )
-    track_id: str = Column(String, ForeignKey('tracks.track_id'), nullable=False)
+    track_id: str = Column(
+        String,
+        ForeignKey('tracks.track_id'),
+        primary_key=True,
+        nullable=False,
+    )
     added_at: DateTime = Column(
         DateTime,
         default=datetime.now(timezone.utc),
+        primary_key=True, # Include as part of composite primary key
         nullable=False,
     )
     order: int = Column(Integer, nullable=False, default=0)
@@ -69,6 +74,14 @@ class PlaylistDataModel(BaseModel):
     order: int
 
 
+class PlaylistTrackModel(BaseModel):
+    artist: str
+    artist_id: str
+    duration: float
+    title: str
+    track_id: str
+
+
 class PlaylistCreateModel(BaseModel):
     playlist_name: str
     shared: bool = False
@@ -81,4 +94,4 @@ class PlaylistsResponseModel(BaseModel):
 
 
 class PlaylistResponseModel(PlaylistModel):
-    tracks: list[AlbumTrackModel]
+    tracks: list[PlaylistTrackModel]

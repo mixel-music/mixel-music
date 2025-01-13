@@ -171,6 +171,16 @@ export interface PlaylistData {
   playlist_id: string;
   track_id: string;
   added_at: string;
+  order: number;
+};
+
+
+export interface PlaylistTrack {
+  artist: string;
+  artist_id: string;
+  duration: number;
+  title: string;
+  track_id: string;
 };
 
 
@@ -180,6 +190,6 @@ export interface PlaylistsResponse {
 };
 
 
-export interface PlaylistResponse {
-  tracks: AlbumTrack[];
+export interface PlaylistResponse extends Playlist {
+  tracks: PlaylistTrack[];
 };

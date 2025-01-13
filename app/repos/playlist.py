@@ -40,7 +40,7 @@ class PlaylistRepo:
         return playlist_list, total
 
 
-    async def get_playlist(self, playlist_id: str, start: int, end: int) -> dict[str, list[dict[str, Any] | None] | Any]:
+    async def get_playlist(self, playlist_id: str) -> dict[str, list[dict[str, Any] | None] | Any]:
         playlist_item = {}
         playlist_query = await self.conn.execute(
             select(Playlist.__table__)
@@ -56,21 +56,16 @@ class PlaylistRepo:
             select(
                 Track.artist,
                 Track.artist_id,
-                Track.comment,
                 Track.duration,
                 Track.title,
                 Track.track_id,
-                Track.track_number,
             )
-            .join(PlaylistData, PlaylistData.track_id == Track.track_id)
+            .outerjoin(PlaylistData, PlaylistData.track_id == Track.track_id)
             .where(PlaylistData.playlist_id == playlist_id)
-            .order_by(Track.track_number.asc())
-            .offset(start)
-            .limit(end - start)
+            .order_by(PlaylistData.order.asc())
         )
 
         playlist_item['tracks'] = [dict(row) for row in track_query.mappings().all()]
-
         return playlist_item
 
 

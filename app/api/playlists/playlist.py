@@ -21,12 +21,10 @@ async def api_get_user_playlists(
 @router.get('/{playlist_id}', response_model=PlaylistResponseModel)
 async def api_get_playlist(
     playlist_id: str,
-    start: int = Query(1, ge=1),
-    end: int = Query(40, ge=1),
     service: get_playlist_service = Depends(),
 ) -> PlaylistResponseModel:
     
-    playlist = await service.get_playlist(playlist_id, start, end)
+    playlist = await service.get_playlist(playlist_id)
     return playlist
 
 
