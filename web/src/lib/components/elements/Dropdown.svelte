@@ -19,37 +19,34 @@
   }
 
   const calculateDropdownPosition = async () => {
-    await tick(); // DOM 업데이트 후 실행 보장
+    await tick();
 
     if (!buttonElement || !dropdownElement) return;
-
-    // 버튼과 드롭다운의 위치 정보
     const buttonRect = buttonElement.getBoundingClientRect();
     const dropdownRect = dropdownElement.getBoundingClientRect();
 
-    // 화면 스크롤 보정
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
+    const parentStyle = window.getComputedStyle(buttonElement.offsetParent as Element);
+    const isSticky =
+      parentStyle.position === "sticky" &&
+      buttonElement.offsetParent?.getBoundingClientRect().top === 0;
 
-    // 초기 위치 (버튼 아래 왼쪽)
+    const scrollX = isSticky ? 0 : wrapElement?.scrollLeft || window.scrollX;
+    const scrollY = isSticky ? 0 : wrapElement?.scrollTop || window.scrollY;
+
     let top = buttonRect.bottom + scrollY + 12;
     let left = buttonRect.left + scrollX;
 
-    // 아래쪽 공간 부족 시 위로 이동
-    if (top + dropdownRect.height > scrollY + window.innerHeight) {
-      // top = dropdownElement.offsetTop + dropdownElement.scrollHeight;
+    if (top + dropdownRect.height > scrollY + window.innerHeight - 96 - 10) { // 96: Player Height
       top = buttonRect.top + scrollY - dropdownRect.height - 12;
     }
 
-    // 오른쪽 공간 부족 시 왼쪽으로 이동
     if (left + dropdownRect.width > scrollX + window.innerWidth) {
       left = buttonElement.offsetLeft - dropdownElement.offsetWidth + buttonRect.width;
     }
 
-    // 최종 위치 설정
-    dropdownPosition = { 
-      top: Math.max(0, top), 
-      left: Math.max(0, left) 
+    dropdownPosition = {
+      top: Math.max(0, top),
+      left: Math.max(0, left),
     };
   };
 
