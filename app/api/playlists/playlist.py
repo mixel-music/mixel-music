@@ -46,7 +46,9 @@ async def api_create_playlist(
     service: get_playlist_service = Depends(),
 ) -> None:
 
-    await service.create_playlist(form, SessionService.get_user_id(request.cookies.get('session')))
+    await service.create_playlist(
+        form, SessionService.get_user_id(request.cookies.get('session'))
+    )
 
 
 @router.patch('/{playlist_id}')

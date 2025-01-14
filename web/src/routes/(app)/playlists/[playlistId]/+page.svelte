@@ -1,36 +1,31 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { getAlbumLink } from '$lib/tools';
-  import PageTitle from '$lib/components/elements/PageTitle.svelte';
-  import GridWrap from '$lib/components/elements/GridWrap.svelte';
-  import GridItem from '$lib/components/elements/GridItem.svelte';
-  import GridItemDetail from '$lib/components/elements/GridItemDetail.svelte';
-  import { _ } from 'svelte-i18n'
+  import PlaylistHeader from '$lib/components/PlaylistHeader.svelte';
+  import PlaylistTable from '$lib/components/PlaylistTable.svelte';
+  import { _ } from 'svelte-i18n';
 
   export let data: PageData;
 </script>
 
 <svelte:head>
-  <title>{data.item.artist} • mixel-music</title>
+  <title>{data.item.playlist_title} • mixel-music</title>
 </svelte:head>
 
-<PageTitle title={data.item.artist} />
-
 {#if data.item}
-  <GridWrap items={data.item.albums}>
-    <GridItem
-      let:item
-      slot="GridItem"
-      href={getAlbumLink(item.album_id)}
-      src={item.album_id}
-      alt={item.album}
-      lazyload
-    >
-      <GridItemDetail
-        title={item.album ? item.album : $_('unknown_album')}
-        titleHref={getAlbumLink(item.album_id)}
-        sub={item.year != 0 ? $_('info.year',{values: {year: item.year}}) : $_('unknown_year')}
-      />
-    </GridItem>
-  </GridWrap>
+  <PlaylistHeader
+    playlist_id={data.item.playlist_id}
+    playlist_title={data.item.playlist_title}
+    playlist_username={data.item.playlist_username}
+    tracks={data.item.tracks}
+  />
+  
+  <PlaylistTable list={data.item.tracks} />
+
+  <!-- <AlbumFooter
+    comment={data.album.tracks[0].comment}
+    durationTotal={data.album.duration_total}
+    fileSizeTotal={data.album.filesize_total}
+    trackTotal={data.album.tracks.length}
+    year={data.album.year != 0 ? data.album.year : 0}
+  /> -->
 {/if}

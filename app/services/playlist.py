@@ -31,8 +31,8 @@ class PlaylistService:
     async def create_playlist(self, data: PlaylistCreateModel, user_id) -> None:
         playlist_item = {
             "playlist_id": 'playlist_' + str(uuid.uuid4()),
-            "playlist_name": data.playlist_name,
-            "playlist_user": user_id,
+            "playlist_title": data.playlist_title,
+            "playlist_user_id": user_id,            
             "shared": data.shared,
         }
 

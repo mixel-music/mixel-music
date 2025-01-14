@@ -37,6 +37,11 @@ export const getArtistLink = (artistId: string): string => {
 };
 
 
+export const getPlaylistLink = (playListId: string): string => {
+  return `/playlists/${playListId}`;
+};
+
+
 import { replaceState } from "$app/navigation";
 import { getAlbums, getArtists, getTracks, getPlaylists, postLogout } from "./requests";
 

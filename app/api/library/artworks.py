@@ -81,19 +81,22 @@ async def api_get_artwork(
 
             # Resize the image
             img = await loop.run_in_executor(
-                service.executor, ImageOps.fit, img, (img_width, img_height), Image.Resampling.LANCZOS
+                service.executor, ImageOps.fit, img, (img_width, img_height), Image.Resampling.BOX
             )
             images.append(img)
 
         num_images = len(images)
+
         if num_images == 3:
             images = [images[0], images[1], images[2], images[0]]
         elif num_images == 2:
             images = [images[0], images[1], images[1], images[0]]
         elif num_images == 1:
-            images = [images[0], images[0], images[0], images[0]]
-        elif num_images == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+            buffer = io.BytesIO()
+            images[0].save(buffer, format="jpeg", quality=90)
+            buffer.seek(0)
+
+            return StreamingResponse(buffer, media_type='image/jpeg')
 
         collage = Image.new('RGB', (img_width * 2, img_height * 2), (255, 255, 255))
         for index, img in enumerate(images[:4]):
@@ -103,7 +106,7 @@ async def api_get_artwork(
 
         buffer = io.BytesIO()
         collage_format = 'jpeg'
-        collage.save(buffer, collage_format, quality=100)
+        collage.save(buffer, collage_format, quality=90)
         buffer.seek(0)
 
         await loop.run_in_executor(service.executor, service.save_artwork, collage, id, size, collage_format)

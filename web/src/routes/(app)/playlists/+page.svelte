@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import type { PlaylistsResponse } from '$lib/interface';
-  import { getPaginatedList, getAlbumLink, getArtistLink } from '$lib/tools';
+  import { getPaginatedList, getPlaylistLink } from '$lib/tools';
   import InfiniteScroll from '$lib/components/interactions/InfiniteScroll.svelte';
   import PageTitle from '$lib/components/elements/PageTitle.svelte';
   import GridWrap from '$lib/components/elements/GridWrap.svelte';
@@ -14,7 +14,7 @@
   let startNumber = data.start;
   let loading = false;
 
-  async function loadMoreAlbums() {
+  async function loadMorePlaylists() {
     if (loading || (startNumber + 39) >= playlists.total) return;
     loading = true;
 
@@ -41,20 +41,20 @@
 
 <PageTitle title={$_(data.title)} />
 
-<InfiniteScroll threshold={100} on:loadMore={loadMoreAlbums}>
+<InfiniteScroll threshold={100} on:loadMore={loadMorePlaylists}>
   <GridWrap items={playlists.playlists}>
     <GridItem
       let:item
       slot="GridItem"
-      href={getAlbumLink(item.playlist_id)}
+      href={getPlaylistLink(item.playlist_id)}
       src={item.playlist_id}
-      alt={item.playlist_name ? item.playlist_name : $_('unknown_album')}
+      alt={item.playlist_title ? item.playlist_title : $_('unknown_album')}
     >
       <GridItemDetail
-        title={item.playlist_name ? item.playlist_name : $_('unknown_album')}
-        titleHref={getAlbumLink(item.playlist_id)}
-        sub={item.playlist_id}
-        subHref={getArtistLink(item.playlist_id)}
+        title={item.playlist_title ? item.playlist_title : $_('unknown_album')}
+        titleHref={getPlaylistLink(item.playlist_id)}
+        sub={item.playlist_username}
+        subHref={getPlaylistLink(item.playlist_id)}
       />
     </GridItem>
   </GridWrap>

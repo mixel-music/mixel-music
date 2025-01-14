@@ -160,8 +160,9 @@ export interface PlayerStore extends PlayerState, Tracks {
 
 export interface Playlist {
   playlist_id: string;
-  playlist_name: string;
-  playlist_user: string;
+  playlist_title: string;
+  playlist_user_id: string;
+  playlist_username: string;
   created_at: string;
   updated_at: string;
 };
@@ -176,6 +177,8 @@ export interface PlaylistData {
 
 
 export interface PlaylistTrack {
+  album: string;
+  album_id: string;
   artist: string;
   artist_id: string;
   duration: number;

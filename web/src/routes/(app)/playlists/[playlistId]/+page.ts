@@ -1,15 +1,15 @@
-import { getArtist } from '$lib/requests';
+import { getPlaylist } from '$lib/requests';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params }) => {
-  const playlistId: string = params.playlistId
+  const playListId: string = params.playListId
 
   try {
-    const data = await getArtist(fetch, playlistId);
+    const data = await getPlaylist(fetch, playListId);
 
     return {
       item: data.response!,
-      title: data.response.artist,
+      title: data.response.playlist_name,
     };
   }
   catch (error) {

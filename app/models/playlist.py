@@ -1,5 +1,4 @@
-import uuid
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field
@@ -11,27 +10,19 @@ class Playlist(Base):
     __tablename__ = 'playlists'
 
     playlist_id: str = Column(String, primary_key=True, nullable=False)
-    playlist_name: str = Column(String, nullable=False)
-    playlist_user: str = Column(String, ForeignKey('users.user_id'), nullable=False)
-    created_at: DateTime = Column(
-        DateTime,
-        default=datetime.now(timezone.utc),
-        nullable=False,
-    )
-    updated_at: DateTime = Column(
-        DateTime,
-        default=datetime.now(timezone.utc),
-        onupdate=datetime.now(timezone.utc),
-        nullable=False,
-    )
+    playlist_title: str = Column(String, nullable=False)
+    playlist_user_id: str = Column(String, ForeignKey('users.user_id'), nullable=False)
+    created_at: DateTime = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
+    updated_at: DateTime = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=False)
     shared: bool = Column(Boolean, default=False, nullable=False)
     tracks = relationship("PlaylistData", backref="playlist", cascade="all, delete")
 
 
 class PlaylistModel(BaseModel):
     playlist_id: str
-    playlist_name: str
-    playlist_user: str
+    playlist_title: str
+    playlist_user_id: str
+    playlist_username: str
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
     )
@@ -47,22 +38,23 @@ class PlaylistData(Base):
     playlist_id: str = Column(
         String,
         ForeignKey('playlists.playlist_id', ondelete="CASCADE"),
-        primary_key=True,
         nullable=False,
     )
     track_id: str = Column(
         String,
         ForeignKey('tracks.track_id'),
-        primary_key=True,
         nullable=False,
     )
     added_at: DateTime = Column(
         DateTime,
         default=datetime.now(timezone.utc),
-        primary_key=True, # Include as part of composite primary key
         nullable=False,
     )
     order: int = Column(Integer, nullable=False, default=0)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('playlist_id', 'track_id', 'added_at'),
+    )
 
 
 class PlaylistDataModel(BaseModel):
@@ -75,6 +67,8 @@ class PlaylistDataModel(BaseModel):
 
 
 class PlaylistTrackModel(BaseModel):
+    album: str
+    album_id: str
     artist: str
     artist_id: str
     duration: float
@@ -83,7 +77,7 @@ class PlaylistTrackModel(BaseModel):
 
 
 class PlaylistCreateModel(BaseModel):
-    playlist_name: str
+    playlist_title: str
     shared: bool = False
     tracks: Optional[list[str]]
 
