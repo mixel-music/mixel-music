@@ -54,7 +54,7 @@ class LibraryService:
 
     async def streaming(self, track_id: str, range: str) -> tuple[bytes, dict[str, Any]]:
         path = await self.repo.get_item_path(track_id)
-        print(path)
+
         try:
             path = await self.repo.get_item_path(track_id)
             track_info = await self.repo.get_track(track_id)

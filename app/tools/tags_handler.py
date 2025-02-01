@@ -2,11 +2,7 @@ from typing import Any
 from tinytag import TinyTag, Image, Images, TinyTagException
 from tools.path_handler import get_path, str_path
 from tools.convert_value import (
-    hash_str,
-    get_mime,
-    safe_list,
-    convert_date,
-    convert_artist,
+    hash_str, get_mime, safe_list, convert_date, convert_artist,
 )
 
 

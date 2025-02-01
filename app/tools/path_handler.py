@@ -3,7 +3,9 @@ from pathlib import Path
 from tinytag import TinyTag
 from pydantic_settings import BaseSettings
 
+
 ROOTDIR: Path = (Path.cwd().resolve()).parent
+
 
 def get_path(*args: str | Path, rel: bool = False, create_dir: bool = False) -> Path:
     """

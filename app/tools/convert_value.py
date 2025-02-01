@@ -5,6 +5,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError, InvalidHashError
 
 ph = PasswordHasher()
+
 tag_patterns = {
     'details': re.compile(r'\s*feat\.?\s.*'),
     'bracket': re.compile(r'\s*\([^)]*[:;,][^)]*\)'),
@@ -12,6 +13,7 @@ tag_patterns = {
     'year_month': re.compile(r'^(\d{4})[-., ]?(\d{1,2})$'),
     'year': re.compile(r'^(\d{4})$'),
 }
+
 
 def password_encode(password: str) -> str:
     return ph.hash(password)

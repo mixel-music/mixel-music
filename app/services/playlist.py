@@ -32,7 +32,7 @@ class PlaylistService:
         playlist_item = {
             "playlist_id": 'playlist_' + str(uuid.uuid4()),
             "playlist_title": data.playlist_title,
-            "playlist_user_id": user_id,            
+            "playlist_user_id": user_id,           
             "shared": data.shared,
         }
 

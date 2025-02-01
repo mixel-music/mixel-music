@@ -31,7 +31,9 @@
       </span>
     {/if}
 
-    <slot />
+    <div>
+      <slot />
+    </div>
   </a>
 </li>
 
@@ -82,6 +84,13 @@
     color: var(--dark-text-sub);
     align-items: center;
     justify-content: center;
+    min-width: 24px;
+  }
+
+  div {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap-mode: nowrap;
   }
 
   /* li {
