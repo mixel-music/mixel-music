@@ -4,7 +4,7 @@
 </p>
 
 > [!IMPORTANT]
-> I'm currently pausing development on this project to prepare for the CSAT. I expect to resume work in early 2026. Thanks for your patience!
+> I'm currently pausing development on this project to prepare for the CSAT (Korean SAT). I expect to resume work in early 2026. Thanks for your patience!
 
 ## Introduction
 <a href="."><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmixel-music%2Fmixel-music%2Fmain%2Fweb%2Fpackage.json&query=version&label=version&style=flat-square&color=211951&labelColor=211951"></a> <a href="LICENSE"><img src="https://img.shields.io/github/license/mixel-music/mixel-music?style=flat-square&color=211951&labelColor=211951"></a> <a href="app/pyproject.toml"><img src="https://img.shields.io/badge/Python-3.10+-211951?style=flat-square&labelColor=211951"></a>
